@@ -551,5 +551,8 @@
   "uiApplyingOverlayToIngameItemIcon": "Applying overlay to in-game item icon",
   "uiCustomCardSleeves": "Custom Card Sleeves",
   "uiSwappedAvailableCardSleeves": "Swapped - Available Card Sleeves",
-  "uiCreateNewCardSleeve": "Create New Card Sleeve"
+  "uiCreateNewCardSleeve": "Create New Card Sleeve",
+  "uiCustomBoards": "Custom Boards",
+  "uiSwappedAvailableBoards": "Swapped - Available Boards",
+  "uiCreateNewBoard": "Create New Board"
 }

@@ -71,6 +71,7 @@ String modManJsonManualSaveDir = '';
 String modManCustomAqmDir = '';
 String modManLineStrikeSleeveDirPath = '';
 String modManLineStrikeBoardDirPath = '';
+String modManLineStrikeCardDirPath = '';
 //Json files path
 String modManModsListJsonPath = '';
 String modManModSetsJsonPath = '';
@@ -81,6 +82,7 @@ String modManAppliedModsJsonPath = '';
 String modManAqmInjectedItemListJsonPath = '';
 String modManLineStrikeSleeveJsonPath = '';
 String modManLineStrikeBoardJsonPath = '';
+String modManLineStrikeCardJsonPath = '';
 //Log file path
 String modManOpLogsFilePath = '';
 //Swapper paths
@@ -883,9 +885,12 @@ Future<void> createSubDirs(context) async {
   //Create Line Strike Boards folder
   modManLineStrikeBoardDirPath = Uri.file('$modManDirPath/Line Strike/Boards').toFilePath();
   Directory(modManLineStrikeBoardDirPath).createSync(recursive: true);
-  modManVitalGaugeOriginalsDirPath =
-      modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath() : Uri.file('$modManDirPath/Vital Gauge/Originals_profile2').toFilePath();
-  Directory(modManVitalGaugeOriginalsDirPath).createSync(recursive: true);
+  //Create Line Strike Cards folder
+  modManLineStrikeCardDirPath = Uri.file('$modManDirPath/Line Strike/Cards').toFilePath();
+  Directory(modManLineStrikeCardDirPath).createSync(recursive: true);
+  // modManVitalGaugeOriginalsDirPath =
+  //     modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath() : Uri.file('$modManDirPath/Vital Gauge/Originals_profile2').toFilePath();
+  // Directory(modManVitalGaugeOriginalsDirPath).createSync(recursive: true);
   //Create Checksum folder
   modManChecksumDirPath = Uri.file('$modManDirPath/Checksum').toFilePath();
   Directory(modManChecksumDirPath).createSync(recursive: true);
@@ -919,6 +924,9 @@ Future<void> createSubDirs(context) async {
   modManLineStrikeBoardJsonPath =
       modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManLSBoardList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManLSBoardList_profile2.json').toFilePath();
   File(modManLineStrikeBoardJsonPath).createSync(recursive: true);
+  modManLineStrikeCardJsonPath =
+      modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManLSCardList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManLSCardList_profile2.json').toFilePath();
+  File(modManLineStrikeCardJsonPath).createSync(recursive: true);
   //Swapper paths
   modManSwapperDirPath = Uri.file('$modManDirPath/swapper').toFilePath();
   modManSwapperFromItemDirPath = Uri.file('$modManDirPath/swapper/fromitem').toFilePath();

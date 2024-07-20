@@ -552,6 +552,9 @@
   "uiCustomCardSleeves": "Custom Card Sleeves",
   "uiSwappedAvailableCardSleeves": "Swapped - Available Card Sleeves",
   "uiCreateNewCardSleeve": "Create New Card Sleeves"
+  "uiCustomBoards": "Custom Boards",
+  "uiSwappedAvailableBoards": "Swapped - Available Boards",
+  "uiCreateNewBoard": "Create New Board"
   "uiItemsToInjectCustomAqm": "要注入自定义aqm的物品",
   "uiItemsAlreadyHaveCustomAqm": "已注入自定义aqm的物品",
   "uiReApplyingAllModsBackToTheGame": "将所有保存的MOD重新应用到游戏中"

@@ -809,7 +809,8 @@ Future<List<LineStrikeSleeve>> originalSleevesFetch(context) async {
     String iceDdsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'IcePath').value.split('/').last);
     String iconIceDdsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'ImagePath').value.split('/').last);
     String iconWebPath = '$modManMAIconDatabaseLink${data.iconImagePath.replaceAll('\\', '/')}';
-    newSleeveInfoList.add(LineStrikeSleeve(icePath, iconIcePath, iceDdsName, iconIceDdsName, iconWebPath, await getFileHash(icePath), await getFileHash(iconIcePath), '', false));
+    newSleeveInfoList.add(LineStrikeSleeve(icePath, iconIcePath, iceDdsName, iconIceDdsName, iconWebPath, '', '', '', false));
+    await Future.delayed(const Duration(milliseconds: 10));
   }
 
   //Load list from json

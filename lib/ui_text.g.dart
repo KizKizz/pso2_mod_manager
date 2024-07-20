@@ -693,7 +693,10 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiCustomCardSleeves = json['uiCustomCardSleeves'] as String
       ..uiSwappedAvailableCardSleeves =
           json['uiSwappedAvailableCardSleeves'] as String
-      ..uiCreateNewCardSleeve = json['uiCreateNewCardSleeve'] as String;
+      ..uiCreateNewCardSleeve = json['uiCreateNewCardSleeve'] as String
+      ..uiCustomBoards = json['uiCustomBoards'] as String
+      ..uiSwappedAvailableBoards = json['uiSwappedAvailableBoards'] as String
+      ..uiCreateNewBoard = json['uiCreateNewBoard'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -1292,4 +1295,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiCustomCardSleeves': instance.uiCustomCardSleeves,
       'uiSwappedAvailableCardSleeves': instance.uiSwappedAvailableCardSleeves,
       'uiCreateNewCardSleeve': instance.uiCreateNewCardSleeve,
+      'uiCustomBoards': instance.uiCustomBoards,
+      'uiSwappedAvailableBoards': instance.uiSwappedAvailableBoards,
+      'uiCreateNewBoard': instance.uiCreateNewBoard,
     };
