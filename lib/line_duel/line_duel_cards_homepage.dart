@@ -254,6 +254,7 @@ void lineDuelCardsHomePage(context) {
                                                                           //           borderRadius: const BorderRadius.all(Radius.circular(0)))),
                                                                           feedback: Image.file(
                                                                             allCustomBackgrounds[i],
+                                                                            scale: 1.5,
                                                                             filterQuality: FilterQuality.high,
                                                                             fit: BoxFit.fill,
                                                                           ),
@@ -415,7 +416,7 @@ void lineDuelCardsHomePage(context) {
                                                                             return Center(
                                                                               child: cardData[i].isReplaced
                                                                                   ? Stack(
-                                                                                      alignment: AlignmentDirectional.bottomEnd,
+                                                                                      alignment: AlignmentDirectional.bottomStart,
                                                                                       children: [
                                                                                         Stack(
                                                                                           alignment: AlignmentDirectional.bottomEnd,
@@ -423,7 +424,7 @@ void lineDuelCardsHomePage(context) {
                                                                                             AspectRatio(
                                                                                               aspectRatio: 1,
                                                                                               child: Image.network(
-                                                                                                cardData[i].iconWebPath,
+                                                                                                cardData[i].cardZeroIconWebPath,
                                                                                                 fit: BoxFit.fill,
                                                                                                 filterQuality: FilterQuality.high,
                                                                                               ),
@@ -456,27 +457,40 @@ void lineDuelCardsHomePage(context) {
                                                                                                 ),
                                                                                               ),
                                                                                               onLongPress: () async {
-                                                                                                String downloadedIceFilePath = await downloadIconIceFromOfficial(
-                                                                                                    cardData[i].icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
+                                                                                                String downloadedCardZeroIceFilePath = await downloadIconIceFromOfficial(
+                                                                                                    cardData[i].cardZeroIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
                                                                                                     modManAddModsTempDirPath);
-                                                                                                String downloadedIconIceFilePath = await downloadIconIceFromOfficial(
-                                                                                                    cardData[i].iconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
+                                                                                                String downloadedCardZeroIconIceFilePath = await downloadIconIceFromOfficial(
+                                                                                                    cardData[i].cardZeroIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
+                                                                                                    modManAddModsTempDirPath);
+                                                                                                String downloadedCardOneIceFilePath = await downloadIconIceFromOfficial(
+                                                                                                    cardData[i].cardOneIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
+                                                                                                    modManAddModsTempDirPath);
+                                                                                                String downloadedCardOneIconIceFilePath = await downloadIconIceFromOfficial(
+                                                                                                    cardData[i].cardOneIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
                                                                                                     modManAddModsTempDirPath);
                                                                                                 try {
-                                                                                                  File(downloadedIceFilePath).copySync(cardData[i].icePath);
-                                                                                                  File(downloadedIconIceFilePath).copySync(cardData[i].iconIcePath);
-                                                                                                  cardData[i].replacedIceMd5 = '';
-                                                                                                  cardData[i].replacedIconIceMd5 = '';
+                                                                                                  File(downloadedCardZeroIceFilePath).copySync(cardData[i].cardZeroIcePath);
+                                                                                                  File(downloadedCardZeroIconIceFilePath).copySync(cardData[i].cardZeroIconIcePath);
+                                                                                                  File(downloadedCardOneIceFilePath).copySync(cardData[i].cardOneIcePath);
+                                                                                                  File(downloadedCardOneIconIceFilePath).copySync(cardData[i].cardOneIconIcePath);
+                                                                                                  cardData[i].cardZeroReplacedIceMd5 = '';
+                                                                                                  cardData[i].cardZeroReplacedIconIceMd5 = '';
+                                                                                                  cardData[i].cardOneReplacedIceMd5 = '';
+                                                                                                  cardData[i].cardOneReplacedIconIceMd5 = '';
                                                                                                   cardData[i].replacedImagePath = '';
                                                                                                   cardData[i].isReplaced = false;
                                                                                                   saveLineStrikeCardInfoToJson(cardData);
+                                                                                                  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                                                                    element.deleteSync(recursive: true);
+                                                                                                  });
                                                                                                 } catch (e) {
                                                                                                   // ignore: use_build_context_synchronously
                                                                                                   ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
                                                                                                       // ignore: use_build_context_synchronously
                                                                                                       context,
                                                                                                       '${curLangText!.uiFailed}!',
-                                                                                                      '${p.basename(cardData[i].icePath)}\n${p.basename(cardData[i].iconIcePath)}\n${curLangText!.uiNoFilesInGameDataToReplace}',
+                                                                                                      e.toString(),
                                                                                                       5000));
                                                                                                 }
                                                                                                 setState(() {});
@@ -486,10 +500,8 @@ void lineDuelCardsHomePage(context) {
                                                                                         ),
                                                                                       ],
                                                                                     )
-                                                                                  // ),
-
                                                                                   : Stack(
-                                                                                      alignment: AlignmentDirectional.bottomCenter,
+                                                                                      alignment: AlignmentDirectional.bottomStart,
                                                                                       children: [
                                                                                         AspectRatio(
                                                                                           aspectRatio: 1,
@@ -499,7 +511,7 @@ void lineDuelCardsHomePage(context) {
                                                                                           //           side: BorderSide(color: Theme.of(context).primaryColorLight),
                                                                                           //           borderRadius: const BorderRadius.all(Radius.circular(0)))),
                                                                                           child: Image.network(
-                                                                                            cardData[i].iconWebPath,
+                                                                                            cardData[i].cardZeroIconWebPath,
                                                                                             filterQuality: FilterQuality.high,
                                                                                             fit: BoxFit.fill,
                                                                                           ),
@@ -564,49 +576,54 @@ void lineDuelCardsHomePage(context) {
                                                                             Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                                                               element.deleteSync(recursive: true);
                                                                             });
-                                                                            for (var card in cardData) {
-                                                                              if (card.isReplaced) {
-                                                                                int index = cardData.indexOf(card);
+                                                                            for (int i = 0; i < cardData.length; i++) {
+                                                                              if (cardData[i].isReplaced) {
+                                                                                int index = cardData.indexOf(cardData[i]);
                                                                                 _loading[index] = true;
-                                                                                Future.delayed(const Duration(milliseconds: 500), () async {
-                                                                                  String downloadedIceFilePath = await downloadIconIceFromOfficial(
-                                                                                      card.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
-                                                                                  String downloadedIconIceFilePath = await downloadIconIceFromOfficial(
-                                                                                      card.iconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
-                                                                                  try {
-                                                                                    File(downloadedIceFilePath).copySync(card.icePath);
-                                                                                    File(downloadedIconIceFilePath).copySync(card.iconIcePath);
-                                                                                    card.replacedIceMd5 = '';
-                                                                                    card.replacedIconIceMd5 = '';
-                                                                                    card.replacedImagePath = '';
-                                                                                    card.isReplaced = false;
-                                                                                    saveLineStrikeCardInfoToJson(cardData);
-                                                                                  } catch (e) {
-                                                                                    // ignore: use_build_context_synchronously
-                                                                                    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                                        // ignore: use_build_context_synchronously
-                                                                                        context,
-                                                                                        '${curLangText!.uiFailed}!',
-                                                                                        '${p.basename(card.icePath)}\n${p.basename(card.iconIcePath)}\n${curLangText!.uiNoFilesInGameDataToReplace}',
-                                                                                        5000));
-                                                                                  }
-                                                                                  _loading[index] = false;
-                                                                                  setState(() {});
-                                                                                });
-                                                                              } else {
-                                                                                int index = cardData.indexOf(card);
-                                                                                _loading[index] = true;
-                                                                                Future.delayed(const Duration(milliseconds: 500), () async {
-                                                                                  String downloadedIceFilePath = await downloadIconIceFromOfficial(
-                                                                                      card.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
-                                                                                  String downloadedIconIceFilePath = await downloadIconIceFromOfficial(
-                                                                                      card.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
-                                                                                  File(downloadedIceFilePath).copySync(card.icePath);
-                                                                                  File(downloadedIconIceFilePath).copySync(card.icePath);
-                                                                                  _loading[index] = false;
-                                                                                  setState(() {});
-                                                                                });
+                                                                                setState(
+                                                                                  () {},
+                                                                                );
+
+                                                                                String downloadedCardZeroIceFilePath = await downloadIconIceFromOfficial(
+                                                                                    cardData[i].cardZeroIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
+                                                                                    modManAddModsTempDirPath);
+                                                                                String downloadedCardZeroIconIceFilePath = await downloadIconIceFromOfficial(
+                                                                                    cardData[i].cardZeroIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
+                                                                                    modManAddModsTempDirPath);
+                                                                                String downloadedCardOneIceFilePath = await downloadIconIceFromOfficial(
+                                                                                    cardData[i].cardOneIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
+                                                                                    modManAddModsTempDirPath);
+                                                                                String downloadedCardOneIconIceFilePath = await downloadIconIceFromOfficial(
+                                                                                    cardData[i].cardOneIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
+                                                                                    modManAddModsTempDirPath);
+                                                                                try {
+                                                                                  File(downloadedCardZeroIceFilePath).copySync(cardData[i].cardZeroIcePath);
+                                                                                  File(downloadedCardZeroIconIceFilePath).copySync(cardData[i].cardZeroIconIcePath);
+                                                                                  File(downloadedCardOneIceFilePath).copySync(cardData[i].cardOneIcePath);
+                                                                                  File(downloadedCardOneIconIceFilePath).copySync(cardData[i].cardOneIconIcePath);
+                                                                                  cardData[i].cardZeroReplacedIceMd5 = '';
+                                                                                  cardData[i].cardZeroReplacedIconIceMd5 = '';
+                                                                                  cardData[i].cardOneReplacedIceMd5 = '';
+                                                                                  cardData[i].cardOneReplacedIconIceMd5 = '';
+                                                                                  cardData[i].replacedImagePath = '';
+                                                                                  cardData[i].isReplaced = false;
+                                                                                  saveLineStrikeCardInfoToJson(cardData);
+                                                                                  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                                                    element.deleteSync(recursive: true);
+                                                                                  });
+                                                                                } catch (e) {
+                                                                                  // ignore: use_build_context_synchronously
+                                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                                      // ignore: use_build_context_synchronously
+                                                                                      context,
+                                                                                      '${curLangText!.uiFailed}!',
+                                                                                      e.toString(),
+                                                                                      5000));
+                                                                                }
+                                                                                _loading[index] = false;
+                                                                                setState(() {});
                                                                               }
+                                                                              await Future.delayed(const Duration(milliseconds: 10));
                                                                             }
                                                                             Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                                                               element.deleteSync(recursive: true);
@@ -804,15 +821,40 @@ Future<List<LineStrikeCard>> originalCardsFetch(context) async {
   if (playerItemData.isEmpty) {
     await playerItemDataGet(context);
   }
-  List<CsvItem> csvCardData = playerItemData.where((element) => element.csvFileName == 'Line Duel Cards.csv').toList();
+  List<CsvItem> csvCardZeroData = playerItemData
+      .where(
+          (element) => element.csvFileName == 'Line Duel Cards.csv' && p.basenameWithoutExtension(element.infos.entries.firstWhere((element) => element.key == 'IcePath').value).characters.last == '0')
+      .toList();
+  List<CsvItem> csvCardOneData = playerItemData
+      .where(
+          (element) => element.csvFileName == 'Line Duel Cards.csv' && p.basenameWithoutExtension(element.infos.entries.firstWhere((element) => element.key == 'IcePath').value).characters.last == '1')
+      .toList();
+  List<CsvItem> csvCardZeroIconData = playerItemData
+      .where((element) => element.csvFileName == 'Line Duel Icons.csv' && p.basenameWithoutExtension(element.infos.entries.firstWhere((element) => element.key == 'Path').value).characters.last == '0')
+      .toList();
+  List<CsvItem> csvCardOneIconData = playerItemData
+      .where((element) => element.csvFileName == 'Line Duel Icons.csv' && p.basenameWithoutExtension(element.infos.entries.firstWhere((element) => element.key == 'Path').value).characters.last == '1')
+      .toList();
+
   List<LineStrikeCard> newCardInfoList = [];
-  for (var data in csvCardData) {
-    String icePath = ogVitalGaugeIcePathsFetcher(data.infos.entries.firstWhere((element) => element.key == 'Ice Hash').value.split('\\').last);
-    String iconIcePath = ogVitalGaugeIcePathsFetcher(data.infos.entries.firstWhere((element) => element.key == 'Ice Hash - Image').value.split('\\').last);
-    String iceDdsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'IcePath').value.split('/').last);
-    String iconIceDdsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'ImagePath').value.split('/').last);
-    String iconWebPath = '$modManMAIconDatabaseLink${data.iconImagePath.replaceAll('\\', '/')}';
-    newCardInfoList.add(LineStrikeCard(icePath, iconIcePath, iceDdsName, iconIceDdsName, iconWebPath, '', '', '', false));
+  for (int i = 0; i < csvCardZeroData.length; i++) {
+    //card0
+    String cardZeroIcePath = ogVitalGaugeIcePathsFetcher(csvCardZeroData[i].infos.entries.firstWhere((element) => element.key == 'Ice Hash').value.split('\\').last);
+    String cardZeroIconIcePath = ogVitalGaugeIcePathsFetcher(csvCardZeroIconData[i].infos.entries.firstWhere((element) => element.key == 'Ice Hash - Image').value.split('\\').last);
+    String cardZeroDdsName = p.basenameWithoutExtension(csvCardZeroData[i].infos.entries.firstWhere((element) => element.key == 'IcePath').value.split('/').last);
+    String cardZeroIconDdsName = p.basenameWithoutExtension(csvCardZeroIconData[i].infos.entries.firstWhere((element) => element.key == 'Path').value.split('/').last);
+    String cardZeroIconWebPath = '$modManMAIconDatabaseLink${csvCardZeroData[i].iconImagePath.replaceAll('\\', '/')}';
+    String cardZeroSquareIconWebPath = '$modManMAIconDatabaseLink${csvCardZeroIconData[i].iconImagePath.replaceAll('\\', '/')}';
+    //card1
+    String cardOneIcePath = ogVitalGaugeIcePathsFetcher(csvCardOneData[i].infos.entries.firstWhere((element) => element.key == 'Ice Hash').value.split('\\').last);
+    String cardOneIconIcePath = ogVitalGaugeIcePathsFetcher(csvCardOneIconData[i].infos.entries.firstWhere((element) => element.key == 'Ice Hash - Image').value.split('\\').last);
+    String cardOneDdsName = p.basenameWithoutExtension(csvCardOneData[i].infos.entries.firstWhere((element) => element.key == 'IcePath').value.split('/').last);
+    String cardOneIconDdsName = p.basenameWithoutExtension(csvCardOneIconData[i].infos.entries.firstWhere((element) => element.key == 'Path').value.split('/').last);
+    String cardOneIconWebPath = '$modManMAIconDatabaseLink${csvCardOneData[i].iconImagePath.replaceAll('\\', '/')}';
+    String cardOneSquareIconWebPath = '$modManMAIconDatabaseLink${csvCardOneIconData[i].iconImagePath.replaceAll('\\', '/')}';
+
+    newCardInfoList.add(LineStrikeCard(cardZeroIcePath, cardZeroIconIcePath, cardZeroDdsName, cardZeroIconDdsName, cardZeroIconWebPath, cardZeroSquareIconWebPath, '', '', cardOneIcePath,
+        cardOneIconIcePath, cardOneDdsName, cardOneIconDdsName, cardOneIconWebPath, cardOneSquareIconWebPath, '', '', '', false));
     await Future.delayed(const Duration(milliseconds: 10));
   }
 
@@ -828,10 +870,12 @@ Future<List<LineStrikeCard>> originalCardsFetch(context) async {
   //replace settings
   for (var i = 0; i < newCardInfoList.length; i++) {
     for (var cardInJson in cardsData) {
-      if (p.basename(newCardInfoList[i].icePath) == p.basename(cardInJson.icePath) && p.basename(newCardInfoList[i].iconIcePath) == p.basename(cardInJson.iconIcePath)) {
+      if (p.basename(newCardInfoList[i].cardZeroIcePath) == p.basename(cardInJson.cardZeroIcePath) && p.basename(newCardInfoList[i].cardOneIcePath) == p.basename(cardInJson.cardOneIcePath)) {
         newCardInfoList[i].replacedImagePath = cardInJson.replacedImagePath;
-        newCardInfoList[i].replacedIceMd5 = cardInJson.replacedIceMd5;
-        newCardInfoList[i].replacedIconIceMd5 = cardInJson.replacedIconIceMd5;
+        newCardInfoList[i].cardZeroReplacedIceMd5 = cardInJson.cardZeroReplacedIceMd5;
+        newCardInfoList[i].cardZeroReplacedIconIceMd5 = cardInJson.cardZeroReplacedIconIceMd5;
+        newCardInfoList[i].cardOneReplacedIceMd5 = cardInJson.cardOneReplacedIceMd5;
+        newCardInfoList[i].cardOneReplacedIconIceMd5 = cardInJson.cardOneReplacedIconIceMd5;
         newCardInfoList[i].isReplaced = cardInJson.isReplaced;
         break;
       }
@@ -861,116 +905,208 @@ Future<List<File>> customCardsFetch() async {
 Future<bool> customCardApply(context, String imgPath, LineStrikeCard cardDataFile) async {
   clearAllTempDirs();
   //prep image
-  img.Image? iconTemplate;
-  img.Image? cardTemplate;
-  img.Image? fireFrame0Template;
-  if (kDebugMode) {
-    // iconTemplate = await img.decodePngFile('assets/img/line_strike_card_icon_template.png');
-    cardTemplate = await img.decodePngFile('assets/img/line_strike_card_template.png');
-    fireFrame0Template = await img.decodePngFile('assets/img/line_strike_card_fire_frame0_template.png');
-  } else {
-    // iconTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_card_icon_template.png').toFilePath());
-    cardTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_card_template.png').toFilePath());
-    fireFrame0Template = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_card_fire_frame0_template.png').toFilePath());
-  }
   img.Image? replaceImage = await img.decodePngFile(imgPath);
-  // img.Image resizedReplaceImage = img.copyResize(replaceImage!, width: 159, height: 224);
+  img.Image resizedIconImage = img.copyResize(replaceImage!, width: 104, height: 104);
 
   //download and replace
-  //icon
-  // if (cardDataFile.iconIcePath.isNotEmpty) {
-  //   String downloadedIconIceFilePath = await downloadIconIceFromOfficial(cardDataFile.iconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
-  //   await Process.run('$modManZamboniExePath -outdir "$modManAddModsTempDirPath"', [downloadedIconIceFilePath]);
-  //   String newTempIconIcePath = Uri.file('$modManAddModsTempDirPath/${p.basename(cardDataFile.iconIcePath)}_ext/group2').toFilePath();
+  //card zero replacement
+  File? replacedCardZeroIce = await cardArtReplace(replaceImage, cardDataFile.cardZeroIcePath, cardDataFile.cardZeroDdsName, cardDataFile.cardZeroIconWebPath);
 
-  //   if (Directory(newTempIconIcePath).existsSync()) {
-  //     await Process.run(modManDdsPngToolExePath,
-  //         [Uri.file('$newTempIconIcePath/${cardDataFile.iconIceDdsName}.dds').toFilePath(), Uri.file('$newTempIconIcePath/${cardDataFile.iconIceDdsName}.png').toFilePath(), '-ddstopng']);
-  //     img.Image? iconImage = await img.decodePngFile(Uri.file('$newTempIconIcePath/${cardDataFile.iconIceDdsName}.png').toFilePath());
-  //     for (var templatePixel in iconTemplate!.data!) {
-  //       if (templatePixel.a > 0) {
-  //         iconImage!.setPixel(templatePixel.x, templatePixel.y, resizedReplaceImage.getPixel(templatePixel.x - 49, templatePixel.y - 16));
-  //       }
-  //     }
+  if (replacedCardZeroIce != null && replacedCardZeroIce.existsSync()) {
+    int i = 0;
+    while (i < 10) {
+      try {
+        File copied = replacedCardZeroIce.copySync(cardDataFile.cardZeroIcePath);
+        cardDataFile.cardZeroReplacedIceMd5 = await getFileHash(copied.path);
+        i = 10;
+      } catch (e) {
+        i++;
+      }
+    }
+    if (i > 10) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(snackBarMessage(context, '${curLangText!.uiFailed}!', '${p.basename(cardDataFile.cardZeroIcePath)}\n${curLangText!.uiNoFilesInGameDataToReplace}', 5000));
+      return false;
+    }
+  }
 
-  //     await File(Uri.file('$newTempIconIcePath/${cardDataFile.iconIceDdsName}.png').toFilePath()).writeAsBytes(img.encodePng(iconImage!));
+  //card one replacement
+  File? replacedCardOneIce = await cardArtReplace(replaceImage, cardDataFile.cardOneIcePath, cardDataFile.cardOneDdsName, cardDataFile.cardOneIconWebPath);
 
-  //     await Process.run(modManDdsPngToolExePath,
-  //         [Uri.file('$newTempIconIcePath/${cardDataFile.iconIceDdsName}.png').toFilePath(), Uri.file('$newTempIconIcePath/${cardDataFile.iconIceDdsName}.dds').toFilePath(), '-pngtodds']);
-  //     await File(Uri.file('$newTempIconIcePath/${cardDataFile.iconIceDdsName}.png').toFilePath()).delete();
-  //   }
+  if (replacedCardOneIce != null && replacedCardOneIce.existsSync()) {
+    int i = 0;
+    while (i < 10) {
+      try {
+        File copied = replacedCardOneIce.copySync(cardDataFile.cardOneIcePath);
+        cardDataFile.cardOneReplacedIceMd5 = await getFileHash(copied.path);
+        i = 10;
+      } catch (e) {
+        i++;
+      }
+    }
+    if (i > 10) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(snackBarMessage(context, '${curLangText!.uiFailed}!', '${p.basename(cardDataFile.cardOneIcePath)}\n${curLangText!.uiNoFilesInGameDataToReplace}', 5000));
+      return false;
+    }
+  }
 
-  //   if (File(Uri.file('$newTempIconIcePath/${cardDataFile.iconIceDdsName}.dds').toFilePath()).existsSync()) {
-  //     await Process.run('$modManZamboniExePath -c -pack -outdir "$modManAddModsTempDirPath"', [Uri.file('$modManAddModsTempDirPath/${p.basename(cardDataFile.iconIcePath)}_ext').toFilePath()]);
-  //     Directory(Uri.file('$modManAddModsTempDirPath/${p.basename(cardDataFile.iconIcePath)}').toFilePath()).deleteSync(recursive: true);
+  //icon zero replacement
+  File? replacedCardZeroIconIce = await cardIconArtReplace(resizedIconImage, cardDataFile.cardZeroIconIcePath, cardDataFile.cardZeroIconDdsName, cardDataFile.cardZeroSquareIconWebPath);
+  if (replacedCardZeroIconIce != null && replacedCardZeroIconIce.existsSync()) {
+    int i = 0;
+    while (i < 10) {
+      try {
+        File copied = replacedCardZeroIconIce.copySync(cardDataFile.cardZeroIconIcePath);
+        cardDataFile.cardZeroReplacedIconIceMd5 = await getFileHash(copied.path);
+        i = 10;
+      } catch (e) {
+        i++;
+      }
+    }
+    if (i > 10) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(snackBarMessage(context, '${curLangText!.uiFailed}!', '${p.basename(cardDataFile.cardZeroIconIcePath)}\n${curLangText!.uiNoFilesInGameDataToReplace}', 5000));
+      return false;
+    }
+  }
 
-  //     File renamedFile = await File(Uri.file('$modManAddModsTempDirPath/${p.basename(cardDataFile.iconIcePath)}_ext.ice').toFilePath())
-  //         .rename(Uri.file('$modManAddModsTempDirPath/${p.basename(cardDataFile.iconIcePath)}').toFilePath());
-  //     if (renamedFile.path.isNotEmpty) {
-  //       int i = 0;
-  //       while (i < 10) {
-  //         try {
-  //           File copied = renamedFile.copySync(cardDataFile.iconIcePath);
-  //           cardDataFile.replacedIconIceMd5 = await getFileHash(copied.path);
-  //           i = 10;
-  //         } catch (e) {
-  //           i++;
-  //         }
-  //       }
-  //       if (i > 10) {
-  //         ScaffoldMessenger.of(context)
-  //             .showSnackBar(snackBarMessage(context, '${curLangText!.uiFailed}!', '${p.basename(cardDataFile.iconIcePath)}\n${curLangText!.uiNoFilesInGameDataToReplace}', 5000));
-  //         return false;
-  //       }
-  //     }
+  //icon one replacement
+  File? replacedCardOneIconIce = await cardIconArtReplace(resizedIconImage, cardDataFile.cardOneIconIcePath, cardDataFile.cardOneIconDdsName, cardDataFile.cardOneSquareIconWebPath);
+  if (replacedCardOneIconIce != null && replacedCardOneIconIce.existsSync()) {
+    int i = 0;
+    while (i < 10) {
+      try {
+        File copied = replacedCardOneIconIce.copySync(cardDataFile.cardOneIconIcePath);
+        cardDataFile.cardOneReplacedIconIceMd5 = await getFileHash(copied.path);
+        i = 10;
+      } catch (e) {
+        i++;
+      }
+    }
+    if (i > 10) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(snackBarMessage(context, '${curLangText!.uiFailed}!', '${p.basename(cardDataFile.cardOneIconIcePath)}\n${curLangText!.uiNoFilesInGameDataToReplace}', 5000));
+      return false;
+    }
+  }
 
-  //     Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-  //       element.deleteSync(recursive: true);
-  //     });
-  //   }
-  // }
+  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+    element.deleteSync(recursive: true);
+  });
 
-  //card
-  // String downloadedIceFilePath = await downloadIconIceFromOfficial(cardDataFile.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
-  // await Process.run('$modManZamboniExePath -outdir "$modManAddModsTempDirPath"', [downloadedIceFilePath]);
-  String newTempIcePath = Uri.file('$modManAddModsTempDirPath/${p.basename(cardDataFile.icePath)}/group2').toFilePath();
+  return true;
+}
+
+Future<File?> cardArtReplace(img.Image? replaceImage, String icePath, String ddsName, String iconWebPath) async {
+  //card zero
+  String newTempIcePath = Uri.file('$modManAddModsTempDirPath/${p.basename(icePath)}/group2').toFilePath();
   Directory(newTempIcePath).createSync(recursive: true);
-
   if (Directory(newTempIcePath).existsSync()) {
     Dio dio = Dio();
-    final returnedResult = await dio.download(cardDataFile.iconWebPath, Uri.file('$newTempIcePath/${p.basename(cardDataFile.iconWebPath)}').toFilePath());
+    final returnedResult = await dio.download(iconWebPath, Uri.file('$newTempIcePath/${p.basename(iconWebPath)}').toFilePath());
     dio.close();
-    // await Process.run(
-    //     modManDdsPngToolExePath, [Uri.file('$newTempIcePath/${cardDataFile.iceDdsName}.dds').toFilePath(), Uri.file('$newTempIcePath/${cardDataFile.iceDdsName}.png').toFilePath(), '-ddstopng']);
-    // img.Image? iceImage = await img.decodePngFile(Uri.file('$newTempIcePath/${cardDataFile.iceDdsName}.png').toFilePath());
 
     if (returnedResult.statusCode == 200) {
-      //frame0 edit
-      img.Image? ogCard = await img.decodePngFile(Uri.file('$newTempIcePath/${p.basename(cardDataFile.iconWebPath)}').toFilePath());
-      // for (var pixel in fireFrame0Template!.data!) {
-      //   if (pixel.y == 19 && pixel.x == 31) {
-      //     debugPrint('x: ' +
-      //         pixel.x.toString() +
-      //         ' | y: ' +
-      //         pixel.y.toString() +
-      //         ' | r: ' +
-      //         pixel.r.toString() +
-      //         ' | g: ' +
-      //         pixel.g.toString() +
-      //         ' | b: ' +
-      //         pixel.b.toString() +
-      //         " | a: " +
-      //         pixel.a.toString());
-      //     break;
+      //edit
+      img.Image? ogCard = await img.decodePngFile(Uri.file('$newTempIcePath/${p.basename(iconWebPath)}').toFilePath());
+      img.Image? frameTemplate;
+      img.Image? cardTemplate;
+
+      // debugPrint('x: ' +
+      //     ogCard!.getPixel(344, 380).x.toString() +
+      //     ' | y: ' +
+      //     ogCard.getPixel(344, 380).y.toString() +
+      //     ' | r: ' +
+      //     ogCard.getPixel(344, 380).r.toString() +
+      //     ' | g: ' +
+      //     ogCard.getPixel(344, 380).g.toString() +
+      //     ' | b: ' +
+      //     ogCard.getPixel(344, 380).b.toString() +
+      //     " | a: " +
+      //     ogCard.getPixel(344, 380).a.toString());
+
+      if ((ogCard!.getPixel(344, 450).r == 92 && ogCard.getPixel(344, 450).g == 124 && ogCard.getPixel(344, 450).b == 204 && ogCard.getPixel(344, 450).a == 255) ||
+          (ogCard.getPixel(344, 380).r == 184 && ogCard.getPixel(344, 380).g == 100 && ogCard.getPixel(344, 380).b == 100 && ogCard.getPixel(344, 380).a == 255)) {
+        if (kDebugMode) {
+          cardTemplate = await img.decodePngFile('assets/img/line_strike_card_template.png');
+        } else {
+          cardTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_card_template.png').toFilePath());
+        }
+      } else {
+        if (kDebugMode) {
+          cardTemplate = await img.decodePngFile('assets/img/line_strike_card_template1.png');
+        } else {
+          cardTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_card_template1.png').toFilePath());
+        }
+      }
+
+      // img.Pixel ogCardCheckPixel = ogCard!.getPixel(31, 19);
+      if (ogCard.getPixel(31, 19).r == 255 && ogCard.getPixel(31, 19).g == 99 && ogCard.getPixel(31, 19).b == 99 && ogCard.getPixel(31, 19).a == 255) {
+        //fire
+        if (kDebugMode) {
+          frameTemplate = await img.decodePngFile('assets/img/line_strike_card_fire_frame0_template.png');
+        } else {
+          frameTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_card_fire_frame0_template.png').toFilePath());
+        }
+      } else if (ogCard.getPixel(31, 13).r == 120 && ogCard.getPixel(31, 13).g == 214 && ogCard.getPixel(31, 13).b == 253 && ogCard.getPixel(31, 13).a == 255) {
+        //ice
+        if (kDebugMode) {
+          frameTemplate = await img.decodePngFile('assets/img/line_strike_card_ice_frame0_template.png');
+        } else {
+          frameTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_card_ice_frame0_template.png').toFilePath());
+        }
+      } else if (ogCard.getPixel(31, 13).r == 156 && ogCard.getPixel(31, 13).g == 255 && ogCard.getPixel(31, 13).b == 173 && ogCard.getPixel(31, 13).a == 255) {
+        //wind
+        if (kDebugMode) {
+          frameTemplate = await img.decodePngFile('assets/img/line_strike_card_wind_frame0_template.png');
+        } else {
+          frameTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_card_wind_frame0_template.png').toFilePath());
+        }
+      } else if (ogCard.getPixel(35, 16).r == 255 && ogCard.getPixel(35, 16).g == 253 && ogCard.getPixel(35, 16).b == 97 && ogCard.getPixel(35, 16).a == 255) {
+        //lightning
+        if (kDebugMode) {
+          frameTemplate = await img.decodePngFile('assets/img/line_strike_card_lightning_frame0_template.png');
+        } else {
+          frameTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_card_lightning_frame0_template.png').toFilePath());
+        }
+      } else if (ogCard.getPixel(26, 15).r == 255 && ogCard.getPixel(26, 15).g == 251 && ogCard.getPixel(26, 15).b == 239 && ogCard.getPixel(26, 15).a == 255) {
+        //light
+        if (kDebugMode) {
+          frameTemplate = await img.decodePngFile('assets/img/line_strike_card_light_frame0_template.png');
+        } else {
+          frameTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_card_light_frame0_template.png').toFilePath());
+        }
+      } else if (ogCard.getPixel(24, 14).r == 255 && ogCard.getPixel(24, 14).g == 159 && ogCard.getPixel(24, 14).b == 255 && ogCard.getPixel(24, 14).a == 255) {
+        //dark
+        if (kDebugMode) {
+          frameTemplate = await img.decodePngFile('assets/img/line_strike_card_dark_frame0_template.png');
+        } else {
+          frameTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_card_dark_frame0_template.png').toFilePath());
+        }
+      }
+      // else {
+      //   for (var pixel in ogCard.data!) {
+      //     if (pixel.x == 24 && pixel.y == 14) {
+      //       debugPrint('x: ' +
+      //           pixel.x.toString() +
+      //           ' | y: ' +
+      //           pixel.y.toString() +
+      //           ' | r: ' +
+      //           pixel.r.toString() +
+      //           ' | g: ' +
+      //           pixel.g.toString() +
+      //           ' | b: ' +
+      //           pixel.b.toString() +
+      //           " | a: " +
+      //           pixel.a.toString());
+      //       break;
+      //     }
       //   }
-      //   // if (pixel.a > 0) ogCard!.setPixel(pixel.x, pixel.y, pixel);
       // }
 
-      img.Pixel ogCardCheckPixel = ogCard!.getPixel(31, 19);
-      if (ogCardCheckPixel.r == 255 && ogCardCheckPixel.g == 99 && ogCardCheckPixel.b == 99 && ogCardCheckPixel.a == 255) {
-        for (var pixel in fireFrame0Template!.data!) {
-          if (pixel.a > 0) ogCard.setPixel(pixel.x, pixel.y, pixel);
-        }
+      for (var pixel in frameTemplate!.data!) {
+        if (pixel.a > 0) ogCard.setPixel(pixel.x, pixel.y, pixel);
       }
 
       for (var templatePixel in cardTemplate!.data!) {
@@ -983,73 +1119,67 @@ Future<bool> customCardApply(context, String imgPath, LineStrikeCard cardDataFil
         }
       }
 
-      await File(Uri.file('$newTempIcePath/${cardDataFile.iceDdsName}.png').toFilePath()).writeAsBytes(img.encodePng(ogCard));
+      await File(Uri.file('$newTempIcePath/$ddsName.png').toFilePath()).writeAsBytes(img.encodePng(ogCard));
 
-      await Process.run(
-          modManDdsPngToolExePath, [Uri.file('$newTempIcePath/${cardDataFile.iceDdsName}.png').toFilePath(), Uri.file('$newTempIcePath/${cardDataFile.iceDdsName}.dds').toFilePath(), '-pngtodds']);
-      await File(Uri.file('$newTempIcePath/${cardDataFile.iceDdsName}.png').toFilePath()).delete();
+      await Process.run(modManDdsPngToolExePath, [Uri.file('$newTempIcePath/$ddsName.png').toFilePath(), Uri.file('$newTempIcePath/$ddsName.dds').toFilePath(), '-pngtodds']);
+      await File(Uri.file('$newTempIcePath/$ddsName.png').toFilePath()).delete();
     }
   }
 
-  if (File(Uri.file('$newTempIcePath/${cardDataFile.iceDdsName}.dds').toFilePath()).existsSync()) {
-    await Process.run('$modManZamboniExePath -c -pack -outdir "$modManAddModsTempDirPath"', [Uri.file('$modManAddModsTempDirPath/${p.basename(cardDataFile.icePath)}').toFilePath()]);
-    Directory(Uri.file('$modManAddModsTempDirPath/${p.basename(cardDataFile.icePath)}').toFilePath()).deleteSync(recursive: true);
+  if (File(Uri.file('$newTempIcePath/$ddsName.dds').toFilePath()).existsSync()) {
+    await Process.run('$modManZamboniExePath -c -pack -outdir "$modManAddModsTempDirPath"', [Uri.file('$modManAddModsTempDirPath/${p.basename(icePath)}').toFilePath()]);
+    Directory(Uri.file('$modManAddModsTempDirPath/${p.basename(icePath)}').toFilePath()).deleteSync(recursive: true);
 
-    File renamedFile = await File(Uri.file('$modManAddModsTempDirPath/${p.basename(cardDataFile.icePath)}.ice').toFilePath())
-        .rename(Uri.file('$modManAddModsTempDirPath/${p.basename(cardDataFile.icePath)}').toFilePath());
-    if (renamedFile.path.isNotEmpty) {
-      int i = 0;
-      while (i < 10) {
-        try {
-          File copied = renamedFile.copySync(cardDataFile.icePath);
-          cardDataFile.replacedIceMd5 = await getFileHash(copied.path);
-          i = 10;
-        } catch (e) {
-          i++;
-        }
-      }
-      if (i > 10) {
-        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiFailed}!', '${p.basename(cardDataFile.icePath)}\n${curLangText!.uiNoFilesInGameDataToReplace}', 5000));
-        return false;
-      }
-    }
-
-    Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-      element.deleteSync(recursive: true);
-    });
+    File renamedFile = await File(Uri.file('$modManAddModsTempDirPath/${p.basename(icePath)}.ice').toFilePath()).rename(Uri.file('$modManAddModsTempDirPath/${p.basename(icePath)}').toFilePath());
+    return renamedFile;
   }
-
-  return true;
+  return null;
 }
 
-// class CustomClipPath extends CustomClipper<Path> {
-//   //var radius=10.0;
-//   @override
-//   Path getClip(Size size) {
-//     Path path = Path();
-//     path.lineTo(0, 256);
-//     path.lineTo(183, 0);
-//     path.lineTo(256, 0);
-//     path.lineTo(0, 0);
-//     return path;
-//   }
+Future<File?> cardIconArtReplace(img.Image? resizedIconImage, String iconIcePath, String iconDdsName, String squareIconWebPath) async {
+  if (iconIcePath.isNotEmpty) {
+    String newTempIconIcePath = Uri.file('$modManAddModsTempDirPath/${p.basename(iconIcePath)}/group2').toFilePath();
+    Directory(newTempIconIcePath).createSync(recursive: true);
 
-//   @override
-//   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-// }
+    if (Directory(newTempIconIcePath).existsSync()) {
+      Dio dio = Dio();
+      final returnedResult = await dio.download(squareIconWebPath, Uri.file('$newTempIconIcePath/${p.basename(squareIconWebPath)}').toFilePath());
+      dio.close();
 
-// class CustomClipLayerPath extends CustomClipper<Path> {
-//   //var radius=10.0;
-//   @override
-//   Path getClip(Size size) {
-//     Path path = Path();
-//     path.lineTo(0, 50);
-//     path.lineTo(50, 50);
-//     path.lineTo(50, 0);
-//     path.lineTo(50, 0);
-//     return path;
-//   }
+      if (returnedResult.statusCode == 200) {
+        img.Image? ogCardIcon = await img.decodePngFile(Uri.file('$newTempIconIcePath/${p.basename(squareIconWebPath)}').toFilePath());
+        img.Image? iconTemplate;
+        if (kDebugMode) {
+          iconTemplate = await img.decodePngFile('assets/img/line_strike_card_icon_template.png');
+        } else {
+          iconTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_card_icon_template.png').toFilePath());
+        }
 
-//   @override
-//   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-// }
+        for (var templatePixel in iconTemplate!.data!) {
+          if (templatePixel.a > 0) {
+            try {
+              ogCardIcon!.setPixel(templatePixel.x, templatePixel.y, resizedIconImage!.getPixel(templatePixel.x - 11, templatePixel.y - 11));
+            } catch (e) {
+              break;
+            }
+          }
+        }
+
+        await File(Uri.file('$newTempIconIcePath/$iconDdsName.png').toFilePath()).writeAsBytes(img.encodePng(ogCardIcon!));
+
+        await Process.run(modManDdsPngToolExePath, [Uri.file('$newTempIconIcePath/$iconDdsName.png').toFilePath(), Uri.file('$newTempIconIcePath/$iconDdsName.dds').toFilePath(), '-pngtodds']);
+        await File(Uri.file('$newTempIconIcePath/$iconDdsName.png').toFilePath()).delete();
+      }
+    }
+
+    if (File(Uri.file('$newTempIconIcePath/$iconDdsName.dds').toFilePath()).existsSync()) {
+      await Process.run('$modManZamboniExePath -c -pack -outdir "$modManAddModsTempDirPath"', [Uri.file('$modManAddModsTempDirPath/${p.basename(iconIcePath)}').toFilePath()]);
+      Directory(Uri.file('$modManAddModsTempDirPath/${p.basename(iconIcePath)}').toFilePath()).deleteSync(recursive: true);
+
+      File renamedFile =
+          await File(Uri.file('$modManAddModsTempDirPath/${p.basename(iconIcePath)}.ice').toFilePath()).rename(Uri.file('$modManAddModsTempDirPath/${p.basename(iconIcePath)}').toFilePath());
+      return renamedFile;
+    }
+  }
+  return null;
+}

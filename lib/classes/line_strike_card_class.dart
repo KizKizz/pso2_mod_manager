@@ -4,17 +4,46 @@ part 'line_strike_card_class.g.dart';
 
 @JsonSerializable()
 class LineStrikeCard {
-  LineStrikeCard(this.icePath, this.iconIcePath, this.iceDdsName, this.iconIceDdsName, this.iconWebPath, this.replacedImagePath, this.replacedIceMd5,
-      this.replacedIconIceMd5, this.isReplaced);
+  LineStrikeCard(
+      this.cardZeroIcePath,
+      this.cardZeroIconIcePath,
+      this.cardZeroDdsName,
+      this.cardZeroIconDdsName,
+      this.cardZeroIconWebPath,
+      this.cardZeroSquareIconWebPath,
+      this.cardZeroReplacedIceMd5,
+      this.cardZeroReplacedIconIceMd5,
+      this.cardOneIcePath,
+      this.cardOneIconIcePath,
+      this.cardOneDdsName,
+      this.cardOneIconDdsName,
+      this.cardOneIconWebPath,
+      this.cardOneSquareIconWebPath,
+      this.cardOneReplacedIceMd5,
+      this.cardOneReplacedIconIceMd5,
+      this.replacedImagePath,
+      this.isReplaced);
 
-  String icePath;
-  String iconIcePath;
-  String iceDdsName;
-  String iconIceDdsName;
-  String iconWebPath;
+  //card0
+  String cardZeroIcePath;
+  String cardZeroIconIcePath;
+  String cardZeroDdsName;
+  String cardZeroIconDdsName;
+  String cardZeroIconWebPath;
+  String cardZeroSquareIconWebPath;
+  String cardZeroReplacedIceMd5;
+  String cardZeroReplacedIconIceMd5;
+  //card1
+  String cardOneIcePath;
+  String cardOneIconIcePath;
+  String cardOneDdsName;
+  String cardOneIconDdsName;
+  String cardOneIconWebPath;
+  String cardOneSquareIconWebPath;
+  String cardOneReplacedIceMd5;
+  String cardOneReplacedIconIceMd5;
+  //extra
   String replacedImagePath;
-  String replacedIceMd5;
-  String replacedIconIceMd5;
   bool isReplaced;
 
   factory LineStrikeCard.fromJson(Map<String, dynamic> json) => _$LineStrikeCardFromJson(json);

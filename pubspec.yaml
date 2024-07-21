@@ -108,6 +108,12 @@ flutter:
       - assets/img/line_strike_board_template.png
       - assets/img/line_strike_card_template.png
       - assets/img/line_strike_card_fire_frame0_template.png
+      - assets/img/line_strike_card_ice_frame0_template.png
+      - assets/img/line_strike_card_wind_frame0_template.png
+      - assets/img/line_strike_card_lightning_frame0_template.png
+      - assets/img/line_strike_card_light_frame0_template.png
+      - assets/img/line_strike_card_dark_frame0_template.png
+      - assets/img/line_strike_card_icon_template.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
