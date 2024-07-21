@@ -551,10 +551,10 @@
   "uiApplyingOverlayToIngameItemIcon": "将覆盖层应用于游戏内物品图标",
   "uiCustomCardSleeves": "自定义卡背",
   "uiSwappedAvailableCardSleeves": "幻化 - 可用的卡背",
-  "uiCreateNewCardSleeve": "创建新卡背"
+  "uiCreateNewCardSleeve": "创建新卡背",
   "uiCustomBoards": "Custom Boards",
   "uiSwappedAvailableBoards": "Swapped - Available Boards",
-  "uiCreateNewBoard": "Create New Board"
+  "uiCreateNewBoard": "Create New Board",
   "uiItemsToInjectCustomAqm": "要注入自定义aqm的物品",
   "uiItemsAlreadyHaveCustomAqm": "已注入自定义aqm的物品",
   "uiReApplyingAllModsBackToTheGame": "将所有保存的MOD重新应用到游戏中"

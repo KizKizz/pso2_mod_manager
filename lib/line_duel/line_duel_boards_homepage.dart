@@ -32,11 +32,12 @@ import 'package:window_manager/window_manager.dart';
 import 'package:path/path.dart' as p;
 import 'package:image/image.dart' as img;
 
-Future? boardDataLoader;
-Future? customBoardsLoader;
 List<bool> _loading = [];
+bool _isShowAll = true;
 
 void lineDuelBoardsHomePage(context) {
+  Future? boardDataLoader = originalBoardsFetch(context);
+  Future? customBoardsLoader = customBoardsFetch();
   showDialog(
       barrierDismissible: false,
       context: context,
@@ -68,7 +69,7 @@ void lineDuelBoardsHomePage(context) {
                         ),
                         Expanded(
                             child: FutureBuilder(
-                                future: customBoardsLoader = customBoardsFetch(),
+                                future: customBoardsLoader,
                                 builder: ((
                                   BuildContext context,
                                   AsyncSnapshot snapshot,
@@ -136,7 +137,7 @@ void lineDuelBoardsHomePage(context) {
                                     } else {
                                       List<File> allCustomBackgrounds = snapshot.data;
                                       return FutureBuilder(
-                                          future: boardDataLoader = originalBoardsFetch(context),
+                                          future: boardDataLoader,
                                           builder: ((
                                             BuildContext context,
                                             AsyncSnapshot snapshot,
@@ -202,7 +203,13 @@ void lineDuelBoardsHomePage(context) {
                                                   ),
                                                 );
                                               } else {
-                                                List<LineStrikeBoard> boardData = snapshot.data;
+                                                List<LineStrikeBoard> allBoardData = snapshot.data;
+                                                List<LineStrikeBoard> boardData = [];
+                                                if (_isShowAll) {
+                                                  boardData = allBoardData;
+                                                } else {
+                                                  boardData = allBoardData.where((e) => e.isReplaced).toList();
+                                                }
                                                 if (_loading.length != boardData.length) {
                                                   _loading = List.generate(boardData.length, (index) => false);
                                                 }
@@ -398,7 +405,7 @@ void lineDuelBoardsHomePage(context) {
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.symmetric(vertical: 5),
                                                                   child: GridView.builder(
-                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 1),
+                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 256 / 137, mainAxisSpacing: 5),
                                                                       // itemBuilder: (BuildContext context, int index) {
                                                                       //   return const SizedBox(height: 4);
                                                                       // },
@@ -416,10 +423,10 @@ void lineDuelBoardsHomePage(context) {
                                                                                           alignment: AlignmentDirectional.bottomEnd,
                                                                                           children: [
                                                                                             AspectRatio(
-                                                                                              aspectRatio: 1,
+                                                                                              aspectRatio: 256 / 137,
                                                                                               child: Image.network(
                                                                                                 boardData[i].iconWebPath,
-                                                                                                fit: BoxFit.fill,
+                                                                                                fit: BoxFit.fitWidth,
                                                                                                 filterQuality: FilterQuality.high,
                                                                                                 errorBuilder: (context, error, stackTrace) => Image.asset(
                                                                                                   'assets/img/placeholdersquare.png',
@@ -429,10 +436,10 @@ void lineDuelBoardsHomePage(context) {
                                                                                               ),
                                                                                             ),
                                                                                             AspectRatio(
-                                                                                              aspectRatio: 0.8,
+                                                                                              aspectRatio: 1.2,
                                                                                               child: Image.file(
                                                                                                 File(boardData[i].replacedImagePath),
-                                                                                                fit: BoxFit.scaleDown,
+                                                                                                fit: BoxFit.fitWidth,
                                                                                                 alignment: Alignment.bottomCenter,
                                                                                               ),
                                                                                             ),
@@ -490,23 +497,17 @@ void lineDuelBoardsHomePage(context) {
                                                                                       alignment: AlignmentDirectional.bottomCenter,
                                                                                       children: [
                                                                                         AspectRatio(
-                                                                                          aspectRatio: 1,
-                                                                                          // child: Container(
-                                                                                          //   decoration: ShapeDecoration(
-                                                                                          //       shape: RoundedRectangleBorder(
-                                                                                          //           side: BorderSide(color: Theme.of(context).primaryColorLight),
-                                                                                          //           borderRadius: const BorderRadius.all(Radius.circular(0)))),
+                                                                                          aspectRatio: 256 / 137,
                                                                                           child: Image.network(
                                                                                             boardData[i].iconWebPath,
                                                                                             filterQuality: FilterQuality.high,
-                                                                                            fit: BoxFit.fill,
+                                                                                            fit: BoxFit.fitWidth,
                                                                                             errorBuilder: (context, error, stackTrace) => Image.asset(
                                                                                               'assets/img/placeholdersquare.png',
                                                                                               filterQuality: FilterQuality.none,
-                                                                                              fit: BoxFit.fill,
+                                                                                              fit: BoxFit.fitWidth,
                                                                                             ),
                                                                                           ),
-                                                                                          // ),
                                                                                         ),
                                                                                         if (_loading[i])
                                                                                           Padding(
@@ -559,6 +560,25 @@ void lineDuelBoardsHomePage(context) {
                                                           padding: const EdgeInsets.only(bottom: 5),
                                                           child: Row(
                                                             children: [
+                                                              Expanded(
+                                                                child: ElevatedButton(
+                                                                    onPressed: boardData.where((e) => e.isReplaced).isNotEmpty || !_isShowAll
+                                                                        ? () {
+                                                                            if (!_isShowAll) {
+                                                                              _isShowAll = true;
+                                                                            } else {
+                                                                              _isShowAll = false;
+                                                                            }
+                                                                            setState(
+                                                                              () {},
+                                                                            );
+                                                                          }
+                                                                        : null,
+                                                                    child: Text(_isShowAll ? curLangText!.uiShowSwapped : curLangText!.uiShowAll)),
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 5,
+                                                              ),
                                                               Expanded(
                                                                 child: ElevatedButton(
                                                                     onLongPress: boardData.where((element) => element.isReplaced).isEmpty
@@ -810,42 +830,46 @@ Future<List<LineStrikeBoard>> originalBoardsFetch(context) async {
     await playerItemDataGet(context);
   }
   List<CsvItem> boardData = playerItemData.where((element) => element.csvFileName == 'Line Duel Boards.csv').toList();
-  List<LineStrikeBoard> newBoardInfoList = [];
-  for (var data in boardData) {
-    String icePath = ogVitalGaugeIcePathsFetcher(data.infos.entries.firstWhere((element) => element.key == 'Ice Hash').value.split('\\').last);
-    String iconIcePath = ogVitalGaugeIcePathsFetcher(data.infos.entries.firstWhere((element) => element.key == 'Ice Hash - Image').value.split('\\').last);
-    String iceDdsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'IcePath').value.split('/').last);
-    String iconIceDdsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'ImagePath').value.split('/').last);
-    String iconWebPath = '$modManMAIconDatabaseLink${data.iconImagePath.replaceAll('\\', '/')}';
-    newBoardInfoList.add(LineStrikeBoard(icePath, iconIcePath, iceDdsName, iconIceDdsName, iconWebPath, '', '', '', false));
-    await Future.delayed(const Duration(milliseconds: 10));
-  }
 
   //Load list from json
-  List<LineStrikeBoard> boardsData = [];
+  List<LineStrikeBoard> boardDataFromJson = [];
+  bool refetchData = false;
   if (File(modManLineStrikeBoardJsonPath).readAsStringSync().toString().isNotEmpty) {
     var jsonData = jsonDecode(File(modManLineStrikeBoardJsonPath).readAsStringSync());
     for (var type in jsonData) {
-      boardsData.add(LineStrikeBoard.fromJson(type));
-    }
-  }
-
-  //replace settings
-  for (var i = 0; i < newBoardInfoList.length; i++) {
-    for (var sleeveInJson in boardsData) {
-      if (p.basename(newBoardInfoList[i].icePath) == p.basename(sleeveInJson.icePath) && p.basename(newBoardInfoList[i].iconIcePath) == p.basename(sleeveInJson.iconIcePath)) {
-        newBoardInfoList[i].replacedImagePath = sleeveInJson.replacedImagePath;
-        newBoardInfoList[i].replacedIceMd5 = sleeveInJson.replacedIceMd5;
-        newBoardInfoList[i].replacedIconIceMd5 = sleeveInJson.replacedIconIceMd5;
-        newBoardInfoList[i].isReplaced = sleeveInJson.isReplaced;
-        break;
+      boardDataFromJson.add(LineStrikeBoard.fromJson(type));
+      if (!refetchData && (!File(boardDataFromJson.last.icePath).existsSync() || !File(boardDataFromJson.last.iconIcePath).existsSync())) {
+        refetchData = true;
       }
     }
   }
 
-  // newBoardInfoList.sort(
-  //   (a, b) => p.basename(b.icePath).compareTo(p.basename(a.icePath)),
-  // );
+  List<LineStrikeBoard> newBoardInfoList = [];
+  if (refetchData || boardData.length > boardDataFromJson.length) {
+    for (var data in boardData) {
+      String icePath = ogVitalGaugeIcePathsFetcher(data.infos.entries.firstWhere((element) => element.key == 'Ice Hash').value.split('\\').last);
+      String iconIcePath = ogVitalGaugeIcePathsFetcher(data.infos.entries.firstWhere((element) => element.key == 'Ice Hash - Image').value.split('\\').last);
+      String iceDdsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'IcePath').value.split('/').last);
+      String iconIceDdsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'ImagePath').value.split('/').last);
+      String iconWebPath = '$modManMAIconDatabaseLink${data.iconImagePath.replaceAll('\\', '/')}';
+      newBoardInfoList.add(LineStrikeBoard(icePath, iconIcePath, iceDdsName, iconIceDdsName, iconWebPath, '', '', '', false));
+      await Future.delayed(const Duration(milliseconds: 10));
+    }
+
+    //replace settings
+    for (var sleeveInJson in boardDataFromJson.where((e) => e.isReplaced)) {
+      int i = newBoardInfoList.indexWhere((e) => p.basename(e.icePath) == p.basename(sleeveInJson.icePath) && p.basename(e.iconIcePath) == p.basename(sleeveInJson.iconIcePath));
+      if (i != -1) {
+        newBoardInfoList[i].replacedImagePath = sleeveInJson.replacedImagePath;
+        newBoardInfoList[i].replacedIceMd5 = sleeveInJson.replacedIceMd5;
+        newBoardInfoList[i].replacedIconIceMd5 = sleeveInJson.replacedIconIceMd5;
+        newBoardInfoList[i].isReplaced = sleeveInJson.isReplaced;
+      }
+    }
+  } else {
+    newBoardInfoList = boardDataFromJson;
+  }
+
   saveLineStrikeBoardInfoToJson(newBoardInfoList);
 
   return newBoardInfoList;
@@ -854,11 +878,6 @@ Future<List<LineStrikeBoard>> originalBoardsFetch(context) async {
 Future<List<File>> customBoardsFetch() async {
   List<File> returnList = [];
   //remove local originals
-  if (customBoardsLoader == null) {
-    await Future.delayed(const Duration(milliseconds: 250));
-  } else {
-    await Future.delayed(const Duration(milliseconds: 150));
-  }
   returnList = Directory(modManLineStrikeBoardDirPath).listSync().whereType<File>().where((element) => p.extension(element.path) == '.png').toList();
   return returnList;
 }

@@ -33,11 +33,13 @@ import 'package:window_manager/window_manager.dart';
 import 'package:path/path.dart' as p;
 import 'package:image/image.dart' as img;
 
-Future? cardDataLoader;
-Future? customCardsLoader;
 List<bool> _loading = [];
+bool _isShowAll = true;
+bool _dataLoaded = false;
 
 void lineDuelCardsHomePage(context) {
+  Future customCardsLoader = customCardsFetch();
+  Future cardDataLoader = originalCardsFetch(context);
   showDialog(
       barrierDismissible: false,
       context: context,
@@ -69,12 +71,12 @@ void lineDuelCardsHomePage(context) {
                         ),
                         Expanded(
                             child: FutureBuilder(
-                                future: customCardsLoader = customCardsFetch(),
+                                future: customCardsLoader,
                                 builder: ((
                                   BuildContext context,
                                   AsyncSnapshot snapshot,
                                 ) {
-                                  if (snapshot.connectionState == ConnectionState.waiting && customCardsLoader == null) {
+                                  if (snapshot.connectionState == ConnectionState.waiting && !_dataLoaded) {
                                     return Center(
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.center,
@@ -137,12 +139,12 @@ void lineDuelCardsHomePage(context) {
                                     } else {
                                       List<File> allCustomBackgrounds = snapshot.data;
                                       return FutureBuilder(
-                                          future: cardDataLoader = originalCardsFetch(context),
+                                          future: cardDataLoader,
                                           builder: ((
                                             BuildContext context,
                                             AsyncSnapshot snapshot,
                                           ) {
-                                            if (snapshot.connectionState == ConnectionState.waiting && cardDataLoader == null) {
+                                            if (snapshot.connectionState == ConnectionState.waiting && !_dataLoaded) {
                                               return Center(
                                                 child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -203,7 +205,14 @@ void lineDuelCardsHomePage(context) {
                                                   ),
                                                 );
                                               } else {
-                                                List<LineStrikeCard> cardData = snapshot.data;
+                                                List<LineStrikeCard> allCardData = snapshot.data;
+                                                List<LineStrikeCard> cardData = [];
+                                                if (_isShowAll) {
+                                                  cardData = allCardData;
+                                                } else {
+                                                  cardData = allCardData.where((e) => e.isReplaced).toList();
+                                                }
+                                                _dataLoaded = true;
                                                 if (_loading.length != cardData.length) {
                                                   _loading = List.generate(cardData.length, (index) => false);
                                                 }
@@ -212,7 +221,7 @@ void lineDuelCardsHomePage(context) {
                                                     Expanded(
                                                         child: Column(
                                                       children: [
-                                                        Text(curLangText!.uiCustomCardSleeves, style: Theme.of(context).textTheme.titleLarge),
+                                                        Text(curLangText!.uiCustomCards, style: Theme.of(context).textTheme.titleLarge),
                                                         Divider(
                                                           height: 10,
                                                           thickness: 1,
@@ -254,7 +263,7 @@ void lineDuelCardsHomePage(context) {
                                                                           //           borderRadius: const BorderRadius.all(Radius.circular(0)))),
                                                                           feedback: Image.file(
                                                                             allCustomBackgrounds[i],
-                                                                            scale: 1.5,
+                                                                            scale: 1.4,
                                                                             filterQuality: FilterQuality.high,
                                                                             fit: BoxFit.fill,
                                                                           ),
@@ -361,11 +370,12 @@ void lineDuelCardsHomePage(context) {
                                                                       final selectedImage = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
                                                                       if (selectedImage != null && context.mounted) {
                                                                         customCardImageCropDialog(context, File(selectedImage.path)).then((value) {
+                                                                          customCardsLoader = customCardsFetch();
                                                                           setState(() {});
                                                                         });
                                                                       }
                                                                     },
-                                                                    child: Text(curLangText!.uiCreateNewCardSleeve)),
+                                                                    child: Text(curLangText!.uiCreateNewCard)),
                                                               )
                                                             ],
                                                           ),
@@ -383,7 +393,7 @@ void lineDuelCardsHomePage(context) {
                                                     Expanded(
                                                         child: Column(
                                                       children: [
-                                                        Text(curLangText!.uiSwappedAvailableCardSleeves, style: Theme.of(context).textTheme.titleLarge),
+                                                        Text(curLangText!.uiSwappedAvailableCards, style: Theme.of(context).textTheme.titleLarge),
                                                         Divider(
                                                           height: 10,
                                                           thickness: 1,
@@ -405,9 +415,6 @@ void lineDuelCardsHomePage(context) {
                                                                   padding: const EdgeInsets.symmetric(vertical: 5),
                                                                   child: GridView.builder(
                                                                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 5),
-                                                                      // itemBuilder: (BuildContext context, int index) {
-                                                                      //   return const SizedBox(height: 4);
-                                                                      // },
                                                                       shrinkWrap: true,
                                                                       itemCount: cardData.length,
                                                                       itemBuilder: (context, i) {
@@ -416,7 +423,7 @@ void lineDuelCardsHomePage(context) {
                                                                             return Center(
                                                                               child: cardData[i].isReplaced
                                                                                   ? Stack(
-                                                                                      alignment: AlignmentDirectional.bottomStart,
+                                                                                      alignment: AlignmentDirectional.bottomEnd,
                                                                                       children: [
                                                                                         Stack(
                                                                                           alignment: AlignmentDirectional.bottomEnd,
@@ -429,18 +436,21 @@ void lineDuelCardsHomePage(context) {
                                                                                                 filterQuality: FilterQuality.high,
                                                                                               ),
                                                                                             ),
-                                                                                            AspectRatio(
-                                                                                              aspectRatio: 0.42,
-                                                                                              child: Image.file(
-                                                                                                File(cardData[i].replacedImagePath),
-                                                                                                fit: BoxFit.scaleDown,
-                                                                                                alignment: Alignment.bottomCenter,
+                                                                                            Padding(
+                                                                                              padding: const EdgeInsets.only(right: 15),
+                                                                                              child: AspectRatio(
+                                                                                                aspectRatio: 0.5,
+                                                                                                child: Image.file(
+                                                                                                  File(cardData[i].replacedImagePath),
+                                                                                                  fit: BoxFit.fitWidth,
+                                                                                                  alignment: Alignment.bottomCenter,
+                                                                                                ),
                                                                                               ),
                                                                                             ),
                                                                                           ],
                                                                                         ),
                                                                                         Padding(
-                                                                                          padding: const EdgeInsets.all(0),
+                                                                                          padding: const EdgeInsets.only(right: 15),
                                                                                           child: ModManTooltip(
                                                                                             message: curLangText!.uiHoldToRestoreThisBackgroundToItsOriginal,
                                                                                             child: InkWell(
@@ -480,7 +490,7 @@ void lineDuelCardsHomePage(context) {
                                                                                                   cardData[i].cardOneReplacedIconIceMd5 = '';
                                                                                                   cardData[i].replacedImagePath = '';
                                                                                                   cardData[i].isReplaced = false;
-                                                                                                  saveLineStrikeCardInfoToJson(cardData);
+                                                                                                  saveLineStrikeCardInfoToJson(allCardData);
                                                                                                   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                                                                                     element.deleteSync(recursive: true);
                                                                                                   });
@@ -542,7 +552,7 @@ void lineDuelCardsHomePage(context) {
                                                                                     if (value) {
                                                                                       cardData[i].replacedImagePath = imgPath;
                                                                                       cardData[i].isReplaced = true;
-                                                                                      saveLineStrikeCardInfoToJson(cardData);
+                                                                                      saveLineStrikeCardInfoToJson(allCardData);
                                                                                       // Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                                                                       //   element.deleteSync(recursive: true);
                                                                                       // });
@@ -568,6 +578,25 @@ void lineDuelCardsHomePage(context) {
                                                           padding: const EdgeInsets.only(bottom: 5),
                                                           child: Row(
                                                             children: [
+                                                              Expanded(
+                                                                child: ElevatedButton(
+                                                                    onPressed: cardData.where((e) => e.isReplaced).isNotEmpty || !_isShowAll
+                                                                        ? () {
+                                                                            if (!_isShowAll) {
+                                                                              _isShowAll = true;
+                                                                            } else {
+                                                                              _isShowAll = false;
+                                                                            }
+                                                                            setState(
+                                                                              () {},
+                                                                            );
+                                                                          }
+                                                                        : null,
+                                                                    child: Text(_isShowAll ? curLangText!.uiShowSwapped : curLangText!.uiShowAll)),
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 5,
+                                                              ),
                                                               Expanded(
                                                                 child: ElevatedButton(
                                                                     onLongPress: cardData.where((element) => element.isReplaced).isEmpty
@@ -607,7 +636,7 @@ void lineDuelCardsHomePage(context) {
                                                                                   cardData[i].cardOneReplacedIconIceMd5 = '';
                                                                                   cardData[i].replacedImagePath = '';
                                                                                   cardData[i].isReplaced = false;
-                                                                                  saveLineStrikeCardInfoToJson(cardData);
+                                                                                  saveLineStrikeCardInfoToJson(allCardData);
                                                                                   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                                                                     element.deleteSync(recursive: true);
                                                                                   });
@@ -638,8 +667,8 @@ void lineDuelCardsHomePage(context) {
                                                               Expanded(
                                                                 child: ElevatedButton(
                                                                     onPressed: () {
-                                                                      customCardsLoader = null;
-                                                                      cardDataLoader = null;
+                                                                      // customCardsLoader = null;
+                                                                      // cardDataLoader = null;
 
                                                                       Navigator.pop(context);
                                                                     },
@@ -836,50 +865,60 @@ Future<List<LineStrikeCard>> originalCardsFetch(context) async {
       .where((element) => element.csvFileName == 'Line Duel Icons.csv' && p.basenameWithoutExtension(element.infos.entries.firstWhere((element) => element.key == 'Path').value).characters.last == '1')
       .toList();
 
-  List<LineStrikeCard> newCardInfoList = [];
-  for (int i = 0; i < csvCardZeroData.length; i++) {
-    //card0
-    String cardZeroIcePath = ogVitalGaugeIcePathsFetcher(csvCardZeroData[i].infos.entries.firstWhere((element) => element.key == 'Ice Hash').value.split('\\').last);
-    String cardZeroIconIcePath = ogVitalGaugeIcePathsFetcher(csvCardZeroIconData[i].infos.entries.firstWhere((element) => element.key == 'Ice Hash - Image').value.split('\\').last);
-    String cardZeroDdsName = p.basenameWithoutExtension(csvCardZeroData[i].infos.entries.firstWhere((element) => element.key == 'IcePath').value.split('/').last);
-    String cardZeroIconDdsName = p.basenameWithoutExtension(csvCardZeroIconData[i].infos.entries.firstWhere((element) => element.key == 'Path').value.split('/').last);
-    String cardZeroIconWebPath = '$modManMAIconDatabaseLink${csvCardZeroData[i].iconImagePath.replaceAll('\\', '/')}';
-    String cardZeroSquareIconWebPath = '$modManMAIconDatabaseLink${csvCardZeroIconData[i].iconImagePath.replaceAll('\\', '/')}';
-    //card1
-    String cardOneIcePath = ogVitalGaugeIcePathsFetcher(csvCardOneData[i].infos.entries.firstWhere((element) => element.key == 'Ice Hash').value.split('\\').last);
-    String cardOneIconIcePath = ogVitalGaugeIcePathsFetcher(csvCardOneIconData[i].infos.entries.firstWhere((element) => element.key == 'Ice Hash - Image').value.split('\\').last);
-    String cardOneDdsName = p.basenameWithoutExtension(csvCardOneData[i].infos.entries.firstWhere((element) => element.key == 'IcePath').value.split('/').last);
-    String cardOneIconDdsName = p.basenameWithoutExtension(csvCardOneIconData[i].infos.entries.firstWhere((element) => element.key == 'Path').value.split('/').last);
-    String cardOneIconWebPath = '$modManMAIconDatabaseLink${csvCardOneData[i].iconImagePath.replaceAll('\\', '/')}';
-    String cardOneSquareIconWebPath = '$modManMAIconDatabaseLink${csvCardOneIconData[i].iconImagePath.replaceAll('\\', '/')}';
-
-    newCardInfoList.add(LineStrikeCard(cardZeroIcePath, cardZeroIconIcePath, cardZeroDdsName, cardZeroIconDdsName, cardZeroIconWebPath, cardZeroSquareIconWebPath, '', '', cardOneIcePath,
-        cardOneIconIcePath, cardOneDdsName, cardOneIconDdsName, cardOneIconWebPath, cardOneSquareIconWebPath, '', '', '', false));
-    await Future.delayed(const Duration(milliseconds: 10));
-  }
-
   //Load list from json
-  List<LineStrikeCard> cardsData = [];
+  List<LineStrikeCard> cardDataFromJson = [];
+  bool refetchData = false;
   if (File(modManLineStrikeCardJsonPath).readAsStringSync().toString().isNotEmpty) {
     var jsonData = jsonDecode(File(modManLineStrikeCardJsonPath).readAsStringSync());
     for (var type in jsonData) {
-      cardsData.add(LineStrikeCard.fromJson(type));
+      cardDataFromJson.add(LineStrikeCard.fromJson(type));
+      if (!refetchData &&
+          (!File(cardDataFromJson.last.cardZeroIcePath).existsSync() ||
+              !File(cardDataFromJson.last.cardZeroIconIcePath).existsSync() ||
+              !File(cardDataFromJson.last.cardOneIcePath).existsSync() ||
+              !File(cardDataFromJson.last.cardOneIconIcePath).existsSync())) {
+        refetchData = true;
+      }
     }
   }
 
-  //replace settings
-  for (var i = 0; i < newCardInfoList.length; i++) {
-    for (var cardInJson in cardsData) {
-      if (p.basename(newCardInfoList[i].cardZeroIcePath) == p.basename(cardInJson.cardZeroIcePath) && p.basename(newCardInfoList[i].cardOneIcePath) == p.basename(cardInJson.cardOneIcePath)) {
-        newCardInfoList[i].replacedImagePath = cardInJson.replacedImagePath;
-        newCardInfoList[i].cardZeroReplacedIceMd5 = cardInJson.cardZeroReplacedIceMd5;
-        newCardInfoList[i].cardZeroReplacedIconIceMd5 = cardInJson.cardZeroReplacedIconIceMd5;
-        newCardInfoList[i].cardOneReplacedIceMd5 = cardInJson.cardOneReplacedIceMd5;
-        newCardInfoList[i].cardOneReplacedIconIceMd5 = cardInJson.cardOneReplacedIconIceMd5;
-        newCardInfoList[i].isReplaced = cardInJson.isReplaced;
-        break;
+  List<LineStrikeCard> newCardInfoList = [];
+  if (refetchData || csvCardZeroData.length > cardDataFromJson.length) {
+    for (int i = 0; i < csvCardZeroData.length; i++) {
+      //card0
+      String cardZeroIcePath = ogVitalGaugeIcePathsFetcher(csvCardZeroData[i].infos.entries.firstWhere((element) => element.key == 'Ice Hash').value.split('\\').last);
+      String cardZeroIconIcePath = ogVitalGaugeIcePathsFetcher(csvCardZeroIconData[i].infos.entries.firstWhere((element) => element.key == 'Ice Hash - Image').value.split('\\').last);
+      String cardZeroDdsName = p.basenameWithoutExtension(csvCardZeroData[i].infos.entries.firstWhere((element) => element.key == 'IcePath').value.split('/').last);
+      String cardZeroIconDdsName = p.basenameWithoutExtension(csvCardZeroIconData[i].infos.entries.firstWhere((element) => element.key == 'Path').value.split('/').last);
+      String cardZeroIconWebPath = '$modManMAIconDatabaseLink${csvCardZeroData[i].iconImagePath.replaceAll('\\', '/')}';
+      String cardZeroSquareIconWebPath = '$modManMAIconDatabaseLink${csvCardZeroIconData[i].iconImagePath.replaceAll('\\', '/')}';
+      //card1
+      String cardOneIcePath = ogVitalGaugeIcePathsFetcher(csvCardOneData[i].infos.entries.firstWhere((element) => element.key == 'Ice Hash').value.split('\\').last);
+      String cardOneIconIcePath = ogVitalGaugeIcePathsFetcher(csvCardOneIconData[i].infos.entries.firstWhere((element) => element.key == 'Ice Hash - Image').value.split('\\').last);
+      String cardOneDdsName = p.basenameWithoutExtension(csvCardOneData[i].infos.entries.firstWhere((element) => element.key == 'IcePath').value.split('/').last);
+      String cardOneIconDdsName = p.basenameWithoutExtension(csvCardOneIconData[i].infos.entries.firstWhere((element) => element.key == 'Path').value.split('/').last);
+      String cardOneIconWebPath = '$modManMAIconDatabaseLink${csvCardOneData[i].iconImagePath.replaceAll('\\', '/')}';
+      String cardOneSquareIconWebPath = '$modManMAIconDatabaseLink${csvCardOneIconData[i].iconImagePath.replaceAll('\\', '/')}';
+
+      newCardInfoList.add(LineStrikeCard(cardZeroIcePath, cardZeroIconIcePath, cardZeroDdsName, cardZeroIconDdsName, cardZeroIconWebPath, cardZeroSquareIconWebPath, '', '', cardOneIcePath,
+          cardOneIconIcePath, cardOneDdsName, cardOneIconDdsName, cardOneIconWebPath, cardOneSquareIconWebPath, '', '', '', false));
+      await Future.delayed(const Duration(milliseconds: 10));
+    }
+
+    // //replace settings
+    for (var cardInJson in cardDataFromJson.where((e) => e.isReplaced)) {
+      int index = newCardInfoList.indexWhere((e) => p.basename(e.cardZeroIcePath) == p.basename(cardInJson.cardZeroIcePath) && p.basename(e.cardOneIcePath) == p.basename(cardInJson.cardOneIcePath));
+      if (index != -1) {
+        newCardInfoList[index].replacedImagePath = cardInJson.replacedImagePath;
+        newCardInfoList[index].cardZeroReplacedIceMd5 = cardInJson.cardZeroReplacedIceMd5;
+        newCardInfoList[index].cardZeroReplacedIconIceMd5 = cardInJson.cardZeroReplacedIconIceMd5;
+        newCardInfoList[index].cardOneReplacedIceMd5 = cardInJson.cardOneReplacedIceMd5;
+        newCardInfoList[index].cardOneReplacedIconIceMd5 = cardInJson.cardOneReplacedIconIceMd5;
+        newCardInfoList[index].isReplaced = cardInJson.isReplaced;
       }
     }
+  } else {
+    newCardInfoList = cardDataFromJson;
   }
 
   // newCardInfoList.sort(

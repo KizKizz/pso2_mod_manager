@@ -535,7 +535,9 @@ class TranslationText {
       uiSaveCroppedArea = 'Save Cropped Area',
       uiOverwriteImage = 'Overwite Image',
       uiVitalGaugeBackGroundsInstruction =
-          'Create a new background with the Create button bellow\nThen drag a background from "Custom Backgrounds" and drop onto a desired background in "Swapped - Available Backgrounds" to replace';
+          'Create a new background with the Create button bellow\nThen drag a background from "Custom Backgrounds" and drop onto a desired background in "Swapped - Available Backgrounds" to replace',
+      uiShowAll = 'Show All',
+      uiShowSwapped = 'Show Swapped';
 
   //applied_vital_gauge_checking_page.dart
   String uicheckingReplacedVitalGaugeBackgrounds = 'Checking replaced Vital Gauge backgrounds',
@@ -655,6 +657,9 @@ class TranslationText {
 
   //line_duel_boards_homepage.dart
   String uiCustomBoards = 'Custom Boards', uiSwappedAvailableBoards = 'Swapped - Available Boards', uiCreateNewBoard = 'Create New Board';
+
+  //line_duel_boards_homepage.dart
+  String uiCustomCards = 'Custom Cards', uiSwappedAvailableCards = 'Swapped - Available Cards', uiCreateNewCard = 'Create New Card';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);

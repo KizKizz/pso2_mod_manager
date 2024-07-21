@@ -31,11 +31,13 @@ import 'package:window_manager/window_manager.dart';
 import 'package:path/path.dart' as p;
 import 'package:image/image.dart' as img;
 
-Future? sleeveDataLoader;
-Future? customSleevesLoader;
+
 List<bool> _loading = [];
+bool _isShowAll = true;
 
 void lineDuelSleevesHomePage(context) {
+  Future? sleeveDataLoader = originalSleevesFetch(context);
+Future? customSleevesLoader = customSleevesFetch();
   showDialog(
       barrierDismissible: false,
       context: context,
@@ -67,7 +69,7 @@ void lineDuelSleevesHomePage(context) {
                         ),
                         Expanded(
                             child: FutureBuilder(
-                                future: customSleevesLoader = customSleevesFetch(),
+                                future: customSleevesLoader,
                                 builder: ((
                                   BuildContext context,
                                   AsyncSnapshot snapshot,
@@ -135,7 +137,7 @@ void lineDuelSleevesHomePage(context) {
                                     } else {
                                       List<File> allCustomBackgrounds = snapshot.data;
                                       return FutureBuilder(
-                                          future: sleeveDataLoader = originalSleevesFetch(context),
+                                          future: sleeveDataLoader,
                                           builder: ((
                                             BuildContext context,
                                             AsyncSnapshot snapshot,
@@ -201,7 +203,13 @@ void lineDuelSleevesHomePage(context) {
                                                   ),
                                                 );
                                               } else {
-                                                List<LineStrikeSleeve> sleeveData = snapshot.data;
+                                                List<LineStrikeSleeve> allSleeveData = snapshot.data;
+                                                List<LineStrikeSleeve> sleeveData = [];
+                                                if (_isShowAll) {
+                                                  sleeveData = allSleeveData;
+                                                } else {
+                                                  sleeveData = allSleeveData.where((e) => e.isReplaced).toList();
+                                                }
                                                 if (_loading.length != sleeveData.length) {
                                                   _loading = List.generate(sleeveData.length, (index) => false);
                                                 }
@@ -231,7 +239,7 @@ void lineDuelSleevesHomePage(context) {
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.symmetric(vertical: 5),
                                                                   child: GridView.builder(
-                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 183 / 256, crossAxisSpacing: 5, mainAxisSpacing: 5),
                                                                       shrinkWrap: true,
                                                                       //physics: const PageScrollPhysics(),
                                                                       itemCount: allCustomBackgrounds.length,
@@ -400,7 +408,7 @@ void lineDuelSleevesHomePage(context) {
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.symmetric(vertical: 5),
                                                                   child: GridView.builder(
-                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 170 / 235),
                                                                       // itemBuilder: (BuildContext context, int index) {
                                                                       //   return const SizedBox(height: 4);
                                                                       // },
@@ -418,10 +426,10 @@ void lineDuelSleevesHomePage(context) {
                                                                                           alignment: AlignmentDirectional.bottomEnd,
                                                                                           children: [
                                                                                             AspectRatio(
-                                                                                              aspectRatio: 1,
+                                                                                              aspectRatio: 170 / 235,
                                                                                               child: Image.network(
                                                                                                 sleeveData[i].iconWebPath,
-                                                                                                fit: BoxFit.fill,
+                                                                                                fit: BoxFit.fitHeight,
                                                                                                 filterQuality: FilterQuality.high,
                                                                                               ),
                                                                                             ),
@@ -489,7 +497,7 @@ void lineDuelSleevesHomePage(context) {
                                                                                       alignment: AlignmentDirectional.bottomCenter,
                                                                                       children: [
                                                                                         AspectRatio(
-                                                                                          aspectRatio: 1,
+                                                                                          aspectRatio: 170 / 235,
                                                                                           // child: Container(
                                                                                           //   decoration: ShapeDecoration(
                                                                                           //       shape: RoundedRectangleBorder(
@@ -498,7 +506,7 @@ void lineDuelSleevesHomePage(context) {
                                                                                           child: Image.network(
                                                                                             sleeveData[i].iconWebPath,
                                                                                             filterQuality: FilterQuality.high,
-                                                                                            fit: BoxFit.fill,
+                                                                                            fit: BoxFit.fitHeight,
                                                                                           ),
                                                                                           // ),
                                                                                         ),
@@ -553,6 +561,25 @@ void lineDuelSleevesHomePage(context) {
                                                           padding: const EdgeInsets.only(bottom: 5),
                                                           child: Row(
                                                             children: [
+                                                              Expanded(
+                                                                child: ElevatedButton(
+                                                                    onPressed: sleeveData.where((e) => e.isReplaced).isNotEmpty || !_isShowAll
+                                                                        ? () {
+                                                                            if (!_isShowAll) {
+                                                                              _isShowAll = true;
+                                                                            } else {
+                                                                              _isShowAll = false;
+                                                                            }
+                                                                            setState(
+                                                                              () {},
+                                                                            );
+                                                                          }
+                                                                        : null,
+                                                                    child: Text(_isShowAll ? curLangText!.uiShowSwapped : curLangText!.uiShowAll)),
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 5,
+                                                              ),
                                                               Expanded(
                                                                 child: ElevatedButton(
                                                                     onLongPress: sleeveData.where((element) => element.isReplaced).isEmpty
@@ -802,42 +829,49 @@ Future<List<LineStrikeSleeve>> originalSleevesFetch(context) async {
     await playerItemDataGet(context);
   }
   List<CsvItem> sleeveData = playerItemData.where((element) => element.csvFileName == 'Line Duel Sleeves.csv').toList();
-  List<LineStrikeSleeve> newSleeveInfoList = [];
-  for (var data in sleeveData) {
-    String icePath = ogVitalGaugeIcePathsFetcher(data.infos.entries.firstWhere((element) => element.key == 'Ice Hash').value.split('\\').last);
-    String iconIcePath = ogVitalGaugeIcePathsFetcher(data.infos.entries.firstWhere((element) => element.key == 'Ice Hash - Image').value.split('\\').last);
-    String iceDdsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'IcePath').value.split('/').last);
-    String iconIceDdsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'ImagePath').value.split('/').last);
-    String iconWebPath = '$modManMAIconDatabaseLink${data.iconImagePath.replaceAll('\\', '/')}';
-    newSleeveInfoList.add(LineStrikeSleeve(icePath, iconIcePath, iceDdsName, iconIceDdsName, iconWebPath, '', '', '', false));
-    await Future.delayed(const Duration(milliseconds: 10));
-  }
 
   //Load list from json
-  List<LineStrikeSleeve> sleevesData = [];
+  List<LineStrikeSleeve> sleeveDataFromJson = [];
+  bool refetchData = false;
   if (File(modManLineStrikeSleeveJsonPath).readAsStringSync().toString().isNotEmpty) {
     var jsonData = jsonDecode(File(modManLineStrikeSleeveJsonPath).readAsStringSync());
     for (var type in jsonData) {
-      sleevesData.add(LineStrikeSleeve.fromJson(type));
-    }
-  }
-
-  //replace settings
-  for (var i = 0; i < newSleeveInfoList.length; i++) {
-    for (var sleeveInJson in sleevesData) {
-      if (p.basename(newSleeveInfoList[i].icePath) == p.basename(sleeveInJson.icePath) && p.basename(newSleeveInfoList[i].iconIcePath) == p.basename(sleeveInJson.iconIcePath)) {
-        newSleeveInfoList[i].replacedImagePath = sleeveInJson.replacedImagePath;
-        newSleeveInfoList[i].replacedIceMd5 = sleeveInJson.replacedIceMd5;
-        newSleeveInfoList[i].replacedIconIceMd5 = sleeveInJson.replacedIconIceMd5;
-        newSleeveInfoList[i].isReplaced = sleeveInJson.isReplaced;
-        break;
+      sleeveDataFromJson.add(LineStrikeSleeve.fromJson(type));
+      if (!refetchData && (!File(sleeveDataFromJson.last.icePath).existsSync() || !File(sleeveDataFromJson.last.iconIcePath).existsSync())) {
+        refetchData = true;
       }
     }
   }
 
-  newSleeveInfoList.sort(
-    (a, b) => p.basename(b.icePath).compareTo(p.basename(a.icePath)),
-  );
+  List<LineStrikeSleeve> newSleeveInfoList = [];
+  if (refetchData || sleeveData.length > sleeveDataFromJson.length) {
+    for (var data in sleeveData) {
+      String icePath = ogVitalGaugeIcePathsFetcher(data.infos.entries.firstWhere((element) => element.key == 'Ice Hash').value.split('\\').last);
+      String iconIcePath = ogVitalGaugeIcePathsFetcher(data.infos.entries.firstWhere((element) => element.key == 'Ice Hash - Image').value.split('\\').last);
+      String iceDdsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'IcePath').value.split('/').last);
+      String iconIceDdsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'ImagePath').value.split('/').last);
+      String iconWebPath = '$modManMAIconDatabaseLink${data.iconImagePath.replaceAll('\\', '/')}';
+      newSleeveInfoList.add(LineStrikeSleeve(icePath, iconIcePath, iceDdsName, iconIceDdsName, iconWebPath, '', '', '', false));
+      await Future.delayed(const Duration(milliseconds: 10));
+    }
+
+    //replace settings
+    for (var sleeveInJson in sleeveDataFromJson.where((e) => e.isReplaced)) {
+      int i = newSleeveInfoList.indexWhere((e) => p.basename(e.icePath) == p.basename(sleeveInJson.icePath) && p.basename(e.iconIcePath) == p.basename(sleeveInJson.iconIcePath));
+      if (i != -1) {
+        newSleeveInfoList[i].replacedImagePath = sleeveInJson.replacedImagePath;
+        newSleeveInfoList[i].replacedIceMd5 = sleeveInJson.replacedIceMd5;
+        newSleeveInfoList[i].replacedIconIceMd5 = sleeveInJson.replacedIconIceMd5;
+        newSleeveInfoList[i].isReplaced = sleeveInJson.isReplaced;
+      }
+    }
+  } else {
+    newSleeveInfoList = sleeveDataFromJson;
+  }
+
+  // newSleeveInfoList.sort(
+  //   (a, b) => p.basename(b.icePath).compareTo(p.basename(a.icePath)),
+  // );
   saveLineStrikeSleeveInfoToJson(newSleeveInfoList);
 
   return newSleeveInfoList;
@@ -846,11 +880,6 @@ Future<List<LineStrikeSleeve>> originalSleevesFetch(context) async {
 Future<List<File>> customSleevesFetch() async {
   List<File> returnList = [];
   //remove local originals
-  if (customSleevesLoader == null) {
-    await Future.delayed(const Duration(milliseconds: 250));
-  } else {
-    await Future.delayed(const Duration(milliseconds: 150));
-  }
   returnList = Directory(modManLineStrikeSleeveDirPath).listSync().whereType<File>().where((element) => p.extension(element.path) == '.png').toList();
   return returnList;
 }
