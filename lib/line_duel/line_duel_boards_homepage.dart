@@ -32,11 +32,12 @@ import 'package:window_manager/window_manager.dart';
 import 'package:path/path.dart' as p;
 import 'package:image/image.dart' as img;
 
-Future? boardDataLoader;
-Future? customBoardsLoader;
 List<bool> _loading = [];
+bool _isShowAll = true;
 
 void lineDuelBoardsHomePage(context) {
+  Future? boardDataLoader = originalBoardsFetch(context);
+  Future? customBoardsLoader = customBoardsFetch();
   showDialog(
       barrierDismissible: false,
       context: context,
@@ -68,7 +69,7 @@ void lineDuelBoardsHomePage(context) {
                         ),
                         Expanded(
                             child: FutureBuilder(
-                                future: customBoardsLoader = customBoardsFetch(),
+                                future: customBoardsLoader,
                                 builder: ((
                                   BuildContext context,
                                   AsyncSnapshot snapshot,
@@ -136,7 +137,7 @@ void lineDuelBoardsHomePage(context) {
                                     } else {
                                       List<File> allCustomBackgrounds = snapshot.data;
                                       return FutureBuilder(
-                                          future: boardDataLoader = originalBoardsFetch(context),
+                                          future: boardDataLoader,
                                           builder: ((
                                             BuildContext context,
                                             AsyncSnapshot snapshot,
@@ -202,7 +203,13 @@ void lineDuelBoardsHomePage(context) {
                                                   ),
                                                 );
                                               } else {
-                                                List<LineStrikeBoard> boardData = snapshot.data;
+                                                List<LineStrikeBoard> allBoardData = snapshot.data;
+                                                List<LineStrikeBoard> boardData = [];
+                                                if (_isShowAll) {
+                                                  boardData = allBoardData;
+                                                } else {
+                                                  boardData = allBoardData.where((e) => e.isReplaced).toList();
+                                                }
                                                 if (_loading.length != boardData.length) {
                                                   _loading = List.generate(boardData.length, (index) => false);
                                                 }
@@ -211,7 +218,7 @@ void lineDuelBoardsHomePage(context) {
                                                     Expanded(
                                                         child: Column(
                                                       children: [
-                                                        Text(curLangText!.uiCustomCardSleeves, style: Theme.of(context).textTheme.titleLarge),
+                                                        Text(curLangText!.uiCustomBoardImages, style: Theme.of(context).textTheme.titleLarge),
                                                         Divider(
                                                           height: 10,
                                                           thickness: 1,
@@ -232,7 +239,8 @@ void lineDuelBoardsHomePage(context) {
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.symmetric(vertical: 5),
                                                                   child: GridView.builder(
-                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                                          crossAxisCount: 2, childAspectRatio: 867 / 488, mainAxisSpacing: 5, crossAxisSpacing: 5),
                                                                       shrinkWrap: true,
                                                                       //physics: const PageScrollPhysics(),
                                                                       itemCount: allCustomBackgrounds.length,
@@ -243,17 +251,13 @@ void lineDuelBoardsHomePage(context) {
 
                                                                         return Draggable(
                                                                           dragAnchorStrategy: pointerDragAnchorStrategy,
-                                                                          // feedback: Container(
-                                                                          //   width: 483,
-                                                                          //   height: 100,
-                                                                          //   decoration: ShapeDecoration(
-                                                                          //       shape: RoundedRectangleBorder(
-                                                                          //           side: BorderSide(color: Theme.of(context).primaryColorLight),
-                                                                          //           borderRadius: const BorderRadius.all(Radius.circular(0)))),
-                                                                          feedback: Image.file(
-                                                                            allCustomBackgrounds[i],
-                                                                            filterQuality: FilterQuality.high,
-                                                                            fit: BoxFit.fill,
+                                                                          feedback: ConstrainedBox(
+                                                                            constraints: const BoxConstraints(maxHeight: 512 / 2, maxWidth: 1024 / 2),
+                                                                            child: Image.file(
+                                                                              allCustomBackgrounds[i],
+                                                                              filterQuality: FilterQuality.high,
+                                                                              fit: BoxFit.fill,
+                                                                            ),
                                                                           ),
                                                                           // ),
                                                                           data: allCustomBackgrounds[i].path,
@@ -261,7 +265,7 @@ void lineDuelBoardsHomePage(context) {
                                                                             alignment: AlignmentDirectional.bottomStart,
                                                                             children: [
                                                                               AspectRatio(
-                                                                                aspectRatio: 183 / 256,
+                                                                                aspectRatio: 867 / 488,
                                                                                 child: Container(
                                                                                   decoration: ShapeDecoration(
                                                                                       shape: RoundedRectangleBorder(
@@ -318,7 +322,7 @@ void lineDuelBoardsHomePage(context) {
                                                                     side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
                                                               ),
                                                               child: Text(
-                                                                curLangText!.uiVitalGaugeBackGroundsInstruction,
+                                                                curLangText!.uiLineStrikeBoardImageInstruction,
                                                                 textAlign: TextAlign.center,
                                                               ),
                                                             ),
@@ -358,11 +362,12 @@ void lineDuelBoardsHomePage(context) {
                                                                       final selectedImage = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
                                                                       if (selectedImage != null && context.mounted) {
                                                                         customBoardImageCropDialog(context, File(selectedImage.path)).then((value) {
+                                                                          customBoardsLoader = customBoardsFetch();
                                                                           setState(() {});
                                                                         });
                                                                       }
                                                                     },
-                                                                    child: Text(curLangText!.uiCreateNewCardSleeve)),
+                                                                    child: Text(curLangText!.uiCreateNewBoard)),
                                                               )
                                                             ],
                                                           ),
@@ -380,7 +385,7 @@ void lineDuelBoardsHomePage(context) {
                                                     Expanded(
                                                         child: Column(
                                                       children: [
-                                                        Text(curLangText!.uiSwappedAvailableCardSleeves, style: Theme.of(context).textTheme.titleLarge),
+                                                        Text(curLangText!.uiSwappedAvailableBoards, style: Theme.of(context).textTheme.titleLarge),
                                                         Divider(
                                                           height: 10,
                                                           thickness: 1,
@@ -401,7 +406,7 @@ void lineDuelBoardsHomePage(context) {
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.symmetric(vertical: 5),
                                                                   child: GridView.builder(
-                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 256 / 137, mainAxisSpacing: 5),
                                                                       // itemBuilder: (BuildContext context, int index) {
                                                                       //   return const SizedBox(height: 4);
                                                                       // },
@@ -413,36 +418,36 @@ void lineDuelBoardsHomePage(context) {
                                                                             return Center(
                                                                               child: boardData[i].isReplaced
                                                                                   ? Stack(
-                                                                                      alignment: AlignmentDirectional.bottomCenter,
+                                                                                      alignment: AlignmentDirectional.bottomEnd,
                                                                                       children: [
                                                                                         Stack(
                                                                                           alignment: AlignmentDirectional.bottomEnd,
                                                                                           children: [
                                                                                             AspectRatio(
-                                                                                              aspectRatio: 1,
+                                                                                              aspectRatio: 256 / 137,
                                                                                               child: Image.network(
                                                                                                 boardData[i].iconWebPath,
-                                                                                                fit: BoxFit.fill,
+                                                                                                fit: BoxFit.fitWidth,
                                                                                                 filterQuality: FilterQuality.high,
                                                                                                 errorBuilder: (context, error, stackTrace) => Image.asset(
-                                                                          'assets/img/placeholdersquare.png',
-                                                                          filterQuality: FilterQuality.none,
-                                                                          fit: BoxFit.fitWidth,
-                                                                        ),
+                                                                                                  'assets/img/placeholdersquare.png',
+                                                                                                  filterQuality: FilterQuality.none,
+                                                                                                  fit: BoxFit.fitWidth,
+                                                                                                ),
                                                                                               ),
                                                                                             ),
                                                                                             AspectRatio(
-                                                                                              aspectRatio: 0.42,
+                                                                                              aspectRatio: 1.2,
                                                                                               child: Image.file(
                                                                                                 File(boardData[i].replacedImagePath),
-                                                                                                fit: BoxFit.scaleDown,
+                                                                                                fit: BoxFit.fitWidth,
                                                                                                 alignment: Alignment.bottomCenter,
                                                                                               ),
                                                                                             ),
                                                                                           ],
                                                                                         ),
                                                                                         Padding(
-                                                                                          padding: const EdgeInsets.only(left: 1, bottom: 1),
+                                                                                          padding: const EdgeInsets.all(0),
                                                                                           child: ModManTooltip(
                                                                                             message: curLangText!.uiHoldToRestoreThisBackgroundToItsOriginal,
                                                                                             child: InkWell(
@@ -473,6 +478,30 @@ void lineDuelBoardsHomePage(context) {
                                                                                                   boardData[i].replacedImagePath = '';
                                                                                                   boardData[i].isReplaced = false;
                                                                                                   saveLineStrikeBoardInfoToJson(boardData);
+                                                                                                  if (File(boardData[i]
+                                                                                                          .icePath
+                                                                                                          .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                      .existsSync()) {
+                                                                                                    File(boardData[i].icePath.replaceFirst(
+                                                                                                            Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                        .deleteSync(recursive: true);
+                                                                                                  }
+                                                                                                  if (File(boardData[i]
+                                                                                                          .iconIcePath
+                                                                                                          .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                      .existsSync()) {
+                                                                                                    File(boardData[i].iconIcePath.replaceFirst(
+                                                                                                            Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                        .deleteSync(recursive: true);
+                                                                                                  }
+                                                                                                  for (var dir in Directory(modManLineStrikeCacheDirPath).listSync().whereType<Directory>()) {
+                                                                                                    for (var subDir in dir.listSync().whereType<Directory>()) {
+                                                                                                      if (subDir.listSync(recursive: true).whereType<File>().isEmpty) {
+                                                                                                        subDir.deleteSync(recursive: true);
+                                                                                                      }
+                                                                                                    }
+                                                                                                    if (dir.listSync(recursive: true).whereType<File>().isEmpty) dir.deleteSync(recursive: true);
+                                                                                                  }
                                                                                                 } catch (e) {
                                                                                                   // ignore: use_build_context_synchronously
                                                                                                   ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
@@ -489,29 +518,21 @@ void lineDuelBoardsHomePage(context) {
                                                                                         ),
                                                                                       ],
                                                                                     )
-                                                                                  // ),
-
                                                                                   : Stack(
-                                                                                      alignment: AlignmentDirectional.bottomCenter,
+                                                                                      alignment: AlignmentDirectional.bottomStart,
                                                                                       children: [
                                                                                         AspectRatio(
-                                                                                          aspectRatio: 1,
-                                                                                          // child: Container(
-                                                                                          //   decoration: ShapeDecoration(
-                                                                                          //       shape: RoundedRectangleBorder(
-                                                                                          //           side: BorderSide(color: Theme.of(context).primaryColorLight),
-                                                                                          //           borderRadius: const BorderRadius.all(Radius.circular(0)))),
+                                                                                          aspectRatio: 256 / 137,
                                                                                           child: Image.network(
                                                                                             boardData[i].iconWebPath,
                                                                                             filterQuality: FilterQuality.high,
-                                                                                            fit: BoxFit.fill,
+                                                                                            fit: BoxFit.fitWidth,
                                                                                             errorBuilder: (context, error, stackTrace) => Image.asset(
-                                                                          'assets/img/placeholdersquare.png',
-                                                                          filterQuality: FilterQuality.none,
-                                                                          fit: BoxFit.fitWidth,
-                                                                        ),
+                                                                                              'assets/img/placeholdersquare.png',
+                                                                                              filterQuality: FilterQuality.none,
+                                                                                              fit: BoxFit.fitWidth,
+                                                                                            ),
                                                                                           ),
-                                                                                          // ),
                                                                                         ),
                                                                                         if (_loading[i])
                                                                                           Padding(
@@ -566,51 +587,107 @@ void lineDuelBoardsHomePage(context) {
                                                             children: [
                                                               Expanded(
                                                                 child: ElevatedButton(
+                                                                    onPressed: boardData.where((e) => e.isReplaced).isNotEmpty || !_isShowAll
+                                                                        ? () {
+                                                                            if (!_isShowAll) {
+                                                                              _isShowAll = true;
+                                                                            } else {
+                                                                              _isShowAll = false;
+                                                                            }
+                                                                            setState(
+                                                                              () {},
+                                                                            );
+                                                                          }
+                                                                        : null,
+                                                                    child: Text(_isShowAll ? curLangText!.uiShowSwapped : curLangText!.uiShowAll)),
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 5,
+                                                              ),
+                                                              Expanded(
+                                                                child: ElevatedButton(
                                                                     onLongPress: boardData.where((element) => element.isReplaced).isEmpty
                                                                         ? null
                                                                         : () async {
-                                                                            Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                              element.deleteSync(recursive: true);
-                                                                            });
-                                                                            for (var sleeve in boardData) {
-                                                                              if (sleeve.isReplaced) {
-                                                                                int index = boardData.indexOf(sleeve);
+                                                                            if (Directory(modManAddModsTempDirPath).existsSync()) {
+                                                                              Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                                                element.deleteSync(recursive: true);
+                                                                              });
+                                                                            }
+                                                                            for (var board in boardData) {
+                                                                              if (board.isReplaced) {
+                                                                                int index = boardData.indexOf(board);
                                                                                 _loading[index] = true;
                                                                                 Future.delayed(const Duration(milliseconds: 500), () async {
                                                                                   String downloadedIceFilePath = await downloadIconIceFromOfficial(
-                                                                                      sleeve.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
+                                                                                      board.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
                                                                                   String downloadedIconIceFilePath = await downloadIconIceFromOfficial(
-                                                                                      sleeve.iconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
+                                                                                      board.iconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
                                                                                   try {
-                                                                                    File(downloadedIceFilePath).copySync(sleeve.icePath);
-                                                                                    File(downloadedIconIceFilePath).copySync(sleeve.iconIcePath);
-                                                                                    sleeve.replacedIceMd5 = '';
-                                                                                    sleeve.replacedIconIceMd5 = '';
-                                                                                    sleeve.replacedImagePath = '';
-                                                                                    sleeve.isReplaced = false;
+                                                                                    File(downloadedIceFilePath).copySync(board.icePath);
+                                                                                    File(downloadedIconIceFilePath).copySync(board.iconIcePath);
+                                                                                    board.replacedIceMd5 = '';
+                                                                                    board.replacedIconIceMd5 = '';
+                                                                                    board.replacedImagePath = '';
+                                                                                    board.isReplaced = false;
                                                                                     saveLineStrikeBoardInfoToJson(boardData);
+                                                                                    if (File(board.icePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                        .existsSync()) {
+                                                                                      File(board.icePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                          .deleteSync(recursive: true);
+                                                                                    }
+                                                                                    if (File(board.iconIcePath
+                                                                                            .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                        .existsSync()) {
+                                                                                      File(board.iconIcePath
+                                                                                              .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                          .deleteSync(recursive: true);
+                                                                                    }
+                                                                                    for (var dir in Directory(modManLineStrikeCacheDirPath).listSync().whereType<Directory>()) {
+                                                                                      for (var subDir in dir.listSync().whereType<Directory>()) {
+                                                                                        if (subDir.listSync(recursive: true).whereType<File>().isEmpty) subDir.deleteSync(recursive: true);
+                                                                                      }
+                                                                                      if (dir.listSync(recursive: true).whereType<File>().isEmpty) dir.deleteSync(recursive: true);
+                                                                                    }
                                                                                   } catch (e) {
                                                                                     // ignore: use_build_context_synchronously
                                                                                     ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
                                                                                         // ignore: use_build_context_synchronously
                                                                                         context,
                                                                                         '${curLangText!.uiFailed}!',
-                                                                                        '${p.basename(sleeve.icePath)}\n${p.basename(sleeve.iconIcePath)}\n${curLangText!.uiNoFilesInGameDataToReplace}',
+                                                                                        '${p.basename(board.icePath)}\n${p.basename(board.iconIcePath)}\n${curLangText!.uiNoFilesInGameDataToReplace}',
                                                                                         5000));
                                                                                   }
                                                                                   _loading[index] = false;
                                                                                   setState(() {});
                                                                                 });
                                                                               } else {
-                                                                                int index = boardData.indexOf(sleeve);
+                                                                                int index = boardData.indexOf(board);
                                                                                 _loading[index] = true;
                                                                                 Future.delayed(const Duration(milliseconds: 500), () async {
                                                                                   String downloadedIceFilePath = await downloadIconIceFromOfficial(
-                                                                                      sleeve.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
+                                                                                      board.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
                                                                                   String downloadedIconIceFilePath = await downloadIconIceFromOfficial(
-                                                                                      sleeve.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
-                                                                                  File(downloadedIceFilePath).copySync(sleeve.icePath);
-                                                                                  File(downloadedIconIceFilePath).copySync(sleeve.icePath);
+                                                                                      board.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
+                                                                                  File(downloadedIceFilePath).copySync(board.icePath);
+                                                                                  File(downloadedIconIceFilePath).copySync(board.icePath);
+                                                                                  if (File(board.icePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                      .existsSync()) {
+                                                                                    File(board.icePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                        .deleteSync(recursive: true);
+                                                                                  }
+                                                                                  if (File(board.iconIcePath
+                                                                                          .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                      .existsSync()) {
+                                                                                    File(board.iconIcePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                        .deleteSync(recursive: true);
+                                                                                  }
+                                                                                  for (var dir in Directory(modManLineStrikeCacheDirPath).listSync().whereType<Directory>()) {
+                                                                                    for (var subDir in dir.listSync().whereType<Directory>()) {
+                                                                                      if (subDir.listSync(recursive: true).whereType<File>().isEmpty) subDir.deleteSync(recursive: true);
+                                                                                    }
+                                                                                    if (dir.listSync(recursive: true).whereType<File>().isEmpty) dir.deleteSync(recursive: true);
+                                                                                  }
                                                                                   _loading[index] = false;
                                                                                   setState(() {});
                                                                                 });
@@ -659,7 +736,7 @@ void lineDuelBoardsHomePage(context) {
 //suport functions
 Future<bool> customBoardImageCropDialog(context, File newImageFile) async {
   final imageCropController = CropController(
-    aspectRatio: 183 / 256,
+    aspectRatio: 867 / 488,
     //minimumImageSize: 100,
     // defaultCrop: const Rect.fromLTRB(0.1, 0.1, 0.9, 0.9),
   );
@@ -757,7 +834,7 @@ Future<bool> customBoardImageCropDialog(context, File newImageFile) async {
                                 final data = await croppedImageBitmap.toByteData(format: ImageByteFormat.png);
                                 final bytes = data!.buffer.asUint8List();
                                 img.Image? image = img.decodePng(bytes);
-                                img.Image resized = img.copyResize(image!, width: 183, height: 256);
+                                img.Image resized = img.copyResize(image!, width: 867, height: 488);
 
                                 File croppedImage = File(Uri.file('$modManLineStrikeBoardDirPath/${newImageName.text}.png').toFilePath());
                                 croppedImage.writeAsBytesSync(img.encodePng(resized));
@@ -783,7 +860,7 @@ Future<bool> customBoardImageCropDialog(context, File newImageFile) async {
                               final data = await croppedImageBitmap.toByteData(format: ImageByteFormat.png);
                               final bytes = data!.buffer.asUint8List();
                               img.Image? image = img.decodePng(bytes);
-                              img.Image resized = img.copyResize(image!, width: 183, height: 256);
+                              img.Image resized = img.copyResize(image!, width: 867, height: 488);
 
                               File croppedImage = File(Uri.file('$modManLineStrikeBoardDirPath/${newImageName.text}.png').toFilePath());
                               croppedImage.writeAsBytesSync(img.encodePng(resized));
@@ -813,41 +890,46 @@ Future<List<LineStrikeBoard>> originalBoardsFetch(context) async {
     await playerItemDataGet(context);
   }
   List<CsvItem> boardData = playerItemData.where((element) => element.csvFileName == 'Line Duel Boards.csv').toList();
-  List<LineStrikeBoard> newBoardInfoList = [];
-  for (var data in boardData) {
-    String icePath = ogVitalGaugeIcePathsFetcher(data.infos.entries.firstWhere((element) => element.key == 'Ice Hash').value.split('\\').last);
-    String iconIcePath = ogVitalGaugeIcePathsFetcher(data.infos.entries.firstWhere((element) => element.key == 'Ice Hash - Image').value.split('\\').last);
-    String iceDdsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'IcePath').value.split('/').last);
-    String iconIceDdsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'ImagePath').value.split('/').last);
-    String iconWebPath = '$modManMAIconDatabaseLink${data.iconImagePath.replaceAll('\\', '/')}';
-    newBoardInfoList.add(LineStrikeBoard(icePath, iconIcePath, iceDdsName, iconIceDdsName, iconWebPath, await getFileHash(icePath), await getFileHash(iconIcePath), '', false));
-  }
 
   //Load list from json
-  List<LineStrikeBoard> boardsData = [];
+  List<LineStrikeBoard> boardDataFromJson = [];
+  bool refetchData = false;
   if (File(modManLineStrikeBoardJsonPath).readAsStringSync().toString().isNotEmpty) {
     var jsonData = jsonDecode(File(modManLineStrikeBoardJsonPath).readAsStringSync());
     for (var type in jsonData) {
-      boardsData.add(LineStrikeBoard.fromJson(type));
-    }
-  }
-
-  //replace settings
-  for (var i = 0; i < newBoardInfoList.length; i++) {
-    for (var sleeveInJson in boardsData) {
-      if (p.basename(newBoardInfoList[i].icePath) == p.basename(sleeveInJson.icePath) && p.basename(newBoardInfoList[i].iconIcePath) == p.basename(sleeveInJson.iconIcePath)) {
-        newBoardInfoList[i].replacedImagePath = sleeveInJson.replacedImagePath;
-        newBoardInfoList[i].replacedIceMd5 = sleeveInJson.replacedIceMd5;
-        newBoardInfoList[i].replacedIconIceMd5 = sleeveInJson.replacedIconIceMd5;
-        newBoardInfoList[i].isReplaced = sleeveInJson.isReplaced;
-        break;
+      boardDataFromJson.add(LineStrikeBoard.fromJson(type));
+      if (!refetchData && (!File(boardDataFromJson.last.icePath).existsSync() || !File(boardDataFromJson.last.iconIcePath).existsSync())) {
+        refetchData = true;
       }
     }
   }
 
-  newBoardInfoList.sort(
-    (a, b) => p.basename(b.icePath).compareTo(p.basename(a.icePath)),
-  );
+  List<LineStrikeBoard> newBoardInfoList = [];
+  if (refetchData || boardData.length > boardDataFromJson.length) {
+    for (var data in boardData) {
+      String icePath = ogVitalGaugeIcePathsFetcher(data.infos.entries.firstWhere((element) => element.key == 'Ice Hash').value.split('\\').last);
+      String iconIcePath = ogVitalGaugeIcePathsFetcher(data.infos.entries.firstWhere((element) => element.key == 'Ice Hash - Image').value.split('\\').last);
+      String iceDdsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'IcePath').value.split('/').last);
+      String iconIceDdsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'ImagePath').value.split('/').last);
+      String iconWebPath = '$modManMAIconDatabaseLink${data.iconImagePath.replaceAll('\\', '/')}';
+      newBoardInfoList.add(LineStrikeBoard(icePath, iconIcePath, iceDdsName, iconIceDdsName, iconWebPath, '', '', '', false));
+      await Future.delayed(const Duration(milliseconds: 10));
+    }
+
+    //replace settings
+    for (var sleeveInJson in boardDataFromJson.where((e) => e.isReplaced)) {
+      int i = newBoardInfoList.indexWhere((e) => p.basename(e.icePath) == p.basename(sleeveInJson.icePath) && p.basename(e.iconIcePath) == p.basename(sleeveInJson.iconIcePath));
+      if (i != -1) {
+        newBoardInfoList[i].replacedImagePath = sleeveInJson.replacedImagePath;
+        newBoardInfoList[i].replacedIceMd5 = sleeveInJson.replacedIceMd5;
+        newBoardInfoList[i].replacedIconIceMd5 = sleeveInJson.replacedIconIceMd5;
+        newBoardInfoList[i].isReplaced = sleeveInJson.isReplaced;
+      }
+    }
+  } else {
+    newBoardInfoList = boardDataFromJson;
+  }
+
   saveLineStrikeBoardInfoToJson(newBoardInfoList);
 
   return newBoardInfoList;
@@ -856,11 +938,6 @@ Future<List<LineStrikeBoard>> originalBoardsFetch(context) async {
 Future<List<File>> customBoardsFetch() async {
   List<File> returnList = [];
   //remove local originals
-  if (customBoardsLoader == null) {
-    await Future.delayed(const Duration(milliseconds: 250));
-  } else {
-    await Future.delayed(const Duration(milliseconds: 150));
-  }
   returnList = Directory(modManLineStrikeBoardDirPath).listSync().whereType<File>().where((element) => p.extension(element.path) == '.png').toList();
   return returnList;
 }
@@ -869,16 +946,16 @@ Future<bool> customBoardApply(context, String imgPath, LineStrikeBoard boardData
   clearAllTempDirs();
   //prep image
   img.Image? iconTemplate;
-  img.Image? sleeveTemplate;
+  img.Image? boardTemplate;
   if (kDebugMode) {
-    iconTemplate = await img.decodePngFile('assets/img/line_strike_sleeve_icon_template.png');
-    sleeveTemplate = await img.decodePngFile('assets/img/line_strike_sleeve_template.png');
+    iconTemplate = await img.decodePngFile('assets/img/line_strike_board_icon_template.png');
+    boardTemplate = await img.decodePngFile('assets/img/line_strike_board_template.png');
   } else {
-    iconTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_sleeve_icon_template.png').toFilePath());
-    sleeveTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_sleeve_template.png').toFilePath());
+    iconTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_board_icon_template.png').toFilePath());
+    boardTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_board_template.png').toFilePath());
   }
   img.Image? replaceImage = await img.decodePngFile(imgPath);
-  img.Image resizedReplaceImage = img.copyResize(replaceImage!, width: 159, height: 224);
+  img.Image resizedReplaceIconImage = img.copyResize(replaceImage!, width: 226, height: 128);
 
   //download and replace
   //icon
@@ -892,7 +969,12 @@ Future<bool> customBoardApply(context, String imgPath, LineStrikeBoard boardData
     img.Image? iconImage = await img.decodePngFile(Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath());
     for (var templatePixel in iconTemplate!.data!) {
       if (templatePixel.a > 0) {
-        iconImage!.setPixel(templatePixel.x, templatePixel.y, resizedReplaceImage.getPixel(templatePixel.x - 49, templatePixel.y - 16));
+        try {
+          iconImage!.setPixel(templatePixel.x, templatePixel.y, resizedReplaceIconImage.getPixel(templatePixel.x - 15, templatePixel.y - 64));
+          // debugPrint(resizedReplaceIconImage.getPixel(templatePixel.x - 37, templatePixel.y - 64).toString());
+        } catch (e) {
+          break;
+        }
       }
     }
 
@@ -914,6 +996,10 @@ Future<bool> customBoardApply(context, String imgPath, LineStrikeBoard boardData
       while (i < 10) {
         try {
           File copied = renamedFile.copySync(boardDataFile.iconIcePath);
+          //cache
+          String cachePath = boardDataFile.iconIcePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath);
+          File(cachePath).parent.createSync(recursive: true);
+          renamedFile.copySync(cachePath);
           boardDataFile.replacedIconIceMd5 = await getFileHash(copied.path);
           i = 10;
         } catch (e) {
@@ -932,7 +1018,7 @@ Future<bool> customBoardApply(context, String imgPath, LineStrikeBoard boardData
     });
   }
 
-  //sleeve
+  //board
   // String downloadedIceFilePath = await downloadIconIceFromOfficial(boardDataFile.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
   // await Process.run('$modManZamboniExePath -outdir "$modManAddModsTempDirPath"', [downloadedIceFilePath]);
   String newTempIcePath = Uri.file('$modManAddModsTempDirPath/${p.basename(boardDataFile.icePath)}/group2').toFilePath();
@@ -942,14 +1028,18 @@ Future<bool> customBoardApply(context, String imgPath, LineStrikeBoard boardData
     // await Process.run(
     //     modManDdsPngToolExePath, [Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.dds').toFilePath(), Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath(), '-ddstopng']);
     // img.Image? iceImage = await img.decodePngFile(Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath());
-    for (var templatePixel in sleeveTemplate!.data!) {
+    for (var templatePixel in boardTemplate!.data!) {
       if (templatePixel.a > 0) {
-        templatePixel.set(replaceImage.getPixel(templatePixel.x, templatePixel.y));
-        // iceImage!.setPixel(templatePixel.x, templatePixel.y, replaceImage.getPixel(templatePixel.x, templatePixel.y));
+        try {
+          templatePixel.set(replaceImage.getPixel(templatePixel.x - 77, templatePixel.y - 12));
+          // iceImage!.setPixel(templatePixel.x, templatePixel.y, replaceImage.getPixel(templatePixel.x, templatePixel.y));
+        } catch (e) {
+          break;
+        }
       }
     }
 
-    await File(Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath()).writeAsBytes(img.encodePng(sleeveTemplate));
+    await File(Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath()).writeAsBytes(img.encodePng(boardTemplate));
 
     await Process.run(
         modManDdsPngToolExePath, [Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath(), Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.dds').toFilePath(), '-pngtodds']);
@@ -967,6 +1057,10 @@ Future<bool> customBoardApply(context, String imgPath, LineStrikeBoard boardData
       while (i < 10) {
         try {
           File copied = renamedFile.copySync(boardDataFile.icePath);
+          //cache
+          String cachePath = boardDataFile.icePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath);
+          File(cachePath).parent.createSync(recursive: true);
+          renamedFile.copySync(cachePath);
           boardDataFile.replacedIceMd5 = await getFileHash(copied.path);
           i = 10;
         } catch (e) {

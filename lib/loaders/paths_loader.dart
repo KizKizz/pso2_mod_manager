@@ -9,13 +9,16 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
+import 'package:pso2_mod_manager/classes/category_class.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
+import 'package:pso2_mod_manager/classes/line_strike_board_class.dart';
+import 'package:pso2_mod_manager/classes/line_strike_card_class.dart';
+import 'package:pso2_mod_manager/classes/line_strike_sleeve_class.dart';
 import 'package:pso2_mod_manager/classes/mod_set_class.dart';
 import 'package:pso2_mod_manager/classes/vital_gauge_class.dart';
 import 'package:pso2_mod_manager/cmx/cmx_functions.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
-import 'package:pso2_mod_manager/functions/applied_vital_gauge_check.dart';
 import 'package:pso2_mod_manager/functions/apply_mod_file.dart';
 import 'package:pso2_mod_manager/functions/checksum_check.dart';
 import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
@@ -30,6 +33,7 @@ import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
 import 'package:pso2_mod_manager/pages/home_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
+import 'package:pso2_mod_manager/vital_gauge/applied_vital_gauge_check.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 // ignore: depend_on_referenced_packages
@@ -71,6 +75,8 @@ String modManJsonManualSaveDir = '';
 String modManCustomAqmDir = '';
 String modManLineStrikeSleeveDirPath = '';
 String modManLineStrikeBoardDirPath = '';
+String modManLineStrikeCardDirPath = '';
+String modManLineStrikeCacheDirPath = '';
 //Json files path
 String modManModsListJsonPath = '';
 String modManModSetsJsonPath = '';
@@ -81,6 +87,7 @@ String modManAppliedModsJsonPath = '';
 String modManAqmInjectedItemListJsonPath = '';
 String modManLineStrikeSleeveJsonPath = '';
 String modManLineStrikeBoardJsonPath = '';
+String modManLineStrikeCardJsonPath = '';
 //Log file path
 String modManOpLogsFilePath = '';
 //Swapper paths
@@ -616,6 +623,68 @@ Future<String?> modManDirPathReselect(context) async {
 Future<void> jsonModManPathsRename(String oldModManDirPath) async {
   // Rename paths in jsons
   if (oldModManDirPath.isNotEmpty) {
+    // item list
+    List<File> modListJsonFiles = [
+      File(Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath()),
+      File(Uri.file('$modManDirPath/PSO2ModManModsList_profile2.json').toFilePath()),
+    ];
+    for (var file in modListJsonFiles) {
+      if (file.existsSync() && file.readAsStringSync().isNotEmpty) {
+        List<CategoryType> tempList = [];
+        var jsonData = jsonDecode(file.readAsStringSync());
+        for (var type in jsonData) {
+          tempList.add(CategoryType.fromJson(type));
+        }
+        for (var type in tempList) {
+          for (var cate in type.categories) {
+            cate.location = cate.location.replaceFirst(oldModManDirPath, modManDirPath);
+            for (var item in cate.items) {
+              item.location = item.location.replaceFirst(oldModManDirPath, modManDirPath);
+              item.backupIconPath = item.backupIconPath!.replaceFirst(oldModManDirPath, modManDirPath);
+              item.overlayedIconPath = item.overlayedIconPath!.replaceFirst(oldModManDirPath, modManDirPath);
+              for (int i = 0; i < item.icons.length; i++) {
+                item.icons[i] = item.icons[i].replaceFirst(oldModManDirPath, modManDirPath);
+              }
+              for (var mod in item.mods) {
+                mod.location = mod.location.replaceFirst(oldModManDirPath, modManDirPath);
+                for (int i = 0; i < mod.previewImages.length; i++) {
+                  mod.previewImages[i] = mod.previewImages[i].replaceFirst(oldModManDirPath, modManDirPath);
+                }
+                for (int i = 0; i < mod.previewVideos.length; i++) {
+                  mod.previewVideos[i] = mod.previewVideos[i].replaceFirst(oldModManDirPath, modManDirPath);
+                }
+                for (var sub in mod.submods) {
+                  sub.location = sub.location.replaceFirst(oldModManDirPath, modManDirPath);
+                  sub.cmxFile = sub.cmxFile!.replaceFirst(oldModManDirPath, modManDirPath);
+                  for (int i = 0; i < sub.previewImages.length; i++) {
+                    sub.previewImages[i] = sub.previewImages[i].replaceFirst(oldModManDirPath, modManDirPath);
+                  }
+                  for (int i = 0; i < sub.previewVideos.length; i++) {
+                    sub.previewVideos[i] = sub.previewVideos[i].replaceFirst(oldModManDirPath, modManDirPath);
+                  }
+                  for (var modFile in sub.modFiles) {
+                    modFile.location = modFile.location.replaceFirst(oldModManDirPath, modManDirPath);
+                    for (int i = 0; i < modFile.bkLocations.length; i++) {
+                      modFile.bkLocations[i] = modFile.bkLocations[i].replaceFirst(oldModManDirPath, modManDirPath);
+                    }
+                    for (int i = 0; i < modFile.previewImages!.length; i++) {
+                      modFile.previewImages![i] = modFile.previewImages![i].replaceFirst(oldModManDirPath, modManDirPath);
+                    }
+                    for (int i = 0; i < modFile.previewVideos!.length; i++) {
+                      modFile.previewVideos![i] = modFile.previewVideos![i].replaceFirst(oldModManDirPath, modManDirPath);
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        tempList.map((list) => list.toJson()).toList();
+        const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+        file.writeAsStringSync(encoder.convert(tempList));
+      }
+    }
+
     if (moddedItemsList.isEmpty) {
       File modManModListFile = File(modManModsListJsonPath);
       if (modManModListFile.existsSync()) {
@@ -654,6 +723,7 @@ Future<void> jsonModManPathsRename(String oldModManDirPath) async {
 
     saveModdedItemListToJson();
 
+    //mod sets
     List<File> setListJsonFiles = [
       File(Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath()),
       File(Uri.file('$modManDirPath/PSO2ModManSetsList_profile2.json').toFilePath()),
@@ -691,6 +761,7 @@ Future<void> jsonModManPathsRename(String oldModManDirPath) async {
       }
     }
 
+    //VG
     List<File> vgJsonFiles = [
       File(Uri.file('$modManDirPath/PSO2ModManVitalGaugeList.json').toFilePath()),
       File(Uri.file('$modManDirPath/PSO2ModManVitalGaugeList_profile2.json').toFilePath()),
@@ -710,6 +781,135 @@ Future<void> jsonModManPathsRename(String oldModManDirPath) async {
         }
 
         tempList.map((vg) => vg.toJson()).toList();
+        const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+        file.writeAsStringSync(encoder.convert(tempList));
+      }
+    }
+
+    //temp applied list
+    File tempAppliedListJson = File(Uri.file('$modManDirPath/PSO2ModManAppliedMods.json').toFilePath());
+    if (tempAppliedListJson.existsSync() && tempAppliedListJson.readAsStringSync().isNotEmpty) {
+      List<CategoryType> tempList = [];
+      var jsonData = jsonDecode(tempAppliedListJson.readAsStringSync());
+      for (var type in jsonData) {
+        tempList.add(CategoryType.fromJson(type));
+      }
+      for (var type in tempList) {
+        for (var cate in type.categories) {
+          cate.location = cate.location.replaceFirst(oldModManDirPath, modManDirPath);
+          for (var item in cate.items) {
+            item.location = item.location.replaceFirst(oldModManDirPath, modManDirPath);
+            item.backupIconPath = item.backupIconPath!.replaceFirst(oldModManDirPath, modManDirPath);
+            item.overlayedIconPath = item.overlayedIconPath!.replaceFirst(oldModManDirPath, modManDirPath);
+            for (int i = 0; i < item.icons.length; i++) {
+              item.icons[i] = item.icons[i].replaceFirst(oldModManDirPath, modManDirPath);
+            }
+            for (var mod in item.mods) {
+              mod.location = mod.location.replaceFirst(oldModManDirPath, modManDirPath);
+              for (int i = 0; i < mod.previewImages.length; i++) {
+                mod.previewImages[i] = mod.previewImages[i].replaceFirst(oldModManDirPath, modManDirPath);
+              }
+              for (int i = 0; i < mod.previewVideos.length; i++) {
+                mod.previewVideos[i] = mod.previewVideos[i].replaceFirst(oldModManDirPath, modManDirPath);
+              }
+              for (var sub in mod.submods) {
+                sub.location = sub.location.replaceFirst(oldModManDirPath, modManDirPath);
+                sub.cmxFile = sub.cmxFile!.replaceFirst(oldModManDirPath, modManDirPath);
+                for (int i = 0; i < sub.previewImages.length; i++) {
+                  sub.previewImages[i] = sub.previewImages[i].replaceFirst(oldModManDirPath, modManDirPath);
+                }
+                for (int i = 0; i < sub.previewVideos.length; i++) {
+                  sub.previewVideos[i] = sub.previewVideos[i].replaceFirst(oldModManDirPath, modManDirPath);
+                }
+                for (var modFile in sub.modFiles) {
+                  modFile.location = modFile.location.replaceFirst(oldModManDirPath, modManDirPath);
+                  for (int i = 0; i < modFile.bkLocations.length; i++) {
+                    modFile.bkLocations[i] = modFile.bkLocations[i].replaceFirst(oldModManDirPath, modManDirPath);
+                  }
+                  for (int i = 0; i < modFile.previewImages!.length; i++) {
+                    modFile.previewImages![i] = modFile.previewImages![i].replaceFirst(oldModManDirPath, modManDirPath);
+                  }
+                  for (int i = 0; i < modFile.previewVideos!.length; i++) {
+                    modFile.previewVideos![i] = modFile.previewVideos![i].replaceFirst(oldModManDirPath, modManDirPath);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      tempList.map((list) => list.toJson()).toList();
+      const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+      tempAppliedListJson.writeAsStringSync(encoder.convert(tempList));
+    }
+
+    //Line Strike board
+    List<File> lsBoardFiles = [
+      File(Uri.file('$modManDirPath/PSO2ModManLSBoardList.json').toFilePath()),
+      File(Uri.file('$modManDirPath/PSO2ModManLSBoardList_profile2.json').toFilePath()),
+    ];
+
+    for (var file in lsBoardFiles) {
+      if (file.existsSync() && file.readAsStringSync().isNotEmpty) {
+        List<LineStrikeBoard> tempList = [];
+        var jsonData = jsonDecode(file.readAsStringSync());
+        for (var item in jsonData) {
+          tempList.add(LineStrikeBoard.fromJson(item));
+        }
+
+        for (var board in tempList) {
+          board.replacedImagePath = board.replacedImagePath.replaceFirst(oldModManDirPath, modManDirPath);
+        }
+
+        tempList.map((item) => item.toJson()).toList();
+        const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+        file.writeAsStringSync(encoder.convert(tempList));
+      }
+    }
+
+    //Line Strike sleeve
+    List<File> lsSleeveFiles = [
+      File(Uri.file('$modManDirPath/PSO2ModManLSSleeveList.json').toFilePath()),
+      File(Uri.file('$modManDirPath/PSO2ModManLSSleeveList_profile2.json').toFilePath()),
+    ];
+
+    for (var file in lsSleeveFiles) {
+      if (file.existsSync() && file.readAsStringSync().isNotEmpty) {
+        List<LineStrikeSleeve> tempList = [];
+        var jsonData = jsonDecode(file.readAsStringSync());
+        for (var item in jsonData) {
+          tempList.add(LineStrikeSleeve.fromJson(item));
+        }
+
+        for (var sleeve in tempList) {
+          sleeve.replacedImagePath = sleeve.replacedImagePath.replaceFirst(oldModManDirPath, modManDirPath);
+        }
+
+        tempList.map((item) => item.toJson()).toList();
+        const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+        file.writeAsStringSync(encoder.convert(tempList));
+      }
+    }
+
+    //Line Strike card
+    List<File> lsCardFiles = [
+      File(Uri.file('$modManDirPath/PSO2ModManLSBoardList.json').toFilePath()),
+      File(Uri.file('$modManDirPath/PSO2ModManLSBoardList_profile2.json').toFilePath()),
+    ];
+
+    for (var file in lsCardFiles) {
+      if (file.existsSync() && file.readAsStringSync().isNotEmpty) {
+        List<LineStrikeCard> tempList = [];
+        var jsonData = jsonDecode(file.readAsStringSync());
+        for (var item in jsonData) {
+          tempList.add(LineStrikeCard.fromJson(item));
+        }
+
+        for (var card in tempList) {
+          card.replacedImagePath = card.replacedImagePath.replaceFirst(oldModManDirPath, modManDirPath);
+        }
+
+        tempList.map((item) => item.toJson()).toList();
         const JsonEncoder encoder = JsonEncoder.withIndent('  ');
         file.writeAsStringSync(encoder.convert(tempList));
       }
@@ -812,7 +1012,6 @@ Future<void> jsonPso2binPathsRename(context, String oldPso2binDirPath) async {
         }
       }
     }
-
     for (var set in modSetList) {
       for (var item in set.setItems) {
         item.iconPath = item.iconPath!.replaceFirst(oldPso2binDirPath, modManPso2binPath);
@@ -838,6 +1037,7 @@ Future<void> jsonPso2binPathsRename(context, String oldPso2binDirPath) async {
 
     saveSetListToJson();
 
+    //vg
     List<VitalGaugeBackground> vgList = [];
     File modManVGListFile = File(modManVitalGaugeJsonPath);
     if (modManVGListFile.existsSync()) {
@@ -856,6 +1056,101 @@ Future<void> jsonPso2binPathsRename(context, String oldPso2binDirPath) async {
 
     saveVitalGaugesInfoToJson(vgList);
     await appliedVitalGaugesCheck(context);
+
+    //temp applied list
+    File tempAppliedListJson = File(Uri.file('$modManDirPath/PSO2ModManAppliedMods.json').toFilePath());
+    if (tempAppliedListJson.existsSync() && tempAppliedListJson.readAsStringSync().isNotEmpty) {
+      List<CategoryType> tempList = [];
+      var jsonData = jsonDecode(tempAppliedListJson.readAsStringSync());
+      for (var type in jsonData) {
+        tempList.add(CategoryType.fromJson(type));
+      }
+      for (var type in tempList) {
+        for (var cate in type.categories) {
+          for (var item in cate.items) {
+            item.iconPath = item.iconPath!.replaceFirst(oldPso2binDirPath, modManPso2binPath);
+            for (var mod in item.mods) {
+              for (var sub in mod.submods) {
+                for (var i = 0; i < sub.applyLocations!.length; i++) {
+                  sub.applyLocations![i] = sub.applyLocations![i].replaceFirst(oldPso2binDirPath, modManPso2binPath);
+                }
+                for (var modFile in sub.modFiles) {
+                  for (var i = 0; i < modFile.ogLocations.length; i++) {
+                    modFile.ogLocations[i] = modFile.ogLocations[i].replaceFirst(oldPso2binDirPath, modManPso2binPath);
+                    // debugPrint(modFile.ogLocations[i]);
+                  }
+                  for (var i = 0; i < modFile.applyLocations!.length; i++) {
+                    modFile.applyLocations![i] = modFile.applyLocations![i].replaceFirst(oldPso2binDirPath, modManPso2binPath);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      tempList.map((list) => list.toJson()).toList();
+      const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+      tempAppliedListJson.writeAsStringSync(encoder.convert(tempList));
+    }
+
+    //Line Strike board
+    File lsBoardJson = File(modManLineStrikeBoardJsonPath);
+    if (lsBoardJson.existsSync() && lsBoardJson.readAsStringSync().isNotEmpty) {
+      List<LineStrikeBoard> tempList = [];
+      var jsonData = jsonDecode(lsBoardJson.readAsStringSync());
+      for (var item in jsonData) {
+        tempList.add(LineStrikeBoard.fromJson(item));
+      }
+
+      for (var board in tempList) {
+        board.icePath = board.icePath.replaceFirst(oldPso2binDirPath, modManPso2binPath);
+        board.iconIcePath = board.iconIcePath.replaceFirst(oldPso2binDirPath, modManPso2binPath);
+      }
+
+      tempList.map((item) => item.toJson()).toList();
+      const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+      lsBoardJson.writeAsStringSync(encoder.convert(tempList));
+    }
+
+    //Line Strike sleeve
+    File lsSleeveJson = File(modManLineStrikeSleeveJsonPath);
+    if (lsSleeveJson.existsSync() && lsSleeveJson.readAsStringSync().isNotEmpty) {
+      List<LineStrikeSleeve> tempList = [];
+      var jsonData = jsonDecode(lsSleeveJson.readAsStringSync());
+      for (var item in jsonData) {
+        tempList.add(LineStrikeSleeve.fromJson(item));
+      }
+
+      for (var sleeve in tempList) {
+        sleeve.icePath = sleeve.icePath.replaceFirst(oldPso2binDirPath, modManPso2binPath);
+        sleeve.iconIcePath = sleeve.iconIcePath.replaceFirst(oldPso2binDirPath, modManPso2binPath);
+      }
+
+      tempList.map((item) => item.toJson()).toList();
+      const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+      lsSleeveJson.writeAsStringSync(encoder.convert(tempList));
+    }
+
+    //Line Strike card
+    File lsCardJson = File(modManLineStrikeCardJsonPath);
+    if (lsCardJson.existsSync() && lsCardJson.readAsStringSync().isNotEmpty) {
+      List<LineStrikeCard> tempList = [];
+      var jsonData = jsonDecode(lsCardJson.readAsStringSync());
+      for (var item in jsonData) {
+        tempList.add(LineStrikeCard.fromJson(item));
+      }
+
+      for (var card in tempList) {
+        card.cardZeroIcePath = card.cardZeroIcePath.replaceFirst(oldPso2binDirPath, modManPso2binPath);
+        card.cardZeroIconIcePath = card.cardZeroIcePath.replaceFirst(oldPso2binDirPath, modManPso2binPath);
+        card.cardOneIcePath = card.cardOneIcePath.replaceFirst(oldPso2binDirPath, modManPso2binPath);
+        card.cardOneIconIcePath = card.cardOneIcePath.replaceFirst(oldPso2binDirPath, modManPso2binPath);
+      }
+
+      tempList.map((item) => item.toJson()).toList();
+      const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+      lsCardJson.writeAsStringSync(encoder.convert(tempList));
+    }
   }
 }
 
@@ -883,9 +1178,14 @@ Future<void> createSubDirs(context) async {
   //Create Line Strike Boards folder
   modManLineStrikeBoardDirPath = Uri.file('$modManDirPath/Line Strike/Boards').toFilePath();
   Directory(modManLineStrikeBoardDirPath).createSync(recursive: true);
-  modManVitalGaugeOriginalsDirPath =
-      modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath() : Uri.file('$modManDirPath/Vital Gauge/Originals_profile2').toFilePath();
-  Directory(modManVitalGaugeOriginalsDirPath).createSync(recursive: true);
+  //Create Line Strike Cards folder
+  modManLineStrikeCardDirPath = Uri.file('$modManDirPath/Line Strike/Cards').toFilePath();
+  Directory(modManLineStrikeCardDirPath).createSync(recursive: true);
+  modManLineStrikeCacheDirPath = Uri.file('$modManDirPath/Line Strike/CustomizedCache').toFilePath();
+  Directory(modManLineStrikeCacheDirPath).createSync(recursive: true);
+  // modManVitalGaugeOriginalsDirPath =
+  //     modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath() : Uri.file('$modManDirPath/Vital Gauge/Originals_profile2').toFilePath();
+  // Directory(modManVitalGaugeOriginalsDirPath).createSync(recursive: true);
   //Create Checksum folder
   modManChecksumDirPath = Uri.file('$modManDirPath/Checksum').toFilePath();
   Directory(modManChecksumDirPath).createSync(recursive: true);
@@ -919,6 +1219,9 @@ Future<void> createSubDirs(context) async {
   modManLineStrikeBoardJsonPath =
       modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManLSBoardList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManLSBoardList_profile2.json').toFilePath();
   File(modManLineStrikeBoardJsonPath).createSync(recursive: true);
+  modManLineStrikeCardJsonPath =
+      modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManLSCardList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManLSCardList_profile2.json').toFilePath();
+  File(modManLineStrikeCardJsonPath).createSync(recursive: true);
   //Swapper paths
   modManSwapperDirPath = Uri.file('$modManDirPath/swapper').toFilePath();
   modManSwapperFromItemDirPath = Uri.file('$modManDirPath/swapper/fromitem').toFilePath();

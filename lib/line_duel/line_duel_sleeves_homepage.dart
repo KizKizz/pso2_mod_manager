@@ -31,11 +31,12 @@ import 'package:window_manager/window_manager.dart';
 import 'package:path/path.dart' as p;
 import 'package:image/image.dart' as img;
 
-Future? sleeveDataLoader;
-Future? customSleevesLoader;
 List<bool> _loading = [];
+bool _isShowAll = true;
 
 void lineDuelSleevesHomePage(context) {
+  Future? sleeveDataLoader = originalSleevesFetch(context);
+  Future? customSleevesLoader = customSleevesFetch();
   showDialog(
       barrierDismissible: false,
       context: context,
@@ -67,7 +68,7 @@ void lineDuelSleevesHomePage(context) {
                         ),
                         Expanded(
                             child: FutureBuilder(
-                                future: customSleevesLoader = customSleevesFetch(),
+                                future: customSleevesLoader,
                                 builder: ((
                                   BuildContext context,
                                   AsyncSnapshot snapshot,
@@ -135,7 +136,7 @@ void lineDuelSleevesHomePage(context) {
                                     } else {
                                       List<File> allCustomBackgrounds = snapshot.data;
                                       return FutureBuilder(
-                                          future: sleeveDataLoader = originalSleevesFetch(context),
+                                          future: sleeveDataLoader,
                                           builder: ((
                                             BuildContext context,
                                             AsyncSnapshot snapshot,
@@ -201,7 +202,13 @@ void lineDuelSleevesHomePage(context) {
                                                   ),
                                                 );
                                               } else {
-                                                List<LineStrikeSleeve> sleeveData = snapshot.data;
+                                                List<LineStrikeSleeve> allSleeveData = snapshot.data;
+                                                List<LineStrikeSleeve> sleeveData = [];
+                                                if (_isShowAll) {
+                                                  sleeveData = allSleeveData;
+                                                } else {
+                                                  sleeveData = allSleeveData.where((e) => e.isReplaced).toList();
+                                                }
                                                 if (_loading.length != sleeveData.length) {
                                                   _loading = List.generate(sleeveData.length, (index) => false);
                                                 }
@@ -210,7 +217,7 @@ void lineDuelSleevesHomePage(context) {
                                                     Expanded(
                                                         child: Column(
                                                       children: [
-                                                        Text(curLangText!.uiCustomCardSleeves, style: Theme.of(context).textTheme.titleLarge),
+                                                        Text(curLangText!.uiCustomCardSleeveImages, style: Theme.of(context).textTheme.titleLarge),
                                                         Divider(
                                                           height: 10,
                                                           thickness: 1,
@@ -231,7 +238,8 @@ void lineDuelSleevesHomePage(context) {
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.symmetric(vertical: 5),
                                                                   child: GridView.builder(
-                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                                          crossAxisCount: 3, childAspectRatio: 183 / 256, crossAxisSpacing: 5, mainAxisSpacing: 5),
                                                                       shrinkWrap: true,
                                                                       //physics: const PageScrollPhysics(),
                                                                       itemCount: allCustomBackgrounds.length,
@@ -317,7 +325,7 @@ void lineDuelSleevesHomePage(context) {
                                                                     side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
                                                               ),
                                                               child: Text(
-                                                                curLangText!.uiVitalGaugeBackGroundsInstruction,
+                                                                curLangText!.uiLineStrikeCardSleeveImageInstruction,
                                                                 textAlign: TextAlign.center,
                                                               ),
                                                             ),
@@ -357,6 +365,7 @@ void lineDuelSleevesHomePage(context) {
                                                                       final selectedImage = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
                                                                       if (selectedImage != null && context.mounted) {
                                                                         customSleeveImageCropDialog(context, File(selectedImage.path)).then((value) {
+                                                                          customSleevesLoader = customSleevesFetch();
                                                                           setState(() {});
                                                                         });
                                                                       }
@@ -400,7 +409,7 @@ void lineDuelSleevesHomePage(context) {
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.symmetric(vertical: 5),
                                                                   child: GridView.builder(
-                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 170 / 235),
                                                                       // itemBuilder: (BuildContext context, int index) {
                                                                       //   return const SizedBox(height: 4);
                                                                       // },
@@ -412,16 +421,16 @@ void lineDuelSleevesHomePage(context) {
                                                                             return Center(
                                                                               child: sleeveData[i].isReplaced
                                                                                   ? Stack(
-                                                                                      alignment: AlignmentDirectional.bottomCenter,
+                                                                                      alignment: AlignmentDirectional.bottomEnd,
                                                                                       children: [
                                                                                         Stack(
                                                                                           alignment: AlignmentDirectional.bottomEnd,
                                                                                           children: [
                                                                                             AspectRatio(
-                                                                                              aspectRatio: 1,
+                                                                                              aspectRatio: 170 / 235,
                                                                                               child: Image.network(
                                                                                                 sleeveData[i].iconWebPath,
-                                                                                                fit: BoxFit.fill,
+                                                                                                fit: BoxFit.fitHeight,
                                                                                                 filterQuality: FilterQuality.high,
                                                                                               ),
                                                                                             ),
@@ -436,7 +445,7 @@ void lineDuelSleevesHomePage(context) {
                                                                                           ],
                                                                                         ),
                                                                                         Padding(
-                                                                                          padding: const EdgeInsets.only(left: 1, bottom: 1),
+                                                                                          padding: const EdgeInsets.all(0),
                                                                                           child: ModManTooltip(
                                                                                             message: curLangText!.uiHoldToRestoreThisBackgroundToItsOriginal,
                                                                                             child: InkWell(
@@ -467,6 +476,30 @@ void lineDuelSleevesHomePage(context) {
                                                                                                   sleeveData[i].replacedImagePath = '';
                                                                                                   sleeveData[i].isReplaced = false;
                                                                                                   saveLineStrikeSleeveInfoToJson(sleeveData);
+                                                                                                  if (File(sleeveData[i]
+                                                                                                          .icePath
+                                                                                                          .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                      .existsSync()) {
+                                                                                                    File(sleeveData[i].icePath.replaceFirst(
+                                                                                                            Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                        .deleteSync(recursive: true);
+                                                                                                  }
+                                                                                                  if (File(sleeveData[i]
+                                                                                                          .iconIcePath
+                                                                                                          .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                      .existsSync()) {
+                                                                                                    File(sleeveData[i].iconIcePath.replaceFirst(
+                                                                                                            Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                        .deleteSync(recursive: true);
+                                                                                                  }
+                                                                                                  for (var dir in Directory(modManLineStrikeCacheDirPath).listSync().whereType<Directory>()) {
+                                                                                                    for (var subDir in dir.listSync().whereType<Directory>()) {
+                                                                                                      if (subDir.listSync(recursive: true).whereType<File>().isEmpty) {
+                                                                                                        subDir.deleteSync(recursive: true);
+                                                                                                      }
+                                                                                                    }
+                                                                                                    if (dir.listSync(recursive: true).whereType<File>().isEmpty) dir.deleteSync(recursive: true);
+                                                                                                  }
                                                                                                 } catch (e) {
                                                                                                   // ignore: use_build_context_synchronously
                                                                                                   ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
@@ -486,10 +519,10 @@ void lineDuelSleevesHomePage(context) {
                                                                                   // ),
 
                                                                                   : Stack(
-                                                                                      alignment: AlignmentDirectional.bottomCenter,
+                                                                                      alignment: AlignmentDirectional.bottomStart,
                                                                                       children: [
                                                                                         AspectRatio(
-                                                                                          aspectRatio: 1,
+                                                                                          aspectRatio: 170 / 235,
                                                                                           // child: Container(
                                                                                           //   decoration: ShapeDecoration(
                                                                                           //       shape: RoundedRectangleBorder(
@@ -498,7 +531,7 @@ void lineDuelSleevesHomePage(context) {
                                                                                           child: Image.network(
                                                                                             sleeveData[i].iconWebPath,
                                                                                             filterQuality: FilterQuality.high,
-                                                                                            fit: BoxFit.fill,
+                                                                                            fit: BoxFit.fitHeight,
                                                                                           ),
                                                                                           // ),
                                                                                         ),
@@ -555,6 +588,25 @@ void lineDuelSleevesHomePage(context) {
                                                             children: [
                                                               Expanded(
                                                                 child: ElevatedButton(
+                                                                    onPressed: sleeveData.where((e) => e.isReplaced).isNotEmpty || !_isShowAll
+                                                                        ? () {
+                                                                            if (!_isShowAll) {
+                                                                              _isShowAll = true;
+                                                                            } else {
+                                                                              _isShowAll = false;
+                                                                            }
+                                                                            setState(
+                                                                              () {},
+                                                                            );
+                                                                          }
+                                                                        : null,
+                                                                    child: Text(_isShowAll ? curLangText!.uiShowSwapped : curLangText!.uiShowAll)),
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 5,
+                                                              ),
+                                                              Expanded(
+                                                                child: ElevatedButton(
                                                                     onLongPress: sleeveData.where((element) => element.isReplaced).isEmpty
                                                                         ? null
                                                                         : () async {
@@ -578,6 +630,26 @@ void lineDuelSleevesHomePage(context) {
                                                                                     sleeve.replacedImagePath = '';
                                                                                     sleeve.isReplaced = false;
                                                                                     saveLineStrikeSleeveInfoToJson(sleeveData);
+                                                                                    sleeve.icePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath);
+                                                                                    if (File(
+                                                                                            sleeve.icePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                        .existsSync()) {
+                                                                                      File(sleeve.icePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                          .deleteSync(recursive: true);
+                                                                                    }
+                                                                                    if (File(sleeve.iconIcePath
+                                                                                            .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                        .existsSync()) {
+                                                                                      File(sleeve.iconIcePath
+                                                                                              .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                          .deleteSync(recursive: true);
+                                                                                    }
+                                                                                    for (var dir in Directory(modManLineStrikeCacheDirPath).listSync().whereType<Directory>()) {
+                                                                                    for (var subDir in dir.listSync().whereType<Directory>()) {
+                                                                                      if (subDir.listSync(recursive: true).whereType<File>().isEmpty) subDir.deleteSync(recursive: true);
+                                                                                    }
+                                                                                    if (dir.listSync(recursive: true).whereType<File>().isEmpty) dir.deleteSync(recursive: true);
+                                                                                  }
                                                                                   } catch (e) {
                                                                                     // ignore: use_build_context_synchronously
                                                                                     ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
@@ -600,6 +672,24 @@ void lineDuelSleevesHomePage(context) {
                                                                                       sleeve.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
                                                                                   File(downloadedIceFilePath).copySync(sleeve.icePath);
                                                                                   File(downloadedIconIceFilePath).copySync(sleeve.icePath);
+                                                                                  if (File(sleeve.icePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                      .existsSync()) {
+                                                                                    File(sleeve.icePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                        .deleteSync(recursive: true);
+                                                                                  }
+                                                                                  if (File(sleeve.iconIcePath
+                                                                                          .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                      .existsSync()) {
+                                                                                    File(sleeve.iconIcePath
+                                                                                            .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                        .deleteSync(recursive: true);
+                                                                                  }
+                                                                                  for (var dir in Directory(modManLineStrikeCacheDirPath).listSync().whereType<Directory>()) {
+                                                                                    for (var subDir in dir.listSync().whereType<Directory>()) {
+                                                                                      if (subDir.listSync(recursive: true).whereType<File>().isEmpty) subDir.deleteSync(recursive: true);
+                                                                                    }
+                                                                                    if (dir.listSync(recursive: true).whereType<File>().isEmpty) dir.deleteSync(recursive: true);
+                                                                                  }
                                                                                   _loading[index] = false;
                                                                                   setState(() {});
                                                                                 });
@@ -802,41 +892,46 @@ Future<List<LineStrikeSleeve>> originalSleevesFetch(context) async {
     await playerItemDataGet(context);
   }
   List<CsvItem> sleeveData = playerItemData.where((element) => element.csvFileName == 'Line Duel Sleeves.csv').toList();
-  List<LineStrikeSleeve> newSleeveInfoList = [];
-  for (var data in sleeveData) {
-    String icePath = ogVitalGaugeIcePathsFetcher(data.infos.entries.firstWhere((element) => element.key == 'Ice Hash').value.split('\\').last);
-    String iconIcePath = ogVitalGaugeIcePathsFetcher(data.infos.entries.firstWhere((element) => element.key == 'Ice Hash - Image').value.split('\\').last);
-    String iceDdsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'IcePath').value.split('/').last);
-    String iconIceDdsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'ImagePath').value.split('/').last);
-    String iconWebPath = '$modManMAIconDatabaseLink${data.iconImagePath.replaceAll('\\', '/')}';
-    newSleeveInfoList.add(LineStrikeSleeve(icePath, iconIcePath, iceDdsName, iconIceDdsName, iconWebPath, await getFileHash(icePath), await getFileHash(iconIcePath), '', false));
-  }
 
   //Load list from json
-  List<LineStrikeSleeve> sleevesData = [];
+  List<LineStrikeSleeve> sleeveDataFromJson = [];
+  bool refetchData = false;
   if (File(modManLineStrikeSleeveJsonPath).readAsStringSync().toString().isNotEmpty) {
     var jsonData = jsonDecode(File(modManLineStrikeSleeveJsonPath).readAsStringSync());
     for (var type in jsonData) {
-      sleevesData.add(LineStrikeSleeve.fromJson(type));
-    }
-  }
-
-  //replace settings
-  for (var i = 0; i < newSleeveInfoList.length; i++) {
-    for (var sleeveInJson in sleevesData) {
-      if (p.basename(newSleeveInfoList[i].icePath) == p.basename(sleeveInJson.icePath) && p.basename(newSleeveInfoList[i].iconIcePath) == p.basename(sleeveInJson.iconIcePath)) {
-        newSleeveInfoList[i].replacedImagePath = sleeveInJson.replacedImagePath;
-        newSleeveInfoList[i].replacedIceMd5 = sleeveInJson.replacedIceMd5;
-        newSleeveInfoList[i].replacedIconIceMd5 = sleeveInJson.replacedIconIceMd5;
-        newSleeveInfoList[i].isReplaced = sleeveInJson.isReplaced;
-        break;
+      sleeveDataFromJson.add(LineStrikeSleeve.fromJson(type));
+      if (!refetchData && (!File(sleeveDataFromJson.last.icePath).existsSync() || !File(sleeveDataFromJson.last.iconIcePath).existsSync())) {
+        refetchData = true;
       }
     }
   }
 
-  newSleeveInfoList.sort(
-    (a, b) => p.basename(b.icePath).compareTo(p.basename(a.icePath)),
-  );
+  List<LineStrikeSleeve> newSleeveInfoList = [];
+  if (refetchData || sleeveData.length > sleeveDataFromJson.length) {
+    for (var data in sleeveData) {
+      String icePath = ogVitalGaugeIcePathsFetcher(data.infos.entries.firstWhere((element) => element.key == 'Ice Hash').value.split('\\').last);
+      String iconIcePath = ogVitalGaugeIcePathsFetcher(data.infos.entries.firstWhere((element) => element.key == 'Ice Hash - Image').value.split('\\').last);
+      String iceDdsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'IcePath').value.split('/').last);
+      String iconIceDdsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'ImagePath').value.split('/').last);
+      String iconWebPath = '$modManMAIconDatabaseLink${data.iconImagePath.replaceAll('\\', '/')}';
+      newSleeveInfoList.add(LineStrikeSleeve(icePath, iconIcePath, iceDdsName, iconIceDdsName, iconWebPath, '', '', '', false));
+      await Future.delayed(const Duration(milliseconds: 10));
+    }
+
+    //replace settings
+    for (var sleeveInJson in sleeveDataFromJson.where((e) => e.isReplaced)) {
+      int i = newSleeveInfoList.indexWhere((e) => p.basename(e.icePath) == p.basename(sleeveInJson.icePath) && p.basename(e.iconIcePath) == p.basename(sleeveInJson.iconIcePath));
+      if (i != -1) {
+        newSleeveInfoList[i].replacedImagePath = sleeveInJson.replacedImagePath;
+        newSleeveInfoList[i].replacedIceMd5 = sleeveInJson.replacedIceMd5;
+        newSleeveInfoList[i].replacedIconIceMd5 = sleeveInJson.replacedIconIceMd5;
+        newSleeveInfoList[i].isReplaced = sleeveInJson.isReplaced;
+      }
+    }
+  } else {
+    newSleeveInfoList = sleeveDataFromJson;
+  }
+
   saveLineStrikeSleeveInfoToJson(newSleeveInfoList);
 
   return newSleeveInfoList;
@@ -845,11 +940,6 @@ Future<List<LineStrikeSleeve>> originalSleevesFetch(context) async {
 Future<List<File>> customSleevesFetch() async {
   List<File> returnList = [];
   //remove local originals
-  if (customSleevesLoader == null) {
-    await Future.delayed(const Duration(milliseconds: 250));
-  } else {
-    await Future.delayed(const Duration(milliseconds: 150));
-  }
   returnList = Directory(modManLineStrikeSleeveDirPath).listSync().whereType<File>().where((element) => p.extension(element.path) == '.png').toList();
   return returnList;
 }
@@ -903,6 +993,10 @@ Future<bool> customSleeveApply(context, String imgPath, LineStrikeSleeve sleeveD
       while (i < 10) {
         try {
           File copied = renamedFile.copySync(sleeveDataFile.iconIcePath);
+          //cache
+          String cachePath = sleeveDataFile.iconIcePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath);
+          File(cachePath).parent.createSync(recursive: true);
+          renamedFile.copySync(cachePath);
           sleeveDataFile.replacedIconIceMd5 = await getFileHash(copied.path);
           i = 10;
         } catch (e) {
@@ -956,6 +1050,10 @@ Future<bool> customSleeveApply(context, String imgPath, LineStrikeSleeve sleeveD
       while (i < 10) {
         try {
           File copied = renamedFile.copySync(sleeveDataFile.icePath);
+          //cache
+          String cachePath = sleeveDataFile.icePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath);
+          File(cachePath).parent.createSync(recursive: true);
+          renamedFile.copySync(cachePath);
           sleeveDataFile.replacedIceMd5 = await getFileHash(copied.path);
           i = 10;
         } catch (e) {
@@ -975,35 +1073,3 @@ Future<bool> customSleeveApply(context, String imgPath, LineStrikeSleeve sleeveD
 
   return true;
 }
-
-// class CustomClipPath extends CustomClipper<Path> {
-//   //var radius=10.0;
-//   @override
-//   Path getClip(Size size) {
-//     Path path = Path();
-//     path.lineTo(0, 256);
-//     path.lineTo(183, 0);
-//     path.lineTo(256, 0);
-//     path.lineTo(0, 0);
-//     return path;
-//   }
-
-//   @override
-//   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-// }
-
-// class CustomClipLayerPath extends CustomClipper<Path> {
-//   //var radius=10.0;
-//   @override
-//   Path getClip(Size size) {
-//     Path path = Path();
-//     path.lineTo(0, 50);
-//     path.lineTo(50, 50);
-//     path.lineTo(50, 0);
-//     path.lineTo(50, 0);
-//     return path;
-//   }
-
-//   @override
-//   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-// }

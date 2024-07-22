@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/vital_gauge_class.dart';
-import 'package:pso2_mod_manager/functions/applied_vital_gauge_check.dart';
+import 'package:pso2_mod_manager/pages/applied_line_duel_checking_page.dart';
+import 'package:pso2_mod_manager/vital_gauge/applied_vital_gauge_check.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
-import 'package:pso2_mod_manager/pages/mod_set_loading_page.dart';
 import 'package:window_manager/window_manager.dart';
 
 class AppliedVitalGaugeCheckingPage extends StatefulWidget {
@@ -131,7 +131,7 @@ class _AppliedVitalGaugeCheckingPageState extends State<AppliedVitalGaugeCheckin
                           padding: const EdgeInsets.only(top: 10),
                           child: ElevatedButton(
                               onPressed: () {
-                                const ModSetsLoadingPage();
+                                const AppliedLineDuelCheckingPage();
                                 setState(() {});
                               },
                               child: Text(curLangText!.uiGotIt)),
@@ -141,7 +141,7 @@ class _AppliedVitalGaugeCheckingPageState extends State<AppliedVitalGaugeCheckin
                   ),
                 );
               } else {
-                return const ModSetsLoadingPage();
+                return const AppliedLineDuelCheckingPage();
               }
             }
           }

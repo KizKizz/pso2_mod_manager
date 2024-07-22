@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/line_duel/line_duel_boards_homepage.dart';
+import 'package:pso2_mod_manager/line_duel/line_duel_cards_homepage.dart';
 import 'package:pso2_mod_manager/line_duel/line_duel_sleeves_homepage.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 
-List<String> lineDuelSelections = ['Boards', 'Cards', 'Sleeves'];
+
 String? selectedType;
 
 Future<void> lineDuelSelection(context) async {
+  List<String> lineDuelSelections = [curLangText!.uiBoards, curLangText!.uiCards, curLangText!.uiCardSleeves];
   await showDialog(
       barrierDismissible: false,
       context: context,
@@ -57,7 +59,7 @@ Future<void> lineDuelSelection(context) async {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                if (curActiveLang != 'JP')
+                                // if (curActiveLang != 'JP')
                                   Container(
                                     padding: const EdgeInsets.only(bottom: 3),
                                     child: Text(
@@ -70,19 +72,19 @@ Future<void> lineDuelSelection(context) async {
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
-                                if (curActiveLang != 'EN')
-                                  Container(
-                                    padding: const EdgeInsets.only(bottom: 3),
-                                    child: Text(
-                                      defaultCategoryNames[lineDuelSelections.indexOf(item)],
-                                      style: const TextStyle(
-                                          //fontSize: 14,
-                                          //fontWeight: FontWeight.bold,
-                                          //color: Colors.white,
-                                          ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  )
+                                // if (curActiveLang != 'EN')
+                                //   Container(
+                                //     padding: const EdgeInsets.only(bottom: 3),
+                                //     child: Text(
+                                //       lineDuelSelections[lineDuelSelections.indexOf(item)],
+                                //       style: const TextStyle(
+                                //           //fontSize: 14,
+                                //           //fontWeight: FontWeight.bold,
+                                //           //color: Colors.white,
+                                //           ),
+                                //       overflow: TextOverflow.ellipsis,
+                                //     ),
+                                //   )
                               ],
                             )))
                         .toList(),
@@ -107,6 +109,8 @@ Future<void> lineDuelSelection(context) async {
                               Navigator.pop(context);
                               if (selectedType == lineDuelSelections[0]) {
                                 lineDuelBoardsHomePage(context);
+                              } else if (selectedType == lineDuelSelections[1]) {
+                                lineDuelCardsHomePage(context);
                               } else if (selectedType == lineDuelSelections[2]) {
                                 lineDuelSleevesHomePage(context);
                               }
