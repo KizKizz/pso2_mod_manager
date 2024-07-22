@@ -587,6 +587,8 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiOverwriteImage = json['uiOverwriteImage'] as String
       ..uiVitalGaugeBackGroundsInstruction =
           json['uiVitalGaugeBackGroundsInstruction'] as String
+      ..uiShowAll = json['uiShowAll'] as String
+      ..uiShowSwapped = json['uiShowSwapped'] as String
       ..uicheckingReplacedVitalGaugeBackgrounds =
           json['uicheckingReplacedVitalGaugeBackgrounds'] as String
       ..uierrorWhenCheckingReplacedVitalGaugeBackgrounds =
@@ -690,13 +692,35 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiReInjectAll = json['uiReInjectAll'] as String
       ..uiApplyingOverlayToIngameItemIcon =
           json['uiApplyingOverlayToIngameItemIcon'] as String
-      ..uiCustomCardSleeves = json['uiCustomCardSleeves'] as String
+      ..uiCheckingReplacedAqmItems =
+          json['uiCheckingReplacedAqmItems'] as String
+      ..uiErrorWhenCheckingReplacedVitalGaugeBackgrounds =
+          json['uiErrorWhenCheckingReplacedVitalGaugeBackgrounds'] as String
+      ..uiReappliedAqmToItems = json['uiReappliedAqmToItems'] as String
+      ..uiCustomCardSleeveImages = json['uiCustomCardSleeveImages'] as String
       ..uiSwappedAvailableCardSleeves =
           json['uiSwappedAvailableCardSleeves'] as String
       ..uiCreateNewCardSleeve = json['uiCreateNewCardSleeve'] as String
-      ..uiCustomBoards = json['uiCustomBoards'] as String
+      ..uiLineStrikeCardSleeveImageInstruction =
+          json['uiLineStrikeCardSleeveImageInstruction'] as String
+      ..uiCustomBoardImages = json['uiCustomBoardImages'] as String
       ..uiSwappedAvailableBoards = json['uiSwappedAvailableBoards'] as String
-      ..uiCreateNewBoard = json['uiCreateNewBoard'] as String;
+      ..uiCreateNewBoard = json['uiCreateNewBoard'] as String
+      ..uiLineStrikeBoardImageInstruction =
+          json['uiLineStrikeBoardImageInstruction'] as String
+      ..uiCustomCardImages = json['uiCustomCardImages'] as String
+      ..uiSwappedAvailableCards = json['uiSwappedAvailableCards'] as String
+      ..uiCreateNewCard = json['uiCreateNewCard'] as String
+      ..uiLineStrikeCardImageInstruction =
+          json['uiLineStrikeCardImageInstruction'] as String
+      ..uiCheckingLineStrikeItems = json['uiCheckingLineStrikeItems'] as String
+      ..uiErrorWhenCheckingLineStrikeItems =
+          json['uiErrorWhenCheckingLineStrikeItems'] as String
+      ..uiReappliedLineStrikeItems =
+          json['uiReappliedLineStrikeItems'] as String
+      ..uiBoards = json['uiBoards'] as String
+      ..uiCards = json['uiCards'] as String
+      ..uiCardSleeves = json['uiCardSleeves'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -1199,6 +1223,8 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiOverwriteImage': instance.uiOverwriteImage,
       'uiVitalGaugeBackGroundsInstruction':
           instance.uiVitalGaugeBackGroundsInstruction,
+      'uiShowAll': instance.uiShowAll,
+      'uiShowSwapped': instance.uiShowSwapped,
       'uicheckingReplacedVitalGaugeBackgrounds':
           instance.uicheckingReplacedVitalGaugeBackgrounds,
       'uierrorWhenCheckingReplacedVitalGaugeBackgrounds':
@@ -1292,10 +1318,30 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiReInjectAll': instance.uiReInjectAll,
       'uiApplyingOverlayToIngameItemIcon':
           instance.uiApplyingOverlayToIngameItemIcon,
-      'uiCustomCardSleeves': instance.uiCustomCardSleeves,
+      'uiCheckingReplacedAqmItems': instance.uiCheckingReplacedAqmItems,
+      'uiErrorWhenCheckingReplacedVitalGaugeBackgrounds':
+          instance.uiErrorWhenCheckingReplacedVitalGaugeBackgrounds,
+      'uiReappliedAqmToItems': instance.uiReappliedAqmToItems,
+      'uiCustomCardSleeveImages': instance.uiCustomCardSleeveImages,
       'uiSwappedAvailableCardSleeves': instance.uiSwappedAvailableCardSleeves,
       'uiCreateNewCardSleeve': instance.uiCreateNewCardSleeve,
-      'uiCustomBoards': instance.uiCustomBoards,
+      'uiLineStrikeCardSleeveImageInstruction':
+          instance.uiLineStrikeCardSleeveImageInstruction,
+      'uiCustomBoardImages': instance.uiCustomBoardImages,
       'uiSwappedAvailableBoards': instance.uiSwappedAvailableBoards,
       'uiCreateNewBoard': instance.uiCreateNewBoard,
+      'uiLineStrikeBoardImageInstruction':
+          instance.uiLineStrikeBoardImageInstruction,
+      'uiCustomCardImages': instance.uiCustomCardImages,
+      'uiSwappedAvailableCards': instance.uiSwappedAvailableCards,
+      'uiCreateNewCard': instance.uiCreateNewCard,
+      'uiLineStrikeCardImageInstruction':
+          instance.uiLineStrikeCardImageInstruction,
+      'uiCheckingLineStrikeItems': instance.uiCheckingLineStrikeItems,
+      'uiErrorWhenCheckingLineStrikeItems':
+          instance.uiErrorWhenCheckingLineStrikeItems,
+      'uiReappliedLineStrikeItems': instance.uiReappliedLineStrikeItems,
+      'uiBoards': instance.uiBoards,
+      'uiCards': instance.uiCards,
+      'uiCardSleeves': instance.uiCardSleeves,
     };

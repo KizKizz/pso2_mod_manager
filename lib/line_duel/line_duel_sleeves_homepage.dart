@@ -31,13 +31,12 @@ import 'package:window_manager/window_manager.dart';
 import 'package:path/path.dart' as p;
 import 'package:image/image.dart' as img;
 
-
 List<bool> _loading = [];
 bool _isShowAll = true;
 
 void lineDuelSleevesHomePage(context) {
   Future? sleeveDataLoader = originalSleevesFetch(context);
-Future? customSleevesLoader = customSleevesFetch();
+  Future? customSleevesLoader = customSleevesFetch();
   showDialog(
       barrierDismissible: false,
       context: context,
@@ -218,7 +217,7 @@ Future? customSleevesLoader = customSleevesFetch();
                                                     Expanded(
                                                         child: Column(
                                                       children: [
-                                                        Text(curLangText!.uiCustomCardSleeves, style: Theme.of(context).textTheme.titleLarge),
+                                                        Text(curLangText!.uiCustomCardSleeveImages, style: Theme.of(context).textTheme.titleLarge),
                                                         Divider(
                                                           height: 10,
                                                           thickness: 1,
@@ -239,7 +238,8 @@ Future? customSleevesLoader = customSleevesFetch();
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.symmetric(vertical: 5),
                                                                   child: GridView.builder(
-                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 183 / 256, crossAxisSpacing: 5, mainAxisSpacing: 5),
+                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                                          crossAxisCount: 3, childAspectRatio: 183 / 256, crossAxisSpacing: 5, mainAxisSpacing: 5),
                                                                       shrinkWrap: true,
                                                                       //physics: const PageScrollPhysics(),
                                                                       itemCount: allCustomBackgrounds.length,
@@ -325,7 +325,7 @@ Future? customSleevesLoader = customSleevesFetch();
                                                                     side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
                                                               ),
                                                               child: Text(
-                                                                curLangText!.uiVitalGaugeBackGroundsInstruction,
+                                                                curLangText!.uiLineStrikeCardSleeveImageInstruction,
                                                                 textAlign: TextAlign.center,
                                                               ),
                                                             ),
@@ -365,6 +365,7 @@ Future? customSleevesLoader = customSleevesFetch();
                                                                       final selectedImage = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
                                                                       if (selectedImage != null && context.mounted) {
                                                                         customSleeveImageCropDialog(context, File(selectedImage.path)).then((value) {
+                                                                          customSleevesLoader = customSleevesFetch();
                                                                           setState(() {});
                                                                         });
                                                                       }
@@ -475,6 +476,30 @@ Future? customSleevesLoader = customSleevesFetch();
                                                                                                   sleeveData[i].replacedImagePath = '';
                                                                                                   sleeveData[i].isReplaced = false;
                                                                                                   saveLineStrikeSleeveInfoToJson(sleeveData);
+                                                                                                  if (File(sleeveData[i]
+                                                                                                          .icePath
+                                                                                                          .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                      .existsSync()) {
+                                                                                                    File(sleeveData[i].icePath.replaceFirst(
+                                                                                                            Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                        .deleteSync(recursive: true);
+                                                                                                  }
+                                                                                                  if (File(sleeveData[i]
+                                                                                                          .iconIcePath
+                                                                                                          .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                      .existsSync()) {
+                                                                                                    File(sleeveData[i].iconIcePath.replaceFirst(
+                                                                                                            Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                        .deleteSync(recursive: true);
+                                                                                                  }
+                                                                                                  for (var dir in Directory(modManLineStrikeCacheDirPath).listSync().whereType<Directory>()) {
+                                                                                                    for (var subDir in dir.listSync().whereType<Directory>()) {
+                                                                                                      if (subDir.listSync(recursive: true).whereType<File>().isEmpty) {
+                                                                                                        subDir.deleteSync(recursive: true);
+                                                                                                      }
+                                                                                                    }
+                                                                                                    if (dir.listSync(recursive: true).whereType<File>().isEmpty) dir.deleteSync(recursive: true);
+                                                                                                  }
                                                                                                 } catch (e) {
                                                                                                   // ignore: use_build_context_synchronously
                                                                                                   ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
@@ -494,7 +519,7 @@ Future? customSleevesLoader = customSleevesFetch();
                                                                                   // ),
 
                                                                                   : Stack(
-                                                                                      alignment: AlignmentDirectional.bottomCenter,
+                                                                                      alignment: AlignmentDirectional.bottomStart,
                                                                                       children: [
                                                                                         AspectRatio(
                                                                                           aspectRatio: 170 / 235,
@@ -605,6 +630,26 @@ Future? customSleevesLoader = customSleevesFetch();
                                                                                     sleeve.replacedImagePath = '';
                                                                                     sleeve.isReplaced = false;
                                                                                     saveLineStrikeSleeveInfoToJson(sleeveData);
+                                                                                    sleeve.icePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath);
+                                                                                    if (File(
+                                                                                            sleeve.icePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                        .existsSync()) {
+                                                                                      File(sleeve.icePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                          .deleteSync(recursive: true);
+                                                                                    }
+                                                                                    if (File(sleeve.iconIcePath
+                                                                                            .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                        .existsSync()) {
+                                                                                      File(sleeve.iconIcePath
+                                                                                              .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                          .deleteSync(recursive: true);
+                                                                                    }
+                                                                                    for (var dir in Directory(modManLineStrikeCacheDirPath).listSync().whereType<Directory>()) {
+                                                                                    for (var subDir in dir.listSync().whereType<Directory>()) {
+                                                                                      if (subDir.listSync(recursive: true).whereType<File>().isEmpty) subDir.deleteSync(recursive: true);
+                                                                                    }
+                                                                                    if (dir.listSync(recursive: true).whereType<File>().isEmpty) dir.deleteSync(recursive: true);
+                                                                                  }
                                                                                   } catch (e) {
                                                                                     // ignore: use_build_context_synchronously
                                                                                     ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
@@ -627,6 +672,24 @@ Future? customSleevesLoader = customSleevesFetch();
                                                                                       sleeve.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
                                                                                   File(downloadedIceFilePath).copySync(sleeve.icePath);
                                                                                   File(downloadedIconIceFilePath).copySync(sleeve.icePath);
+                                                                                  if (File(sleeve.icePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                      .existsSync()) {
+                                                                                    File(sleeve.icePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                        .deleteSync(recursive: true);
+                                                                                  }
+                                                                                  if (File(sleeve.iconIcePath
+                                                                                          .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                      .existsSync()) {
+                                                                                    File(sleeve.iconIcePath
+                                                                                            .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                        .deleteSync(recursive: true);
+                                                                                  }
+                                                                                  for (var dir in Directory(modManLineStrikeCacheDirPath).listSync().whereType<Directory>()) {
+                                                                                    for (var subDir in dir.listSync().whereType<Directory>()) {
+                                                                                      if (subDir.listSync(recursive: true).whereType<File>().isEmpty) subDir.deleteSync(recursive: true);
+                                                                                    }
+                                                                                    if (dir.listSync(recursive: true).whereType<File>().isEmpty) dir.deleteSync(recursive: true);
+                                                                                  }
                                                                                   _loading[index] = false;
                                                                                   setState(() {});
                                                                                 });
@@ -869,9 +932,6 @@ Future<List<LineStrikeSleeve>> originalSleevesFetch(context) async {
     newSleeveInfoList = sleeveDataFromJson;
   }
 
-  // newSleeveInfoList.sort(
-  //   (a, b) => p.basename(b.icePath).compareTo(p.basename(a.icePath)),
-  // );
   saveLineStrikeSleeveInfoToJson(newSleeveInfoList);
 
   return newSleeveInfoList;
@@ -933,6 +993,10 @@ Future<bool> customSleeveApply(context, String imgPath, LineStrikeSleeve sleeveD
       while (i < 10) {
         try {
           File copied = renamedFile.copySync(sleeveDataFile.iconIcePath);
+          //cache
+          String cachePath = sleeveDataFile.iconIcePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath);
+          File(cachePath).parent.createSync(recursive: true);
+          renamedFile.copySync(cachePath);
           sleeveDataFile.replacedIconIceMd5 = await getFileHash(copied.path);
           i = 10;
         } catch (e) {
@@ -986,6 +1050,10 @@ Future<bool> customSleeveApply(context, String imgPath, LineStrikeSleeve sleeveD
       while (i < 10) {
         try {
           File copied = renamedFile.copySync(sleeveDataFile.icePath);
+          //cache
+          String cachePath = sleeveDataFile.icePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath);
+          File(cachePath).parent.createSync(recursive: true);
+          renamedFile.copySync(cachePath);
           sleeveDataFile.replacedIceMd5 = await getFileHash(copied.path);
           i = 10;
         } catch (e) {
@@ -1005,35 +1073,3 @@ Future<bool> customSleeveApply(context, String imgPath, LineStrikeSleeve sleeveD
 
   return true;
 }
-
-// class CustomClipPath extends CustomClipper<Path> {
-//   //var radius=10.0;
-//   @override
-//   Path getClip(Size size) {
-//     Path path = Path();
-//     path.lineTo(0, 256);
-//     path.lineTo(183, 0);
-//     path.lineTo(256, 0);
-//     path.lineTo(0, 0);
-//     return path;
-//   }
-
-//   @override
-//   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-// }
-
-// class CustomClipLayerPath extends CustomClipper<Path> {
-//   //var radius=10.0;
-//   @override
-//   Path getClip(Size size) {
-//     Path path = Path();
-//     path.lineTo(0, 50);
-//     path.lineTo(50, 50);
-//     path.lineTo(50, 0);
-//     path.lineTo(50, 0);
-//     return path;
-//   }
-
-//   @override
-//   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-// }

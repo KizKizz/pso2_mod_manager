@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:pso2_mod_manager/classes/vital_gauge_class.dart';
-import 'package:pso2_mod_manager/pages/applied_line_duel_checking_page.dart';
-import 'package:pso2_mod_manager/vital_gauge/applied_vital_gauge_check.dart';
+import 'package:pso2_mod_manager/aqmInjection/applied_aqm_check.dart';
+import 'package:pso2_mod_manager/classes/aqm_item_class.dart';
+import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
+import 'package:pso2_mod_manager/pages/mod_set_loading_page.dart';
 import 'package:window_manager/window_manager.dart';
 
-class AppliedVitalGaugeCheckingPage extends StatefulWidget {
-  const AppliedVitalGaugeCheckingPage({super.key});
+class AppliedAqmCheckingPage extends StatefulWidget {
+  const AppliedAqmCheckingPage({super.key});
 
   @override
-  State<AppliedVitalGaugeCheckingPage> createState() => _AppliedVitalGaugeCheckingPageState();
+  State<AppliedAqmCheckingPage> createState() => _AppliedAqmCheckingPageState();
 }
 
-class _AppliedVitalGaugeCheckingPageState extends State<AppliedVitalGaugeCheckingPage> {
+class _AppliedAqmCheckingPageState extends State<AppliedAqmCheckingPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: appliedVitalGaugesCheck(context),
+        future: appliedAqmItemCheck(context),
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,
@@ -28,7 +29,7 @@ class _AppliedVitalGaugeCheckingPageState extends State<AppliedVitalGaugeCheckin
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    curLangText!.uicheckingReplacedVitalGaugeBackgrounds,
+                    curLangText!.uiCheckingReplacedAqmItems,
                     style: const TextStyle(fontSize: 20),
                   ),
                   const SizedBox(
@@ -46,7 +47,7 @@ class _AppliedVitalGaugeCheckingPageState extends State<AppliedVitalGaugeCheckin
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      curLangText!.uierrorWhenCheckingReplacedVitalGaugeBackgrounds,
+                      curLangText!.uiErrorWhenCheckingReplacedVitalGaugeBackgrounds,
                       style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
                     ),
                     const SizedBox(
@@ -71,7 +72,7 @@ class _AppliedVitalGaugeCheckingPageState extends State<AppliedVitalGaugeCheckin
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      curLangText!.uicheckingReplacedVitalGaugeBackgrounds,
+                      curLangText!.uiCheckingReplacedAqmItems,
                       style: const TextStyle(fontSize: 20),
                     ),
                     const SizedBox(
@@ -83,7 +84,7 @@ class _AppliedVitalGaugeCheckingPageState extends State<AppliedVitalGaugeCheckin
               );
             } else {
               //Return
-              List<VitalGaugeBackground> result = snapshot.data;
+              List<AqmItem> result = snapshot.data;
               if (result.isNotEmpty) {
                 return SizedBox(
                   width: double.infinity,
@@ -97,7 +98,7 @@ class _AppliedVitalGaugeCheckingPageState extends State<AppliedVitalGaugeCheckin
                         Padding(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: Text(
-                            '${curLangText!.uiReappliedVitalGaugesAfterChecking}:',
+                            '${curLangText!.uiReappliedAqmToItems}:',
                             style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                           ),
                         ),
@@ -119,7 +120,7 @@ class _AppliedVitalGaugeCheckingPageState extends State<AppliedVitalGaugeCheckin
                                   itemCount: result.length,
                                   itemBuilder: (context, i) {
                                     return ListTile(
-                                      title: Center(child: Text('${result[i].iceName} > ${result[i].ddsName}')),
+                                      title: Center(child: Text(modManCurActiveItemNameLanguage == 'JP' ? result[i].itemNameJP : result[i].itemNameEN)),
                                     );
                                   }),
                             ),
@@ -131,7 +132,7 @@ class _AppliedVitalGaugeCheckingPageState extends State<AppliedVitalGaugeCheckin
                           padding: const EdgeInsets.only(top: 10),
                           child: ElevatedButton(
                               onPressed: () {
-                                const AppliedLineDuelCheckingPage();
+                                const ModSetsLoadingPage();
                                 setState(() {});
                               },
                               child: Text(curLangText!.uiGotIt)),
@@ -141,7 +142,7 @@ class _AppliedVitalGaugeCheckingPageState extends State<AppliedVitalGaugeCheckin
                   ),
                 );
               } else {
-                return const AppliedLineDuelCheckingPage();
+                return const ModSetsLoadingPage();
               }
             }
           }

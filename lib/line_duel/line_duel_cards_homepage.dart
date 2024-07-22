@@ -221,7 +221,7 @@ void lineDuelCardsHomePage(context) {
                                                     Expanded(
                                                         child: Column(
                                                       children: [
-                                                        Text(curLangText!.uiCustomCards, style: Theme.of(context).textTheme.titleLarge),
+                                                        Text(curLangText!.uiCustomCardImages, style: Theme.of(context).textTheme.titleLarge),
                                                         Divider(
                                                           height: 10,
                                                           thickness: 1,
@@ -330,7 +330,7 @@ void lineDuelCardsHomePage(context) {
                                                                     side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
                                                               ),
                                                               child: Text(
-                                                                curLangText!.uiVitalGaugeBackGroundsInstruction,
+                                                                curLangText!.uiLineStrikeCardImageInstruction,
                                                                 textAlign: TextAlign.center,
                                                               ),
                                                             ),
@@ -491,6 +491,46 @@ void lineDuelCardsHomePage(context) {
                                                                                                   cardData[i].replacedImagePath = '';
                                                                                                   cardData[i].isReplaced = false;
                                                                                                   saveLineStrikeCardInfoToJson(allCardData);
+                                                                                                  if (File(cardData[i]
+                                                                                                          .cardZeroIcePath
+                                                                                                          .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                      .existsSync()) {
+                                                                                                    File(cardData[i].cardZeroIcePath.replaceFirst(
+                                                                                                            Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                        .deleteSync(recursive: true);
+                                                                                                  }
+                                                                                                  if (File(cardData[i]
+                                                                                                          .cardZeroIconIcePath
+                                                                                                          .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                      .existsSync()) {
+                                                                                                    File(cardData[i].cardZeroIconIcePath.replaceFirst(
+                                                                                                            Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                        .deleteSync(recursive: true);
+                                                                                                  }
+                                                                                                  if (File(cardData[i]
+                                                                                                          .cardOneIcePath
+                                                                                                          .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                      .existsSync()) {
+                                                                                                    File(cardData[i].cardOneIcePath.replaceFirst(
+                                                                                                            Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                        .deleteSync(recursive: true);
+                                                                                                  }
+                                                                                                  if (File(cardData[i]
+                                                                                                          .cardOneIconIcePath
+                                                                                                          .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                      .existsSync()) {
+                                                                                                    File(cardData[i].cardOneIconIcePath.replaceFirst(
+                                                                                                            Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                        .deleteSync(recursive: true);
+                                                                                                  }
+                                                                                                  for (var dir in Directory(modManLineStrikeCacheDirPath).listSync().whereType<Directory>()) {
+                                                                                                    for (var subDir in dir.listSync().whereType<Directory>()) {
+                                                                                                      if (subDir.listSync(recursive: true).whereType<File>().isEmpty) {
+                                                                                                        subDir.deleteSync(recursive: true);
+                                                                                                      }
+                                                                                                    }
+                                                                                                    if (dir.listSync(recursive: true).whereType<File>().isEmpty) dir.deleteSync(recursive: true);
+                                                                                                  }
                                                                                                   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                                                                                     element.deleteSync(recursive: true);
                                                                                                   });
@@ -637,6 +677,48 @@ void lineDuelCardsHomePage(context) {
                                                                                   cardData[i].replacedImagePath = '';
                                                                                   cardData[i].isReplaced = false;
                                                                                   saveLineStrikeCardInfoToJson(allCardData);
+                                                                                  if (File(cardData[i]
+                                                                                          .cardZeroIcePath
+                                                                                          .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                      .existsSync()) {
+                                                                                    File(cardData[i]
+                                                                                            .cardZeroIcePath
+                                                                                            .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                        .deleteSync(recursive: true);
+                                                                                  }
+                                                                                  if (File(cardData[i]
+                                                                                          .cardZeroIconIcePath
+                                                                                          .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                      .existsSync()) {
+                                                                                    File(cardData[i]
+                                                                                            .cardZeroIconIcePath
+                                                                                            .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                        .deleteSync(recursive: true);
+                                                                                  }
+                                                                                  if (File(cardData[i]
+                                                                                          .cardOneIcePath
+                                                                                          .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                      .existsSync()) {
+                                                                                    File(cardData[i]
+                                                                                            .cardOneIcePath
+                                                                                            .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                        .deleteSync(recursive: true);
+                                                                                  }
+                                                                                  if (File(cardData[i]
+                                                                                          .cardOneIconIcePath
+                                                                                          .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                      .existsSync()) {
+                                                                                    File(cardData[i]
+                                                                                            .cardOneIconIcePath
+                                                                                            .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                        .deleteSync(recursive: true);
+                                                                                  }
+                                                                                  for (var dir in Directory(modManLineStrikeCacheDirPath).listSync().whereType<Directory>()) {
+                                                                                    for (var subDir in dir.listSync().whereType<Directory>()) {
+                                                                                      if (subDir.listSync(recursive: true).whereType<File>().isEmpty) subDir.deleteSync(recursive: true);
+                                                                                    }
+                                                                                    if (dir.listSync(recursive: true).whereType<File>().isEmpty) dir.deleteSync(recursive: true);
+                                                                                  }
                                                                                   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                                                                     element.deleteSync(recursive: true);
                                                                                   });
@@ -956,6 +1038,10 @@ Future<bool> customCardApply(context, String imgPath, LineStrikeCard cardDataFil
     while (i < 10) {
       try {
         File copied = replacedCardZeroIce.copySync(cardDataFile.cardZeroIcePath);
+        //cache
+        String cachePath = cardDataFile.cardZeroIcePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath);
+        File(cachePath).parent.createSync(recursive: true);
+        replacedCardZeroIce.copySync(cachePath);
         cardDataFile.cardZeroReplacedIceMd5 = await getFileHash(copied.path);
         i = 10;
       } catch (e) {
@@ -977,6 +1063,10 @@ Future<bool> customCardApply(context, String imgPath, LineStrikeCard cardDataFil
     while (i < 10) {
       try {
         File copied = replacedCardOneIce.copySync(cardDataFile.cardOneIcePath);
+        //cache
+        String cachePath = cardDataFile.cardOneIcePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath);
+        File(cachePath).parent.createSync(recursive: true);
+        replacedCardOneIce.copySync(cachePath);
         cardDataFile.cardOneReplacedIceMd5 = await getFileHash(copied.path);
         i = 10;
       } catch (e) {
@@ -997,6 +1087,10 @@ Future<bool> customCardApply(context, String imgPath, LineStrikeCard cardDataFil
     while (i < 10) {
       try {
         File copied = replacedCardZeroIconIce.copySync(cardDataFile.cardZeroIconIcePath);
+        //cache
+        String cachePath = cardDataFile.cardZeroIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath);
+        File(cachePath).parent.createSync(recursive: true);
+        replacedCardZeroIconIce.copySync(cachePath);
         cardDataFile.cardZeroReplacedIconIceMd5 = await getFileHash(copied.path);
         i = 10;
       } catch (e) {
@@ -1017,6 +1111,10 @@ Future<bool> customCardApply(context, String imgPath, LineStrikeCard cardDataFil
     while (i < 10) {
       try {
         File copied = replacedCardOneIconIce.copySync(cardDataFile.cardOneIconIcePath);
+        //cache
+        String cachePath = cardDataFile.cardOneIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath);
+        File(cachePath).parent.createSync(recursive: true);
+        replacedCardOneIconIce.copySync(cachePath);
         cardDataFile.cardOneReplacedIconIceMd5 = await getFileHash(copied.path);
         i = 10;
       } catch (e) {

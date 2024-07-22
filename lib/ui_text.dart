@@ -652,14 +652,39 @@ class TranslationText {
   //aqm_injection_page.dart
   String uiApplyingOverlayToIngameItemIcon = 'Applying overlay to in-game item icon';
 
+  //applied_aqm_checking_page.dart
+  String uiCheckingReplacedAqmItems = 'Checking items with custom aqm applied',
+      uiErrorWhenCheckingReplacedVitalGaugeBackgrounds = 'Error when checking for items with custom aqm',
+      uiReappliedAqmToItems = 'The items below have had their custom aqm re-applied';
+
   //line_duel_sleeves_homepage.dart
-  String uiCustomCardSleeves = 'Custom Card Sleeves', uiSwappedAvailableCardSleeves = 'Swapped - Available Card Sleeves', uiCreateNewCardSleeve = 'Create New Card Sleeve';
+  String uiCustomCardSleeveImages = 'Custom Card Sleeve Images',
+      uiSwappedAvailableCardSleeves = 'Swapped - Available Card Sleeves',
+      uiCreateNewCardSleeve = 'Create New Card Sleeve',
+      uiLineStrikeCardSleeveImageInstruction =
+          'Create a new sleeve image with the Create button bellow\nThen drag a background from "Custom Card Sleeve Images" and drop onto a desired background in "Swapped - Available Card Sleeves" to replace';
 
   //line_duel_boards_homepage.dart
-  String uiCustomBoards = 'Custom Boards', uiSwappedAvailableBoards = 'Swapped - Available Boards', uiCreateNewBoard = 'Create New Board';
+  String uiCustomBoardImages = 'Custom Board Images',
+      uiSwappedAvailableBoards = 'Swapped - Available Boards',
+      uiCreateNewBoard = 'Create New Board',
+      uiLineStrikeBoardImageInstruction =
+          'Create a new board image with the Create button bellow\nThen drag a background from "Custom Board Images" and drop onto a desired background in "Swapped - Available Boards" to replace';
 
   //line_duel_boards_homepage.dart
-  String uiCustomCards = 'Custom Cards', uiSwappedAvailableCards = 'Swapped - Available Cards', uiCreateNewCard = 'Create New Card';
+  String uiCustomCardImages = 'Custom Card Images',
+      uiSwappedAvailableCards = 'Swapped - Available Cards',
+      uiCreateNewCard = 'Create New Card',
+      uiLineStrikeCardImageInstruction =
+          'Create a new card image with the Create button bellow\nThen drag a background from "Custom Card Images" and drop onto a desired background in "Swapped - Available Cards" to replace';
+
+  //applied_line_duel_checking_page.dart
+  String uiCheckingLineStrikeItems = 'Checking Line Strike items',
+      uiErrorWhenCheckingLineStrikeItems = 'Error when checking Line Strike items',
+      uiReappliedLineStrikeItems = 'Re-applied Line Strike items';
+
+  //line_duel_selection.dart
+  String uiBoards = 'Boards', uiCards = 'Cards', uiCardSleeves = 'Card Sleeves';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);

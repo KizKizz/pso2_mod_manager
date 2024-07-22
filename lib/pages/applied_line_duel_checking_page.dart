@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:pso2_mod_manager/classes/vital_gauge_class.dart';
-import 'package:pso2_mod_manager/pages/applied_line_duel_checking_page.dart';
-import 'package:pso2_mod_manager/vital_gauge/applied_vital_gauge_check.dart';
+import 'package:pso2_mod_manager/classes/line_strike_board_class.dart';
+import 'package:pso2_mod_manager/classes/line_strike_card_class.dart';
+import 'package:pso2_mod_manager/classes/line_strike_sleeve_class.dart';
+import 'package:pso2_mod_manager/line_duel/applied_line_duel_check.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
+import 'package:pso2_mod_manager/pages/mod_set_loading_page.dart';
 import 'package:window_manager/window_manager.dart';
 
-class AppliedVitalGaugeCheckingPage extends StatefulWidget {
-  const AppliedVitalGaugeCheckingPage({super.key});
+class AppliedLineDuelCheckingPage extends StatefulWidget {
+  const AppliedLineDuelCheckingPage({super.key});
 
   @override
-  State<AppliedVitalGaugeCheckingPage> createState() => _AppliedVitalGaugeCheckingPageState();
+  State<AppliedLineDuelCheckingPage> createState() => _AppliedLineDuelCheckingPageState();
 }
 
-class _AppliedVitalGaugeCheckingPageState extends State<AppliedVitalGaugeCheckingPage> {
+class _AppliedLineDuelCheckingPageState extends State<AppliedLineDuelCheckingPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: appliedVitalGaugesCheck(context),
+        future: appliedLineDuelCheck(context),
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,
@@ -28,7 +30,7 @@ class _AppliedVitalGaugeCheckingPageState extends State<AppliedVitalGaugeCheckin
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    curLangText!.uicheckingReplacedVitalGaugeBackgrounds,
+                    curLangText!.uiCheckingLineStrikeItems,
                     style: const TextStyle(fontSize: 20),
                   ),
                   const SizedBox(
@@ -46,7 +48,7 @@ class _AppliedVitalGaugeCheckingPageState extends State<AppliedVitalGaugeCheckin
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      curLangText!.uierrorWhenCheckingReplacedVitalGaugeBackgrounds,
+                      curLangText!.uiErrorWhenCheckingLineStrikeItems,
                       style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
                     ),
                     const SizedBox(
@@ -71,7 +73,7 @@ class _AppliedVitalGaugeCheckingPageState extends State<AppliedVitalGaugeCheckin
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      curLangText!.uicheckingReplacedVitalGaugeBackgrounds,
+                      curLangText!.uiCheckingLineStrikeItems,
                       style: const TextStyle(fontSize: 20),
                     ),
                     const SizedBox(
@@ -83,8 +85,9 @@ class _AppliedVitalGaugeCheckingPageState extends State<AppliedVitalGaugeCheckin
               );
             } else {
               //Return
-              List<VitalGaugeBackground> result = snapshot.data;
-              if (result.isNotEmpty) {
+              (List<LineStrikeBoard>, List<LineStrikeCard>, List<LineStrikeSleeve>) result = snapshot.data;
+              var (replacedBoards, replacedCards, replacedSleeves) = result;
+              if (result.$1.isNotEmpty || result.$2.isNotEmpty || result.$3.isNotEmpty) {
                 return SizedBox(
                   width: double.infinity,
                   height: double.infinity,
@@ -95,35 +98,18 @@ class _AppliedVitalGaugeCheckingPageState extends State<AppliedVitalGaugeCheckin
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
+                          padding: const EdgeInsets.only(bottom: 50),
                           child: Text(
-                            '${curLangText!.uiReappliedVitalGaugesAfterChecking}:',
+                            '${curLangText!.uiReappliedLineStrikeItems}:',
                             style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                           ),
                         ),
                         Expanded(
-                          child: ScrollbarTheme(
-                            data: ScrollbarThemeData(
-                              thumbColor: WidgetStateProperty.resolveWith((states) {
-                                if (states.contains(WidgetState.hovered)) {
-                                  return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
-                                }
-                                return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
-                              }),
-                            ),
-                            child: SingleChildScrollView(
-                              child: ListView.builder(
-                                  shrinkWrap: true,
-                                  padding: const EdgeInsets.all(2),
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: result.length,
-                                  itemBuilder: (context, i) {
-                                    return ListTile(
-                                      title: Center(child: Text('${result[i].iceName} > ${result[i].ddsName}')),
-                                    );
-                                  }),
-                            ),
-                          ),
+                          child: Column(children: [
+                            Text('${curLangText!.uiCustomBoardImages}: ${replacedBoards.length},', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w400)),
+                            Text('${curLangText!.uiCustomCardImages}: ${replacedCards.length}', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w400)),
+                            Text('${curLangText!.uiCustomCardSleeveImages}: ${replacedSleeves.length}', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w400))
+                          ],)
                         ),
 
                         //button
@@ -131,7 +117,7 @@ class _AppliedVitalGaugeCheckingPageState extends State<AppliedVitalGaugeCheckin
                           padding: const EdgeInsets.only(top: 10),
                           child: ElevatedButton(
                               onPressed: () {
-                                const AppliedLineDuelCheckingPage();
+                                const ModSetsLoadingPage();
                                 setState(() {});
                               },
                               child: Text(curLangText!.uiGotIt)),
@@ -141,7 +127,7 @@ class _AppliedVitalGaugeCheckingPageState extends State<AppliedVitalGaugeCheckin
                   ),
                 );
               } else {
-                return const AppliedLineDuelCheckingPage();
+                return const ModSetsLoadingPage();
               }
             }
           }

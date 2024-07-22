@@ -1,16 +1,12 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.7.14",
+    "version": "2.8.0",
     "description": [
-        "v2.7.14:",
+        "Added Line Strike image customization support. This include boards - cards - card sleeves",
+        "Improved loading time for Vital Gauge background customization",
         "More bug fixes",
-        "その他のバグ修正",
-        "v2.7.13:",
-        "Fixed a problem where mod manager did not check for existing mod names when renaming a mod",
-        "Added a button in Settings to switch between Gameguard or Wellbia anticheat when launching the game with Mod Manager (JP version only)",
-        "More bug fixes",
-        "MODの名前を変更する際に、MODマネージャが既存のMODの名前をチェックしていなかった問題を修正",
-        "MODマネージャーでゲームを起動する際、ゲームガードとウェルビアアンチヒートを切り替えるボタンを設定に追加(JP版のみ)",
+        "ラインストライクの画像カスタマイズを追加しました。ボード、カード、カードスリーブが含まれます。",
+        "バイタルゲージの背景カスタマイズのロード時間を改善",
         "その他のバグ修正"
     ],
     "windows_file": "",

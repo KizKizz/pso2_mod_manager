@@ -27,11 +27,12 @@ import 'package:window_manager/window_manager.dart';
 import 'package:path/path.dart' as p;
 import 'package:image/image.dart' as img;
 
-Future? vitalgaugeDataLoader;
-Future? allCustomBackgroundsLoader;
 List<bool> _loading = [];
+bool _isShowAll = true;
 
 void vitalGaugeHomePage(context) {
+  Future? vitalgaugeDataLoader = originalVitalBackgroundsFetching(context);
+  Future? allCustomBackgroundsLoader = customVitalBackgroundsFetching();
   showDialog(
       barrierDismissible: false,
       context: context,
@@ -63,7 +64,7 @@ void vitalGaugeHomePage(context) {
                         ),
                         Expanded(
                             child: FutureBuilder(
-                                future: allCustomBackgroundsLoader = customVitalBackgroundsFetching(),
+                                future: allCustomBackgroundsLoader,
                                 builder: ((
                                   BuildContext context,
                                   AsyncSnapshot snapshot,
@@ -131,7 +132,7 @@ void vitalGaugeHomePage(context) {
                                     } else {
                                       List<File> allCustomBackgrounds = snapshot.data;
                                       return FutureBuilder(
-                                          future: vitalgaugeDataLoader = originalVitalBackgroundsFetching(context),
+                                          future: vitalgaugeDataLoader,
                                           builder: ((
                                             BuildContext context,
                                             AsyncSnapshot snapshot,
@@ -197,7 +198,13 @@ void vitalGaugeHomePage(context) {
                                                   ),
                                                 );
                                               } else {
-                                                List<VitalGaugeBackground> vgData = snapshot.data;
+                                                List<VitalGaugeBackground> allVgData = snapshot.data;
+                                                List<VitalGaugeBackground> vgData = [];
+                                                if (_isShowAll) {
+                                                  vgData = allVgData;
+                                                } else {
+                                                  vgData = allVgData.where((e) => e.isReplaced).toList();
+                                                }
                                                 if (_loading.length != vgData.length) {
                                                   _loading = List.generate(vgData.length, (index) => false);
                                                 }
@@ -355,6 +362,7 @@ void vitalGaugeHomePage(context) {
                                                                       final selectedImage = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
                                                                       if (selectedImage != null && context.mounted) {
                                                                         vitalGaugeImageCropDialog(context, File(selectedImage.path)).then((value) {
+                                                                          allCustomBackgroundsLoader = customVitalBackgroundsFetching();
                                                                           setState(() {});
                                                                         });
                                                                       }
@@ -552,6 +560,25 @@ void vitalGaugeHomePage(context) {
                                                           padding: const EdgeInsets.only(bottom: 5),
                                                           child: Row(
                                                             children: [
+                                                              Expanded(
+                                                                child: ElevatedButton(
+                                                                    onPressed: vgData.where((e) => e.isReplaced).isNotEmpty || !_isShowAll
+                                                                        ? () {
+                                                                            if (!_isShowAll) {
+                                                                              _isShowAll = true;
+                                                                            } else {
+                                                                              _isShowAll = false;
+                                                                            }
+                                                                            setState(
+                                                                              () {},
+                                                                            );
+                                                                          }
+                                                                        : null,
+                                                                    child: Text(_isShowAll ? curLangText!.uiShowSwapped : curLangText!.uiShowAll)),
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 5,
+                                                              ),
                                                               Expanded(
                                                                 child: ElevatedButton(
                                                                     onLongPress: vgData.where((element) => element.isReplaced).isEmpty
@@ -792,48 +819,49 @@ Future<bool> vitalGaugeImageCropDialog(context, File newImageFile) async {
 }
 
 Future<List<VitalGaugeBackground>> originalVitalBackgroundsFetching(context) async {
-  //get info from csv
-  // List<String> vgCsvInfoList = [];
-  // File vitalGaugeCsv = File(Uri.file('$modManRefSheetsDirPath/Player/Vital_Gauge.csv').toFilePath());
-  // await vitalGaugeCsv.openRead().transform(utf8.decoder).transform(const LineSplitter()).forEach((line) {
-  //   vgCsvInfoList.add(line);
-  // });
-
   //Load vg from playerItemdata
   if (playerItemData.isEmpty) {
     await playerItemDataGet(context);
   }
   List<CsvItem> vgData = playerItemData.where((element) => element.csvFileName == 'Vital Gauge.csv').toList();
-  List<VitalGaugeBackground> newVGInfoList = [];
-  for (var data in vgData) {
-    String ddsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'Path').value.split('/').last);
-    String iceName = data.infos.entries.firstWhere((element) => element.key == 'Ice Hash - Image').value.split('\\').last;
-    String icePath = ogVitalGaugeIcePathsFetcher(iceName);
-    String pngPath = '$modManMAIconDatabaseLink${data.iconImagePath.replaceAll('\\', '/')}';
-    newVGInfoList.add(VitalGaugeBackground(icePath, iceName, ddsName, pngPath, await getFileHash(icePath), '', '', '', false));
-  }
-
   //Load list from json
   List<VitalGaugeBackground> vitalGaugesData = [];
+  bool refetchData = false;
   if (File(modManVitalGaugeJsonPath).readAsStringSync().toString().isNotEmpty) {
     var jsonData = jsonDecode(File(modManVitalGaugeJsonPath).readAsStringSync());
     for (var type in jsonData) {
       vitalGaugesData.add(VitalGaugeBackground.fromJson(type));
-    }
-  }
-
-  //replace vg settings
-  for (var i = 0; i < newVGInfoList.length; i++) {
-    for (var vgInJson in vitalGaugesData) {
-      if (newVGInfoList[i].ddsName == vgInJson.ddsName && newVGInfoList[i].iceName == vgInJson.iceName) {
-        newVGInfoList[i].ogMd5 = vgInJson.ogMd5;
-        newVGInfoList[i].replacedImagePath = vgInJson.replacedImagePath;
-        newVGInfoList[i].replacedImageName = vgInJson.replacedImageName;
-        newVGInfoList[i].replacedMd5 = vgInJson.replacedMd5;
-        newVGInfoList[i].isReplaced = vgInJson.isReplaced;
-        break;
+      if (!refetchData && (!File(vitalGaugesData.last.icePath).existsSync())) {
+        refetchData = true;
       }
     }
+  }
+  List<VitalGaugeBackground> newVGInfoList = [];
+  if (refetchData || vgData.length > vitalGaugesData.length) {
+    for (var data in vgData) {
+      String ddsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'Path').value.split('/').last);
+      String iceName = data.infos.entries.firstWhere((element) => element.key == 'Ice Hash - Image').value.split('\\').last;
+      String icePath = ogVitalGaugeIcePathsFetcher(iceName);
+      String pngPath = '$modManMAIconDatabaseLink${data.iconImagePath.replaceAll('\\', '/')}';
+      newVGInfoList.add(VitalGaugeBackground(icePath, iceName, ddsName, pngPath, '', '', '', '', false));
+      await Future.delayed(const Duration(milliseconds: 10));
+    }
+
+    //replace vg settings
+    for (var i = 0; i < newVGInfoList.length; i++) {
+      for (var vgInJson in vitalGaugesData) {
+        if (newVGInfoList[i].ddsName == vgInJson.ddsName && newVGInfoList[i].iceName == vgInJson.iceName) {
+          newVGInfoList[i].ogMd5 = vgInJson.ogMd5;
+          newVGInfoList[i].replacedImagePath = vgInJson.replacedImagePath;
+          newVGInfoList[i].replacedImageName = vgInJson.replacedImageName;
+          newVGInfoList[i].replacedMd5 = vgInJson.replacedMd5;
+          newVGInfoList[i].isReplaced = vgInJson.isReplaced;
+          break;
+        }
+      }
+    }
+  } else {
+    newVGInfoList = vitalGaugesData;
   }
 
   newVGInfoList.sort(
@@ -842,83 +870,6 @@ Future<List<VitalGaugeBackground>> originalVitalBackgroundsFetching(context) asy
   saveVitalGaugesInfoToJson(newVGInfoList);
 
   return newVGInfoList;
-
-// //create objects
-//   if (vitalGaugesData.isEmpty) {
-//     Directory(modManVitalGaugeOriginalsDirPath).listSync().forEach((element) {
-//       element.deleteSync();
-//     });
-//     for (var line in vgCsvInfoList) {
-//       String ddsName = p.basenameWithoutExtension(line.split(',').first.split('/').last);
-//       String iceName = line.split(',').last.split('\\').last;
-//       String ogPath = ogVitalGaugeIcePathsFetcher(iceName);
-//       String pngPath = '';
-//       if (ogPath.isNotEmpty) {
-//         String downloadedFilePath = await downloadIconIceFromOfficial(ogPath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
-//         await Process.run('$modManZamboniExePath -outdir "$modManAddModsTempDirPath"', [downloadedFilePath]);
-//         File ddsImage = Directory('${downloadedFilePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.dds', orElse: () => File(''));
-//         if (ddsImage.path.isNotEmpty) {
-//           await Process.run(modManDdsPngToolExePath, [ddsImage.path, Uri.file('$modManVitalGaugeOriginalsDirPath/${p.basenameWithoutExtension(ddsImage.path)}.png').toFilePath(), '-ddstopng']);
-//           if (File(Uri.file('$modManVitalGaugeOriginalsDirPath/${p.basenameWithoutExtension(ddsImage.path)}.png').toFilePath()).existsSync()) {
-//             pngPath = Uri.file('$modManVitalGaugeOriginalsDirPath/${p.basenameWithoutExtension(ddsImage.path)}.png').toFilePath();
-//           }
-//         }
-//         Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-//           element.deleteSync(recursive: true);
-//         });
-
-//         vitalGaugesData.add(VitalGaugeBackground(ogPath, iceName, ddsName, pngPath, await getFileHash(ogPath), '', '', '', false));
-//       }
-//     }
-//     saveVitalGaugesInfoToJson(vitalGaugesData);
-//   } else {
-//     for (var line in vgCsvInfoList) {
-//       String ddsName = p.basenameWithoutExtension(line.split(',').first.split('/').last);
-//       String iceName = line.split(',').last.split('\\').last;
-//       String ogPath = ogVitalGaugeIcePathsFetcher(iceName);
-//       String pngPath = '';
-//       if (vitalGaugesData.where((element) => element.iceName == iceName).isEmpty && ogPath.isNotEmpty) {
-//         String downloadedFilePath = await downloadIconIceFromOfficial(ogPath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
-//         await Process.run('$modManZamboniExePath -outdir "$modManAddModsTempDirPath"', [downloadedFilePath]);
-//         File ddsImage = Directory('${downloadedFilePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.dds', orElse: () => File(''));
-//         if (ddsImage.path.isNotEmpty) {
-//           await Process.run(modManDdsPngToolExePath, [ddsImage.path, Uri.file('$modManVitalGaugeOriginalsDirPath/${p.basenameWithoutExtension(ddsImage.path)}.png').toFilePath(), '-ddstopng']);
-//           if (File(Uri.file('$modManVitalGaugeOriginalsDirPath/${p.basenameWithoutExtension(ddsImage.path)}.png').toFilePath()).existsSync()) {
-//             pngPath = Uri.file('$modManVitalGaugeOriginalsDirPath/${p.basenameWithoutExtension(ddsImage.path)}.png').toFilePath();
-//           }
-//         }
-//         vitalGaugesData.add(VitalGaugeBackground(ogPath, iceName, ddsName, pngPath, await getFileHash(ogPath), '', '', '', false));
-//         Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-//           element.deleteSync(recursive: true);
-//         });
-//       }
-//     }
-//     newVGInfoList.sort(
-//       (a, b) => a.ddsName.compareTo(b.ddsName),
-//     );
-//     saveVitalGaugesInfoToJson(newVGInfoList);
-//   }
-
-//   //check original png
-//   for (var vg in vitalGaugesData) {
-//     if (!File(vg.pngPath).existsSync()) {
-//       String ogPath = ogVitalGaugeIcePathsFetcher(vg.iceName);
-//       String downloadedFilePath = await downloadIconIceFromOfficial(ogPath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
-//       await Process.run('$modManZamboniExePath -outdir "$modManAddModsTempDirPath"', [downloadedFilePath]);
-//       File ddsImage = Directory('${downloadedFilePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.dds', orElse: () => File(''));
-//       if (ddsImage.path.isNotEmpty) {
-//         await Process.run(modManDdsPngToolExePath, [ddsImage.path, Uri.file('$modManVitalGaugeOriginalsDirPath/${p.basenameWithoutExtension(ddsImage.path)}.png').toFilePath(), '-ddstopng']);
-//         if (File(Uri.file('$modManVitalGaugeOriginalsDirPath/${p.basenameWithoutExtension(ddsImage.path)}.png').toFilePath()).existsSync()) {
-//           vg.pngPath = Uri.file('$modManVitalGaugeOriginalsDirPath/${p.basenameWithoutExtension(ddsImage.path)}.png').toFilePath();
-//         }
-//       }
-//       Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-//         element.deleteSync(recursive: true);
-//       });
-//     }
-//   }
-
-  // return vitalGaugesData;
 }
 
 Future<List<File>> customVitalBackgroundsFetching() async {
@@ -927,11 +878,7 @@ Future<List<File>> customVitalBackgroundsFetching() async {
   if (Directory(modManVitalGaugeOriginalsDirPath).existsSync()) {
     Directory(modManVitalGaugeOriginalsDirPath).deleteSync(recursive: true);
   }
-  if (allCustomBackgroundsLoader == null) {
-    await Future.delayed(const Duration(milliseconds: 250));
-  } else {
-    await Future.delayed(const Duration(milliseconds: 150));
-  }
+
   returnList = Directory(modManVitalGaugeDirPath).listSync().whereType<File>().where((element) => p.extension(element.path) == '.png').toList();
   return returnList;
 }
