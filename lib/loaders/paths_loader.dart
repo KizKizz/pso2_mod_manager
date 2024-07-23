@@ -77,6 +77,7 @@ String modManLineStrikeSleeveDirPath = '';
 String modManLineStrikeBoardDirPath = '';
 String modManLineStrikeCardDirPath = '';
 String modManLineStrikeCacheDirPath = '';
+String modManLineStrikeExportedCardDirPath = '';
 //Json files path
 String modManModsListJsonPath = '';
 String modManModSetsJsonPath = '';
@@ -1183,6 +1184,8 @@ Future<void> createSubDirs(context) async {
   Directory(modManLineStrikeCardDirPath).createSync(recursive: true);
   modManLineStrikeCacheDirPath = Uri.file('$modManDirPath/Line Strike/CustomizedCache').toFilePath();
   Directory(modManLineStrikeCacheDirPath).createSync(recursive: true);
+  modManLineStrikeExportedCardDirPath = Uri.file('$modManDirPath/Line Strike/ExportedCards').toFilePath();
+  Directory(modManLineStrikeExportedCardDirPath).createSync(recursive: true);
   // modManVitalGaugeOriginalsDirPath =
   //     modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath() : Uri.file('$modManDirPath/Vital Gauge/Originals_profile2').toFilePath();
   // Directory(modManVitalGaugeOriginalsDirPath).createSync(recursive: true);

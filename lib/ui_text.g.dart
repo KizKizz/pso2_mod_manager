@@ -711,8 +711,22 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiCustomCardImages = json['uiCustomCardImages'] as String
       ..uiSwappedAvailableCards = json['uiSwappedAvailableCards'] as String
       ..uiCreateNewCard = json['uiCreateNewCard'] as String
+      ..uiCardExport = json['uiCardExport'] as String
+      ..uiExportCustomizedCardToPng =
+          json['uiExportCustomizedCardToPng'] as String
+      ..uiOpenExportedCardFolder = json['uiOpenExportedCardFolder'] as String
       ..uiLineStrikeCardImageInstruction =
           json['uiLineStrikeCardImageInstruction'] as String
+      ..uiCardFire = json['uiCardFire'] as String
+      ..uiCardIce = json['uiCardIce'] as String
+      ..uiCardWind = json['uiCardWind'] as String
+      ..uiCardLightning = json['uiCardLightning'] as String
+      ..uiCardLight = json['uiCardLight'] as String
+      ..uiCardDark = json['uiCardDark'] as String
+      ..uiCardElementSelect = json['uiCardElementSelect'] as String
+      ..uiUnableToDetectTheElementOfThisCard =
+          json['uiUnableToDetectTheElementOfThisCard'] as String
+      ..uiCardElement = json['uiCardElement'] as String
       ..uiCheckingLineStrikeItems = json['uiCheckingLineStrikeItems'] as String
       ..uiErrorWhenCheckingLineStrikeItems =
           json['uiErrorWhenCheckingLineStrikeItems'] as String
@@ -1335,8 +1349,21 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiCustomCardImages': instance.uiCustomCardImages,
       'uiSwappedAvailableCards': instance.uiSwappedAvailableCards,
       'uiCreateNewCard': instance.uiCreateNewCard,
+      'uiCardExport': instance.uiCardExport,
+      'uiExportCustomizedCardToPng': instance.uiExportCustomizedCardToPng,
+      'uiOpenExportedCardFolder': instance.uiOpenExportedCardFolder,
       'uiLineStrikeCardImageInstruction':
           instance.uiLineStrikeCardImageInstruction,
+      'uiCardFire': instance.uiCardFire,
+      'uiCardIce': instance.uiCardIce,
+      'uiCardWind': instance.uiCardWind,
+      'uiCardLightning': instance.uiCardLightning,
+      'uiCardLight': instance.uiCardLight,
+      'uiCardDark': instance.uiCardDark,
+      'uiCardElementSelect': instance.uiCardElementSelect,
+      'uiUnableToDetectTheElementOfThisCard':
+          instance.uiUnableToDetectTheElementOfThisCard,
+      'uiCardElement': instance.uiCardElement,
       'uiCheckingLineStrikeItems': instance.uiCheckingLineStrikeItems,
       'uiErrorWhenCheckingLineStrikeItems':
           instance.uiErrorWhenCheckingLineStrikeItems,

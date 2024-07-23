@@ -6,10 +6,12 @@ import 'dart:ui';
 
 import 'package:crop_image/crop_image.dart';
 import 'package:dio/dio.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/csv_item_class.dart';
 import 'package:pso2_mod_manager/classes/line_strike_card_class.dart';
@@ -27,6 +29,7 @@ import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/widgets/snackbar.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:window_manager/window_manager.dart';
 // ignore: depend_on_referenced_packages
@@ -36,6 +39,7 @@ import 'package:image/image.dart' as img;
 List<bool> _loading = [];
 bool _isShowAll = true;
 bool _dataLoaded = false;
+int _curCardElement = -1;
 
 void lineDuelCardsHomePage(context) {
   Future customCardsLoader = customCardsFetch();
@@ -350,6 +354,17 @@ void lineDuelCardsHomePage(context) {
                                                               const SizedBox(
                                                                 width: 5,
                                                               ),
+                                                              ModManTooltip(
+                                                                message: curLangText!.uiOpenExportedCardFolder,
+                                                                child: ElevatedButton(
+                                                                    onPressed: () async {
+                                                                      await launchUrl(Uri.file(modManLineStrikeExportedCardDirPath));
+                                                                    },
+                                                                    child: const Icon(Icons.folder_open)),
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 5,
+                                                              ),
                                                               Expanded(
                                                                 child: ElevatedButton(
                                                                     onPressed: () async {
@@ -449,105 +464,128 @@ void lineDuelCardsHomePage(context) {
                                                                                             ),
                                                                                           ],
                                                                                         ),
-                                                                                        Padding(
-                                                                                          padding: const EdgeInsets.only(right: 15),
-                                                                                          child: ModManTooltip(
-                                                                                            message: curLangText!.uiHoldToRestoreThisBackgroundToItsOriginal,
-                                                                                            child: InkWell(
-                                                                                              child: Container(
-                                                                                                decoration: ShapeDecoration(
-                                                                                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.4),
-                                                                                                  shape: RoundedRectangleBorder(
-                                                                                                      side: BorderSide(color: Theme.of(context).hintColor),
-                                                                                                      borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                                                                ),
-                                                                                                child: const Icon(
-                                                                                                  Icons.restore,
-                                                                                                  color: Colors.red,
+                                                                                        Row(
+                                                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                          children: [
+                                                                                            Padding(
+                                                                                              padding: const EdgeInsets.only(right: 5),
+                                                                                              child: ModManTooltip(
+                                                                                                message: curLangText!.uiExportCustomizedCardToPng,
+                                                                                                child: InkWell(
+                                                                                                  child: Container(
+                                                                                                    decoration: ShapeDecoration(
+                                                                                                      color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.4),
+                                                                                                      shape: RoundedRectangleBorder(
+                                                                                                          side: BorderSide(color: Theme.of(context).hintColor),
+                                                                                                          borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                                                                    ),
+                                                                                                    child: const Icon(
+                                                                                                      Icons.image,
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                  onTap: () {
+                                                                                                    lineDuelCardExportPopup(context, cardData[i]);
+                                                                                                  },
                                                                                                 ),
                                                                                               ),
-                                                                                              onLongPress: () async {
-                                                                                                String downloadedCardZeroIceFilePath = await downloadIconIceFromOfficial(
-                                                                                                    cardData[i].cardZeroIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
-                                                                                                    modManAddModsTempDirPath);
-                                                                                                String downloadedCardZeroIconIceFilePath = await downloadIconIceFromOfficial(
-                                                                                                    cardData[i].cardZeroIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
-                                                                                                    modManAddModsTempDirPath);
-                                                                                                String downloadedCardOneIceFilePath = await downloadIconIceFromOfficial(
-                                                                                                    cardData[i].cardOneIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
-                                                                                                    modManAddModsTempDirPath);
-                                                                                                String downloadedCardOneIconIceFilePath = await downloadIconIceFromOfficial(
-                                                                                                    cardData[i].cardOneIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
-                                                                                                    modManAddModsTempDirPath);
-                                                                                                try {
-                                                                                                  File(downloadedCardZeroIceFilePath).copySync(cardData[i].cardZeroIcePath);
-                                                                                                  File(downloadedCardZeroIconIceFilePath).copySync(cardData[i].cardZeroIconIcePath);
-                                                                                                  File(downloadedCardOneIceFilePath).copySync(cardData[i].cardOneIcePath);
-                                                                                                  File(downloadedCardOneIconIceFilePath).copySync(cardData[i].cardOneIconIcePath);
-                                                                                                  cardData[i].cardZeroReplacedIceMd5 = '';
-                                                                                                  cardData[i].cardZeroReplacedIconIceMd5 = '';
-                                                                                                  cardData[i].cardOneReplacedIceMd5 = '';
-                                                                                                  cardData[i].cardOneReplacedIconIceMd5 = '';
-                                                                                                  cardData[i].replacedImagePath = '';
-                                                                                                  cardData[i].isReplaced = false;
-                                                                                                  saveLineStrikeCardInfoToJson(allCardData);
-                                                                                                  if (File(cardData[i]
-                                                                                                          .cardZeroIcePath
-                                                                                                          .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
-                                                                                                      .existsSync()) {
-                                                                                                    File(cardData[i].cardZeroIcePath.replaceFirst(
-                                                                                                            Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
-                                                                                                        .deleteSync(recursive: true);
-                                                                                                  }
-                                                                                                  if (File(cardData[i]
-                                                                                                          .cardZeroIconIcePath
-                                                                                                          .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
-                                                                                                      .existsSync()) {
-                                                                                                    File(cardData[i].cardZeroIconIcePath.replaceFirst(
-                                                                                                            Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
-                                                                                                        .deleteSync(recursive: true);
-                                                                                                  }
-                                                                                                  if (File(cardData[i]
-                                                                                                          .cardOneIcePath
-                                                                                                          .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
-                                                                                                      .existsSync()) {
-                                                                                                    File(cardData[i].cardOneIcePath.replaceFirst(
-                                                                                                            Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
-                                                                                                        .deleteSync(recursive: true);
-                                                                                                  }
-                                                                                                  if (File(cardData[i]
-                                                                                                          .cardOneIconIcePath
-                                                                                                          .replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
-                                                                                                      .existsSync()) {
-                                                                                                    File(cardData[i].cardOneIconIcePath.replaceFirst(
-                                                                                                            Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
-                                                                                                        .deleteSync(recursive: true);
-                                                                                                  }
-                                                                                                  for (var dir in Directory(modManLineStrikeCacheDirPath).listSync().whereType<Directory>()) {
-                                                                                                    for (var subDir in dir.listSync().whereType<Directory>()) {
-                                                                                                      if (subDir.listSync(recursive: true).whereType<File>().isEmpty) {
-                                                                                                        subDir.deleteSync(recursive: true);
-                                                                                                      }
-                                                                                                    }
-                                                                                                    if (dir.listSync(recursive: true).whereType<File>().isEmpty) dir.deleteSync(recursive: true);
-                                                                                                  }
-                                                                                                  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                                                    element.deleteSync(recursive: true);
-                                                                                                  });
-                                                                                                } catch (e) {
-                                                                                                  // ignore: use_build_context_synchronously
-                                                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                                                      // ignore: use_build_context_synchronously
-                                                                                                      context,
-                                                                                                      '${curLangText!.uiFailed}!',
-                                                                                                      e.toString(),
-                                                                                                      5000));
-                                                                                                }
-                                                                                                setState(() {});
-                                                                                              },
                                                                                             ),
-                                                                                          ),
-                                                                                        ),
+                                                                                            Padding(
+                                                                                              padding: const EdgeInsets.only(right: 15),
+                                                                                              child: ModManTooltip(
+                                                                                                message: curLangText!.uiHoldToRestoreThisBackgroundToItsOriginal,
+                                                                                                child: InkWell(
+                                                                                                  child: Container(
+                                                                                                    decoration: ShapeDecoration(
+                                                                                                      color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.4),
+                                                                                                      shape: RoundedRectangleBorder(
+                                                                                                          side: BorderSide(color: Theme.of(context).hintColor),
+                                                                                                          borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                                                                    ),
+                                                                                                    child: const Icon(
+                                                                                                      Icons.restore,
+                                                                                                      color: Colors.red,
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                  onLongPress: () async {
+                                                                                                    String downloadedCardZeroIceFilePath = await downloadIconIceFromOfficial(
+                                                                                                        cardData[i].cardZeroIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
+                                                                                                        modManAddModsTempDirPath);
+                                                                                                    String downloadedCardZeroIconIceFilePath = await downloadIconIceFromOfficial(
+                                                                                                        cardData[i].cardZeroIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
+                                                                                                        modManAddModsTempDirPath);
+                                                                                                    String downloadedCardOneIceFilePath = await downloadIconIceFromOfficial(
+                                                                                                        cardData[i].cardOneIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
+                                                                                                        modManAddModsTempDirPath);
+                                                                                                    String downloadedCardOneIconIceFilePath = await downloadIconIceFromOfficial(
+                                                                                                        cardData[i].cardOneIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
+                                                                                                        modManAddModsTempDirPath);
+                                                                                                    try {
+                                                                                                      File(downloadedCardZeroIceFilePath).copySync(cardData[i].cardZeroIcePath);
+                                                                                                      File(downloadedCardZeroIconIceFilePath).copySync(cardData[i].cardZeroIconIcePath);
+                                                                                                      File(downloadedCardOneIceFilePath).copySync(cardData[i].cardOneIcePath);
+                                                                                                      File(downloadedCardOneIconIceFilePath).copySync(cardData[i].cardOneIconIcePath);
+                                                                                                      cardData[i].cardZeroReplacedIceMd5 = '';
+                                                                                                      cardData[i].cardZeroReplacedIconIceMd5 = '';
+                                                                                                      cardData[i].cardOneReplacedIceMd5 = '';
+                                                                                                      cardData[i].cardOneReplacedIconIceMd5 = '';
+                                                                                                      cardData[i].replacedImagePath = '';
+                                                                                                      cardData[i].isReplaced = false;
+                                                                                                      saveLineStrikeCardInfoToJson(allCardData);
+                                                                                                      if (File(cardData[i].cardZeroIcePath.replaceFirst(
+                                                                                                              Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                          .existsSync()) {
+                                                                                                        File(cardData[i].cardZeroIcePath.replaceFirst(
+                                                                                                                Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                            .deleteSync(recursive: true);
+                                                                                                      }
+                                                                                                      if (File(cardData[i].cardZeroIconIcePath.replaceFirst(
+                                                                                                              Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                          .existsSync()) {
+                                                                                                        File(cardData[i].cardZeroIconIcePath.replaceFirst(
+                                                                                                                Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                            .deleteSync(recursive: true);
+                                                                                                      }
+                                                                                                      if (File(cardData[i].cardOneIcePath.replaceFirst(
+                                                                                                              Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                          .existsSync()) {
+                                                                                                        File(cardData[i].cardOneIcePath.replaceFirst(
+                                                                                                                Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                            .deleteSync(recursive: true);
+                                                                                                      }
+                                                                                                      if (File(cardData[i].cardOneIconIcePath.replaceFirst(
+                                                                                                              Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                          .existsSync()) {
+                                                                                                        File(cardData[i].cardOneIconIcePath.replaceFirst(
+                                                                                                                Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath))
+                                                                                                            .deleteSync(recursive: true);
+                                                                                                      }
+                                                                                                      for (var dir in Directory(modManLineStrikeCacheDirPath).listSync().whereType<Directory>()) {
+                                                                                                        for (var subDir in dir.listSync().whereType<Directory>()) {
+                                                                                                          if (subDir.listSync(recursive: true).whereType<File>().isEmpty) {
+                                                                                                            subDir.deleteSync(recursive: true);
+                                                                                                          }
+                                                                                                        }
+                                                                                                        if (dir.listSync(recursive: true).whereType<File>().isEmpty) dir.deleteSync(recursive: true);
+                                                                                                      }
+                                                                                                      Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                                                                        element.deleteSync(recursive: true);
+                                                                                                      });
+                                                                                                    } catch (e) {
+                                                                                                      // ignore: use_build_context_synchronously
+                                                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                                                          // ignore: use_build_context_synchronously
+                                                                                                          context,
+                                                                                                          '${curLangText!.uiFailed}!',
+                                                                                                          e.toString(),
+                                                                                                          5000));
+                                                                                                    }
+                                                                                                    setState(() {});
+                                                                                                  },
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ],
+                                                                                        )
                                                                                       ],
                                                                                     )
                                                                                   : Stack(
@@ -593,9 +631,6 @@ void lineDuelCardsHomePage(context) {
                                                                                       cardData[i].replacedImagePath = imgPath;
                                                                                       cardData[i].isReplaced = true;
                                                                                       saveLineStrikeCardInfoToJson(allCardData);
-                                                                                      // Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                                      //   element.deleteSync(recursive: true);
-                                                                                      // });
                                                                                       _loading[i] = false;
                                                                                       setState(
                                                                                         () {},
@@ -606,6 +641,9 @@ void lineDuelCardsHomePage(context) {
                                                                                         () {},
                                                                                       );
                                                                                     }
+                                                                                    Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                                                      element.deleteSync(recursive: true);
+                                                                                    });
                                                                                   });
                                                                                 },
                                                                               );
@@ -1031,7 +1069,7 @@ Future<bool> customCardApply(context, String imgPath, LineStrikeCard cardDataFil
 
   //download and replace
   //card zero replacement
-  File? replacedCardZeroIce = await cardArtReplace(replaceImage, cardDataFile.cardZeroIcePath, cardDataFile.cardZeroDdsName, cardDataFile.cardZeroIconWebPath);
+  File? replacedCardZeroIce = await cardArtReplace(context, replaceImage, cardDataFile.cardZeroIcePath, cardDataFile.cardZeroDdsName, cardDataFile.cardZeroIconWebPath);
 
   if (replacedCardZeroIce != null && replacedCardZeroIce.existsSync()) {
     int i = 0;
@@ -1055,9 +1093,11 @@ Future<bool> customCardApply(context, String imgPath, LineStrikeCard cardDataFil
     }
   }
 
-  //card one replacement
-  File? replacedCardOneIce = await cardArtReplace(replaceImage, cardDataFile.cardOneIcePath, cardDataFile.cardOneDdsName, cardDataFile.cardOneIconWebPath);
+  if (replacedCardZeroIce == null) return false;
 
+  //card one replacement
+  File? replacedCardOneIce = await cardArtReplace(context, replaceImage, cardDataFile.cardOneIcePath, cardDataFile.cardOneDdsName, cardDataFile.cardOneIconWebPath);
+  _curCardElement = -1;
   if (replacedCardOneIce != null && replacedCardOneIce.existsSync()) {
     int i = 0;
     while (i < 10) {
@@ -1079,6 +1119,8 @@ Future<bool> customCardApply(context, String imgPath, LineStrikeCard cardDataFil
       return false;
     }
   }
+
+  if (replacedCardOneIce == null) return false;
 
   //icon zero replacement
   File? replacedCardZeroIconIce = await cardIconArtReplace(resizedIconImage, cardDataFile.cardZeroIconIcePath, cardDataFile.cardZeroIconDdsName, cardDataFile.cardZeroSquareIconWebPath);
@@ -1128,14 +1170,10 @@ Future<bool> customCardApply(context, String imgPath, LineStrikeCard cardDataFil
     }
   }
 
-  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-    element.deleteSync(recursive: true);
-  });
-
   return true;
 }
 
-Future<File?> cardArtReplace(img.Image? replaceImage, String icePath, String ddsName, String iconWebPath) async {
+Future<File?> cardArtReplace(context, img.Image? replaceImage, String icePath, String ddsName, String iconWebPath) async {
   //card zero
   String newTempIcePath = Uri.file('$modManAddModsTempDirPath/${p.basename(icePath)}/group2').toFilePath();
   Directory(newTempIcePath).createSync(recursive: true);
@@ -1221,6 +1259,56 @@ Future<File?> cardArtReplace(img.Image? replaceImage, String icePath, String dds
         } else {
           frameTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_card_dark_frame0_template.png').toFilePath());
         }
+      } else {
+        if (_curCardElement == -1) {
+          _curCardElement = await lineDuelCardElementSelection(context);
+        }
+        if (_curCardElement == 0) {
+          //dark
+          if (kDebugMode) {
+            frameTemplate = await img.decodePngFile('assets/img/line_strike_card_dark_frame0_template.png');
+          } else {
+            frameTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_card_dark_frame0_template.png').toFilePath());
+          }
+        } else if (_curCardElement == 1) {
+          //fire
+          if (kDebugMode) {
+            frameTemplate = await img.decodePngFile('assets/img/line_strike_card_fire_frame0_template.png');
+          } else {
+            frameTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_card_fire_frame0_template.png').toFilePath());
+          }
+        } else if (_curCardElement == 2) {
+          //ice
+          if (kDebugMode) {
+            frameTemplate = await img.decodePngFile('assets/img/line_strike_card_ice_frame0_template.png');
+          } else {
+            frameTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_card_ice_frame0_template.png').toFilePath());
+          }
+        } else if (_curCardElement == 3) {
+          //light
+          if (kDebugMode) {
+            frameTemplate = await img.decodePngFile('assets/img/line_strike_card_light_frame0_template.png');
+          } else {
+            frameTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_card_light_frame0_template.png').toFilePath());
+          }
+        } else if (_curCardElement == 4) {
+          //lightning
+          if (kDebugMode) {
+            frameTemplate = await img.decodePngFile('assets/img/line_strike_card_lightning_frame0_template.png');
+          } else {
+            frameTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_card_lightning_frame0_template.png').toFilePath());
+          }
+        } else if (_curCardElement == 5) {
+          //wind
+          if (kDebugMode) {
+            frameTemplate = await img.decodePngFile('assets/img/line_strike_card_wind_frame0_template.png');
+          } else {
+            frameTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_card_wind_frame0_template.png').toFilePath());
+          }
+        } else {
+          _curCardElement = -1;
+          return null;
+        }
       }
       // else {
       //   for (var pixel in ogCard.data!) {
@@ -1270,6 +1358,8 @@ Future<File?> cardArtReplace(img.Image? replaceImage, String icePath, String dds
     File renamedFile = await File(Uri.file('$modManAddModsTempDirPath/${p.basename(icePath)}.ice').toFilePath()).rename(Uri.file('$modManAddModsTempDirPath/${p.basename(icePath)}').toFilePath());
     return renamedFile;
   }
+
+  _curCardElement = -1;
   return null;
 }
 
@@ -1319,4 +1409,203 @@ Future<File?> cardIconArtReplace(img.Image? resizedIconImage, String iconIcePath
     }
   }
   return null;
+}
+
+Future<File?> cardExport(LineStrikeCard card) async {
+  Directory(modManAddModsTempDirPath).createSync(recursive: true);
+  File cachedIce = File(card.cardZeroIcePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManLineStrikeCacheDirPath));
+  if (cachedIce.existsSync()) {
+    final copiedIce = await cachedIce.copy(cachedIce.path.replaceFirst(cachedIce.parent.path, modManAddModsTempDirPath));
+    await Process.run('$modManZamboniExePath -outdir "$modManAddModsTempDirPath"', [copiedIce.path]);
+    File ddsFile = File(Uri.file('$modManAddModsTempDirPath/${p.basename(copiedIce.path)}_ext/group2/${card.cardZeroDdsName}.dds').toFilePath());
+    if (ddsFile.existsSync()) {
+      await Process.run(modManDdsPngToolExePath, [ddsFile.path, ddsFile.path.replaceFirst(p.extension(ddsFile.path), '.png'), '-ddstopng']);
+      img.Image? pngFile = await img.decodePngFile(ddsFile.path.replaceFirst(p.extension(ddsFile.path), '.png'));
+
+      img.Image croppedImage = img.copyCrop(
+        pngFile!,
+        x: 1,
+        y: 0,
+        width: 367,
+        height: 512,
+      );
+      DateTime now = DateTime.now();
+      String formattedDate = DateFormat('MM-dd-yyyy-kk-mm-ss').format(now);
+      File exportedFile = await File(Uri.file('$modManLineStrikeExportedCardDirPath/${card.cardZeroDdsName}_$formattedDate.png').toFilePath()).writeAsBytes(img.encodePng(croppedImage));
+      if (exportedFile.existsSync()) return exportedFile;
+    }
+  }
+  return null;
+}
+
+Future<void> lineDuelCardExportPopup(context, LineStrikeCard card) async {
+  File? exportedImage;
+  bool exported = false;
+  await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+                title: Text(curLangText!.uiCardExport, style: const TextStyle(fontWeight: FontWeight.w700)),
+                contentPadding: const EdgeInsets.only(left: 10, right: 10),
+                content: SizedBox(
+                    width: 300,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (exported && exportedImage == null) const CircularProgressIndicator(),
+                        if (exported)
+                          Text(
+                            exported && exportedImage == null
+                                ? curLangText!.uiFailed
+                                : exported && exportedImage != null && exportedImage!.existsSync()
+                                    ? curLangText!.uiSuccess
+                                    : '',
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                        if (exported) const SizedBox(height: 10),
+                        if (!exported && exportedImage == null) Text(card.cardZeroDdsName),
+                        if (exported && exportedImage != null && exportedImage!.existsSync()) Text(p.basename(exportedImage!.path)),
+                      ],
+                    )),
+                actionsPadding: const EdgeInsets.only(top: 20, bottom: 10, left: 10, right: 10),
+                actions: <Widget>[
+                  ElevatedButton(
+                      child: Text(curLangText!.uiReturn),
+                      onPressed: () {
+                        exported = false;
+                        Navigator.pop(context);
+                      }),
+                  if (exported && exportedImage!.existsSync())
+                    ElevatedButton(
+                        onPressed: () async {
+                          await launchUrl(Uri.file(modManLineStrikeExportedCardDirPath));
+                        },
+                        child: Text(curLangText!.uiOpenInFileExplorer)),
+                  if (!exported || exportedImage == null)
+                    ElevatedButton(
+                        onPressed: () async {
+                          exported = true;
+                          exportedImage = await cardExport(card);
+                          Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                            element.deleteSync(recursive: true);
+                          });
+                          setState(
+                            () {},
+                          );
+                        },
+                        child: Text(curLangText!.uiExport)),
+                ]);
+          }));
+}
+
+Future<int> lineDuelCardElementSelection(context) async {
+  String? selectedType;
+  int selectedIndex = -1;
+  List<String> cardElements = [curLangText!.uiCardDark, curLangText!.uiCardFire, curLangText!.uiCardIce, curLangText!.uiCardLight, curLangText!.uiCardLightning, curLangText!.uiCardWind];
+  return await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+                title: Text(curLangText!.uiCardElementSelect, style: const TextStyle(fontWeight: FontWeight.w700)),
+                contentPadding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                content: SizedBox(
+                    width: 300,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Text(curLangText!.uiUnableToDetectTheElementOfThisCard),
+                        ),
+                        DropdownButtonHideUnderline(
+                            child: DropdownButton2(
+                          hint: Padding(
+                            padding: const EdgeInsets.only(left: 5),
+                            child: Text(curLangText!.uiCardElement),
+                          ),
+                          buttonStyleData: ButtonStyleData(
+                            width: 200,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 1,
+                                color: Theme.of(context).hintColor,
+                              ),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                          dropdownStyleData: DropdownStyleData(
+                            maxHeight: windowsHeight * 0.5,
+                            elevation: 3,
+                            padding: const EdgeInsets.symmetric(vertical: 2),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(3),
+                              color: Theme.of(context).cardColor,
+                            ),
+                          ),
+                          iconStyleData: const IconStyleData(iconSize: 15),
+                          menuItemStyleData: const MenuItemStyleData(
+                            height: 25,
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                          ),
+                          isDense: true,
+                          items: cardElements
+                              .map((item) => DropdownMenuItem<String>(
+                                  value: item,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      // if (curActiveLang != 'JP')
+                                      Container(
+                                        padding: const EdgeInsets.only(bottom: 3),
+                                        child: Text(
+                                          item,
+                                          style: const TextStyle(
+                                              //fontSize: 14,
+                                              //fontWeight: FontWeight.bold,
+                                              //color: Colors.white,
+                                              ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  )))
+                              .toList(),
+                          value: selectedType,
+                          onChanged: (value) async {
+                            selectedType = value.toString();
+                            if (selectedType != null) {
+                              selectedIndex = cardElements.indexOf(selectedType!);
+                            }
+                            setState(() {});
+                          },
+                        )),
+                      ],
+                    )),
+                actionsPadding: const EdgeInsets.all(10),
+                actions: <Widget>[
+                  ElevatedButton(
+                      child: Text(curLangText!.uiReturn),
+                      onPressed: () {
+                        Navigator.pop(context, -1);
+                      }),
+                  ElevatedButton(
+                      onPressed: selectedType == null
+                          ? null
+                          : () {
+                              Navigator.pop(context, selectedIndex);
+                            },
+                      child: Text(curLangText!.uiNext))
+                ]);
+          }));
 }
