@@ -6,6 +6,7 @@ import 'package:crop_image/crop_image.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/csv_item_class.dart';
 import 'package:pso2_mod_manager/classes/vital_gauge_class.dart';
@@ -674,7 +675,9 @@ Future<bool> vitalGaugeImageCropDialog(context, File newImageFile) async {
     //minimumImageSize: 100,
     //defaultCrop: const Rect.fromLTRB(0.1, 0.1, 0.9, 0.9),
   );
-  TextEditingController newImageName = TextEditingController(text: p.basenameWithoutExtension(newImageFile.path));
+  DateTime now = DateTime.now();
+  String formattedDate = DateFormat('MM-dd-yyyy-kk-mm-ss').format(now);
+  TextEditingController newImageName = TextEditingController(text: '${p.basenameWithoutExtension(newImageFile.path)}_$formattedDate');
   final nameFormKey = GlobalKey<FormState>();
   return await showDialog(
       barrierDismissible: false,

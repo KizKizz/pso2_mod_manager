@@ -9,6 +9,7 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/csv_item_class.dart';
 import 'package:pso2_mod_manager/classes/line_strike_sleeve_class.dart';
@@ -645,11 +646,11 @@ void lineDuelSleevesHomePage(context) {
                                                                                           .deleteSync(recursive: true);
                                                                                     }
                                                                                     for (var dir in Directory(modManLineStrikeCacheDirPath).listSync().whereType<Directory>()) {
-                                                                                    for (var subDir in dir.listSync().whereType<Directory>()) {
-                                                                                      if (subDir.listSync(recursive: true).whereType<File>().isEmpty) subDir.deleteSync(recursive: true);
+                                                                                      for (var subDir in dir.listSync().whereType<Directory>()) {
+                                                                                        if (subDir.listSync(recursive: true).whereType<File>().isEmpty) subDir.deleteSync(recursive: true);
+                                                                                      }
+                                                                                      if (dir.listSync(recursive: true).whereType<File>().isEmpty) dir.deleteSync(recursive: true);
                                                                                     }
-                                                                                    if (dir.listSync(recursive: true).whereType<File>().isEmpty) dir.deleteSync(recursive: true);
-                                                                                  }
                                                                                   } catch (e) {
                                                                                     // ignore: use_build_context_synchronously
                                                                                     ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
@@ -742,7 +743,9 @@ Future<bool> customSleeveImageCropDialog(context, File newImageFile) async {
     //minimumImageSize: 100,
     // defaultCrop: const Rect.fromLTRB(0.1, 0.1, 0.9, 0.9),
   );
-  TextEditingController newImageName = TextEditingController(text: p.basenameWithoutExtension(newImageFile.path));
+  DateTime now = DateTime.now();
+  String formattedDate = DateFormat('MM-dd-yyyy-kk-mm-ss').format(now);
+  TextEditingController newImageName = TextEditingController(text: '${p.basenameWithoutExtension(newImageFile.path)}_$formattedDate');
   final nameFormKey = GlobalKey<FormState>();
   return await showDialog(
       barrierDismissible: false,
