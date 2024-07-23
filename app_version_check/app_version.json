@@ -1,7 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.8.1",
+    "version": "2.8.2",
     "description": [
+        "Improved Line Strike Card customization loading time",
         "Added a button to export customized Line Strike Cards to png images",
         "Added manual element selection when Mod Manager unable to detect Line Strike Card elements",
         "More bug fixes",
