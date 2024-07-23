@@ -20,9 +20,9 @@ Future<void> lineDuelSelection(context) async {
             return AlertDialog(
                 shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
                 backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+                titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
                 title: Text(curLangText!.uiSelectACategory, style: const TextStyle(fontWeight: FontWeight.w700)),
-                contentPadding: const EdgeInsets.only(left: 16, right: 16),
+                contentPadding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
                 content: SizedBox(
                   width: 200,
                   child: DropdownButtonHideUnderline(
@@ -96,6 +96,7 @@ Future<void> lineDuelSelection(context) async {
                     },
                   )),
                 ),
+                actionsPadding: const EdgeInsets.all(10),
                 actions: <Widget>[
                   ElevatedButton(
                       child: Text(curLangText!.uiReturn),
