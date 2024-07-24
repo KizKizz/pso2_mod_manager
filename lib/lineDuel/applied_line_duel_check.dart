@@ -5,9 +5,9 @@ import 'package:pso2_mod_manager/classes/line_strike_board_class.dart';
 import 'package:pso2_mod_manager/classes/line_strike_card_class.dart';
 import 'package:pso2_mod_manager/classes/line_strike_sleeve_class.dart';
 import 'package:pso2_mod_manager/functions/hash_generator.dart';
-import 'package:pso2_mod_manager/line_duel/line_duel_boards_homepage.dart';
-import 'package:pso2_mod_manager/line_duel/line_duel_cards_homepage.dart';
-import 'package:pso2_mod_manager/line_duel/line_duel_sleeves_homepage.dart';
+import 'package:pso2_mod_manager/lineDuel/line_duel_boards_homepage.dart';
+import 'package:pso2_mod_manager/lineDuel/line_duel_cards_homepage.dart';
+import 'package:pso2_mod_manager/lineDuel/line_duel_sleeves_homepage.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 
 Future<(List<LineStrikeBoard>, List<LineStrikeCard>, List<LineStrikeSleeve>)> appliedLineDuelCheck(context) async {

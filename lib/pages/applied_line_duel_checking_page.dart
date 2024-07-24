@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/line_strike_board_class.dart';
 import 'package:pso2_mod_manager/classes/line_strike_card_class.dart';
 import 'package:pso2_mod_manager/classes/line_strike_sleeve_class.dart';
-import 'package:pso2_mod_manager/line_duel/applied_line_duel_check.dart';
+import 'package:pso2_mod_manager/lineDuel/applied_line_duel_check.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/pages/mod_set_loading_page.dart';
 import 'package:window_manager/window_manager.dart';
