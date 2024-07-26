@@ -18,6 +18,8 @@ import 'package:pso2_mod_manager/boundary/mods_boundary_edit.dart';
 import 'package:pso2_mod_manager/boundary/mods_boundary_functions.dart';
 import 'package:pso2_mod_manager/classes/category_class.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
+import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
+import 'package:pso2_mod_manager/classes/csv_item_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
@@ -29,6 +31,7 @@ import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/apply_all_available_mods.dart';
 import 'package:pso2_mod_manager/functions/apply_mods_functions.dart';
 import 'package:pso2_mod_manager/functions/cate_mover.dart';
+import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/functions/delete_from_mm.dart';
 import 'package:pso2_mod_manager/functions/fav_list.dart';
 import 'package:pso2_mod_manager/functions/icon_overlay.dart';
@@ -52,9 +55,15 @@ import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
+import 'package:pso2_mod_manager/modsAdder/mods_adder_add_function.dart';
+import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_acc_swappage.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_data_loader.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_swappage.dart';
 import 'package:pso2_mod_manager/pages/main_page.dart';
+import 'package:pso2_mod_manager/quickSwapApply/quick_swap_apply_homepage.dart';
+import 'package:pso2_mod_manager/quickSwapApply/quick_swap_apply_popup.dart';
 import 'package:pso2_mod_manager/sharing/mods_export.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/ui_translation_helper.dart';
@@ -103,10 +112,11 @@ class _HomePageState extends State<HomePage> {
   List<CategoryType> searchedItemList = [];
   TextEditingController newSetTextController = TextEditingController();
   String selectedModSetName = '';
-  final int applyButtonsDelay = 250;
+  final int applyButtonsDelay = 10;
   final int unapplyButtonsDelay = 0;
   double modviewPanelWidth = 0;
   List<FocusNode> expansionListFNodes = [];
+  bool _previewDismiss = false;
 
   @override
   void initState() {
@@ -119,8 +129,9 @@ class _HomePageState extends State<HomePage> {
       Provider.of<StateProvider>(context, listen: false).startupLoadingFinishSet(true);
       //quick button state
       if (File(modManAppliedModsJsonPath).existsSync()) Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('apply');
+      //quick apply items
+      quickApplyItemList = await quickSwapApplyItemListGet();
     });
-
     super.initState();
   }
 
@@ -413,6 +424,14 @@ class _HomePageState extends State<HomePage> {
                           child: const Icon(
                             Icons.more_vert,
                           ),
+                          onHover: (value) {
+                            if (value) {
+                              _previewDismiss = true;
+                            } else {
+                              _previewDismiss = false;
+                            }
+                            setState(() {});
+                          },
                           onTap: () {
                             if (controller.isOpen) {
                               controller.close();
@@ -2505,7 +2524,7 @@ class _HomePageState extends State<HomePage> {
                                   dismissTriggerBehavior: PopupDismissTriggerBehavior.anyWhere,
                                   popupClickTriggerBehavior: PopupClickTriggerBehavior.none,
                                   arrowTheme: const InfoPopupArrowTheme(arrowSize: Size.zero),
-                                  customContent: () => !hoveringOnSubmod && !hoveringOnModFile && previewWindowVisible && !showPreviewPanel && previewImages.isNotEmpty
+                                  customContent: () => !hoveringOnSubmod && !hoveringOnModFile && previewWindowVisible && !showPreviewPanel && previewImages.isNotEmpty && !_previewDismiss
                                       ? ConstrainedBox(
                                           constraints: BoxConstraints(
                                               minWidth: appWindow.size.width / 5, minHeight: appWindow.size.height / 5, maxWidth: appWindow.size.width / 3, maxHeight: appWindow.size.height / 3),
@@ -2676,6 +2695,14 @@ class _HomePageState extends State<HomePage> {
                                                       child: const Icon(
                                                         Icons.more_vert,
                                                       ),
+                                                      onHover: (value) {
+                                                        if (value) {
+                                                          _previewDismiss = true;
+                                                        } else {
+                                                          _previewDismiss = false;
+                                                        }
+                                                        setState(() {});
+                                                      },
                                                       onTap: () {
                                                         if (controller.isOpen) {
                                                           controller.close();
@@ -2891,7 +2918,7 @@ class _HomePageState extends State<HomePage> {
                                               child: Wrap(
                                                 crossAxisAlignment: WrapCrossAlignment.center,
                                                 runAlignment: WrapAlignment.center,
-                                                spacing: 5,
+                                                spacing: 0,
                                                 children: [
                                                   //Add-Remove button
                                                   if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus == true) != -1)
@@ -3006,6 +3033,50 @@ class _HomePageState extends State<HomePage> {
                                                       ],
                                                     ),
 
+                                                  //quick apply
+                                                  Visibility(
+                                                    visible: !isModViewModsApplying && !defaultCategoryDirsToIgnoreQuickSwapApply.contains(modViewItem!.category),
+                                                    child: MenuAnchor(
+                                                        builder: (BuildContext context, MenuController controller, Widget? child) {
+                                                          return ModManTooltip(
+                                                            message: curLangText!.uiSwapThisModToSelectedItemInList,
+                                                            child: InkWell(
+                                                              child: const Stack(
+                                                                alignment: Alignment.bottomRight,
+                                                                children: [
+                                                                  Icon(Icons.arrow_drop_down),
+                                                                ],
+                                                              ),
+                                                              onHover: (value) {
+                                                                if (value) {
+                                                                  _previewDismiss = true;
+                                                                } else {
+                                                                  _previewDismiss = false;
+                                                                }
+                                                                setState(() {});
+                                                              },
+                                                              onTap: () {
+                                                                if (controller.isOpen) {
+                                                                  controller.close();
+                                                                } else {
+                                                                  controller.open();
+                                                                }
+                                                              },
+                                                            ),
+                                                          );
+                                                        },
+                                                        onClose: () {
+                                                          expansionListFNodes[modIndex].unfocus();
+                                                        },
+                                                        style: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
+                                                          return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                        }), shape: WidgetStateProperty.resolveWith((states) {
+                                                          return RoundedRectangleBorder(
+                                                              side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                        })),
+                                                        menuChildren: quickApplyMenuButtons(context, curMod.submods.first)),
+                                                  ),
+
                                                   //More menu
                                                   MenuAnchor(
                                                       builder: (BuildContext context, MenuController controller, Widget? child) {
@@ -3015,6 +3086,14 @@ class _HomePageState extends State<HomePage> {
                                                             child: const Icon(
                                                               Icons.more_vert,
                                                             ),
+                                                            onHover: (value) {
+                                                              if (value) {
+                                                                _previewDismiss = true;
+                                                              } else {
+                                                                _previewDismiss = false;
+                                                              }
+                                                              setState(() {});
+                                                            },
                                                             onTap: () {
                                                               if (controller.isOpen) {
                                                                 controller.close();
@@ -3427,7 +3506,7 @@ class _HomePageState extends State<HomePage> {
                                               child: Wrap(
                                                 crossAxisAlignment: WrapCrossAlignment.center,
                                                 runAlignment: WrapAlignment.center,
-                                                spacing: 5,
+                                                spacing: 0,
                                                 children: [
                                                   //cmx indicator
                                                   if (curMod.submods[modViewModSetSubModIndex].hasCmx!)
@@ -3564,6 +3643,47 @@ class _HomePageState extends State<HomePage> {
                                                       ],
                                                     ),
 
+                                                  //quick apply
+                                                  Visibility(
+                                                    visible: !isModViewModsApplying && !defaultCategoryDirsToIgnoreQuickSwapApply.contains(modViewItem!.category),
+                                                    child: MenuAnchor(
+                                                        builder: (BuildContext context, MenuController controller, Widget? child) {
+                                                          return ModManTooltip(
+                                                            message: curLangText!.uiSwapThisModToSelectedItemInList,
+                                                            child: InkWell(
+                                                              child: const Icon(
+                                                                Icons.arrow_drop_down,
+                                                              ),
+                                                              onHover: (value) {
+                                                                if (value) {
+                                                                  _previewDismiss = true;
+                                                                } else {
+                                                                  _previewDismiss = false;
+                                                                }
+                                                                setState(() {});
+                                                              },
+                                                              onTap: () {
+                                                                if (controller.isOpen) {
+                                                                  controller.close();
+                                                                } else {
+                                                                  controller.open();
+                                                                }
+                                                              },
+                                                            ),
+                                                          );
+                                                        },
+                                                        onClose: () {
+                                                          expansionListFNodes[modIndex].unfocus();
+                                                        },
+                                                        style: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
+                                                          return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                        }), shape: WidgetStateProperty.resolveWith((states) {
+                                                          return RoundedRectangleBorder(
+                                                              side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                        })),
+                                                        menuChildren: quickApplyMenuButtons(context, curMod.submods[modViewModSetSubModIndex])),
+                                                  ),
+
                                                   //More menu
                                                   MenuAnchor(
                                                       builder: (BuildContext context, MenuController controller, Widget? child) {
@@ -3573,6 +3693,14 @@ class _HomePageState extends State<HomePage> {
                                                             child: const Icon(
                                                               Icons.more_vert,
                                                             ),
+                                                            onHover: (value) {
+                                                              if (value) {
+                                                                _previewDismiss = true;
+                                                              } else {
+                                                                _previewDismiss = false;
+                                                              }
+                                                              setState(() {});
+                                                            },
                                                             onTap: () {
                                                               if (controller.isOpen) {
                                                                 controller.close();
@@ -4056,44 +4184,45 @@ class _HomePageState extends State<HomePage> {
                                                     dismissTriggerBehavior: PopupDismissTriggerBehavior.anyWhere,
                                                     popupClickTriggerBehavior: PopupClickTriggerBehavior.none,
                                                     arrowTheme: const InfoPopupArrowTheme(arrowSize: Size.zero),
-                                                    customContent: () => hoveringOnSubmod && !hoveringOnModFile && previewWindowVisible && !showPreviewPanel && previewImages.isNotEmpty
-                                                        ? ConstrainedBox(
-                                                            constraints: BoxConstraints(
-                                                                minWidth: appWindow.size.width / 5,
-                                                                minHeight: appWindow.size.height / 5,
-                                                                maxWidth: appWindow.size.width / 3,
-                                                                maxHeight: appWindow.size.height / 3),
-                                                            child: Container(
-                                                              decoration: BoxDecoration(
-                                                                  color: Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8),
-                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                  borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                              child: FlutterCarousel(
-                                                                options: CarouselOptions(
-                                                                    autoPlay: previewImages.length > 1,
-                                                                    autoPlayInterval: previewImages.length > 1 &&
-                                                                            previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewImages.length
-                                                                        ? const Duration(seconds: 5)
-                                                                        : previewImages.length > 1 &&
-                                                                                previewImages.where((element) => element.toString() == ('PreviewImageStack')).length == previewImages.length
-                                                                            ? const Duration(seconds: 1)
-                                                                            : const Duration(seconds: 2),
-                                                                    disableCenter: true,
-                                                                    viewportFraction: 1.0,
-                                                                    height: double.infinity,
-                                                                    floatingIndicator: false,
-                                                                    enableInfiniteScroll: true,
-                                                                    indicatorMargin: 4,
-                                                                    slideIndicator: CircularWaveSlideIndicator(
-                                                                        itemSpacing: 10,
-                                                                        indicatorRadius: 4,
-                                                                        currentIndicatorColor: Theme.of(context).colorScheme.primary,
-                                                                        indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3))),
-                                                                items: previewImages,
-                                                              ),
-                                                            ),
-                                                          )
-                                                        : null,
+                                                    customContent: () =>
+                                                        hoveringOnSubmod && !hoveringOnModFile && previewWindowVisible && !showPreviewPanel && previewImages.isNotEmpty && !_previewDismiss
+                                                            ? ConstrainedBox(
+                                                                constraints: BoxConstraints(
+                                                                    minWidth: appWindow.size.width / 5,
+                                                                    minHeight: appWindow.size.height / 5,
+                                                                    maxWidth: appWindow.size.width / 3,
+                                                                    maxHeight: appWindow.size.height / 3),
+                                                                child: Container(
+                                                                  decoration: BoxDecoration(
+                                                                      color: Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8),
+                                                                      border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                      borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                                  child: FlutterCarousel(
+                                                                    options: CarouselOptions(
+                                                                        autoPlay: previewImages.length > 1,
+                                                                        autoPlayInterval: previewImages.length > 1 &&
+                                                                                previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewImages.length
+                                                                            ? const Duration(seconds: 5)
+                                                                            : previewImages.length > 1 &&
+                                                                                    previewImages.where((element) => element.toString() == ('PreviewImageStack')).length == previewImages.length
+                                                                                ? const Duration(seconds: 1)
+                                                                                : const Duration(seconds: 2),
+                                                                        disableCenter: true,
+                                                                        viewportFraction: 1.0,
+                                                                        height: double.infinity,
+                                                                        floatingIndicator: false,
+                                                                        enableInfiniteScroll: true,
+                                                                        indicatorMargin: 4,
+                                                                        slideIndicator: CircularWaveSlideIndicator(
+                                                                            itemSpacing: 10,
+                                                                            indicatorRadius: 4,
+                                                                            currentIndicatorColor: Theme.of(context).colorScheme.primary,
+                                                                            indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3))),
+                                                                    items: previewImages,
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            : null,
                                                     child: ExpansionTile(
                                                       backgroundColor: Colors.transparent,
                                                       textColor: Theme.of(context).textTheme.bodyMedium!.color,
@@ -4117,7 +4246,7 @@ class _HomePageState extends State<HomePage> {
                                                             child: Wrap(
                                                               crossAxisAlignment: WrapCrossAlignment.center,
                                                               runAlignment: WrapAlignment.center,
-                                                              spacing: 5,
+                                                              spacing: 0,
                                                               children: [
                                                                 //cmx indicator
                                                                 if (curSubmod.hasCmx!)
@@ -4225,8 +4354,6 @@ class _HomePageState extends State<HomePage> {
                                                                               Future.delayed(Duration(milliseconds: applyButtonsDelay), () async {
                                                                                 //apply mod files
                                                                                 if (await originalFilesCheck(context, curSubmod.modFiles)) {
-                                                                                  //local original files backup
-                                                                                  //await localOriginalFilesBackup(curSubmod.modFiles);
                                                                                   //apply auto radius removal if on
                                                                                   if (removeBoundaryRadiusOnModsApply) await removeBoundaryOnModsApply(context, curSubmod);
                                                                                   if (autoAqmInject) await aqmInjectionOnModsApply(context, curSubmod);
@@ -4250,6 +4377,47 @@ class _HomePageState extends State<HomePage> {
                                                                     ],
                                                                   ),
 
+                                                                // quick apply
+                                                                Visibility(
+                                                                  visible: !isModViewModsApplying && !defaultCategoryDirsToIgnoreQuickSwapApply.contains(modViewItem!.category),
+                                                                  child: MenuAnchor(
+                                                                      builder: (BuildContext context, MenuController controller, Widget? child) {
+                                                                        return ModManTooltip(
+                                                                          message: curLangText!.uiSwapThisModToSelectedItemInList,
+                                                                          child: InkWell(
+                                                                            child: const Icon(
+                                                                              Icons.arrow_drop_down,
+                                                                            ),
+                                                                            onHover: (value) {
+                                                                              if (value) {
+                                                                                _previewDismiss = true;
+                                                                              } else {
+                                                                                _previewDismiss = false;
+                                                                              }
+                                                                              setState(() {});
+                                                                            },
+                                                                            onTap: () {
+                                                                              if (controller.isOpen) {
+                                                                                controller.close();
+                                                                              } else {
+                                                                                controller.open();
+                                                                              }
+                                                                            },
+                                                                          ),
+                                                                        );
+                                                                      },
+                                                                      onClose: () {
+                                                                        expansionListFNodes[modIndex].unfocus();
+                                                                      },
+                                                                      style: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
+                                                                        return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                                      }), shape: WidgetStateProperty.resolveWith((states) {
+                                                                        return RoundedRectangleBorder(
+                                                                            side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                                      })),
+                                                                      menuChildren: quickApplyMenuButtons(context, curSubmod)),
+                                                                ),
+
                                                                 //More menu
                                                                 MenuAnchor(
                                                                     builder: (BuildContext context, MenuController controller, Widget? child) {
@@ -4259,6 +4427,14 @@ class _HomePageState extends State<HomePage> {
                                                                           child: const Icon(
                                                                             Icons.more_vert,
                                                                           ),
+                                                                          onHover: (value) {
+                                                                            if (value) {
+                                                                              _previewDismiss = true;
+                                                                            } else {
+                                                                              _previewDismiss = false;
+                                                                            }
+                                                                            setState(() {});
+                                                                          },
                                                                           onTap: () {
                                                                             if (controller.isOpen) {
                                                                               controller.close();
@@ -4707,46 +4883,47 @@ class _HomePageState extends State<HomePage> {
                                                                         dismissTriggerBehavior: PopupDismissTriggerBehavior.anyWhere,
                                                                         popupClickTriggerBehavior: PopupClickTriggerBehavior.none,
                                                                         arrowTheme: const InfoPopupArrowTheme(arrowSize: Size.zero),
-                                                                        customContent: () => previewWindowVisible && hoveringOnModFile && !showPreviewPanel && previewImages.isNotEmpty
-                                                                            ? ConstrainedBox(
-                                                                                constraints: BoxConstraints(
-                                                                                    minWidth: appWindow.size.width / 5,
-                                                                                    minHeight: appWindow.size.height / 5,
-                                                                                    maxWidth: appWindow.size.width / 3,
-                                                                                    maxHeight: appWindow.size.height / 3),
-                                                                                child: Container(
-                                                                                  decoration: BoxDecoration(
-                                                                                      color: Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8),
-                                                                                      border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                                      borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                                                  child: FlutterCarousel(
-                                                                                    options: CarouselOptions(
-                                                                                        autoPlay: previewImages.length > 1,
-                                                                                        autoPlayInterval: previewImages.length > 1 &&
-                                                                                                previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length ==
-                                                                                                    previewImages.length
-                                                                                            ? const Duration(seconds: 5)
-                                                                                            : previewImages.length > 1 &&
-                                                                                                    previewImages.where((element) => element.toString() == ('PreviewImageStack')).length ==
+                                                                        customContent: () =>
+                                                                            previewWindowVisible && hoveringOnModFile && !showPreviewPanel && previewImages.isNotEmpty && !_previewDismiss
+                                                                                ? ConstrainedBox(
+                                                                                    constraints: BoxConstraints(
+                                                                                        minWidth: appWindow.size.width / 5,
+                                                                                        minHeight: appWindow.size.height / 5,
+                                                                                        maxWidth: appWindow.size.width / 3,
+                                                                                        maxHeight: appWindow.size.height / 3),
+                                                                                    child: Container(
+                                                                                      decoration: BoxDecoration(
+                                                                                          color: Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8),
+                                                                                          border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                          borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                                                      child: FlutterCarousel(
+                                                                                        options: CarouselOptions(
+                                                                                            autoPlay: previewImages.length > 1,
+                                                                                            autoPlayInterval: previewImages.length > 1 &&
+                                                                                                    previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length ==
                                                                                                         previewImages.length
-                                                                                                ? const Duration(seconds: 1)
-                                                                                                : const Duration(seconds: 2),
-                                                                                        disableCenter: true,
-                                                                                        viewportFraction: 1.0,
-                                                                                        height: double.infinity,
-                                                                                        floatingIndicator: false,
-                                                                                        enableInfiniteScroll: true,
-                                                                                        indicatorMargin: 4,
-                                                                                        slideIndicator: CircularWaveSlideIndicator(
-                                                                                            itemSpacing: 10,
-                                                                                            indicatorRadius: 4,
-                                                                                            currentIndicatorColor: Theme.of(context).colorScheme.primary,
-                                                                                            indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3))),
-                                                                                    items: previewImages,
-                                                                                  ),
-                                                                                ),
-                                                                              )
-                                                                            : null,
+                                                                                                ? const Duration(seconds: 5)
+                                                                                                : previewImages.length > 1 &&
+                                                                                                        previewImages.where((element) => element.toString() == ('PreviewImageStack')).length ==
+                                                                                                            previewImages.length
+                                                                                                    ? const Duration(seconds: 1)
+                                                                                                    : const Duration(seconds: 2),
+                                                                                            disableCenter: true,
+                                                                                            viewportFraction: 1.0,
+                                                                                            height: double.infinity,
+                                                                                            floatingIndicator: false,
+                                                                                            enableInfiniteScroll: true,
+                                                                                            indicatorMargin: 4,
+                                                                                            slideIndicator: CircularWaveSlideIndicator(
+                                                                                                itemSpacing: 10,
+                                                                                                indicatorRadius: 4,
+                                                                                                currentIndicatorColor: Theme.of(context).colorScheme.primary,
+                                                                                                indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3))),
+                                                                                        items: previewImages,
+                                                                                      ),
+                                                                                    ),
+                                                                                  )
+                                                                                : null,
                                                                         child: ListTile(
                                                                           tileColor: Colors.transparent,
                                                                           //tileColor: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
@@ -5414,7 +5591,7 @@ class _HomePageState extends State<HomePage> {
                                                       dismissTriggerBehavior: PopupDismissTriggerBehavior.anyWhere,
                                                       popupClickTriggerBehavior: PopupClickTriggerBehavior.none,
                                                       arrowTheme: const InfoPopupArrowTheme(arrowSize: Size.zero),
-                                                      customContent: () => previewWindowVisible && !showPreviewPanel && previewWindowVisible && previewImages.isNotEmpty
+                                                      customContent: () => previewWindowVisible && !showPreviewPanel && previewWindowVisible && previewImages.isNotEmpty && !_previewDismiss
                                                           ? ConstrainedBox(
                                                               constraints: BoxConstraints(
                                                                   minWidth: appWindow.size.width / 5,
@@ -5474,10 +5651,10 @@ class _HomePageState extends State<HomePage> {
                                                                     border: Border.all(
                                                                         color: curItem.applyStatus
                                                                             ? Theme.of(context).colorScheme.primary
-                                                                            : curItem.isNew
+                                                                            : curItem.mods.where((element) => element.isNew).isNotEmpty
                                                                                 ? Colors.amber
                                                                                 : Theme.of(context).hintColor,
-                                                                        width: curItem.isNew || curItem.applyStatus ? 3 : 1),
+                                                                        width: curItem.mods.where((element) => element.isNew).isNotEmpty || curItem.applyStatus ? 3 : 1),
                                                                   ),
                                                                   child: curItem.icons.first.contains('assets/img/placeholdersquare.png')
                                                                       ? Image.asset(
@@ -6359,7 +6536,7 @@ class _HomePageState extends State<HomePage> {
                                                   dismissTriggerBehavior: PopupDismissTriggerBehavior.anyWhere,
                                                   popupClickTriggerBehavior: PopupClickTriggerBehavior.none,
                                                   arrowTheme: const InfoPopupArrowTheme(arrowSize: Size.zero),
-                                                  customContent: () => previewWindowVisible && !showPreviewPanel && previewImages.isNotEmpty
+                                                  customContent: () => previewWindowVisible && !showPreviewPanel && previewImages.isNotEmpty && !_previewDismiss
                                                       ? ConstrainedBox(
                                                           constraints: BoxConstraints(
                                                               minWidth: appWindow.size.width / 5,
@@ -6420,10 +6597,10 @@ class _HomePageState extends State<HomePage> {
                                                                 border: Border.all(
                                                                     color: curItem.applyStatus
                                                                         ? Theme.of(context).colorScheme.primary
-                                                                        : curItem.isNew
+                                                                        : curItem.mods.where((element) => element.isNew).isNotEmpty
                                                                             ? Colors.amber
                                                                             : Theme.of(context).hintColor,
-                                                                    width: curItem.isNew || curItem.applyStatus ? 3 : 1),
+                                                                    width: curItem.mods.where((element) => element.isNew).isNotEmpty || curItem.applyStatus ? 3 : 1),
                                                               ),
                                                               child: curItem.icons.first.contains('assets/img/placeholdersquare.png')
                                                                   ? Image.asset(
@@ -6722,6 +6899,158 @@ class _HomePageState extends State<HomePage> {
   }
 
 //WIDGETS=============================================================================
+  List<Widget> quickApplyMenuButtons(context, SubMod submod) {
+    List<Widget> menuButtonList = [];
+    List<CsvItem> quickApplyItems = quickApplyItemList.where((e) => e.category == submod.category || (e.category == defaultCategoryDirs[1] && submod.category == defaultCategoryDirs[16])).toList();
+    //add popup
+    menuButtonList.add(
+      MenuItemButton(
+          closeOnActivate: true,
+          child: Text(curLangText!.uiAddRemoveQuickApplyItems),
+          onPressed: () async {
+            quickApplyDialog(context, submod.category);
+            setState(() {});
+          }),
+    );
+
+    //separator
+    menuButtonList.add(Divider(height: 2, indent: 5, endIndent: 5, thickness: 1, color: Theme.of(context).primaryColorLight));
+
+    for (var quickApplyItem in quickApplyItems) {
+      menuButtonList.add(
+        MenuItemButton(
+            closeOnActivate: true,
+            onPressed: playerItemData
+                    .where((element) =>
+                        (element.category == submod.category ||
+                            (submod.category == defaultCategoryDirs[16] && element.category == defaultCategoryDirs[1]) ||
+                            (submod.category == defaultCategoryDirs[2] && element.category == defaultCategoryDirs[11]) ||
+                            (submod.category == defaultCategoryDirs[11] && element.category == defaultCategoryDirs[2])) &&
+                        element.containsIceFiles(submod.getModFileNames()))
+                    .isNotEmpty
+                ? () async {
+                    bool found = false;
+                    Item? quickItem;
+                    Mod? quickMod;
+                    SubMod? quickSubmod;
+                    //precheck
+                    for (var cateType in moddedItemsList) {
+                      for (var cate in cateType.categories
+                          .where((element) => element.categoryName == quickApplyItem.category || (element.categoryName == defaultCategoryDirs[1] && submod.category == defaultCategoryDirs[16]))) {
+                        for (var item in cate.items) {
+                          if (item.itemName == quickApplyItem.getENName().replaceAll(RegExp(charToReplace), '_').trim() ||
+                              item.itemName == quickApplyItem.getJPName().replaceAll(RegExp(charToReplace), '_').trim()) {
+                            for (var mod in item.mods) {
+                              if (mod.modName == submod.modName) {
+                                for (var sub in mod.submods) {
+                                  if (sub.submodName == submod.submodName || sub.submodName == submod.submodName) {
+                                    quickItem = item;
+                                    quickMod = mod;
+                                    quickSubmod = sub;
+                                    found = true;
+                                    break;
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                    if (!found) {
+                      quickItem = null;
+                      quickMod = null;
+                      quickSubmod = null;
+                      if (defaultCategoryDirs.indexOf(submod.category) == 0) {
+                        //swapping acc
+                        //from
+                        CsvItem? filteredFromItem = playerItemData.firstWhere((element) => element.category == defaultCategoryDirs[0] && element.containsIceFiles(submod.getModFileNames()));
+                        CsvIceFile fromItem = CsvIceFile.fromList(filteredFromItem.getInfos());
+                        final fromItemIces = fromItem.getDetailedList().where((element) => element.split(': ').last.isNotEmpty && submod.getModFileNames().contains(element.split(': ').last)).toList();
+                        //to
+                        CsvIceFile toItem = CsvIceFile.fromList(quickApplyItem.getInfos());
+                        List<String> toItemIces = [];
+                        for (var line in toItem.getDetailedList()) {
+                          if (fromItemIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
+                            toItemIces.add(line);
+                          }
+                        }
+
+                        String swappedPath = await modsSwapperAccIceFilesGet(
+                            context, false, submod, fromItemIces, toItemIces, modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName());
+                        //adding
+                        var returnedVar = await modsAdderModFilesAdder(
+                            context, await modsAdderFilesProcess(context, [XFile(Uri.file('$swappedPath/${submod.modName.replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath())]));
+                        List<Item> returnedItems = returnedVar.$2;
+                        quickItem = returnedItems.first;
+                        quickMod = quickItem.mods.firstWhere((e) => e.modName == submod.modName);
+                        quickSubmod = quickMod.submods.firstWhere((e) => e.submodName == submod.submodName);
+                      } else {
+                        //swapping
+                        //from
+                        CsvItem? filteredFromItem = playerItemData.firstWhere((element) =>
+                            (element.category == submod.category ||
+                                (submod.category == defaultCategoryDirs[16] && element.category == defaultCategoryDirs[1]) ||
+                                (submod.category == defaultCategoryDirs[2] && element.category == defaultCategoryDirs[11]) ||
+                                (submod.category == defaultCategoryDirs[11] && element.category == defaultCategoryDirs[2])) &&
+                            element.containsIceFiles(submod.getModFileNames()));
+                        CsvIceFile fromItem = CsvIceFile.fromList(filteredFromItem.getInfos());
+                        final fromItemIces = fromItem.getDetailedList().where((element) => element.split(': ').last.isNotEmpty && submod.getModFileNames().contains(element.split(': ').last)).toList();
+                        String fromItemId = fromItem.id.toString();
+                        //to
+                        CsvIceFile toItem = CsvIceFile.fromList(quickApplyItem.getInfos());
+                        List<String> toItemIces = [];
+                        for (var line in toItem.getDetailedList()) {
+                          if (fromItemIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
+                            toItemIces.add(line);
+                          }
+                        }
+                        String toItemId = toItem.id.toString();
+
+                        String swappedPath = await modsSwapperIceFilesGet(
+                            context, false, submod, fromItemIces, toItemIces, modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName(), fromItemId, toItemId);
+                        //adding
+                        var returnedVar = await modsAdderModFilesAdder(
+                            context, await modsAdderFilesProcess(context, [XFile(Uri.file('$swappedPath/${submod.modName.replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath())]));
+                        List<Item> returnedItems = returnedVar.$2;
+                        quickItem = returnedItems.first;
+                        quickMod = quickItem.mods.firstWhere((e) => e.modName == submod.modName);
+                        quickSubmod = quickMod.submods.firstWhere((e) => e.submodName == submod.submodName);
+                      }
+                    }
+                    //apply
+                    if (quickItem != null && quickMod != null) {
+                      isModViewModsApplying = true;
+                      setState(() {});
+                      Future.delayed(Duration(milliseconds: applyButtonsDelay), () async {
+                        //apply mod files
+                        if (await originalFilesCheck(context, quickSubmod!.modFiles)) {
+                          //apply auto radius removal if on
+                          if (removeBoundaryRadiusOnModsApply) await removeBoundaryOnModsApply(context, quickSubmod);
+                          if (autoAqmInject) await aqmInjectionOnModsApply(context, quickSubmod);
+
+                          await applyModsToTheGame(context, quickItem!, quickMod!, quickSubmod);
+
+                          if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
+                            await applyOverlayedIcon(context, quickItem);
+                          }
+                          Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('extra');
+                        }
+                        setState(() {});
+                      });
+                    }
+
+                    clearAllTempDirs();
+                    setState(() {});
+                  }
+                : null,
+            child: Text(modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName())),
+      );
+    }
+
+    return menuButtonList;
+  }
+
   List<Widget> modApplyingLocationsMenuButtons(context, SubMod submod) {
     List<Widget> menuButtonList = [];
     List<String> gameDataPaths = Directory(Uri.file("$modManPso2binPath/data").toFilePath())

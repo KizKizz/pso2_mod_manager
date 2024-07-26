@@ -3,25 +3,17 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:pso2_mod_manager/aqmInjection/aqm_injection_page.dart';
-import 'package:pso2_mod_manager/classes/aqm_item_class.dart';
 import 'package:pso2_mod_manager/classes/csv_item_class.dart';
-import 'package:pso2_mod_manager/classes/mod_file_class.dart';
-import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
-import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
-// ignore: depend_on_referenced_packages
-import 'package:path/path.dart' as p;
 import 'package:shared_preferences/shared_preferences.dart';
 
-TextEditingController injectedItemsSearchTextController = TextEditingController();
+TextEditingController selectedItemsSearchTextController = TextEditingController();
 TextEditingController availableItemsSearchTextController = TextEditingController();
 String fromItemIconLink = '';
 String toItemIconLink = '';
@@ -29,21 +21,24 @@ bool isLoading = false;
 bool isAllButtonPressed = false;
 late Future allAqmItemList;
 
-class AqmInjectionHomePage extends StatefulWidget {
-  const AqmInjectionHomePage({super.key});
+// ignore: must_be_immutable
+class QuickSwapApplyHomePage extends StatefulWidget {
+  QuickSwapApplyHomePage({super.key, this.category});
+
+  String? category;
 
   @override
-  State<AqmInjectionHomePage> createState() => _AqmInjectionHomePageState();
+  State<QuickSwapApplyHomePage> createState() => _AqmInjectionHomePageState();
 }
 
-class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
+class _AqmInjectionHomePageState extends State<QuickSwapApplyHomePage> {
   @override
   void initState() {
-    //clear
-    if (Directory(modManAddModsTempDirPath).existsSync()) {
-      Directory(modManAddModsTempDirPath).deleteSync(recursive: true);
-    }
-    allAqmItemList = basewearsListGet();
+    // //clear
+    // if (Directory(modManAddModsTempDirPath).existsSync()) {
+    //   Directory(modManAddModsTempDirPath).deleteSync(recursive: true);
+    // }
+    allAqmItemList = quickSwapApplyItemListGet();
     super.initState();
   }
 
@@ -51,33 +46,13 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
   Widget build(BuildContext context) {
     List<CsvItem> csvItems = playerItemData
         .where((e) =>
-            e.category == defaultCategoryDirs[1] &&
-            e.infos.entries.firstWhere((i) => i.key == 'High Quality').value.isNotEmpty &&
-            e.infos.entries.firstWhere((i) => i.key == 'Normal Quality').value.isNotEmpty)
+            (e.category == widget.category ||
+                (widget.category == defaultCategoryDirs[16] && e.category == defaultCategoryDirs[1]) ||
+                (widget.category == defaultCategoryDirs[2] && e.category == defaultCategoryDirs[11]) ||
+                (widget.category == defaultCategoryDirs[11] && e.category == defaultCategoryDirs[2])) &&
+            (e.infos.entries.firstWhere((i) => i.key == 'High Quality').value.isNotEmpty || e.infos.entries.firstWhere((i) => i.key == 'Normal Quality').value.isNotEmpty))
         .toList();
-    List<AqmItem> aqmItems = [];
-    List<ModFile> allAppliedModFiles = [];
-    for (var cateType in moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0)) {
-      for (var cate in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0)) {
-        for (var item in cate.items) {
-          if (item.applyStatus) {
-            for (var mod in item.mods) {
-              if (mod.applyStatus) {
-                for (var submod in mod.submods) {
-                  if (submod.applyStatus) {
-                    for (var modFile in submod.modFiles) {
-                      if (modFile.applyStatus) {
-                        allAppliedModFiles.add(modFile);
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+    List<CsvItem> quickSwapApplySelectedItems = [];
 
     return Scaffold(
         backgroundColor: Colors.transparent,
@@ -140,7 +115,7 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                     );
                   } else {
                     //displayList
-                    aqmItems = snapshot.data;
+                    quickSwapApplySelectedItems = snapshot.data;
 
                     //available Items
                     List<CsvItem> availableItem = [];
@@ -154,20 +129,19 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                           .toList();
                     }
                     //injected Items
-                    // aqmItems.removeWhere((e) => allAppliedModFiles.where((i) => i.modFileName == p.basenameWithoutExtension(e.hqIcePath)).isNotEmpty || allAppliedModFiles.where((i) => i.modFileName == p.basenameWithoutExtension(e.lqIcePath)).isNotEmpty);
-                    // //Save to json
-                    // aqmItems.map((item) => item.toJson()).toList();
-                    // const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-                    // File(modManAqmInjectedItemListJsonPath).writeAsStringSync(encoder.convert(aqmItems));
+                    // quickSwapApplySelectedItems.removeWhere((e) => allAppliedModFiles.where((i) => i.modFileName == p.basenameWithoutExtension(e.hqIcePath)).isNotEmpty || allAppliedModFiles.where((i) => i.modFileName == p.basenameWithoutExtension(e.lqIcePath)).isNotEmpty);
+                    //Save to json
+                    quickSwapApplySelectedItems.map((item) => item.toJson()).toList();
+                    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+                    File(modManQuickSwapApplyItemsJsonPath).writeAsStringSync(encoder.convert(quickSwapApplySelectedItems));
 
-                    List<AqmItem> injectedItem = [];
-                    if (injectedItemsSearchTextController.text.isEmpty) {
-                      injectedItem = aqmItems;
+                    if (selectedItemsSearchTextController.text.isEmpty) {
+                      quickApplyItemList = quickSwapApplySelectedItems;
                     } else {
-                      injectedItem = aqmItems
+                      quickApplyItemList = quickSwapApplySelectedItems
                           .where((e) =>
-                              e.itemNameEN.toLowerCase().contains(injectedItemsSearchTextController.text.toLowerCase()) ||
-                              e.itemNameJP.toLowerCase().contains(injectedItemsSearchTextController.text.toLowerCase()))
+                              e.getENName().toLowerCase().contains(selectedItemsSearchTextController.text.toLowerCase()) ||
+                              e.getJPName().toLowerCase().contains(selectedItemsSearchTextController.text.toLowerCase()))
                           .toList();
                     }
 
@@ -176,8 +150,8 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                         RotatedBox(
                             quarterTurns: -1,
                             child: Text(
-                              'AQM INJECTION',
-                              style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w900, fontSize: 20, letterSpacing: constraints.maxHeight / 20),
+                              'QUICK SWAP-APPLY ITEMS',
+                              style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w900, fontSize: 20, letterSpacing: constraints.maxHeight / 40),
                             )),
                         VerticalDivider(
                           width: 10,
@@ -206,7 +180,7 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                                             height: 92,
                                             child: ListTile(
                                               minVerticalPadding: 15,
-                                              title: Text(curLangText!.uiItemsToInjectCustomAqm),
+                                              title: Text(curLangText!.uiAvailableItems),
                                               subtitle: Padding(
                                                 padding: const EdgeInsets.only(top: 10),
                                                 child: SizedBox(
@@ -332,65 +306,28 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                                                                               ? Text(availableItem[i].getJPName().trim())
                                                                               : Text(availableItem[i].getENName().trim()),
                                                                           const SizedBox(height: 10),
-                                                                          Text('Id: ${p.basenameWithoutExtension(availableItem[i].infos.entries.firstWhere((e) => e.key == 'Id').value)}',
-                                                                              style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
-                                                                          Text('Id2: ${p.basenameWithoutExtension(availableItem[i].infos.entries.firstWhere((e) => e.key == 'Adjusted Id').value)}',
-                                                                              style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
-                                                                          Text('HQ: ${p.basenameWithoutExtension(availableItem[i].infos.entries.firstWhere((e) => e.key == 'High Quality').value)}',
-                                                                              style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
-                                                                          Text('LQ: ${p.basenameWithoutExtension(availableItem[i].infos.entries.firstWhere((e) => e.key == 'Normal Quality').value)}',
+                                                                          Text(
+                                                                              availableItem[i].getENName().contains('[Se]')
+                                                                                  ? '${curLangText!.uiCategory}: ${defaultCategoryNames[16]}'
+                                                                                  : '${curLangText!.uiCategory}: ${defaultCategoryNames[availableItem[i].categoryIndex]}',
                                                                               style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
                                                                         ],
                                                                       )),
                                                                 ]),
                                                                 subtitle: ElevatedButton(
-                                                                    onPressed: aqmItems
-                                                                                .where((element) =>
-                                                                                    element.itemNameEN == availableItem[i].getENName() || element.itemNameJP == availableItem[i].getJPName())
-                                                                                .isEmpty &&
-                                                                            File(modManCustomAqmFilePath).existsSync() &&
-                                                                            allAppliedModFiles
-                                                                                .where((e) => e.modFileName == availableItem[i].infos.entries.firstWhere((e) => e.key == 'High Quality').value)
-                                                                                .isEmpty &&
-                                                                            allAppliedModFiles
-                                                                                .where((e) => e.modFileName == availableItem[i].infos.entries.firstWhere((e) => e.key == 'Normal Quality').value)
-                                                                                .isEmpty &&
-                                                                            !isAllButtonPressed
+                                                                    onPressed: quickApplyItemList
+                                                                            .where((e) => e.getENName() == availableItem[i].getENName() || e.getJPName() == availableItem[i].getJPName())
+                                                                            .isEmpty
                                                                         ? () async {
-                                                                            final hqIcePaths =
-                                                                                await originalFilePathGet(context, availableItem[i].infos.entries.firstWhere((e) => e.key == 'High Quality').value);
-                                                                            final lqIcePaths =
-                                                                                await originalFilePathGet(context, availableItem[i].infos.entries.firstWhere((e) => e.key == 'Normal Quality').value);
-                                                                            final iconIcePaths =
-                                                                                await originalFilePathGet(context, availableItem[i].infos.entries.firstWhere((e) => e.key == 'Icon').value);
-                                                                            AqmItem newItem = AqmItem(
-                                                                                availableItem[i].category,
-                                                                                availableItem[i].infos.entries.firstWhere((e) => e.key == 'Id').value,
-                                                                                availableItem[i].infos.entries.firstWhere((e) => e.key == 'Adjusted Id').value,
-                                                                                availableItem[i].iconImagePath,
-                                                                                availableItem[i].getENName(),
-                                                                                availableItem[i].getJPName(),
-                                                                                hqIcePaths.isNotEmpty ? hqIcePaths.first : '',
-                                                                                lqIcePaths.isNotEmpty ? lqIcePaths.first : '',
-                                                                                iconIcePaths.isNotEmpty ? iconIcePaths.first : '',
-                                                                                false,
-                                                                                false);
-                                                                            bool value = await itemAqmInjectionHomePage(context, newItem.hqIcePath, newItem.lqIcePath, newItem.iconIcePath);
-                                                                            if (value) {
-                                                                              newItem.isApplied = true;
-                                                                              if (Provider.of<StateProvider>(context, listen: false).markModdedItem) newItem.isIconReplaced = true;
-                                                                              aqmItems.add(newItem);
-
-                                                                              //Save to json
-                                                                              aqmItems.map((item) => item.toJson()).toList();
-                                                                              const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-                                                                              File(modManAqmInjectedItemListJsonPath).writeAsStringSync(encoder.convert(aqmItems));
-                                                                            }
-
+                                                                            quickApplyItemList.add(availableItem[i]);
+                                                                            //Save to json
+                                                                            quickSwapApplySelectedItems.map((item) => item.toJson()).toList();
+                                                                            const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+                                                                            File(modManQuickSwapApplyItemsJsonPath).writeAsStringSync(encoder.convert(quickSwapApplySelectedItems));
                                                                             setState(() {});
                                                                           }
                                                                         : null,
-                                                                    child: Text(curLangText!.uiInjectCustomAqmIntoThisItem)),
+                                                                    child: Text(curLangText!.uiAddToQuickApplyList)),
                                                               ));
                                                         }),
                                                   ),
@@ -421,14 +358,14 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                                               height: 92,
                                               child: ListTile(
                                                 minVerticalPadding: 15,
-                                                title: Text(curLangText!.uiItemsAlreadyHaveCustomAqm),
+                                                title: Text(curLangText!.uiItemsInQuickApplyList),
                                                 subtitle: Padding(
                                                   padding: const EdgeInsets.only(top: 10),
                                                   child: SizedBox(
                                                     height: 30,
                                                     width: double.infinity,
                                                     child: TextField(
-                                                      controller: injectedItemsSearchTextController,
+                                                      controller: selectedItemsSearchTextController,
                                                       maxLines: 1,
                                                       textAlignVertical: TextAlignVertical.center,
                                                       decoration: InputDecoration(
@@ -439,14 +376,14 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                                                           contentPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 2),
                                                           suffixIconConstraints: const BoxConstraints(minWidth: 20, minHeight: 28),
                                                           suffixIcon: InkWell(
-                                                            onTap: injectedItemsSearchTextController.text.isEmpty
+                                                            onTap: selectedItemsSearchTextController.text.isEmpty
                                                                 ? null
                                                                 : () {
-                                                                    injectedItemsSearchTextController.clear();
+                                                                    selectedItemsSearchTextController.clear();
                                                                     setState(() {});
                                                                   },
                                                             child: Icon(
-                                                              injectedItemsSearchTextController.text.isEmpty ? Icons.search : Icons.close,
+                                                              selectedItemsSearchTextController.text.isEmpty ? Icons.search : Icons.close,
                                                               color: Theme.of(context).hintColor,
                                                             ),
                                                           ),
@@ -462,13 +399,13 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                                                             borderRadius: BorderRadius.circular(10),
                                                           )),
                                                       onChanged: (value) async {
-                                                        if (injectedItemsSearchTextController.text.isEmpty) {
-                                                          injectedItem = aqmItems;
+                                                        if (selectedItemsSearchTextController.text.isEmpty) {
+                                                          quickApplyItemList = quickSwapApplySelectedItems;
                                                         } else {
-                                                          injectedItem = aqmItems
+                                                          quickApplyItemList = quickSwapApplySelectedItems
                                                               .where((e) =>
-                                                                  e.itemNameEN.toLowerCase().contains(injectedItemsSearchTextController.text.toLowerCase()) ||
-                                                                  e.itemNameJP.toLowerCase().contains(injectedItemsSearchTextController.text.toLowerCase()))
+                                                                  e.getENName().toLowerCase().contains(selectedItemsSearchTextController.text.toLowerCase()) ||
+                                                                  e.getJPName().toLowerCase().contains(selectedItemsSearchTextController.text.toLowerCase()))
                                                               .toList();
                                                         }
                                                         setState(() {});
@@ -508,7 +445,7 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                                                             padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
                                                             shrinkWrap: true,
                                                             //physics: const BouncingScrollPhysics(),
-                                                            itemCount: injectedItem.length,
+                                                            itemCount: quickApplyItemList.length,
                                                             itemBuilder: (context, i) {
                                                               return Padding(
                                                                 padding: const EdgeInsets.symmetric(vertical: 2),
@@ -527,7 +464,7 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                                                                             border: Border.all(color: Theme.of(context).hintColor, width: 1),
                                                                           ),
                                                                           child: Image.network(
-                                                                            '$modManMAIconDatabaseLink${injectedItem[i].iconImagePath.replaceAll('\\', '/').replaceAll(' ', '%20')}',
+                                                                            '$modManMAIconDatabaseLink${quickApplyItemList[i].iconImagePath.replaceAll('\\', '/').replaceAll(' ', '%20')}',
                                                                             errorBuilder: (context, error, stackTrace) => Image.asset(
                                                                               'assets/img/placeholdersquare.png',
                                                                               filterQuality: FilterQuality.none,
@@ -544,15 +481,14 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                                                                           mainAxisAlignment: MainAxisAlignment.start,
                                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                                           children: [
-                                                                            modManCurActiveItemNameLanguage == 'JP' ? Text(injectedItem[i].itemNameJP.trim()) : Text(injectedItem[i].itemNameEN.trim()),
+                                                                            modManCurActiveItemNameLanguage == 'JP'
+                                                                                ? Text(quickApplyItemList[i].getJPName().trim())
+                                                                                : Text(quickApplyItemList[i].getENName().trim()),
                                                                             const SizedBox(height: 10),
-                                                                            Text('Id: ${p.basenameWithoutExtension(injectedItem[i].id)}',
-                                                                                style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
-                                                                            Text('Id2: ${p.basenameWithoutExtension(injectedItem[i].adjustedId)}',
-                                                                                style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
-                                                                            Text('HQ: ${p.basenameWithoutExtension(injectedItem[i].hqIcePath)}',
-                                                                                style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
-                                                                            Text('LQ: ${p.basenameWithoutExtension(injectedItem[i].lqIcePath)}',
+                                                                            Text(
+                                                                                availableItem[i].getENName().contains('[Se]')
+                                                                                    ? '${curLangText!.uiCategory}: ${defaultCategoryNames[16]}'
+                                                                                    : '${curLangText!.uiCategory}: ${defaultCategoryNames[quickApplyItemList[i].categoryIndex]}',
                                                                                 style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
                                                                           ],
                                                                         )),
@@ -564,24 +500,11 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                                                                                 isLoading = true;
                                                                                 isAllButtonPressed = true;
                                                                               });
-                                                                              List<String> restorePaths = [];
-                                                                              if (injectedItem[i].hqIcePath.isNotEmpty) {
-                                                                                restorePaths.add(injectedItem[i].hqIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
-                                                                              }
-                                                                              if (injectedItem[i].lqIcePath.isNotEmpty) {
-                                                                                restorePaths.add(injectedItem[i].hqIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
-                                                                              }
-                                                                              if (injectedItem[i].iconIcePath.isNotEmpty && injectedItem[i].isIconReplaced) {
-                                                                                restorePaths.add(injectedItem[i].iconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
-                                                                              }
-                                                                              if (restorePaths.isNotEmpty) {
-                                                                                await downloadIceFromOfficial(restorePaths);
-                                                                                aqmItems.remove(injectedItem[i]);
-                                                                              }
+                                                                              quickApplyItemList.removeAt(i);
                                                                               //Save to json
-                                                                              aqmItems.map((item) => item.toJson()).toList();
+                                                                              quickSwapApplySelectedItems.map((item) => item.toJson()).toList();
                                                                               const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-                                                                              File(modManAqmInjectedItemListJsonPath).writeAsStringSync(encoder.convert(aqmItems));
+                                                                              File(modManQuickSwapApplyItemsJsonPath).writeAsStringSync(encoder.convert(quickSwapApplySelectedItems));
 
                                                                               setState(() {
                                                                                 isLoading = false;
@@ -603,7 +526,7 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                                                                                     child: CircularProgressIndicator(color: Theme.of(context).buttonTheme.colorScheme!.onSurface)),
                                                                               )),
                                                                           const SizedBox(width: 10),
-                                                                          Text(curLangText!.uiRemoveCustomAqmFromThisItem)
+                                                                          Text(curLangText!.uiRemoveFromQuickApplyList)
                                                                         ],
                                                                       )),
                                                                 ),
@@ -621,41 +544,45 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 5),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    Text(curLangText!.uiNoteMustSelectACustomAqmFileBeforeInject),
+                                    // Text(curLangText!.uiNoteMustSelectACustomAqmFileBeforeInject),
                                     Wrap(
                                       runAlignment: WrapAlignment.center,
                                       alignment: WrapAlignment.center,
                                       spacing: 5,
                                       children: [
                                         ElevatedButton(
-                                            onPressed: injectedItem.isNotEmpty && !isAllButtonPressed
+                                            onPressed: Provider.of<StateProvider>(context, listen: false).modAdderProgressStatus.isEmpty
+                                                ? (() async {
+                                                    final prefs = await SharedPreferences.getInstance();
+                                                    if (modsAdderGroupSameItemVariants) {
+                                                      modsAdderGroupSameItemVariants = false;
+                                                      prefs.setBool('modsAdderGroupSameItemVariants', false);
+                                                    } else {
+                                                      modsAdderGroupSameItemVariants = true;
+                                                      prefs.setBool('modsAdderGroupSameItemVariants', true);
+                                                    }
+                                                    setState(
+                                                      () {},
+                                                    );
+                                                  })
+                                                : null,
+                                            child: Text(modsAdderGroupSameItemVariants
+                                                ? '${curLangText!.uiGroupSameItemVariants}: ${curLangText!.uiON}'
+                                                : '${curLangText!.uiGroupSameItemVariants}: ${curLangText!.uiOFF}')),
+                                        ElevatedButton(
+                                            onPressed: quickApplyItemList.isNotEmpty && !isAllButtonPressed
                                                 ? () async {
                                                     setState(() {
                                                       isLoading = true;
                                                       isAllButtonPressed = true;
                                                     });
-                                                    for (int i = 0; i < injectedItem.length; i++) {
-                                                      List<String> restorePaths = [];
-                                                      if (injectedItem[i].hqIcePath.isNotEmpty) {
-                                                        restorePaths.add(injectedItem[i].hqIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
-                                                      }
-                                                      if (injectedItem[i].lqIcePath.isNotEmpty) {
-                                                        restorePaths.add(injectedItem[i].hqIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
-                                                      }
-                                                      if (injectedItem[i].iconIcePath.isNotEmpty && injectedItem[i].isIconReplaced) {
-                                                        restorePaths.add(injectedItem[i].iconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
-                                                      }
-                                                      if (restorePaths.isNotEmpty) {
-                                                        await downloadIceFromOfficial(restorePaths);
-                                                        aqmItems.remove(injectedItem[i]);
-                                                      }
-                                                    }
+                                                    quickApplyItemList.clear();
                                                     //Save to json
-                                                    aqmItems.map((item) => item.toJson()).toList();
+                                                    quickSwapApplySelectedItems.map((item) => item.toJson()).toList();
                                                     const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-                                                    File(modManAqmInjectedItemListJsonPath).writeAsStringSync(encoder.convert(aqmItems));
+                                                    File(modManQuickSwapApplyItemsJsonPath).writeAsStringSync(encoder.convert(quickSwapApplySelectedItems));
 
                                                     setState(() {
                                                       isLoading = false;
@@ -673,73 +600,15 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                                                       padding: const EdgeInsets.only(right: 10),
                                                       child: SizedBox(width: 15, height: 15, child: CircularProgressIndicator(color: Theme.of(context).buttonTheme.colorScheme!.onSurface)),
                                                     )),
-                                                Visibility(visible: isLoading, child: const SizedBox(width: 10)),
+                                                Visibility(
+                                                  visible: isLoading,
+                                                  child: const SizedBox(width: 10)),
                                                 Text(curLangText!.uiRemoveAll)
                                               ],
                                             )),
                                         ElevatedButton(
-                                            onPressed: injectedItem.isNotEmpty && !isAllButtonPressed
-                                                ? () async {
-                                                    setState(() {
-                                                      isLoading = true;
-                                                      isAllButtonPressed = true;
-                                                    });
-                                                    for (int i = 0; i < injectedItem.length; i++) {
-                                                      bool value = await itemAqmInjectionHomePage(context, injectedItem[i].hqIcePath, injectedItem[i].lqIcePath, injectedItem[i].iconIcePath);
-                                                      if (value) {
-                                                        injectedItem[i].isApplied = true;
-                                                        if (Provider.of<StateProvider>(context, listen: false).markModdedItem) injectedItem[i].isIconReplaced = true;
-                                                      }
-                                                      //Save to json
-                                                      aqmItems.map((item) => item.toJson()).toList();
-                                                      const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-                                                      File(modManAqmInjectedItemListJsonPath).writeAsStringSync(encoder.convert(aqmItems));
-                                                    }
-
-                                                    setState(() {
-                                                      isLoading = false;
-                                                      isAllButtonPressed = false;
-                                                    });
-                                                  }
-                                                : null,
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                Visibility(
-                                                    visible: isLoading,
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.only(right: 10),
-                                                      child: SizedBox(width: 15, height: 15, child: CircularProgressIndicator(color: Theme.of(context).buttonTheme.colorScheme!.onSurface)),
-                                                    )),
-                                                Text(curLangText!.uiReInjectAll)
-                                              ],
-                                            )),
-                                        ElevatedButton(
-                                            onPressed: !isAllButtonPressed
-                                                ? () async {
-                                                    final prefs = await SharedPreferences.getInstance();
-                                                    const XTypeGroup typeGroup = XTypeGroup(
-                                                      label: '.aqm',
-                                                      extensions: <String>['aqm'],
-                                                    );
-                                                    final XFile? selectedFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
-                                                    if (selectedFile != null) {
-                                                      modManCustomAqmFileName = selectedFile.name;
-                                                      prefs.setString('modManCustomAqmFileName', modManCustomAqmFileName);
-                                                      if (Directory(modManCustomAqmDir).existsSync() && modManCustomAqmFileName.isNotEmpty) {
-                                                        modManCustomAqmFilePath = Uri.file('$modManCustomAqmDir/$modManCustomAqmFileName').toFilePath();
-                                                        File(selectedFile.path).copySync(modManCustomAqmFilePath);
-                                                      }
-                                                    }
-                                                    setState(() {});
-                                                  }
-                                                : null,
-                                            child: Text(!File(modManCustomAqmFilePath).existsSync() ? curLangText!.uiSelectAqmFile : curLangText!.uiReSelectAqmFile,
-                                                style: const TextStyle(fontWeight: FontWeight.w400))),
-                                        ElevatedButton(
                                             onPressed: () {
-                                              injectedItemsSearchTextController.clear();
+                                              selectedItemsSearchTextController.clear();
                                               availableItemsSearchTextController.clear();
                                               isLoading = false;
                                               isAllButtonPressed = false;
@@ -763,15 +632,15 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
   }
 }
 
-Future<List<AqmItem>> basewearsListGet() async {
-  List<AqmItem> structureFromJson = [];
+Future<List<CsvItem>> quickSwapApplyItemListGet() async {
+  List<CsvItem> structureFromJson = [];
 
-  //Load list from json
-  String dataFromJson = await File(modManAqmInjectedItemListJsonPath).readAsString();
+  // Load list from json
+  String dataFromJson = await File(modManQuickSwapApplyItemsJsonPath).readAsString();
   if (dataFromJson.isNotEmpty) {
     var jsonData = await jsonDecode(dataFromJson);
     for (var item in jsonData) {
-      structureFromJson.add(AqmItem.fromJson(item));
+      structureFromJson.add(CsvItem.fromJson(item));
     }
   }
 

@@ -297,6 +297,8 @@
   "uiInjectCustomAqmFile": "カスタムaqmファイルをインジェクトする",
   "uiSelectFileInSettings": "設定でファイルを選択",
   "uiAddPreviews": "プレビュー画像・動画の追加",
+  "uiAddRemoveQuickApplyItems": "クイックスワップ適用項目の編集",
+  "uiSwapThisModToSelectedItemInList": "このMODをリストで選択したアイテムに入れ替え、MOD Managerに追加して適用する",
   "uiPreparing": "準備中",
   "uiDragDropFiles": "フォルダ(.zip)(.rar)(.7z)ファイルのドラッグ&ドロップ\nおよび.iceファイルはこちら\nまたは、\"フォルダ/ファイルの追加\" ボタンを使って、フォルダやファイルを選択します\n大量のファイルの処理に時間がかかる場合があります",
   "uiAchiveCurrentlyNotSupported": "現在、サポートされていませんアーカイブファイルを開き、代わりにコンテンツをここにドラッグしてください",
@@ -583,5 +585,9 @@
   "uiReappliedLineStrikeItems": "ラインストライクアイテムの再適用",
   "uiBoards": "ボード",
   "uiCards": "カード",
-  "uiCardSleeves": "カードスリーブ"
+  "uiCardSleeves": "カードスリーブ",
+  "uiAvailableItems": "利用可能なアイテム",
+  "uiItemsInQuickApplyList": "クイックスワップ適用リストの項目",
+  "uiAddToQuickApplyList": "クイックスワップ応募リストに追加",
+  "uiRemoveFromQuickApplyList": "クイックスワップ適用リストから削除"
 }

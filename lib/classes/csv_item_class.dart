@@ -168,6 +168,15 @@ class CsvItem {
     return false;
   }
 
+  bool containsIceFiles(List<String> iceNameList) {
+    for (var iceName in iceNameList) {
+      if (infos.values.contains(iceName)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   CsvItem.fromMap(
       String csvFileName, String csvFilePath, String itemType, List<String> itemCategories, String category, String subCategory, int categoryIndex, String iconImagePath, Map<String, String> infos)
       : this(csvFileName = csvFileName, csvFilePath = csvFilePath, itemType = itemType, itemCategories = itemCategories, category = category, subCategory = subCategory, categoryIndex = categoryIndex,

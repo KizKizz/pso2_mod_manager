@@ -89,6 +89,7 @@ String modManAqmInjectedItemListJsonPath = '';
 String modManLineStrikeSleeveJsonPath = '';
 String modManLineStrikeBoardJsonPath = '';
 String modManLineStrikeCardJsonPath = '';
+String modManQuickSwapApplyItemsJsonPath = '';
 //Log file path
 String modManOpLogsFilePath = '';
 //Swapper paths
@@ -1225,6 +1226,10 @@ Future<void> createSubDirs(context) async {
   modManLineStrikeCardJsonPath =
       modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManLSCardList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManLSCardList_profile2.json').toFilePath();
   File(modManLineStrikeCardJsonPath).createSync(recursive: true);
+  //quick apply items
+  modManQuickSwapApplyItemsJsonPath =
+      modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManQuickSwapApplyItemList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManQuickSwapApplyItemList_profile2.json').toFilePath();
+  File(modManQuickSwapApplyItemsJsonPath).createSync(recursive: true);
   //Swapper paths
   modManSwapperDirPath = Uri.file('$modManDirPath/swapper').toFilePath();
   modManSwapperFromItemDirPath = Uri.file('$modManDirPath/swapper/fromitem').toFilePath();

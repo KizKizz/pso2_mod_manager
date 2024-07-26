@@ -371,6 +371,10 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiInjectCustomAqmFile = json['uiInjectCustomAqmFile'] as String
       ..uiSelectFileInSettings = json['uiSelectFileInSettings'] as String
       ..uiRemoveInjectedCustomAqm = json['uiRemoveInjectedCustomAqm'] as String
+      ..uiAddRemoveQuickApplyItems =
+          json['uiAddRemoveQuickApplyItems'] as String
+      ..uiSwapThisModToSelectedItemInList =
+          json['uiSwapThisModToSelectedItemInList'] as String
       ..uiPreparing = json['uiPreparing'] as String
       ..uiDragDropFiles = json['uiDragDropFiles'] as String
       ..uiAchiveCurrentlyNotSupported =
@@ -734,7 +738,12 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiReappliedLineStrikeItems'] as String
       ..uiBoards = json['uiBoards'] as String
       ..uiCards = json['uiCards'] as String
-      ..uiCardSleeves = json['uiCardSleeves'] as String;
+      ..uiCardSleeves = json['uiCardSleeves'] as String
+      ..uiAvailableItems = json['uiAvailableItems'] as String
+      ..uiItemsInQuickApplyList = json['uiItemsInQuickApplyList'] as String
+      ..uiAddToQuickApplyList = json['uiAddToQuickApplyList'] as String
+      ..uiRemoveFromQuickApplyList =
+          json['uiRemoveFromQuickApplyList'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -1053,6 +1062,9 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiInjectCustomAqmFile': instance.uiInjectCustomAqmFile,
       'uiSelectFileInSettings': instance.uiSelectFileInSettings,
       'uiRemoveInjectedCustomAqm': instance.uiRemoveInjectedCustomAqm,
+      'uiAddRemoveQuickApplyItems': instance.uiAddRemoveQuickApplyItems,
+      'uiSwapThisModToSelectedItemInList':
+          instance.uiSwapThisModToSelectedItemInList,
       'uiPreparing': instance.uiPreparing,
       'uiDragDropFiles': instance.uiDragDropFiles,
       'uiAchiveCurrentlyNotSupported': instance.uiAchiveCurrentlyNotSupported,
@@ -1371,4 +1383,8 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiBoards': instance.uiBoards,
       'uiCards': instance.uiCards,
       'uiCardSleeves': instance.uiCardSleeves,
+      'uiAvailableItems': instance.uiAvailableItems,
+      'uiItemsInQuickApplyList': instance.uiItemsInQuickApplyList,
+      'uiAddToQuickApplyList': instance.uiAddToQuickApplyList,
+      'uiRemoveFromQuickApplyList': instance.uiRemoveFromQuickApplyList,
     };
