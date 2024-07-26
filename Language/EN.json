@@ -297,6 +297,8 @@
   "uiInjectCustomAqmFile": "Inject custom aqm file",
   "uiSelectFileInSettings": "Select file in Settings",
   "uiRemoveInjectedCustomAqm": "Remove injected custom aqm file",
+  "uiAddRemoveQuickApplyItems": "Edit Quick Swap-Apply Items",
+  "uiSwapThisModToSelectedItemInList": "Swap this mod to selected item in the list, then add to Mod Manager and apply",
   "uiPreparing": "Preparing",
   "uiDragDropFiles": "Drag and drop folders, .zip, .rar, .7z files\nand .ice files here\nOr use the \"Add Folders/Files\" buttons to select folders/files\nMay take some time\nto process large amount of files",
   "uiAchiveCurrentlyNotSupported": "currently not supported. Open the archive file then drag the content in here instead",
@@ -583,5 +585,9 @@
   "uiReappliedLineStrikeItems": "Re-applied Line Strike items",
   "uiBoards": "Boards",
   "uiCards": "Cards",
-  "uiCardSleeves": "Card Sleeves"
+  "uiCardSleeves": "Card Sleeves",
+  "uiAvailableItems": "Available items",
+  "uiItemsInQuickApplyList": "Items in Quick Swap-Apply list",
+  "uiAddToQuickApplyList": "Add To Quick Swap-Apply List",
+  "uiRemoveFromQuickApplyList": "Remove From Quick Swap-Apply List"
 }

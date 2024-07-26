@@ -323,7 +323,9 @@ class TranslationText {
       uiAddPreviews = 'Add/Change preview images-videos',
       uiInjectCustomAqmFile = 'Inject custom aqm file',
       uiSelectFileInSettings = 'Select file in Settings',
-      uiRemoveInjectedCustomAqm = 'Remove injected custom aqm file';
+      uiRemoveInjectedCustomAqm = 'Remove injected custom aqm file',
+      uiAddRemoveQuickApplyItems = 'Edit Quick Swap-Apply Items',
+      uiSwapThisModToSelectedItemInList = 'Swap this mod to selected item in the list, then add to Mod Manager and apply';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
@@ -697,6 +699,12 @@ class TranslationText {
 
   //line_duel_selection.dart
   String uiBoards = 'Boards', uiCards = 'Cards', uiCardSleeves = 'Card Sleeves';
+
+  //quick_apply_homepage.dart
+  String uiAvailableItems = 'Available items',
+      uiItemsInQuickApplyList = 'Items in Quick Swap-Apply list',
+      uiAddToQuickApplyList = 'Add To Quick Swap-Apply List',
+      uiRemoveFromQuickApplyList = 'Remove From Quick Swap-Apply List';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);

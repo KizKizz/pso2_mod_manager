@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:pso2_mod_manager/classes/vital_gauge_class.dart';
 import 'package:pso2_mod_manager/functions/hash_generator.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
-import 'package:pso2_mod_manager/vital_gauge/vital_gauge_swapper_homepage.dart';
+import 'package:pso2_mod_manager/vitalGauge/vital_gauge_swapper_homepage.dart';
 
 Future<List<VitalGaugeBackground>> appliedVitalGaugesCheck(context) async {
   List<VitalGaugeBackground> reappliedList = [];

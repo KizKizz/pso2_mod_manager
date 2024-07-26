@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/vital_gauge_class.dart';
 import 'package:pso2_mod_manager/pages/applied_line_duel_checking_page.dart';
-import 'package:pso2_mod_manager/vital_gauge/applied_vital_gauge_check.dart';
+import 'package:pso2_mod_manager/vitalGauge/applied_vital_gauge_check.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:window_manager/window_manager.dart';
 

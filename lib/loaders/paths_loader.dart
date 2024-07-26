@@ -33,7 +33,7 @@ import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
 import 'package:pso2_mod_manager/pages/home_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
-import 'package:pso2_mod_manager/vital_gauge/applied_vital_gauge_check.dart';
+import 'package:pso2_mod_manager/vitalGauge/applied_vital_gauge_check.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 // ignore: depend_on_referenced_packages
@@ -89,6 +89,7 @@ String modManAqmInjectedItemListJsonPath = '';
 String modManLineStrikeSleeveJsonPath = '';
 String modManLineStrikeBoardJsonPath = '';
 String modManLineStrikeCardJsonPath = '';
+String modManQuickSwapApplyItemsJsonPath = '';
 //Log file path
 String modManOpLogsFilePath = '';
 //Swapper paths
@@ -1225,6 +1226,10 @@ Future<void> createSubDirs(context) async {
   modManLineStrikeCardJsonPath =
       modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManLSCardList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManLSCardList_profile2.json').toFilePath();
   File(modManLineStrikeCardJsonPath).createSync(recursive: true);
+  //quick apply items
+  modManQuickSwapApplyItemsJsonPath =
+      modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManQuickSwapApplyItemList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManQuickSwapApplyItemList_profile2.json').toFilePath();
+  File(modManQuickSwapApplyItemsJsonPath).createSync(recursive: true);
   //Swapper paths
   modManSwapperDirPath = Uri.file('$modManDirPath/swapper').toFilePath();
   modManSwapperFromItemDirPath = Uri.file('$modManDirPath/swapper/fromitem').toFilePath();

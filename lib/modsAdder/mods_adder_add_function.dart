@@ -16,11 +16,14 @@ import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/state_provider.dart';
 
 //Auto Files adder
-Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList) async {
+Future<(bool, List<Item>)> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList) async {
   Provider.of<StateProvider>(context, listen: false).setModAdderProgressStatus('');
   //List<List<String>> addedItems = [];
+  List<Item> returnItems = [];
+  int totalItems = 0;
   for (var item in itemsToAddList) {
     if (item.toBeAdded) {
+      totalItems++;
       String category = item.category;
       String itemName = item.itemName;
       List<String> mainNames = [];
@@ -83,7 +86,9 @@ Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList)
             Category cateInList = cateType.categories[cateIndex];
             int itemInListIndex = cateInList.items.indexWhere((element) => element.itemName.toLowerCase() == itemName.toLowerCase());
             if (itemInListIndex == -1) {
-              cateInList.items.add(await newItemsFetcher(Uri.file('$modManModsDirPath/$category').toFilePath(), newItemPath));
+              Item newItem = await newItemsFetcher(Uri.file('$modManModsDirPath/$category').toFilePath(), newItemPath);
+              cateInList.items.add(newItem);
+              returnItems.add(newItem);
             } else {
               Item itemInList = cateInList.items[itemInListIndex];
               int modInListIndex = itemInList.mods.indexWhere((element) => mainNames.where((name) => name.toLowerCase() == element.modName.toLowerCase()).isNotEmpty);
@@ -101,6 +106,7 @@ Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList)
               itemInList.isNew = true;
               //Sort alpha
               itemInList.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
+              returnItems.add(itemInList);
             }
             //Sort alpha
             cateInList.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
@@ -112,7 +118,9 @@ Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList)
             Category newCate = Category(category, cateType.groupName, Uri.file('$modManModsDirPath/$category').toFilePath(), cateType.categories.length, true, []);
             int itemInListIndex = newCate.items.indexWhere((element) => element.itemName.toLowerCase() == itemName.toLowerCase());
             if (itemInListIndex == -1) {
-              newCate.items.add(await newItemsFetcher(Uri.file('$modManModsDirPath/$category').toFilePath(), newItemPath));
+              Item newItem = await newItemsFetcher(Uri.file('$modManModsDirPath/$category').toFilePath(), newItemPath);
+              newCate.items.add(newItem);
+              returnItems.add(newItem);
             } else {
               Item itemInList = newCate.items[itemInListIndex];
               int modInListIndex = itemInList.mods.indexWhere((element) => mainNames.where((name) => name.toLowerCase() == element.modName.toLowerCase()).isNotEmpty);
@@ -130,6 +138,7 @@ Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList)
               itemInList.isNew = true;
               //Sort alpha
               itemInList.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
+              returnItems.add(itemInList);
             }
             //Sort alpha
             newCate.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
@@ -156,7 +165,11 @@ Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList)
   // }
   clearModAdderDirs();
 
-  return true;
+  if (returnItems.length == totalItems) {
+    return (true, returnItems);
+  } else {
+    return (false, returnItems);
+  }
 }
 
 //Helpers
@@ -188,8 +201,8 @@ List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newMo
   List<File> iceFilesInItemDir = Directory(itemPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
   if (iceFilesInItemDir.isNotEmpty) {
     for (var iceFile in iceFilesInItemDir) {
-      modFilesInItemDir.add(ModFile(
-          p.basename(iceFile.path), p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, '', [], iceFile.path, false, DateTime(0), 0, false, false, true, [], [], [], [], [], []));
+      modFilesInItemDir.add(ModFile(p.basename(iceFile.path), p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, '', [], iceFile.path, false, DateTime(0), 0, false, false,
+          true, [], [], [], [], [], []));
     }
     //Get preview images;
     List<String> modPreviewImages = [];
@@ -334,7 +347,8 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName) 
       List<String> parentPaths = file.parent.path.split(modPath).last.trim().split(Uri.file('/').toFilePath());
       parentPaths.removeWhere((element) => element.isEmpty);
 
-      modFiles.add(ModFile(p.basename(file.path), parentPaths.join(' > '), p.basename(modPath), itemName, cateName, '', [], file.path, false, DateTime(0), 0, false, false, true, [], [], [], [], [], []));
+      modFiles
+          .add(ModFile(p.basename(file.path), parentPaths.join(' > '), p.basename(modPath), itemName, cateName, '', [], file.path, false, DateTime(0), 0, false, false, true, [], [], [], [], [], []));
       //Sort alpha
       modFiles.sort((a, b) => a.modFileName.toLowerCase().compareTo(b.modFileName.toLowerCase()));
     }

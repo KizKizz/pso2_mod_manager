@@ -1,13 +1,12 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.8.2",
+    "version": "2.8.3",
     "description": [
-        "Improved Line Strike Card customization loading time",
-        "Added a button to export customized Line Strike Cards to png images",
-        "Added manual element selection when Mod Manager unable to detect Line Strike Card elements",
+        "Added Quick Swap-Apply function which would swap a mod onto a specific item then add and apply. (Can be found next to Apply Mod button)",
+        "Preview window now disappears when mouse cursor is hovering on dropdown buttons",
         "More bug fixes",
-        "カスタマイズしたラインストライクカードをpng画像にエクスポートするボタンを追加",
-        "改造マネージャがラインストライクカードの要素を検出できない場合、要素を手動で選択できるようにした",
+        "特定のアイテムにMODをスワップし、追加して適用するクイックスワップ-適用機能を追加。(MOD適用ボタンの隣にあります)",
+        "マウスカーソルがドロップダウンボタンの上にある場合、プレビューウィンドウが消えるようになりました",
         "その他のバグ修正"
     ],
     "windows_file": "",
