@@ -169,8 +169,10 @@ class CsvItem {
   }
 
   bool containsIceFiles(List<String> iceNameList) {
+    String hqIce = infos.entries.firstWhere((element) => element.key == 'High Quality', orElse: () => const MapEntry('null', 'null')).value;
+    String nqIce = infos.entries.firstWhere((element) => element.key == 'Normal Quality', orElse: () => const MapEntry('null', 'null')).value;
     for (var iceName in iceNameList) {
-      if (infos.values.contains(iceName)) {
+      if (hqIce == iceName || nqIce == iceName) {
         return true;
       }
     }
