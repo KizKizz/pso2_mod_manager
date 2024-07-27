@@ -71,8 +71,8 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
             iceNamesFromSubmod.contains(element.hqLiIceName))
         .toList();
     List<List<String>> csvInfos = [];
-    bool includeHqLiIceOnly = false;
-    bool includeNqLiIceOnly = false;
+    // bool includeHqLiIceOnly = false;
+    // bool includeNqLiIceOnly = false;
     bool magHqIceFound = false;
     bool magNqIceFound = false;
     for (var csvItemData in fromItemCsvData) {
@@ -88,17 +88,17 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
       }
       csvInfos.add(availableModFileData);
       //filter link inner items
-      for (var line in availableModFileData) {
-        if (!includeHqLiIceOnly && line.split(': ').first.contains('High Quality Linked Inner Ice')) {
-          includeHqLiIceOnly = true;
-        }
-        if (!includeNqLiIceOnly && line.split(': ').first.contains('Normal Quality Linked Inner Ice')) {
-          includeNqLiIceOnly = true;
-        }
-        if (includeHqLiIceOnly && includeNqLiIceOnly) {
-          break;
-        }
-      }
+      // for (var line in availableModFileData) {
+      //   if (!includeHqLiIceOnly && line.split(': ').first.contains('High Quality Linked Inner Ice')) {
+      //     includeHqLiIceOnly = true;
+      //   }
+      //   if (!includeNqLiIceOnly && line.split(': ').first.contains('Normal Quality Linked Inner Ice')) {
+      //     includeNqLiIceOnly = true;
+      //   }
+      //   if (includeHqLiIceOnly && includeNqLiIceOnly) {
+      //     break;
+      //   }
+      // }
     }
 
     if (magNqIceFound) {
@@ -108,12 +108,12 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
       availableItemsCsvData = availableItemsCsvData.where((element) => element.itemType == 'NGS').toList();
     }
 
-    if (includeHqLiIceOnly) {
-      availableItemsCsvData = availableItemsCsvData.where((element) => element.hqLiIceName.isNotEmpty).toList();
-    }
-    if (includeNqLiIceOnly) {
-      availableItemsCsvData = availableItemsCsvData.where((element) => element.nqLiIceName.isNotEmpty).toList();
-    }
+    // if (includeHqLiIceOnly) {
+    //   availableItemsCsvData = availableItemsCsvData.where((element) => element.hqLiIceName.isNotEmpty).toList();
+    // }
+    // if (includeNqLiIceOnly) {
+    //   availableItemsCsvData = availableItemsCsvData.where((element) => element.nqLiIceName.isNotEmpty).toList();
+    // }
 
     return Scaffold(
         backgroundColor: Colors.transparent,
