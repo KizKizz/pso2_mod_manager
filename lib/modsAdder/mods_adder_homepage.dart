@@ -418,7 +418,7 @@ void modsAdderHomePage(context) {
                                                       //     () {},
                                                       //   );
                                                       // }
-                                                      processedFileListLoad = modsAdderFilesProcess(context, modAdderDragDropFiles.toList());
+                                                      processedFileListLoad = modsAdderFilesProcess(context, modAdderDragDropFiles.toList(), '');
                                                       modAdderDragDropFiles.clear();
                                                       dropZoneMax = false;
                                                       setState(
@@ -474,7 +474,7 @@ void modsAdderHomePage(context) {
                                                   child: Text(
                                                     context.watch<StateProvider>().modAdderProgressStatus,
                                                     textAlign: TextAlign.center,
-                                                     style: const TextStyle(fontSize: 16),
+                                                    style: const TextStyle(fontSize: 16),
                                                   ))
                                             ],
                                           ),
@@ -1862,7 +1862,7 @@ void modsAdderHomePage(context) {
 }
 
 //suport functions
-Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePaths) async {
+Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePaths, String extraItemName) async {
   List<ModsAdderItem> modsAdderItemList = [];
   List<String> ignoredParams = await ignoreParamsGet();
   // List<String> pathsWithNoIceInRoot = [];
@@ -1952,7 +1952,12 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
     final matchData = playerItemData
         .where((element) => element.containsIce(p.basenameWithoutExtension(iceFile.path)) && foundItemData.where((f) => f.containsIce(p.basenameWithoutExtension(iceFile.path))).isEmpty)
         .toList();
-    matchData.where((element) => (element.getENName().isNotEmpty || element.getJPName().isNotEmpty) || element.category == defaultCategoryDirs[17]);
+    if (extraItemName.isNotEmpty) {
+      matchData.retainWhere((e) => e.getENName() == extraItemName || e.getJPName() == extraItemName);
+    } 
+    // else {
+    //   matchData.where((element) => (element.getENName().isNotEmpty || element.getJPName().isNotEmpty) || element.category == defaultCategoryDirs[17]);
+    // }
     if (matchData.isNotEmpty) {
       if (modsAdderGroupSameItemVariants) {
         for (var data in matchData) {
