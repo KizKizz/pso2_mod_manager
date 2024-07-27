@@ -6980,7 +6980,9 @@ class _HomePageState extends State<HomePage> {
                             context, false, submod, fromItemIces, toItemIces, modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName());
                         //adding
                         var returnedVar = await modsAdderModFilesAdder(
-                            context, await modsAdderFilesProcess(context, [XFile(Uri.file('$swappedPath/${submod.modName.replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath())]));
+                            context,
+                            await modsAdderFilesProcess(context, [XFile(Uri.file('$swappedPath/${submod.modName.replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath())],
+                                modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName()));
                         List<Item> returnedItems = returnedVar.$2;
                         quickItem = returnedItems.first;
                         quickMod = quickItem.mods.firstWhere((e) => e.modName == submod.modName);
@@ -7011,7 +7013,9 @@ class _HomePageState extends State<HomePage> {
                             context, false, submod, fromItemIces, toItemIces, modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName(), fromItemId, toItemId);
                         //adding
                         var returnedVar = await modsAdderModFilesAdder(
-                            context, await modsAdderFilesProcess(context, [XFile(Uri.file('$swappedPath/${submod.modName.replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath())]));
+                            context,
+                            await modsAdderFilesProcess(context, [XFile(Uri.file('$swappedPath/${submod.modName.replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath())],
+                                modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName()));
                         List<Item> returnedItems = returnedVar.$2;
                         quickItem = returnedItems.first;
                         quickMod = quickItem.mods.firstWhere((e) => e.modName == submod.modName);

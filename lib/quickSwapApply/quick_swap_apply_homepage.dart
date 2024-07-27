@@ -11,7 +11,6 @@ import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 TextEditingController selectedItemsSearchTextController = TextEditingController();
 TextEditingController availableItemsSearchTextController = TextEditingController();
@@ -120,12 +119,13 @@ class _AqmInjectionHomePageState extends State<QuickSwapApplyHomePage> {
                     //available Items
                     List<CsvItem> availableItem = [];
                     if (availableItemsSearchTextController.text.isEmpty) {
-                      availableItem = csvItems;
+                      availableItem = csvItems.where((e) => modManCurActiveItemNameLanguage == 'JP' ? e.getJPName().isNotEmpty : e.getENName().isNotEmpty).toList();
                     } else {
                       availableItem = csvItems
                           .where((e) =>
-                              e.getENName().toLowerCase().contains(availableItemsSearchTextController.text.toLowerCase()) ||
-                              e.getJPName().toLowerCase().contains(availableItemsSearchTextController.text.toLowerCase()))
+                              (modManCurActiveItemNameLanguage == 'JP' ? e.getJPName().isNotEmpty : e.getENName().isNotEmpty) &&
+                              (e.getENName().toLowerCase().contains(availableItemsSearchTextController.text.toLowerCase()) ||
+                                  e.getJPName().toLowerCase().contains(availableItemsSearchTextController.text.toLowerCase())))
                           .toList();
                     }
                     //injected Items
@@ -552,25 +552,25 @@ class _AqmInjectionHomePageState extends State<QuickSwapApplyHomePage> {
                                       alignment: WrapAlignment.center,
                                       spacing: 5,
                                       children: [
-                                        ElevatedButton(
-                                            onPressed: Provider.of<StateProvider>(context, listen: false).modAdderProgressStatus.isEmpty
-                                                ? (() async {
-                                                    final prefs = await SharedPreferences.getInstance();
-                                                    if (modsAdderGroupSameItemVariants) {
-                                                      modsAdderGroupSameItemVariants = false;
-                                                      prefs.setBool('modsAdderGroupSameItemVariants', false);
-                                                    } else {
-                                                      modsAdderGroupSameItemVariants = true;
-                                                      prefs.setBool('modsAdderGroupSameItemVariants', true);
-                                                    }
-                                                    setState(
-                                                      () {},
-                                                    );
-                                                  })
-                                                : null,
-                                            child: Text(modsAdderGroupSameItemVariants
-                                                ? '${curLangText!.uiGroupSameItemVariants}: ${curLangText!.uiON}'
-                                                : '${curLangText!.uiGroupSameItemVariants}: ${curLangText!.uiOFF}')),
+                                        // ElevatedButton(
+                                        //     onPressed: Provider.of<StateProvider>(context, listen: false).modAdderProgressStatus.isEmpty
+                                        //         ? (() async {
+                                        //             final prefs = await SharedPreferences.getInstance();
+                                        //             if (modsAdderGroupSameItemVariants) {
+                                        //               modsAdderGroupSameItemVariants = false;
+                                        //               prefs.setBool('modsAdderGroupSameItemVariants', false);
+                                        //             } else {
+                                        //               modsAdderGroupSameItemVariants = true;
+                                        //               prefs.setBool('modsAdderGroupSameItemVariants', true);
+                                        //             }
+                                        //             setState(
+                                        //               () {},
+                                        //             );
+                                        //           })
+                                        //         : null,
+                                        //     child: Text(modsAdderGroupSameItemVariants
+                                        //         ? '${curLangText!.uiGroupSameItemVariants}: ${curLangText!.uiON}'
+                                        //         : '${curLangText!.uiGroupSameItemVariants}: ${curLangText!.uiOFF}')),
                                         ElevatedButton(
                                             onPressed: quickApplyItemList.isNotEmpty && !isAllButtonPressed
                                                 ? () async {
@@ -600,9 +600,7 @@ class _AqmInjectionHomePageState extends State<QuickSwapApplyHomePage> {
                                                       padding: const EdgeInsets.only(right: 10),
                                                       child: SizedBox(width: 15, height: 15, child: CircularProgressIndicator(color: Theme.of(context).buttonTheme.colorScheme!.onSurface)),
                                                     )),
-                                                Visibility(
-                                                  visible: isLoading,
-                                                  child: const SizedBox(width: 10)),
+                                                Visibility(visible: isLoading, child: const SizedBox(width: 10)),
                                                 Text(curLangText!.uiRemoveAll)
                                               ],
                                             )),
