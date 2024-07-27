@@ -11,7 +11,6 @@ import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 TextEditingController selectedItemsSearchTextController = TextEditingController();
 TextEditingController availableItemsSearchTextController = TextEditingController();
