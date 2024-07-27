@@ -2,8 +2,10 @@
     "name": "PSO2NGS Mod Manager",
     "version": "2.8.5",
     "description": [
+        "Removed linked inner filter when swapping Basewears and Setwears (Mods that required modded linked inner will not work correctly if swapped to non-linked inner items)",
         "Quick Swap-Apply function now swap and add only selected item instead of all variants",
         "More bug fixes",
+        "ベースウェアとセットウェアを交換する際のリンクインナー・フィルターを削除(リンクインナーの改造を必要とするMODは、リンクインナーでないアイテムに交換した場合、正しく動作しません)",
         "クイックスワップ-適用機能で、すべてのバリアントの代わりに選択したアイテムのみをスワップして追加するようになりました",
         "その他のバグ修正"
     ],
