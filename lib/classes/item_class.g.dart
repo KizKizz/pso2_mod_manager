@@ -26,7 +26,9 @@ Item _$ItemFromJson(Map<String, dynamic> json) => Item(
       (json['mods'] as List<dynamic>)
           .map((e) => Mod.fromJson(e as Map<String, dynamic>))
           .toList(),
-    );
+    )..creationDate = json['creationDate'] == null
+        ? null
+        : DateTime.parse(json['creationDate'] as String);
 
 Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
       'itemName': instance.itemName,
@@ -40,6 +42,7 @@ Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
       'location': instance.location,
       'applyStatus': instance.applyStatus,
       'applyDate': instance.applyDate.toIso8601String(),
+      'creationDate': instance.creationDate?.toIso8601String(),
       'position': instance.position,
       'isFavorite': instance.isFavorite,
       'isSet': instance.isSet,

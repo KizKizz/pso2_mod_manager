@@ -26,7 +26,9 @@ Mod _$ModFromJson(Map<String, dynamic> json) => Mod(
       (json['submods'] as List<dynamic>)
           .map((e) => SubMod.fromJson(e as Map<String, dynamic>))
           .toList(),
-    );
+    )..creationDate = json['creationDate'] == null
+        ? null
+        : DateTime.parse(json['creationDate'] as String);
 
 Map<String, dynamic> _$ModToJson(Mod instance) => <String, dynamic>{
       'modName': instance.modName,
@@ -35,6 +37,7 @@ Map<String, dynamic> _$ModToJson(Mod instance) => <String, dynamic>{
       'location': instance.location,
       'applyStatus': instance.applyStatus,
       'applyDate': instance.applyDate.toIso8601String(),
+      'creationDate': instance.creationDate?.toIso8601String(),
       'position': instance.position,
       'isNew': instance.isNew,
       'isFavorite': instance.isFavorite,

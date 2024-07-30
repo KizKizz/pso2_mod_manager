@@ -1,5 +1,6 @@
 import 'package:cross_file/cross_file.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:pso2_mod_manager/classes/enum_classes.dart';
 
 class StateProvider with ChangeNotifier {
   bool _isMainBinFound = false;
@@ -46,6 +47,8 @@ class StateProvider with ChangeNotifier {
   String _quickApplyState = '';
   bool _autoAqmInject = false;
   String _aqmInjectionProgressStatus = '';
+  ItemListSort _itemListSortState = ItemListSort.alphabeticalOrder;
+  ModViewListSort _modViewListSortState = ModViewListSort.alphabeticalOrder;
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -91,6 +94,18 @@ class StateProvider with ChangeNotifier {
   String get quickApplyState => _quickApplyState;
   bool get autoAqmInject => _autoAqmInject;
   String get aqmInjectionProgressStatus => _aqmInjectionProgressStatus;
+  ItemListSort get itemListSortState => _itemListSortState;
+  ModViewListSort get modViewListSortState => _modViewListSortState;
+
+  void modViewListSortStateSet(ModViewListSort state) {
+    _modViewListSortState = state;
+    notifyListeners();
+  }
+
+  void itemListSortStateSet(ItemListSort state) {
+    _itemListSortState = state;
+    notifyListeners();
+  }
 
   void setAqmInjectionProgressStatus(String status) {
     _aqmInjectionProgressStatus = status;

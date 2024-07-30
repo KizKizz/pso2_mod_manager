@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -14,6 +16,7 @@ class SubMod {
   String location;
   bool applyStatus;
   DateTime applyDate;
+  DateTime? creationDate = DateTime(0);
   int position;
   bool isNew;
   bool isFavorite;
@@ -64,6 +67,17 @@ class SubMod {
       return false;
     } else {
       return true;
+    }
+  }
+
+  void setLatestCreationDate() {
+    List<String> allModFilePaths = getDistinctModFilePaths();
+    creationDate = Directory(location).statSync().changed;
+    if (allModFilePaths.isNotEmpty) {
+      List<DateTime> latestCreationDates = allModFilePaths.map((e) => File(e).statSync().changed).where((element) => element.isAfter(creationDate!)).toList();
+      for (var latestDate in latestCreationDates) {
+        if (latestDate.isAfter(creationDate!)) creationDate = latestDate;
+      }
     }
   }
 

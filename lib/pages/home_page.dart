@@ -20,6 +20,7 @@ import 'package:pso2_mod_manager/classes/category_class.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
 import 'package:pso2_mod_manager/classes/csv_item_class.dart';
+import 'package:pso2_mod_manager/classes/enum_classes.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
@@ -117,6 +118,8 @@ class _HomePageState extends State<HomePage> {
   double modviewPanelWidth = 0;
   List<FocusNode> expansionListFNodes = [];
   bool _previewDismiss = false;
+  ItemListSort _itemListSortState = ItemListSort.none;
+  ModViewListSort _modViewListSortState = ModViewListSort.none;
 
   @override
   void initState() {
@@ -1811,6 +1814,16 @@ class _HomePageState extends State<HomePage> {
                                                         itemCount: moddedItemsList[groupIndex].categories.length,
                                                         itemBuilder: (context, categoryIndex) {
                                                           var curCategory = moddedItemsList[groupIndex].categories[categoryIndex];
+                                                          //sort
+                                                          if (_itemListSortState != context.watch<StateProvider>().itemListSortState) {
+                                                            if (context.watch<StateProvider>().itemListSortState == ItemListSort.alphabeticalOrder) {
+                                                              _itemListSortState = ItemListSort.alphabeticalOrder;
+                                                              itemClicked[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => []);
+                                                            } else if (context.watch<StateProvider>().itemListSortState == ItemListSort.recentModsAdded) {
+                                                              _itemListSortState = ItemListSort.recentModsAdded;
+                                                              itemClicked[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => []);
+                                                            }
+                                                          }
                                                           if (itemButtonsVisible[groupIndex].isEmpty || itemButtonsVisible[groupIndex].length != moddedItemsList[groupIndex].categories.length) {
                                                             itemButtonsVisible[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => []);
                                                           }
@@ -2214,6 +2227,16 @@ class _HomePageState extends State<HomePage> {
         }
       }
     }
+
+    //sort
+    if (_modViewListSortState != context.watch<StateProvider>().modViewListSortState) {
+      if (context.watch<StateProvider>().modViewListSortState == ModViewListSort.alphabeticalOrder) {
+        _modViewListSortState = ModViewListSort.alphabeticalOrder;
+      } else if (context.watch<StateProvider>().modViewListSortState == ModViewListSort.recentModsAdded) {
+        _modViewListSortState = ModViewListSort.recentModsAdded;
+      }
+    }
+    
     return Column(children: [
       AppBar(
         automaticallyImplyLeading: false,
