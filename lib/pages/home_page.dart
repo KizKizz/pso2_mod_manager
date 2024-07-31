@@ -1793,21 +1793,25 @@ class _HomePageState extends State<HomePage> {
                               if (modViewModSetSubModIndex != -1) {
                                 previewModName = curMod.submods[modViewModSetSubModIndex].submodName;
                                 previewImages.clear();
-                                previewImages.addAll(curMod.submods[modViewModSetSubModIndex].previewImages
-                                    .toSet()
-                                    .map((path) => PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
-                                previewImages.addAll(curMod.submods[modViewModSetSubModIndex].previewVideos
-                                    .toSet()
-                                    .map((path) => PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
+                                previewImages.addAll(curMod.previewImages.toSet().map((path) => PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
+                                previewImages.addAll(curMod.previewVideos.toSet().map((path) => PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
+                                // previewImages.addAll(curMod.submods[modViewModSetSubModIndex].previewImages
+                                //     .toSet()
+                                //     .map((path) => PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
+                                // previewImages.addAll(curMod.submods[modViewModSetSubModIndex].previewVideos
+                                //     .toSet()
+                                //     .map((path) => PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
                               } else {
                                 previewModName = curMod.modName;
                                 previewImages.clear();
-                                for (var element in curMod.submods) {
-                                  previewImages.addAll(element.previewImages.toSet().map((path) => PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
-                                }
-                                for (var element in curMod.submods) {
-                                  previewImages.addAll(element.previewVideos.toSet().map((path) => PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
-                                }
+                                previewImages.addAll(curMod.previewImages.toSet().map((path) => PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
+                                previewImages.addAll(curMod.previewVideos.toSet().map((path) => PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
+                                // for (var element in curMod.submods) {
+                                //   previewImages.addAll(element.previewImages.toSet().map((path) => PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
+                                // }
+                                // for (var element in curMod.submods) {
+                                //   previewImages.addAll(element.previewVideos.toSet().map((path) => PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
+                                // }
                               }
                             } else {
                               previewModName = '';
