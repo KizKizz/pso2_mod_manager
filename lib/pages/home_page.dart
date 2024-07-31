@@ -74,6 +74,7 @@ import 'package:pso2_mod_manager/widgets/preview_video_stack.dart';
 import 'package:pso2_mod_manager/widgets/snackbar.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:url_launcher/url_launcher.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
@@ -590,9 +591,9 @@ class _HomePageState extends State<HomePage> {
           ),
           child: isShowHideCates
               //Hidden List
-              ? ListView.builder(
-                  physics: const ScrollPhysics(),
-                  cacheExtent: double.maxFinite,
+              ? SuperListView.builder(
+                  physics: const SuperRangeMaintainingScrollPhysics(),
+                  // cacheExtent: double.maxFinite,
                   primary: false,
                   padding: const EdgeInsets.only(left: 2),
                   itemCount: hiddenItemCategories.length,
@@ -637,10 +638,10 @@ class _HomePageState extends State<HomePage> {
                           //     : null,
                           initiallyExpanded: true,
                           children: [
-                            ListView.builder(
+                            SuperListView.builder(
                               shrinkWrap: true,
-                              physics: const ScrollPhysics(),
-                              cacheExtent: double.maxFinite,
+                              physics: const SuperRangeMaintainingScrollPhysics(),
+                              // cacheExtent: double.maxFinite,
                               primary: false,
                               itemCount: hiddenCateList.length,
                               itemBuilder: (context, categoryIndex) {
@@ -712,8 +713,8 @@ class _HomePageState extends State<HomePage> {
                   //Redordering ItemList
                   ? ReorderableListView.builder(
                       padding: const EdgeInsets.only(left: 2, right: 1),
-                      physics: const ScrollPhysics(),
-                      cacheExtent: double.maxFinite,
+                      physics: const SuperRangeMaintainingScrollPhysics(),
+                      // cacheExtent: double.maxFinite,
                       primary: false,
                       buildDefaultDragHandles: false,
                       onReorder: (int oldIndex, int newIndex) {
@@ -758,10 +759,10 @@ class _HomePageState extends State<HomePage> {
                       })
                   // ==========================================================================================
                   //Normal Catetype List
-                  : ListView.builder(
-                      physics: const ScrollPhysics(),
+                  : SuperListView.builder(
+                      physics: const SuperRangeMaintainingScrollPhysics(),
                       padding: const EdgeInsets.only(left: 2),
-                      cacheExtent: double.maxFinite,
+                      // cacheExtent: double.maxFinite,
                       primary: false,
                       itemCount: moddedItemsList.length,
                       itemBuilder: (context, groupIndex) {
@@ -959,8 +960,8 @@ class _HomePageState extends State<HomePage> {
                                           child: ReorderableListView.builder(
                                               shrinkWrap: true,
                                               padding: const EdgeInsets.only(left: 2, right: 1),
-                                              physics: const ScrollPhysics(),
-                                              cacheExtent: double.maxFinite,
+                                              physics: const SuperRangeMaintainingScrollPhysics(),
+                                              // cacheExtent: double.maxFinite,
                                               primary: false,
                                               buildDefaultDragHandles: false,
                                               onReorder: (int oldIndex, int newIndex) {
@@ -1027,10 +1028,10 @@ class _HomePageState extends State<HomePage> {
                                         //Main Normal Cate=========================================================
                                         Visibility(
                                           visible: !isCatesReordering[groupIndex],
-                                          child: ListView.builder(
+                                          child: SuperListView.builder(
                                             shrinkWrap: true,
                                             // physics: const NeverScrollableScrollPhysics(),
-                                            cacheExtent: double.maxFinite,
+                                            // cacheExtent: double.maxFinite,
                                             primary: false,
                                             itemCount: moddedItemsList[groupIndex].categories.length,
                                             itemBuilder: (context, categoryIndex) {
@@ -1192,13 +1193,13 @@ class _HomePageState extends State<HomePage> {
                                                       //     ? Text(defaultCategoryDirsJP[defaultCategoryDirs.indexOf(curCategory.categoryName)])
                                                       //     : null,
                                                       children: [
-                                                        ListView.builder(
+                                                        SuperListView.builder(
                                                             shrinkWrap: true,
                                                             // physics: const NeverScrollableScrollPhysics(),
-                                                            cacheExtent: double.maxFinite,
+                                                            // cacheExtent: double.maxFinite,
                                                             primary: false,
                                                             itemCount: curCategory.items.length,
-                                                            prototypeItem: const SizedBox(height: 84),
+                                                            // prototypeItem: const SizedBox(height: 84),
                                                             itemBuilder: (context, itemIndex) {
                                                               var curItem = curCategory.items[itemIndex];
                                                               if (itemButtonsVisible[groupIndex][categoryIndex].isEmpty ||
@@ -1726,11 +1727,11 @@ class _HomePageState extends State<HomePage> {
                     return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
                   }),
                 ),
-                child: ListView.builder(
+                child: SuperListView.builder(
                     // shrinkWrap: true,
-                    physics: const ScrollPhysics(),
+                    physics: const SuperRangeMaintainingScrollPhysics(),
                     primary: true,
-                    cacheExtent: double.maxFinite,
+                    // cacheExtent: double.maxFinite,
                     //padding: const EdgeInsets.symmetric(horizontal: 1),
                     itemCount: modViewItem!.mods.length,
                     itemBuilder: (context, modIndex) {
@@ -3375,9 +3376,9 @@ class _HomePageState extends State<HomePage> {
                                     ],
                                   ),
                                   children: [
-                                    ListView.builder(
+                                    SuperListView.builder(
                                         shrinkWrap: true,
-                                        cacheExtent: double.maxFinite,
+                                        // cacheExtent: double.maxFinite,
                                         primary: false,
                                         physics: const NeverScrollableScrollPhysics(),
                                         itemCount: curMod.submods.length,
@@ -4081,10 +4082,10 @@ class _HomePageState extends State<HomePage> {
                                                     ],
                                                   ),
                                                   children: [
-                                                    ListView.builder(
+                                                    SuperListView.builder(
                                                         shrinkWrap: true,
-                                                        cacheExtent: double.maxFinite,
-                                                        prototypeItem: const ListTile(),
+                                                        // cacheExtent: double.maxFinite,
+                                                        // prototypeItem: const ListTile(),
                                                         primary: false,
                                                         physics: const NeverScrollableScrollPhysics(),
                                                         itemCount: curSubmod.modFiles.length,
@@ -4676,9 +4677,9 @@ class _HomePageState extends State<HomePage> {
                 return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
               }),
             ),
-            child: ListView.builder(
+            child: SuperListView.builder(
               // shrinkWrap: true,
-              physics: const ScrollPhysics(),
+              physics: const SuperRangeMaintainingScrollPhysics(),
               padding: const EdgeInsets.only(right: 2),
               itemCount: moddedItemsList.length,
               itemBuilder: (context, groupIndex) {
@@ -4717,7 +4718,7 @@ class _HomePageState extends State<HomePage> {
                             //     : null,
                             initiallyExpanded: moddedItemsList[groupIndex].expanded,
                             children: [
-                              ListView.builder(
+                              SuperListView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
                                 itemCount: cateListLength,
@@ -4770,7 +4771,7 @@ class _HomePageState extends State<HomePage> {
                                       //     ? Text(defaultCategoryDirsJP[defaultCategoryDirs.indexOf(curCategory.categoryName)])
                                       //     : null,
                                       children: [
-                                        ListView.builder(
+                                        SuperListView.builder(
                                             shrinkWrap: true,
                                             physics: const NeverScrollableScrollPhysics(),
                                             itemCount: itemListLength,
@@ -5415,9 +5416,9 @@ class _HomePageState extends State<HomePage> {
                   return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
                 }),
               ),
-              child: ListView.builder(
+              child: SuperListView.builder(
                   // shrinkWrap: true,
-                  physics: const ScrollPhysics(),
+                  physics: const SuperRangeMaintainingScrollPhysics(),
                   padding: const EdgeInsets.only(left: 2),
                   itemCount: modSetList.length,
                   itemBuilder: (context, setIndex) {
@@ -5706,10 +5707,10 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   initiallyExpanded: curSet.expanded,
                                   children: [
-                                    ListView.builder(
+                                    SuperListView.builder(
                                         shrinkWrap: true,
                                         physics: const NeverScrollableScrollPhysics(),
-                                        cacheExtent: double.maxFinite,
+                                        // cacheExtent: double.maxFinite,
                                         primary: false,
                                         itemCount: curSet.setItems.length,
                                         itemBuilder: (context, itemIndex) {
