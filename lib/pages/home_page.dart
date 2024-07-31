@@ -1294,19 +1294,28 @@ class _HomePageState extends State<HomePage> {
                                                                                                     : '${curItem.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMods}',
                                                                                                 style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                               )
-                                                                                            : searchTextController.value.text.isNotEmpty
+                                                                                            : searchTextController.value.text.isNotEmpty &&
+                                                                                                    itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase()) <= 0
                                                                                                 ? Text(
-                                                                                                    itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase()) < 2
-                                                                                                        ? '${itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase())} ${curLangText!.uiMod}'
-                                                                                                        : '${itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase())} ${curLangText!.uiMods}',
-                                                                                                    style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                                  )
-                                                                                                : Text(
                                                                                                     curItem.mods.length < 2
                                                                                                         ? '${curItem.mods.length} ${curLangText!.uiMod}'
                                                                                                         : '${curItem.mods.length} ${curLangText!.uiMods}',
                                                                                                     style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                                  ),
+                                                                                                  )
+                                                                                                : searchTextController.value.text.isNotEmpty &&
+                                                                                                        itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase()) > 0
+                                                                                                    ? Text(
+                                                                                                        itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase()) < 2
+                                                                                                            ? '${itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase())} ${curLangText!.uiMod}'
+                                                                                                            : '${itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase())} ${curLangText!.uiMods}',
+                                                                                                        style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                                      )
+                                                                                                    : Text(
+                                                                                                        curItem.mods.length < 2
+                                                                                                            ? '${curItem.mods.length} ${curLangText!.uiMod}'
+                                                                                                            : '${curItem.mods.length} ${curLangText!.uiMods}',
+                                                                                                        style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                                      ),
                                                                                       ),
                                                                                       Container(
                                                                                         padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
