@@ -17,6 +17,7 @@ import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
+import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 TextEditingController swapperSearchTextController = TextEditingController();
@@ -228,10 +229,10 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                               return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
                                             }),
                                           ),
-                                          child: ListView.builder(
+                                          child: SuperListView.builder(
                                               padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                                              shrinkWrap: true,
-                                              //physics: const PageScrollPhysics(),
+                                              // shrinkWrap: true,
+                                              physics: const RangeMaintainingScrollPhysics(),
                                               itemCount: fromItemCsvData.length,
                                               itemBuilder: (context, i) {
                                                 return Padding(
@@ -319,10 +320,10 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                 return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
                                               }),
                                             ),
-                                            child: ListView.builder(
+                                            child: SuperListView.builder(
                                                 padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                                                shrinkWrap: true,
-                                                //physics: const BouncingScrollPhysics(),
+                                                // shrinkWrap: true,
+                                                physics: const RangeMaintainingScrollPhysics(),
                                                 itemCount: queueFromEmoteCsvFiles.length,
                                                 itemBuilder: (context, i) {
                                                   return Padding(
@@ -549,10 +550,10 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                   return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
                                                 }),
                                               ),
-                                              child: ListView.builder(
+                                              child: SuperListView.builder(
                                                   padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                                                  shrinkWrap: true,
-                                                  //physics: const BouncingScrollPhysics(),
+                                                  // shrinkWrap: true,
+                                                  physics: const RangeMaintainingScrollPhysics(),
                                                   itemCount: swapperSearchTextController.text.isEmpty ? availableEmotesCsvData.length : toIEmotesSearchResults.length,
                                                   itemBuilder: (context, i) {
                                                     return Padding(

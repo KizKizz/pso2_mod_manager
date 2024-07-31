@@ -10,6 +10,7 @@ import 'package:media_kit/media_kit.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
+import 'package:pso2_mod_manager/classes/enum_classes.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/app_update_dialog.dart';
 import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
@@ -242,6 +243,20 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     setState(() {
       //first Time Language Set
       firstTimeLanguageSet = (prefs.getBool('firstTimeLanguageSet') ?? false);
+      //items With New Mods On Top
+      itemsWithNewModsOnTop = (prefs.getBool('itemsWithNewModsOnTop') ?? false);
+      if (itemsWithNewModsOnTop) {
+        Provider.of<StateProvider>(context, listen: false).itemListSortStateSet(ItemListSort.recentModsAdded);
+      } else {
+        Provider.of<StateProvider>(context, listen: false).itemListSortStateSet(ItemListSort.alphabeticalOrder);
+      }
+      //new Mods On Top
+      newModsOnTop = (prefs.getBool('newModsOnTop') ?? false);
+      if (newModsOnTop) {
+        Provider.of<StateProvider>(context, listen: false).modViewListSortStateSet(ModViewListSort.recentModsAdded);
+      } else {
+        Provider.of<StateProvider>(context, listen: false).modViewListSortStateSet(ModViewListSort.alphabeticalOrder);
+      }
       //mods adder group same item variants
       modsAdderGroupSameItemVariants = prefs.getBool('modsAdderGroupSameItemVariants') ?? false;
       //profile names

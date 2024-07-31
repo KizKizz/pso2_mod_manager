@@ -28,6 +28,7 @@ import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:io/io.dart' as io;
+import 'package:super_sliver_list/super_sliver_list.dart';
 
 bool dropZoneMax = true;
 bool _newModDragging = false;
@@ -152,7 +153,8 @@ void modsAdderHomePage(context) {
                                                       height: constraints.maxHeight,
                                                       child: Padding(
                                                         padding: const EdgeInsets.symmetric(horizontal: 0),
-                                                        child: ListView.builder(
+                                                        child: SuperListView.builder(
+                                                          physics: const RangeMaintainingScrollPhysics(),
                                                             itemCount: modAdderDragDropFiles.length,
                                                             itemBuilder: (BuildContext context, int index) {
                                                               return ListTile(
@@ -589,10 +591,9 @@ void modsAdderHomePage(context) {
                                                       return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
                                                     }),
                                                   ),
-                                                  child: SingleChildScrollView(
-                                                      child: ListView.builder(
-                                                          shrinkWrap: true,
-                                                          physics: const NeverScrollableScrollPhysics(),
+                                                  child: SuperListView.builder(
+                                                          // shrinkWrap: true,
+                                                          physics: const RangeMaintainingScrollPhysics(),
                                                           itemCount: processedFileList.length,
                                                           itemBuilder: (context, index) {
                                                             if (processedFileList.isNotEmpty) {
@@ -1015,9 +1016,9 @@ void modsAdderHomePage(context) {
                                                                   //childrenPadding: const EdgeInsets.only(left: 10),
                                                                   children: [
                                                                     //mods list
-                                                                    ListView.builder(
+                                                                    SuperListView.builder(
                                                                         shrinkWrap: true,
-                                                                        physics: const NeverScrollableScrollPhysics(),
+                                                                        physics: const RangeMaintainingScrollPhysics(),
                                                                         itemCount: processedFileList[index].modList.length,
                                                                         itemBuilder: (context, mIndex) {
                                                                           var curMod = processedFileList[index].modList[mIndex];
@@ -1346,9 +1347,9 @@ void modsAdderHomePage(context) {
                                                                             children: [
                                                                               //if file in mod folder found
                                                                               if (curMod.filesInMod.isNotEmpty)
-                                                                                ListView.builder(
+                                                                                SuperListView.builder(
                                                                                     shrinkWrap: true,
-                                                                                    physics: const NeverScrollableScrollPhysics(),
+                                                                                    physics: const RangeMaintainingScrollPhysics(),
                                                                                     itemCount: curMod.filesInMod.length,
                                                                                     itemBuilder: (context, fIndex) {
                                                                                       return ListTile(
@@ -1361,9 +1362,9 @@ void modsAdderHomePage(context) {
                                                                                     }),
                                                                               //if submmod list found
                                                                               if (curMod.submodList.isNotEmpty)
-                                                                                ListView.builder(
+                                                                                SuperListView.builder(
                                                                                     shrinkWrap: true,
-                                                                                    physics: const NeverScrollableScrollPhysics(),
+                                                                                    physics: const RangeMaintainingScrollPhysics(),
                                                                                     itemCount: curMod.submodList.length,
                                                                                     itemBuilder: (context, sIndex) {
                                                                                       var curSubmod = curMod.submodList[sIndex];
@@ -1631,9 +1632,9 @@ void modsAdderHomePage(context) {
                                                                                                 ],
                                                                                               ),
                                                                                         children: [
-                                                                                          ListView.builder(
+                                                                                          SuperListView.builder(
                                                                                               shrinkWrap: true,
-                                                                                              //physics: const NeverScrollableScrollPhysics(),
+                                                                                              physics: const RangeMaintainingScrollPhysics(),
                                                                                               itemCount: curSubmod.files.length,
                                                                                               itemBuilder: (context, fIndex) {
                                                                                                 return ListTile(
@@ -1674,7 +1675,7 @@ void modsAdderHomePage(context) {
                                                               );
                                                             }
                                                             return null;
-                                                          })),
+                                                          }),
                                                 ),
                                               ],
                                             );

@@ -11,6 +11,7 @@ import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
+import 'package:super_sliver_list/super_sliver_list.dart';
 
 TextEditingController selectedItemsSearchTextController = TextEditingController();
 TextEditingController availableItemsSearchTextController = TextEditingController();
@@ -262,10 +263,10 @@ class _AqmInjectionHomePageState extends State<QuickSwapApplyHomePage> {
                                                         return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
                                                       }),
                                                     ),
-                                                    child: ListView.builder(
+                                                    child: SuperListView.builder(
                                                         padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                                                        shrinkWrap: true,
-                                                        //physics: const PageScrollPhysics(),
+                                                        // shrinkWrap: true,
+                                                        physics: const RangeMaintainingScrollPhysics(),
                                                         itemCount: availableItem.length,
                                                         itemBuilder: (context, i) {
                                                           return Padding(
@@ -441,10 +442,10 @@ class _AqmInjectionHomePageState extends State<QuickSwapApplyHomePage> {
                                                             return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
                                                           }),
                                                         ),
-                                                        child: ListView.builder(
+                                                        child: SuperListView.builder(
                                                             padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                                                            shrinkWrap: true,
-                                                            //physics: const BouncingScrollPhysics(),
+                                                            // shrinkWrap: true,
+                                                            physics: const RangeMaintainingScrollPhysics(),
                                                             itemCount: quickApplyItemList.length,
                                                             itemBuilder: (context, i) {
                                                               return Padding(

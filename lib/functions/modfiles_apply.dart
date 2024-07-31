@@ -102,17 +102,6 @@ Future<List<ModFile>> modFilesApply(context, List<ModFile> modFiles) async {
         }
       }
     }
-
-    // String dupAppliedFiles = '';
-    // for (var modFile in alreadyAppliedModFiles) {
-    //   dupAppliedFiles += '${modFile.itemName} > ${modFile.modName} > ${modFile.submodName} > ${modFile.modFileName}\n';
-    // }
-    // applyMods = await duplicateAppliedDialog(context, dupAppliedFiles.trim());
-    // if (applyMods) {
-    //   for (var modFile in alreadyAppliedModFiles) {
-    //     await modFileAppliedDupRestore(context, appliedItemList, modFile);
-    //   }
-    // }
   } else {
     for (var modFile in modFiles) {
       bool replacedStatus = await modFileApply(context, modFile);
@@ -126,25 +115,6 @@ Future<List<ModFile>> modFilesApply(context, List<ModFile> modFiles) async {
       }
     }
   }
-
-  //apply mods
-
-  // if (applyMods) {
-  //   for (var modFile in modFiles) {
-  //     bool replacedStatus = await modFileApply(context, modFile);
-  //     if (replacedStatus) {
-  //       // if (alreadyAppliedModFiles.where((element) => element.location == modFile.location).isNotEmpty) {
-  //       //   await modFileAppliedDupRestore(moddedItemsList, modFile);
-  //       // }
-  //       modFile.applyStatus = true;
-  //       modFile.applyDate = DateTime.now();
-  //       if (modFile.isNew) {
-  //         modFile.isNew = false;
-  //       }
-  //       appliedModFiles.add(modFile);
-  //     }
-  //   }
-  // }
 
   return appliedModFiles;
 }
@@ -233,47 +203,3 @@ Future<List<ModFile>> duplicateAppliedDialog(context, List<ModFile> dupModFiles)
                 ]);
           }));
 }
-
-// Future<bool> duplicateAppliedDialog(context, String fileList) async {
-//   return await showDialog(
-//       barrierDismissible: false,
-//       context: context,
-//       builder: (context) => AlertDialog(
-//               shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
-//               backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-//               titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
-//               title: Center(
-//                 child: Text(curLangText!.uiDuplicatesInAppliedModsFound, style: const TextStyle(fontWeight: FontWeight.w700)),
-//               ),
-//               contentPadding: const EdgeInsets.only(left: 16, right: 16, bottom: 10),
-//               content: Padding(
-//                 padding: const EdgeInsets.all(16.0),
-//                 child: Column(
-//                   mainAxisSize: MainAxisSize.min,
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   mainAxisAlignment: MainAxisAlignment.start,
-//                   children: [
-//                     Text(
-//                       '${curLangText!.uiApplyingWouldReplaceModFiles}:',
-//                       style: const TextStyle(fontWeight: FontWeight.w500),
-//                     ),
-//                     Padding(
-//                       padding: const EdgeInsets.only(top: 10),
-//                       child: Text(fileList),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//               actions: <Widget>[
-//                 ElevatedButton(
-//                     child: Text(curLangText!.uiReturn),
-//                     onPressed: () async {
-//                       Navigator.pop(context, false);
-//                     }),
-//                 ElevatedButton(
-//                     onPressed: () async {
-//                       Navigator.pop(context, true);
-//                     },
-//                     child: Text(curLangText!.uiSure))
-//               ]));
-// }
