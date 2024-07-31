@@ -298,7 +298,7 @@
   "uiSelectFileInSettings": "在设置中选择文件",
   "uiRemoveInjectedCustomAqm": "移除注入的自定义AQM文件",
   "uiAddRemoveQuickApplyItems": "添加/删除快捷应用物品",
-  "uiSwapThisModToSelectedItemInList": "将此 mod 交换到列表中的选定项目，然后添加到 Mod 管理器并应用",
+  "uiSwapThisModToSelectedItemInList": "将此 mod 幻化至列表中的选定项目，然后添加到 Mod 管理器并应用",
   "uiPreparing": "准备中",
   "uiDragDropFiles": "拖放文件夹、.zip、.rar、.7z文件\n以及.ice文件到这里\n或者点击\"添加文件夹或文件\"按钮选择文件夹或文件。\n大量文件的处理可能会花费较长时间。",
   "uiAchiveCurrentlyNotSupported": "当前不支持的压缩文件类型。请解压存档文件后，再将内容拖到此处。",
