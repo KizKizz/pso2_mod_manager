@@ -3,7 +3,7 @@
     "version": "2.8.6",
     "description": [
         "Added options to sort Item List and Mods List by the most recently added mods",
-        "Switched to a better listview to improve performances for large lists",
+        "Switched to a better listview to improve performances of large lists",
         "More bug fixes",
         "アイテムリストとMODリストを最近追加されたMODでソートするオプションを追加",
         "大きなリストのパフォーマンスを向上させるため、より優れたリストビューに変更",
