@@ -1,10 +1,12 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.8.5",
+    "version": "2.8.6",
     "description": [
         "Added options to sort Item List and Mods List by the most recently added mods",
+        "Improved performances for large lists",
         "More bug fixes",
         "アイテムリストとMODリストを最近追加されたMODでソートするオプションを追加",
+        "大きなリストに対するパフォーマンスの向上",
         "その他のバグ修正"
     ],
     "windows_file": "",
