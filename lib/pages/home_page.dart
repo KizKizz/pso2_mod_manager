@@ -1294,19 +1294,28 @@ class _HomePageState extends State<HomePage> {
                                                                                                     : '${curItem.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMods}',
                                                                                                 style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                               )
-                                                                                            : searchTextController.value.text.isNotEmpty
+                                                                                            : searchTextController.value.text.isNotEmpty &&
+                                                                                                    itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase()) <= 0
                                                                                                 ? Text(
-                                                                                                    itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase()) < 2
-                                                                                                        ? '${itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase())} ${curLangText!.uiMod}'
-                                                                                                        : '${itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase())} ${curLangText!.uiMods}',
-                                                                                                    style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                                  )
-                                                                                                : Text(
                                                                                                     curItem.mods.length < 2
                                                                                                         ? '${curItem.mods.length} ${curLangText!.uiMod}'
                                                                                                         : '${curItem.mods.length} ${curLangText!.uiMods}',
                                                                                                     style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                                  ),
+                                                                                                  )
+                                                                                                : searchTextController.value.text.isNotEmpty &&
+                                                                                                        itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase()) > 0
+                                                                                                    ? Text(
+                                                                                                        itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase()) < 2
+                                                                                                            ? '${itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase())} ${curLangText!.uiMod}'
+                                                                                                            : '${itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase())} ${curLangText!.uiMods}',
+                                                                                                        style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                                      )
+                                                                                                    : Text(
+                                                                                                        curItem.mods.length < 2
+                                                                                                            ? '${curItem.mods.length} ${curLangText!.uiMod}'
+                                                                                                            : '${curItem.mods.length} ${curLangText!.uiMods}',
+                                                                                                        style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                                      ),
                                                                                       ),
                                                                                       Container(
                                                                                         padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
@@ -1784,21 +1793,25 @@ class _HomePageState extends State<HomePage> {
                               if (modViewModSetSubModIndex != -1) {
                                 previewModName = curMod.submods[modViewModSetSubModIndex].submodName;
                                 previewImages.clear();
-                                previewImages.addAll(curMod.submods[modViewModSetSubModIndex].previewImages
-                                    .toSet()
-                                    .map((path) => PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
-                                previewImages.addAll(curMod.submods[modViewModSetSubModIndex].previewVideos
-                                    .toSet()
-                                    .map((path) => PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
+                                previewImages.addAll(curMod.previewImages.toSet().map((path) => PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
+                                previewImages.addAll(curMod.previewVideos.toSet().map((path) => PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
+                                // previewImages.addAll(curMod.submods[modViewModSetSubModIndex].previewImages
+                                //     .toSet()
+                                //     .map((path) => PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
+                                // previewImages.addAll(curMod.submods[modViewModSetSubModIndex].previewVideos
+                                //     .toSet()
+                                //     .map((path) => PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
                               } else {
                                 previewModName = curMod.modName;
                                 previewImages.clear();
-                                for (var element in curMod.submods) {
-                                  previewImages.addAll(element.previewImages.toSet().map((path) => PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
-                                }
-                                for (var element in curMod.submods) {
-                                  previewImages.addAll(element.previewVideos.toSet().map((path) => PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
-                                }
+                                previewImages.addAll(curMod.previewImages.toSet().map((path) => PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
+                                previewImages.addAll(curMod.previewVideos.toSet().map((path) => PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
+                                // for (var element in curMod.submods) {
+                                //   previewImages.addAll(element.previewImages.toSet().map((path) => PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
+                                // }
+                                // for (var element in curMod.submods) {
+                                //   previewImages.addAll(element.previewVideos.toSet().map((path) => PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
+                                // }
                               }
                             } else {
                               previewModName = '';
