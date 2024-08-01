@@ -225,10 +225,20 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
                       mod.isNew = true;
                       item.isNew = true;
                     }
+                    //creation date
+                    submod.setLatestCreationDate();
+                    if (mod.creationDate == DateTime(0) || submod.creationDate!.isAfter(mod.creationDate!)) mod.creationDate = submod.creationDate;
+                    if (item.creationDate == DateTime(0) || submod.creationDate!.isAfter(item.creationDate!)) item.creationDate = submod.creationDate;
                   }
                 } else {
                   mod.isNew = true;
                   item.isNew = true;
+                }
+                // sort
+                if (newModsOnTop) {
+                  mod.submods.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
+                } else {
+                  mod.submods.sort((a, b) => a.submodName.toLowerCase().compareTo(b.submodName.toLowerCase()));
                 }
               }
             } else {
@@ -237,8 +247,19 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
             if (item.applyStatus && item.mods.where((element) => element.applyStatus).isEmpty) {
               item.applyStatus = false;
             }
+            // sort
+            if (newModsOnTop) {
+              item.mods.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
+            } else {
+              item.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
+            }
           }
-          cate.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
+          // sort
+          if (itemsWithNewModsOnTop) {
+            cate.items.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
+          } else {
+            cate.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
+          }
         }
       }
       //sort cates in catetype
@@ -261,14 +282,6 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
   cateTypes.map((cateType) => cateType.toJson()).toList();
   const JsonEncoder encoder = JsonEncoder.withIndent('  ');
   File(modManModsListJsonPath).writeAsStringSync(encoder.convert(cateTypes));
-
-  //Clear refsheets
-  // if (itemIconRefSheetsList.isNotEmpty) {
-  //   itemIconRefSheetsList.clear();
-  // }
-  // if (csvInfosFromSheets.isNotEmpty) {
-  //   csvInfosFromSheets.clear();
-  // }
 
   playerItemData.clear();
 

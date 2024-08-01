@@ -35,7 +35,9 @@ SubMod _$SubModFromJson(Map<String, dynamic> json) => SubMod(
       (json['modFiles'] as List<dynamic>)
           .map((e) => ModFile.fromJson(e as Map<String, dynamic>))
           .toList(),
-    );
+    )..creationDate = json['creationDate'] == null
+        ? null
+        : DateTime.parse(json['creationDate'] as String);
 
 Map<String, dynamic> _$SubModToJson(SubMod instance) => <String, dynamic>{
       'submodName': instance.submodName,
@@ -45,6 +47,7 @@ Map<String, dynamic> _$SubModToJson(SubMod instance) => <String, dynamic>{
       'location': instance.location,
       'applyStatus': instance.applyStatus,
       'applyDate': instance.applyDate.toIso8601String(),
+      'creationDate': instance.creationDate?.toIso8601String(),
       'position': instance.position,
       'isNew': instance.isNew,
       'isFavorite': instance.isFavorite,

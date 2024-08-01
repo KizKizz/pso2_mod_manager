@@ -13,6 +13,7 @@ import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_acc_swappage.dart' as msas;
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:super_sliver_list/super_sliver_list.dart';
 
 TextEditingController swapperSearchTextController = TextEditingController();
 TextEditingController swapperFromItemsSearchTextController = TextEditingController();
@@ -186,10 +187,10 @@ class _ItemsSwapperAccHomePageState extends State<ItemsSwapperAccHomePage> {
                                               return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
                                             }),
                                           ),
-                                          child: ListView.builder(
+                                          child: SuperListView.builder(
                                               padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                                              shrinkWrap: true,
-                                              //physics: const PageScrollPhysics(),
+                                              // shrinkWrap: true,
+                                              physics: const RangeMaintainingScrollPhysics(),
                                               itemCount: swapperFromItemsSearchTextController.text.isEmpty ? fromItemCsvData.length : fromItemSearchResults.length,
                                               itemBuilder: (context, i) {
                                                 return Padding(
@@ -459,10 +460,10 @@ class _ItemsSwapperAccHomePageState extends State<ItemsSwapperAccHomePage> {
                                                   return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
                                                 }),
                                               ),
-                                              child: ListView.builder(
+                                              child: SuperListView.builder(
                                                   padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                                                  shrinkWrap: true,
-                                                  //physics: const BouncingScrollPhysics(),
+                                                  // shrinkWrap: true,
+                                                  physics: const RangeMaintainingScrollPhysics(),
                                                   itemCount: swapperSearchTextController.text.isEmpty ? availableAccCsvData.length : toAccSearchResults.length,
                                                   itemBuilder: (context, i) {
                                                     return Padding(

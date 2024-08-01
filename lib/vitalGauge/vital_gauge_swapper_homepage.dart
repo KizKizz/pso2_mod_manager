@@ -22,6 +22,7 @@ import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/widgets/snackbar.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
+import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:window_manager/window_manager.dart';
 // ignore: depend_on_referenced_packages
@@ -234,7 +235,8 @@ void vitalGaugeHomePage(context) {
                                                                 ),
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.symmetric(vertical: 5),
-                                                                  child: ListView.separated(
+                                                                  child: SuperListView.separated(
+                                                                    physics: const RangeMaintainingScrollPhysics(),
                                                                       separatorBuilder: (BuildContext context, int index) {
                                                                         return const SizedBox(height: 4);
                                                                       },
@@ -406,7 +408,8 @@ void vitalGaugeHomePage(context) {
                                                                 ),
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.symmetric(vertical: 5),
-                                                                  child: ListView.separated(
+                                                                  child: SuperListView.separated(
+                                                                    physics: const RangeMaintainingScrollPhysics(),
                                                                       separatorBuilder: (BuildContext context, int index) {
                                                                         return const SizedBox(height: 4);
                                                                       },

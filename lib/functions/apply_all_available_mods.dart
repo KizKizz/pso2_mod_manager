@@ -6,6 +6,7 @@ import 'package:pso2_mod_manager/boundary/mods_boundary_functions.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
+import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/cmx/cmx_functions.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
@@ -233,21 +234,25 @@ Future<String> applyAllAvailableMods(context, Item item, Mod mod, SubMod submod)
       await removeBoundaryOnModsApply(context, submod);
     }
     String appliedPath = '${item.category} > ${submod.itemName} > ${submod.modName} > ${submod.submodName}';
+    List<ModFile> toBeAppliedModFiles = [];
     for (var modFile in submod.modFiles) {
       if (modFile.ogLocations.isNotEmpty) {
-        final appliedFiles = await modFilesApply(context, [modFile]);
-        if (appliedFiles.where((element) => element.modFileName == modFile.modFileName).isNotEmpty) {
-          submod.applyDate = DateTime.now();
-          item.applyDate = DateTime.now();
-          mod.applyDate = DateTime.now();
-          submod.applyStatus = true;
-          submod.isNew = false;
-          mod.applyStatus = true;
-          mod.isNew = false;
-          item.applyStatus = true;
-          item.isNew = false;
-          saveModdedItemListToJson();
-        }
+        toBeAppliedModFiles.add(modFile);
+      }
+    }
+    if (toBeAppliedModFiles.isNotEmpty) {
+      final appliedFiles = await modFilesApply(context, toBeAppliedModFiles);
+      if (appliedFiles.where((element) => element.applyStatus).isNotEmpty) {
+        submod.applyDate = DateTime.now();
+        item.applyDate = DateTime.now();
+        mod.applyDate = DateTime.now();
+        submod.applyStatus = true;
+        submod.isNew = false;
+        mod.applyStatus = true;
+        mod.isNew = false;
+        item.applyStatus = true;
+        item.isNew = false;
+        saveModdedItemListToJson();
       }
     }
 

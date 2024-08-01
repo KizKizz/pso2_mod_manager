@@ -199,7 +199,11 @@ class TranslationText {
       uiWellbiaLoaderFileNotFound = "Wellbia loader file not found\nPlease start the game once using the official launcher with Wellbia enabled in the launcher\nThen try again",
       uiCouldNotCreateCustomLauncher = "Could not create custom launcher",
       uiLineStrike = 'Line Strike',
-      uiEditAndReplaceLineStrikeRelatedStuff = 'Edit and replace Line Strike replated stuff';
+      uiEditAndReplaceLineStrikeRelatedStuff = 'Edit and replace Line Strike replated stuff',
+      uiPutItemsWithNewModsOnTopOfTheList = 'Sort items in Item List by items with the most recently added mods at the top',
+      uiSortItemsByRecentlyAddedMods = 'Sort Items By Recently Added Mods',
+      uiPutNewModsOnTopOfTheList = 'Sort mods and their variants in Mod View List by recently added',
+      uiSortModsByRecentlyAdded = 'Sort Mods By Recently Added';
 
   //homepage
   String uiItemList = 'Item List',

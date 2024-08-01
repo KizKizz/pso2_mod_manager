@@ -231,6 +231,13 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiLineStrike = json['uiLineStrike'] as String
       ..uiEditAndReplaceLineStrikeRelatedStuff =
           json['uiEditAndReplaceLineStrikeRelatedStuff'] as String
+      ..uiPutItemsWithNewModsOnTopOfTheList =
+          json['uiPutItemsWithNewModsOnTopOfTheList'] as String
+      ..uiSortItemsByRecentlyAddedMods =
+          json['uiSortItemsByRecentlyAddedMods'] as String
+      ..uiPutNewModsOnTopOfTheList =
+          json['uiPutNewModsOnTopOfTheList'] as String
+      ..uiSortModsByRecentlyAdded = json['uiSortModsByRecentlyAdded'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -935,6 +942,11 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiLineStrike': instance.uiLineStrike,
       'uiEditAndReplaceLineStrikeRelatedStuff':
           instance.uiEditAndReplaceLineStrikeRelatedStuff,
+      'uiPutItemsWithNewModsOnTopOfTheList':
+          instance.uiPutItemsWithNewModsOnTopOfTheList,
+      'uiSortItemsByRecentlyAddedMods': instance.uiSortItemsByRecentlyAddedMods,
+      'uiPutNewModsOnTopOfTheList': instance.uiPutNewModsOnTopOfTheList,
+      'uiSortModsByRecentlyAdded': instance.uiSortModsByRecentlyAdded,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,

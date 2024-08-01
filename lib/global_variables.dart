@@ -191,3 +191,5 @@ String modManCustomAqmFileName = '';
 String modManCustomAqmFilePath = '';
 bool gameguardAnticheat = true;
 List<CsvItem> quickApplyItemList = [];
+bool itemsWithNewModsOnTop = false;
+bool newModsOnTop = false;
