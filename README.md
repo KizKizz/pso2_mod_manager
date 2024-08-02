@@ -1,7 +1,7 @@
 # PSO2NGS Mod Manager ver.2
  An app to manage, swapping, backup and apply mods to Phantasy Star Online 2 New Genesis  
  
-![image](https://github.com/KizKizz/pso2_mod_manager/assets/101075148/a437fc7e-1831-4073-a1d1-7b6a1584c5ed)
+![image](https://github.com/user-attachments/assets/87024ae4-6785-4a23-bb31-df0370a2e376)
 
 # Download
 
