@@ -1,12 +1,10 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.8.7",
+    "version": "2.8.8",
     "description": [
-        "Added options to sort Item List and Mods List by the most recently added mods",
-        "Switched to a better listview to improve performances of large lists",
+        "Added Swap All function which allows swapping all mods in an item to multiple other items at once",
         "More bug fixes",
-        "アイテムリストとMODリストを最近追加されたMODでソートするオプションを追加",
-        "大きなリストのパフォーマンスを向上させるため、より優れたリストビューに変更",
+        "アイテム内のすべてのMODを他の複数のアイテムに一度にスワップできるスワップ・オール機能を追加",
         "その他のバグ修正"
     ],
     "windows_file": "",

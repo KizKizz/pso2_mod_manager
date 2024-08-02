@@ -323,13 +323,18 @@ class TranslationText {
       uiImportMods = 'Import Mods',
       uiSelectApplyingLocations = 'Select applying locations',
       uiApplyToAllLocations = 'Apply to all locations',
-      uiExportAllMods = 'Export all mods in this item',
+      uiExportAllMods = 'Export All Mods',
       uiAddPreviews = 'Add/Change preview images-videos',
       uiInjectCustomAqmFile = 'Inject custom aqm file',
       uiSelectFileInSettings = 'Select file in Settings',
       uiRemoveInjectedCustomAqm = 'Remove injected custom aqm file',
       uiAddRemoveQuickApplyItems = 'Edit Quick Swap-Apply Items',
-      uiSwapThisModToSelectedItemInList = 'Swap this mod to selected item in the list, then add to Mod Manager and apply';
+      uiSwapThisModToSelectedItemInList = 'Swap this mod to selected item in the list, then add to Mod Manager and apply',
+      uiSwapAllMods = 'Swap All',
+      uiSelected = 'Selected',
+      uiNewMods = 'New Mods',
+      uiNewMod = 'New Mod',
+      uiNew = 'New';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
