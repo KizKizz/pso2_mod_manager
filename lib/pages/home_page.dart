@@ -67,6 +67,7 @@ import 'package:pso2_mod_manager/quickSwapApply/quick_swap_apply_homepage.dart';
 import 'package:pso2_mod_manager/quickSwapApply/quick_swap_apply_popup.dart';
 import 'package:pso2_mod_manager/sharing/mods_export.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
+import 'package:pso2_mod_manager/swapAll/swap_all_apply_popup.dart';
 import 'package:pso2_mod_manager/ui_translation_helper.dart';
 import 'package:pso2_mod_manager/widgets/item_icons_carousel.dart';
 import 'package:pso2_mod_manager/widgets/preview_image_stack.dart';
@@ -1095,7 +1096,7 @@ class _HomePageState extends State<HomePage> {
                                                                       : curCategory.categoryName,
                                                                   style: const TextStyle(fontWeight: FontWeight.w600)),
                                                               Padding(
-                                                                padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
+                                                                padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13, right: 2.5),
                                                                 child: Container(
                                                                     padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                     decoration: BoxDecoration(
@@ -1125,6 +1126,23 @@ class _HomePageState extends State<HomePage> {
                                                                                 style: const TextStyle(
                                                                                   fontSize: 13,
                                                                                 ))),
+                                                              ),
+                                                              Visibility(
+                                                                visible: curCategory.items.where((element) => element.isNew).isNotEmpty,
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.only(top: 18, bottom: 13, right: 2.5),
+                                                                  child: Container(
+                                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                                                    decoration: BoxDecoration(
+                                                                      border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                    ),
+                                                                    child: Text(
+                                                                      '${curCategory.items.where((element) => element.isNew).length} ${curLangText!.uiNew}',
+                                                                      style: const TextStyle(fontSize: 13, color: Colors.amber),
+                                                                    ),
+                                                                  ),
+                                                                ),
                                                               ),
                                                             ],
                                                           ),
@@ -1279,7 +1297,8 @@ class _HomePageState extends State<HomePage> {
                                                                                   child: Wrap(
                                                                                     runAlignment: WrapAlignment.center,
                                                                                     alignment: WrapAlignment.center,
-                                                                                    spacing: 5,
+                                                                                    spacing: 2.5,
+                                                                                    runSpacing: 2.5,
                                                                                     children: [
                                                                                       Container(
                                                                                         padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
@@ -1316,6 +1335,22 @@ class _HomePageState extends State<HomePage> {
                                                                                                             : '${curItem.mods.length} ${curLangText!.uiMods}',
                                                                                                         style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                                       ),
+                                                                                      ),
+                                                                                      Visibility(
+                                                                                        visible: curItem.mods.where((element) => element.isNew == true).isNotEmpty,
+                                                                                        child: Container(
+                                                                                          padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                                                                          decoration: BoxDecoration(
+                                                                                            border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                            borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                          ),
+                                                                                          child: Text(
+                                                                                            curItem.mods.where((element) => element.isNew == true).length < 2
+                                                                                                ? '${curItem.mods.where((element) => element.isNew == true).length} ${curLangText!.uiNewMod}'
+                                                                                                : '${curItem.mods.where((element) => element.isNew == true).length} ${curLangText!.uiNewMods}',
+                                                                                            style: const TextStyle(color: Colors.amber),
+                                                                                          ),
+                                                                                        ),
                                                                                       ),
                                                                                       Container(
                                                                                         padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
@@ -1600,7 +1635,7 @@ class _HomePageState extends State<HomePage> {
 
                         //normal
                         if (modViewItem != null && !isFavListVisible && searchTextController.value.text.isEmpty && !context.watch<StateProvider>().setsWindowVisible)
-                          Row(children: [
+                          Wrap(spacing: 2.5, runSpacing: 2.5, children: [
                             Container(
                               padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                               decoration: BoxDecoration(
@@ -1612,35 +1647,81 @@ class _HomePageState extends State<HomePage> {
                                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
                               ),
                             ),
+                            Visibility(
+                              visible: modViewItem!.mods.where((element) => element.isNew == true).isNotEmpty,
+                              child: Container(
+                                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                                child: Text(
+                                  '${modViewItem!.mods.where((element) => element.isNew == true).length} ${curLangText!.uiNew}',
+                                  style: const TextStyle(fontSize: 14, color: Colors.amber),
+                                ),
+                              ),
+                            ),
                             // export
-                            Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 0),
-                                child: MaterialButton(
-                                  onPressed: () async {
-                                    List<SubMod> submodsToExport = [];
-                                    for (var mod in modViewItem!.mods) {
-                                      submodsToExport.addAll(mod.submods);
-                                    }
-                                    await modExportHomePage(context, moddedItemsList, submodsToExport, false);
-                                  },
-                                  child: Container(
-                                      height: 22,
-                                      padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: Theme.of(context).primaryColorLight),
-                                        borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                            InkWell(
+                              onTap: () async {
+                                List<SubMod> submodsToExport = [];
+                                for (var mod in modViewItem!.mods) {
+                                  submodsToExport.addAll(mod.submods);
+                                }
+                                await modExportHomePage(context, moddedItemsList, submodsToExport, false);
+                              },
+                              child: Container(
+                                  height: 22,
+                                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Theme.of(context).primaryColorLight),
+                                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 5),
+                                      child: Icon(
+                                        Icons.import_export,
+                                        color: Theme.of(context).buttonTheme.colorScheme!.primary,
+                                        size: 18,
                                       ),
-                                      child: Row(children: [
-                                        const Padding(
-                                          padding: EdgeInsets.only(right: 5),
-                                          child: Icon(
-                                            Icons.import_export,
-                                            size: 18,
-                                          ),
+                                    ),
+                                    Text(
+                                      curLangText!.uiExportAllMods,
+                                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).buttonTheme.colorScheme!.primary),
+                                    )
+                                  ])),
+                            ),
+                            // swap all
+                            Visibility(
+                              visible: !isModViewModsApplying && !defaultCategoryDirsToIgnoreQuickSwapApply.contains(modViewItem!.category),
+                              child: InkWell(
+                                onTap: () async {
+                                  swapAllDialog(context, modViewItem!);
+                                },
+                                child: Container(
+                                    height: 22,
+                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Theme.of(context).primaryColorLight),
+                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                    ),
+                                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 5),
+                                        child: Icon(
+                                          Icons.swap_horizontal_circle_outlined,
+                                          color: Theme.of(context).buttonTheme.colorScheme!.primary,
+                                          size: 18,
                                         ),
-                                        Text(curLangText!.uiExportAllMods)
-                                      ])),
-                                ))
+                                      ),
+                                      Text(
+                                        curLangText!.uiSwapAllMods,
+                                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).buttonTheme.colorScheme!.primary),
+                                      )
+                                    ])),
+                              ),
+                            )
                           ]),
                         //fav
                         if (modViewItem != null && isFavListVisible && searchTextController.value.text.isEmpty && !isModViewFromApplied)

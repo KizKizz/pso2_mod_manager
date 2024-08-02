@@ -382,6 +382,11 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiAddRemoveQuickApplyItems'] as String
       ..uiSwapThisModToSelectedItemInList =
           json['uiSwapThisModToSelectedItemInList'] as String
+      ..uiSwapAllMods = json['uiSwapAllMods'] as String
+      ..uiSelected = json['uiSelected'] as String
+      ..uiNewMods = json['uiNewMods'] as String
+      ..uiNewMod = json['uiNewMod'] as String
+      ..uiNew = json['uiNew'] as String
       ..uiPreparing = json['uiPreparing'] as String
       ..uiDragDropFiles = json['uiDragDropFiles'] as String
       ..uiAchiveCurrentlyNotSupported =
@@ -1077,6 +1082,11 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiAddRemoveQuickApplyItems': instance.uiAddRemoveQuickApplyItems,
       'uiSwapThisModToSelectedItemInList':
           instance.uiSwapThisModToSelectedItemInList,
+      'uiSwapAllMods': instance.uiSwapAllMods,
+      'uiSelected': instance.uiSelected,
+      'uiNewMods': instance.uiNewMods,
+      'uiNewMod': instance.uiNewMod,
+      'uiNew': instance.uiNew,
       'uiPreparing': instance.uiPreparing,
       'uiDragDropFiles': instance.uiDragDropFiles,
       'uiAchiveCurrentlyNotSupported': instance.uiAchiveCurrentlyNotSupported,

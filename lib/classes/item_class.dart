@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 
 part 'item_class.g.dart';
 
@@ -59,19 +60,13 @@ class Item {
     }
   }
 
-  // DateTime getLastModAddedDate() {
-  //   List<String> allModFilePaths = getDistinctModFilePaths();
-  //   DateTime latest = DateTime.now();
-  //   if (allModFilePaths.isNotEmpty) {
-  //     latest = File(allModFilePaths.first).statSync().changed;
-  //     for (var path in allModFilePaths) {
-  //       DateTime newDate = File(path).statSync().changed;
-  //       if (latest.isBefore(newDate)) latest = newDate;
-  //     }
-  //   }
-
-  //   return latest;
-  // }
+  List<SubMod> getSubmods() {
+    List<SubMod> submods = [];
+    for (var mod in mods) {
+      submods.addAll(mod.submods);
+    }
+    return submods;
+  }
 
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
   Map<String, dynamic> toJson() => _$ItemToJson(this);
