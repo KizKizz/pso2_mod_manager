@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
+import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/itemsSwapper/items_swapper_data_loader.dart';
@@ -252,7 +253,7 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                                               borderRadius: BorderRadius.circular(3),
                                                               border: Border.all(color: Theme.of(context).hintColor, width: 1),
                                                             ),
-                                                            child: swapperSearchTextController.text.isEmpty
+                                                            child: swapperFromItemsSearchTextController.text.isEmpty
                                                                 ? Image.network(
                                                                     '$modManMAIconDatabaseLink${fromItemCsvData[i].iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}',
                                                                     errorBuilder: (context, error, stackTrace) => Image.asset(
@@ -336,8 +337,7 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                                       }
 
                                                       //confirm icon set
-                                                      fromItemIconLink =
-                                                          '$modManMAIconDatabaseLink${currentItem.iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}';
+                                                      fromItemIconLink = '$modManMAIconDatabaseLink${currentItem.iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}';
 
                                                       setState(
                                                         () {},
@@ -587,8 +587,7 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                                           }
 
                                                           //confirm icon set
-                                                          toItemIconLink =
-                                                              '$modManMAIconDatabaseLink${currentItem.iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}';
+                                                          toItemIconLink = '$modManMAIconDatabaseLink${currentItem.iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}';
 
                                                           setState(
                                                             () {},
@@ -602,7 +601,7 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                 ),
                               ),
                             ],
-                          ))
+                          )),
                         ],
                       ),
                     ),
@@ -640,7 +639,8 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                       ? null
                                       : () {
                                           if (selectedFromCsvFile != null && selectedToCsvFile != null) {
-                                            swapperConfirmDialog(context, fromItemSubmodGet(fromItemAvailableIces), fromItemIds, fromItemAvailableIces, toItemIds, toItemAvailableIces);
+                                            swapperConfirmDialog(
+                                                context, fromItemModGet(), fromItemSubmodGet(fromItemAvailableIces), fromItemIds, fromItemAvailableIces, toItemIds, toItemAvailableIces);
                                           }
                                         },
                                   child: Text(curLangText!.uiNext))
@@ -658,7 +658,8 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
   }
 }
 
-Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromItemIds, List<String> fromItemAvailableIces, List<String> toItemIds, List<String> toItemAvailableIces) async {
+Future<void> swapperConfirmDialog(
+    context, Mod fromMod, SubMod fromSubmod, List<String> fromItemIds, List<String> fromItemAvailableIces, List<String> toItemIds, List<String> toItemAvailableIces) async {
   await showDialog(
       barrierDismissible: false,
       context: context,
@@ -779,7 +780,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                               ),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ],
@@ -793,7 +794,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                   ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        mss.swapperSwappingDialog(context, true, fromSubmod, fromItemAvailableIces, toItemAvailableIces, toItemName, fromItemIds[0], toItemIds[0]);
+                        mss.swapperSwappingDialog(context, true, fromMod, fromSubmod, fromItemAvailableIces, toItemAvailableIces, toItemName, fromItemIds[0], toItemIds[0]);
                       },
                       child: Text(curLangText!.uiSwap))
                 ]);

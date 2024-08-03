@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
+import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
@@ -37,9 +38,10 @@ List<String> queueSwappedLaPaths = [];
 List<String> queueToItemNames = [];
 
 class ModsSwapperEmotesHomePage extends StatefulWidget {
-  const ModsSwapperEmotesHomePage({super.key, required this.fromItem, required this.fromSubmod});
+  const ModsSwapperEmotesHomePage({super.key, required this.fromItem, required this.fromMod, required this.fromSubmod});
 
   final Item fromItem;
+  final Mod fromMod;
   final SubMod fromSubmod;
 
   @override
@@ -666,10 +668,10 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                       : () async {
                                           if (queueFromEmoteCsvFiles.isEmpty) {
                                             if (selectedFromEmotesCsvFile != null && selectedToEmotesCsvFile != null) {
-                                              swapperLaConfirmDialog(context, widget.fromSubmod, fromEmotesAvailableIces, toEmotesAvailableIces, toItemName);
+                                              swapperLaConfirmDialog(context, widget.fromMod, widget.fromSubmod, fromEmotesAvailableIces, toEmotesAvailableIces, toItemName);
                                             }
                                           } else {
-                                            await swapperLaQueueConfirmDialog(context, widget.fromSubmod, queueFromEmotesAvailableIces, queueToEmotesAvailableIces, queueToItemNames);
+                                            await swapperLaQueueConfirmDialog(context, widget.fromMod, widget.fromSubmod, queueFromEmotesAvailableIces, queueToEmotesAvailableIces, queueToItemNames);
                                             setState(() {});
                                           }
                                         },
@@ -688,7 +690,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
   }
 }
 
-Future<void> swapperLaConfirmDialog(context, SubMod fromSubmod, List<String> fromEmotesAvailableIces, List<String> toEmotesAvailableIces, String toSelectedItemName) async {
+Future<void> swapperLaConfirmDialog(context, Mod fromMod, SubMod fromSubmod, List<String> fromEmotesAvailableIces, List<String> toEmotesAvailableIces, String toSelectedItemName) async {
   await showDialog(
       barrierDismissible: false,
       context: context,
@@ -768,7 +770,7 @@ Future<void> swapperLaConfirmDialog(context, SubMod fromSubmod, List<String> fro
                   ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        swapperLaSwappingDialog(context, false, fromSubmod, toItemName, fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths);
+                        swapperLaSwappingDialog(context, false, fromMod, fromSubmod, toItemName, fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths);
                       },
                       child: Text(curLangText!.uiSwap))
                 ]);
@@ -776,7 +778,7 @@ Future<void> swapperLaConfirmDialog(context, SubMod fromSubmod, List<String> fro
 }
 
 Future<void> swapperLaQueueConfirmDialog(
-    context, SubMod fromSubmod, List<List<String>> queueFromEmotesAvailableIceList, List<List<String>> queueToEmotesAvailableIceList, List<String> queueToItemNameList) async {
+    context, Mod fromMod, SubMod fromSubmod, List<List<String>> queueFromEmotesAvailableIceList, List<List<String>> queueToEmotesAvailableIceList, List<String> queueToItemNameList) async {
   await showDialog(
       barrierDismissible: false,
       context: context,
@@ -948,7 +950,7 @@ Future<void> swapperLaQueueConfirmDialog(
                           for (int i = 0; i < queueFromEmotesAvailableIceList.length; i++) {
                             fromEmotesAvailableIces = queueFromEmotesAvailableIceList[i].toList();
                             toEmotesAvailableIces = queueToEmotesAvailableIceList[i].toList();
-                            await swapperLaQueueSwappingDialog(context, false, fromSubmod, queueToItemNameList[i], fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths);
+                            await swapperLaQueueSwappingDialog(context, false, fromMod, fromSubmod, queueToItemNameList[i], fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths);
                             setState(
                               () {},
                             );

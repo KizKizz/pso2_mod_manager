@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
+import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
@@ -27,9 +28,10 @@ String fromItemIconLink = '';
 String toItemIconLink = '';
 
 class ModsSwapperAccHomePage extends StatefulWidget {
-  const ModsSwapperAccHomePage({super.key, required this.fromItem, required this.fromSubmod});
+  const ModsSwapperAccHomePage({super.key, required this.fromItem, required this.fromMod, required this.fromSubmod});
 
   final Item fromItem;
+  final Mod fromMod;
   final SubMod fromSubmod;
 
   @override
@@ -238,8 +240,7 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                                                         }
                                                       }
                                                       //confirm icon set
-                                                      fromItemIconLink =
-                                                          '$modManMAIconDatabaseLink${currentItem.iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}';
+                                                      fromItemIconLink = '$modManMAIconDatabaseLink${currentItem.iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}';
 
                                                       setState(
                                                         () {},
@@ -538,7 +539,7 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                                       ? null
                                       : () {
                                           if (selectedFromAccCsvFile != null && selectedToAccCsvFile != null) {
-                                            swapperConfirmDialog(context, widget.fromSubmod, fromAccItemId, fromAccItemAvailableIces, toAccItemId, toAccItemAvailableIces);
+                                            swapperConfirmDialog(context, widget.fromMod, widget.fromSubmod, fromAccItemId, fromAccItemAvailableIces, toAccItemId, toAccItemAvailableIces);
                                           }
                                         },
                                   child: Text(curLangText!.uiNext))
@@ -556,7 +557,7 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
   }
 }
 
-Future<void> swapperConfirmDialog(context, SubMod fromSubmod, String fromAccItemId, List<String> fromAccItemAvailableIces, String toAccItemId, List<String> toAccItemAvailableIces) async {
+Future<void> swapperConfirmDialog(context, Mod fromMod, SubMod fromSubmod, String fromAccItemId, List<String> fromAccItemAvailableIces, String toAccItemId, List<String> toAccItemAvailableIces) async {
   await showDialog(
       barrierDismissible: false,
       context: context,
@@ -683,7 +684,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, String fromAccItem
                   ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        swapperAccSwappingDialog(context, false, fromSubmod, fromAccItemAvailableIces, toAccItemAvailableIces, toItemName);
+                        swapperAccSwappingDialog(context, false, fromMod, fromSubmod, fromAccItemAvailableIces, toAccItemAvailableIces, toItemName);
                       },
                       child: Text(curLangText!.uiSwap))
                 ]);

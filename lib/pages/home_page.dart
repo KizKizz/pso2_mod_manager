@@ -2453,7 +2453,7 @@ class _HomePageState extends State<HomePage> {
                                                       return RoundedRectangleBorder(
                                                           side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
                                                     })),
-                                                    menuChildren: quickApplyMenuButtons(context, curMod.submods.first)),
+                                                    menuChildren: quickApplyMenuButtons(context, curMod, curMod.submods.first)),
                                               ),
 
                                               //More menu
@@ -2697,7 +2697,7 @@ class _HomePageState extends State<HomePage> {
                                                         if (!defaultCategoryDirs.contains(modViewItem!.category)) {
                                                           fromItemCategory = await modsSwapperCategorySelect(context);
                                                         }
-                                                        modsSwapperDialog(context, modViewItem!, curMod.submods.first);
+                                                        modsSwapperDialog(context, modViewItem!, curMod, curMod.submods.first);
                                                       },
                                                     ),
 
@@ -3058,7 +3058,7 @@ class _HomePageState extends State<HomePage> {
                                                       return RoundedRectangleBorder(
                                                           side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
                                                     })),
-                                                    menuChildren: quickApplyMenuButtons(context, curMod.submods[modViewModSetSubModIndex])),
+                                                    menuChildren: quickApplyMenuButtons(context, curMod, curMod.submods[modViewModSetSubModIndex])),
                                               ),
 
                                               //More menu
@@ -3287,7 +3287,7 @@ class _HomePageState extends State<HomePage> {
                                                         if (!defaultCategoryDirs.contains(modViewItem!.category)) {
                                                           fromItemCategory = await modsSwapperCategorySelect(context);
                                                         }
-                                                        modsSwapperDialog(context, modViewItem!, curMod.submods[modViewModSetSubModIndex]);
+                                                        modsSwapperDialog(context, modViewItem!, curMod, curMod.submods[modViewModSetSubModIndex]);
                                                       },
                                                     ),
 
@@ -3762,7 +3762,7 @@ class _HomePageState extends State<HomePage> {
                                                                     return RoundedRectangleBorder(
                                                                         side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
                                                                   })),
-                                                                  menuChildren: quickApplyMenuButtons(context, curSubmod)),
+                                                                  menuChildren: quickApplyMenuButtons(context, curMod, curSubmod)),
                                                             ),
 
                                                             //More menu
@@ -3996,7 +3996,7 @@ class _HomePageState extends State<HomePage> {
                                                                       if (!defaultCategoryDirs.contains(modViewItem!.category)) {
                                                                         fromItemCategory = await modsSwapperCategorySelect(context);
                                                                       }
-                                                                      modsSwapperDialog(context, modViewItem!, curSubmod);
+                                                                      modsSwapperDialog(context, modViewItem!, curMod, curSubmod);
                                                                     },
                                                                   ),
 
@@ -6240,7 +6240,7 @@ class _HomePageState extends State<HomePage> {
   }
 
 //WIDGETS=============================================================================
-  List<Widget> quickApplyMenuButtons(context, SubMod submod) {
+  List<Widget> quickApplyMenuButtons(context, Mod mod, SubMod submod) {
     List<Widget> menuButtonList = [];
     List<CsvItem> quickApplyItems = quickApplyItemList.where((e) => e.category == submod.category || (e.category == defaultCategoryDirs[1] && submod.category == defaultCategoryDirs[16])).toList();
     //add popup
@@ -6318,7 +6318,7 @@ class _HomePageState extends State<HomePage> {
                         }
 
                         String swappedPath = await modsSwapperAccIceFilesGet(
-                            context, false, submod, fromItemIces, toItemIces, modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName());
+                            context, false, mod, submod, fromItemIces, toItemIces, modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName());
                         //adding
                         var returnedVar = await modsAdderModFilesAdder(
                             context,
@@ -6351,7 +6351,7 @@ class _HomePageState extends State<HomePage> {
                         String toItemId = toItem.id.toString();
 
                         String swappedPath = await modsSwapperIceFilesGet(
-                            context, false, submod, fromItemIces, toItemIces, modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName(), fromItemId, toItemId);
+                            context, false, mod, submod, fromItemIces, toItemIces, modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName(), fromItemId, toItemId);
                         //adding
                         var returnedVar = await modsAdderModFilesAdder(
                             context,

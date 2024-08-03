@@ -1,5 +1,4 @@
 import 'package:pso2_mod_manager/global_variables.dart';
-import 'package:pso2_mod_manager/itemsSwapper/items_swapper_la_homepage.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_wp_homepage.dart';
 
@@ -64,16 +63,16 @@ void widgetsLanguageRefresh() {
     curLangText!.uiUnknownWeapons
   ];
 
-  motionTypes = [
-  curLangText!.uiAll,
-  curLangText!.uiGlideMotion,
-  curLangText!.uiJumpMotion,
-  curLangText!.uiLandingMotion,
-  curLangText!.uiDashMotion,
-  curLangText!.uiRunMotion,
-  curLangText!.uiStandbyMotion,
-  curLangText!.uiSwimMotion
-];
+//   motionTypes = [
+//   curLangText!.uiAll,
+//   curLangText!.uiGlideMotion,
+//   curLangText!.uiJumpMotion,
+//   curLangText!.uiLandingMotion,
+//   curLangText!.uiDashMotion,
+//   curLangText!.uiRunMotion,
+//   curLangText!.uiStandbyMotion,
+//   curLangText!.uiSwimMotion
+// ];
 
   itemTypes = [curLangText!.uiAll, curLangText!.uiPSO2, curLangText!.uiNGS];
 

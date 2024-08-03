@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cross_file/cross_file.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
@@ -18,8 +19,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 final validCharacters = RegExp(r'^[a-zA-Z0-9]+$');
 
-Future<String> modsSwapperLaIceFilesGet(
-    context, bool isVanillaItemSwap, SubMod fromSubmod, String toSelectedItemName, List<String> fromEmotesAvailableIces, List<String> toEmotesAvailableIces, List<String> queueSwappedLaPaths) async {
+Future<String> modsSwapperLaIceFilesGet(context, bool isVanillaItemSwap, Mod fromMod, SubMod fromSubmod, String toSelectedItemName, List<String> fromEmotesAvailableIces,
+    List<String> toEmotesAvailableIces, List<String> queueSwappedLaPaths) async {
   String newToSelectedItemName = toSelectedItemName;
   //clean
   if (Directory(modManSwapperOutputDirPath).existsSync() && queueSwappedLaPaths.isEmpty) {
@@ -96,11 +97,19 @@ Future<String> modsSwapperLaIceFilesGet(
       await Process.run('$modManZamboniExePath -outdir "$tempSubmodPathF"', [iceFileInTempF.path]);
       String extractedGroup1PathF = Uri.file('$tempSubmodPathF/${iceNameF}_ext/group1').toFilePath();
       if (Directory(extractedGroup1PathF).existsSync()) {
-        extractedGroup1FilesF = Directory(extractedGroup1PathF).listSync(recursive: true).whereType<File>().where((element) => validCharacters.hasMatch(p.basenameWithoutExtension(element.path).split('_').first)).toList();
+        extractedGroup1FilesF = Directory(extractedGroup1PathF)
+            .listSync(recursive: true)
+            .whereType<File>()
+            .where((element) => validCharacters.hasMatch(p.basenameWithoutExtension(element.path).split('_').first))
+            .toList();
       }
       String extractedGroup2PathF = Uri.file('$tempSubmodPathF/${iceNameF}_ext/group2').toFilePath();
       if (Directory(extractedGroup2PathF).existsSync()) {
-        extractedGroup2FilesF = Directory(extractedGroup2PathF).listSync(recursive: true).whereType<File>().where((element) => validCharacters.hasMatch(p.basenameWithoutExtension(element.path).split('_').first)).toList();
+        extractedGroup2FilesF = Directory(extractedGroup2PathF)
+            .listSync(recursive: true)
+            .whereType<File>()
+            .where((element) => validCharacters.hasMatch(p.basenameWithoutExtension(element.path).split('_').first))
+            .toList();
       }
     }
 
@@ -210,7 +219,11 @@ Future<String> modsSwapperLaIceFilesGet(
       //bti in group 1 human hash
       String rebootHumanHashGroup1PathF = Uri.file('$tempSubmodPathF/${rebootHumanHashIceNameF}_ext/group1').toFilePath();
       if (Directory(rebootHumanHashGroup1PathF).existsSync()) {
-        List<File> rebootHumanGroup1Bti = Directory(rebootHumanHashGroup1PathF).listSync().whereType<File>().where((element) => p.extension(element.path) == '.bti' && validCharacters.hasMatch(p.basenameWithoutExtension(element.path).split('_').first)).toList();
+        List<File> rebootHumanGroup1Bti = Directory(rebootHumanHashGroup1PathF)
+            .listSync()
+            .whereType<File>()
+            .where((element) => p.extension(element.path) == '.bti' && validCharacters.hasMatch(p.basenameWithoutExtension(element.path).split('_').first))
+            .toList();
 
         //get new name for bti from aqm
         String rebootHumanHashGroup2PathF = Uri.file('$tempSubmodPathF/${rebootHumanHashIceNameF}_ext/group2').toFilePath();
@@ -281,6 +294,28 @@ Future<String> modsSwapperLaIceFilesGet(
     if (File(Uri.file('$tempSubmodPathF/${iceNameF}_ext.ice').toFilePath()).existsSync()) {
       File(Uri.file('$tempSubmodPathF/${iceNameF}_ext.ice').toFilePath()).renameSync(Uri.file('$packDirPath/$iceNameT').toFilePath());
     }
+    //mod previews
+    //image
+    for (var imagePath in fromMod.previewImages) {
+      if (Directory(Uri.file('$modManSwapperOutputDirPath/$newToSelectedItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath())
+          .listSync()
+          .whereType<File>()
+          .where((element) => p.basename(element.path) == p.basename(imagePath))
+          .isEmpty) {
+        File(imagePath).copySync(Uri.file('$modManSwapperOutputDirPath/$newToSelectedItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}/${p.basename(imagePath)}').toFilePath());
+      }
+    }
+    //video
+    for (var videoPath in fromMod.previewVideos) {
+      if (Directory(Uri.file('$modManSwapperOutputDirPath/$newToSelectedItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath())
+          .listSync()
+          .whereType<File>()
+          .where((element) => p.basename(element.path) == p.basename(videoPath))
+          .isEmpty) {
+        File(videoPath).copySync(Uri.file('$modManSwapperOutputDirPath/$newToSelectedItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}/${p.basename(videoPath)}').toFilePath());
+      }
+    }
+    //submod previews
     //image
     for (var imagePath in fromSubmod.previewImages) {
       if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(imagePath)).isEmpty) {
@@ -293,12 +328,30 @@ Future<String> modsSwapperLaIceFilesGet(
         File(videoPath).copySync(Uri.file('$packDirPath/${p.basename(videoPath)}').toFilePath());
       }
     }
+    //modfile previews
+    //image
+    for (var imagePaths in fromSubmod.modFiles.map((e) => e.previewImages!).toList()) {
+      for (var imagePath in imagePaths) {
+        if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(imagePath)).isEmpty) {
+          File(imagePath).copySync(Uri.file('$packDirPath/${p.basename(imagePath)}').toFilePath());
+        }
+      }
+    }
+    //video
+    for (var videoPaths in fromSubmod.modFiles.map((e) => e.previewVideos!).toList()) {
+      for (var videoPath in videoPaths) {
+        if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(videoPath)).isEmpty) {
+          File(videoPath).copySync(Uri.file('$packDirPath/${p.basename(videoPath)}').toFilePath());
+        }
+      }
+    }
   }
 
   return Uri.file('$modManSwapperOutputDirPath/$newToSelectedItemName').toFilePath();
 }
 
-Future<void> swapperLaSwappingDialog(context, bool isVanillaItemSwap, SubMod fromSubmod, String toSelectedItemName, fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths) async {
+Future<void> swapperLaSwappingDialog(
+    context, bool isVanillaItemSwap, Mod fromMod, SubMod fromSubmod, String toSelectedItemName, fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths) async {
   String swappedModPath = '';
   await showDialog(
       barrierDismissible: false,
@@ -310,7 +363,7 @@ Future<void> swapperLaSwappingDialog(context, bool isVanillaItemSwap, SubMod fro
                 contentPadding: const EdgeInsets.all(16),
                 content: FutureBuilder(
                     future: swappedModPath.isEmpty
-                        ? modsSwapperLaIceFilesGet(context, isVanillaItemSwap, fromSubmod, toSelectedItemName, fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths)
+                        ? modsSwapperLaIceFilesGet(context, isVanillaItemSwap, fromMod, fromSubmod, toSelectedItemName, fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths)
                         : null,
                     builder: (
                       BuildContext context,
@@ -421,7 +474,7 @@ Future<void> swapperLaSwappingDialog(context, bool isVanillaItemSwap, SubMod fro
                                                   mainAxisSize: MainAxisSize.min,
                                                   children: [
                                                     Text(
-                                                      fromSubmod.itemName,
+                                                      toSelectedItemName,
                                                       style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                                                     ),
                                                     Text('${fromSubmod.modName} > ${fromSubmod.submodName}'),
@@ -450,7 +503,7 @@ Future<void> swapperLaSwappingDialog(context, bool isVanillaItemSwap, SubMod fro
                                                   mainAxisSize: MainAxisSize.min,
                                                   children: [
                                                     Text(
-                                                      toSelectedItemName,
+                                                      fromSubmod.itemName,
                                                       style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                                                     ),
                                                     Text('${fromSubmod.modName} > ${fromSubmod.submodName}'),
@@ -458,7 +511,7 @@ Future<void> swapperLaSwappingDialog(context, bool isVanillaItemSwap, SubMod fro
                                                 ),
                                               ),
                                             ),
-                                          )
+                                          ),
                                         ],
                                       )
                                     : ScrollbarTheme(
@@ -544,7 +597,8 @@ Future<void> swapperLaSwappingDialog(context, bool isVanillaItemSwap, SubMod fro
           }));
 }
 
-Future<void> swapperLaQueueSwappingDialog(context, bool isVanillaItemSwap, SubMod fromSubmod, String toSelectedItemName, fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths) async {
+Future<void> swapperLaQueueSwappingDialog(
+    context, bool isVanillaItemSwap, Mod fromMod, SubMod fromSubmod, String toSelectedItemName, fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths) async {
   //String swappedModPath = '';
   await showDialog(
       barrierDismissible: false,
@@ -555,7 +609,7 @@ Future<void> swapperLaQueueSwappingDialog(context, bool isVanillaItemSwap, SubMo
                 backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                 contentPadding: const EdgeInsets.all(16),
                 content: FutureBuilder(
-                    future: modsSwapperLaIceFilesGet(context, isVanillaItemSwap, fromSubmod, toSelectedItemName, fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths),
+                    future: modsSwapperLaIceFilesGet(context, isVanillaItemSwap, fromMod, fromSubmod, toSelectedItemName, fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths),
                     builder: (
                       BuildContext context,
                       AsyncSnapshot snapshot,

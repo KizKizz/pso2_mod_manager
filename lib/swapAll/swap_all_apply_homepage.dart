@@ -679,7 +679,7 @@ class _AqmInjectionHomePageState extends State<SwapAllHomePage> {
                                                         submodsToSwap.add(swapFromSubmods[i]);
                                                       }
                                                     }
-                                                    await swapAllPopup(context, submodsToSwap, swapToItemList);
+                                                    await swapAllPopup(context, widget.swapItem!.mods, submodsToSwap, swapToItemList);
                                                     setState(() {
                                                       isLoading = false;
                                                       isAllButtonPressed = false;
@@ -717,7 +717,7 @@ class _AqmInjectionHomePageState extends State<SwapAllHomePage> {
   }
 }
 
-Future<bool> swapAllPopup(context, List<SubMod> submods, List<CsvItem> swapToItems) async {
+Future<bool> swapAllPopup(context, List<Mod> mods, List<SubMod> submods, List<CsvItem> swapToItems) async {
   List<int> totalSwapped = List.generate(swapToItems.length, (index) => 0);
   bool isSwapped = false;
   bool isSwapping = false;
@@ -731,7 +731,7 @@ Future<bool> swapAllPopup(context, List<SubMod> submods, List<CsvItem> swapToIte
               isSwapping = true;
               for (var item in swapToItems) {
                 for (var submod in submods) {
-                  SubMod? swappedSub = await swapAll(context, submod, item);
+                  SubMod? swappedSub = await swapAll(context, mods.firstWhere((e) => e.modName == submod.modName && submod.location.contains(e.location)), submod, item);
                   if (swappedSub != null) totalSwapped[swapToItems.indexOf(item)]++;
                   swappedSub = null;
                   setState(
@@ -770,13 +770,15 @@ Future<bool> swapAllPopup(context, List<SubMod> submods, List<CsvItem> swapToIte
                     ),
                     Visibility(
                       visible: isSwapped,
-                      child: const Padding(
-                        padding: EdgeInsets.only(top: 20),
-                        child: SizedBox(width: 25, height: 25)
-                      ),
+                      child: const Padding(padding: EdgeInsets.only(top: 20), child: SizedBox(width: 25, height: 25)),
                     ),
-                    Padding(padding: const EdgeInsets.symmetric(vertical: 10), child: Text(!isSwapped || isSwapping ? curLangText!.uiProcessing : isSwapped && !isSwapping ? curLangText!.uiAllDone : '')),
-                    
+                    Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Text(!isSwapped || isSwapping
+                            ? curLangText!.uiProcessing
+                            : isSwapped && !isSwapping
+                                ? curLangText!.uiAllDone
+                                : '')),
                     SizedBox(
                       height: (50 * double.parse(swapToItems.length.toString())) + 8,
                       width: 400,
@@ -815,6 +817,7 @@ Future<bool> swapAllPopup(context, List<SubMod> submods, List<CsvItem> swapToIte
                                 ? () {
                                     clearAllTempDirs();
                                     isSwapped = false;
+                                    totalSwapped = [];
                                     Navigator.pop(context, true);
                                   }
                                 : null,
@@ -839,7 +842,7 @@ Future<List<CsvItem>> getAvailableItems(String category) async {
       .toList();
 }
 
-Future<SubMod?> swapAll(context, SubMod submod, CsvItem swapToItem) async {
+Future<SubMod?> swapAll(context, Mod mod, SubMod submod, CsvItem swapToItem) async {
   bool found = false;
   Item? swapItem;
   Mod? swapMod;
@@ -886,7 +889,8 @@ Future<SubMod?> swapAll(context, SubMod submod, CsvItem swapToItem) async {
         }
       }
 
-      String swappedPath = await modsSwapperAccIceFilesGet(context, false, submod, fromItemIces, toItemIces, modManCurActiveItemNameLanguage == 'JP' ? swapToItem.getJPName() : swapToItem.getENName());
+      String swappedPath =
+          await modsSwapperAccIceFilesGet(context, false, mod, submod, fromItemIces, toItemIces, modManCurActiveItemNameLanguage == 'JP' ? swapToItem.getJPName() : swapToItem.getENName());
       //adding
       if (Directory(swappedPath).existsSync()) {
         var returnedVar = await modsAdderModFilesAdder(
@@ -921,17 +925,21 @@ Future<SubMod?> swapAll(context, SubMod submod, CsvItem swapToItem) async {
       String toItemId = toItem.id.toString();
 
       String swappedPath = await modsSwapperIceFilesGet(
-          context, false, submod, fromItemIces, toItemIces, modManCurActiveItemNameLanguage == 'JP' ? swapToItem.getJPName() : swapToItem.getENName(), fromItemId, toItemId);
+          context, false, mod, submod, fromItemIces, toItemIces, modManCurActiveItemNameLanguage == 'JP' ? swapToItem.getJPName() : swapToItem.getENName(), fromItemId, toItemId);
       //adding
       if (Directory(swappedPath).existsSync()) {
-        var returnedVar = await modsAdderModFilesAdder(
-            context,
-            await modsAdderFilesProcess(context, [XFile(Uri.file('$swappedPath/${submod.modName.replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath())],
-                modManCurActiveItemNameLanguage == 'JP' ? swapToItem.getJPName() : swapToItem.getENName()));
-        List<Item> returnedItems = returnedVar.$2;
-        swapItem = returnedItems.first;
-        swapMod = swapItem.mods.firstWhere((e) => e.modName == submod.modName);
-        swapSubmod = swapMod.submods.firstWhere((e) => e.submodName == submod.submodName);
+        try {
+          var returnedVar = await modsAdderModFilesAdder(
+              context,
+              await modsAdderFilesProcess(context, [XFile(Uri.file('$swappedPath/${submod.modName.replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath())],
+                  modManCurActiveItemNameLanguage == 'JP' ? swapToItem.getJPName() : swapToItem.getENName()));
+          List<Item> returnedItems = returnedVar.$2;
+          swapItem = returnedItems.first;
+          swapMod = swapItem.mods.firstWhere((e) => e.modName == submod.modName);
+          swapSubmod = swapMod.submods.firstWhere((e) => e.submodName == submod.submodName);
+        } catch (e) {
+          return swapSubmod;
+        }
       }
     }
   }

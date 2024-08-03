@@ -39,17 +39,6 @@ List<List<String>> queueFromEmotesAvailableIces = [];
 List<List<String>> queueToEmotesAvailableIces = [];
 List<String> queueSwappedLaPaths = [];
 List<String> queueToItemNames = [];
-List<String> motionTypes = [
-  curLangText!.uiAll,
-  curLangText!.uiGlideMotion,
-  curLangText!.uiJumpMotion,
-  curLangText!.uiLandingMotion,
-  curLangText!.uiDashMotion,
-  curLangText!.uiRunMotion,
-  curLangText!.uiStandbyMotion,
-  curLangText!.uiSwimMotion
-];
-String dropDownSelectedMotionType = motionTypes.first;
 
 class ItemsSwapperEmotesHomePage extends StatefulWidget {
   const ItemsSwapperEmotesHomePage({super.key});
@@ -82,6 +71,22 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
     //create
     Directory(modManSwapperOutputDirPath).createSync(recursive: true);
 
+    if (isEmotesToStandbyMotions) {
+      availableEmotesCsvData = availableEmotesCsvData.where((element) => element.subCategory == 'Standby Motion').toList();
+    }
+    List<String> motionTypeNames = [
+      curLangText!.uiAll,
+      curLangText!.uiGlideMotion,
+      curLangText!.uiJumpMotion,
+      curLangText!.uiLandingMotion,
+      curLangText!.uiDashMotion,
+      curLangText!.uiRunMotion,
+      curLangText!.uiStandbyMotion,
+      curLangText!.uiSwimMotion
+    ];
+    List<String> motionTypes = ['All', 'Glide Motion', 'Jump Motion', 'Landing Motion', 'Dash Motion', 'Run Motion', 'Standby Motion', 'Swim Motion'];
+    String dropDownSelectedMotionType = motionTypeNames.first;
+
     //fetch
     if (!isEmotesToStandbyMotions || fromItemCsvData.isEmpty) {
       // fromItemCsvData = csvEmotesData
@@ -96,7 +101,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
       //             element.rbHumanHashIceName.isNotEmpty ||
       //             element.rbVfxHashIceName.isNotEmpty))
       //     .toList();
-      if (dropDownSelectedMotionType == motionTypes.first || selectedMotionType.isEmpty) {
+      if (motionTypes[motionTypeNames.indexOf(dropDownSelectedMotionType)] == motionTypes.first || selectedMotionType.isEmpty) {
         fromItemCsvData = csvEmotesData
             .where((element) =>
                 // element.jpName.isNotEmpty &&
@@ -114,7 +119,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
             .where((element) =>
                 // element.jpName.isNotEmpty &&
                 // element.enName.isNotEmpty &&
-                element.subCategory == dropDownSelectedMotionType &&
+                element.subCategory == motionTypes[motionTypeNames.indexOf(dropDownSelectedMotionType)] &&
                 (element.pso2HashIceName.isNotEmpty ||
                     element.pso2VfxHashIceName.isNotEmpty ||
                     element.rbCastFemaleHashIceName.isNotEmpty ||
@@ -169,10 +174,6 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
     // if (isPso2VfxHashFound) {
     //   availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2VfxHashIceName.isNotEmpty).toList();
     // }
-
-    if (isEmotesToStandbyMotions) {
-      availableEmotesCsvData = availableEmotesCsvData.where((element) => element.subCategory == 'Standby Motion').toList();
-    }
 
     return Scaffold(
         backgroundColor: Colors.transparent,
@@ -308,7 +309,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                             padding: EdgeInsets.symmetric(horizontal: 5),
                                           ),
                                           isDense: true,
-                                          items: motionTypes
+                                          items: motionTypeNames
                                               .map((item) => DropdownMenuItem<String>(
                                                   value: item,
                                                   child: Row(
@@ -336,10 +337,11 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                                   dropDownSelectedMotionType = value.toString();
                                                   selectedFromEmotesCsvFile = null;
                                                   fromItemCsvData.clear();
-                                                  if (dropDownSelectedMotionType == motionTypes.first) {
+                                                  if (motionTypes[motionTypeNames.indexOf(dropDownSelectedMotionType)] == motionTypes.first) {
                                                     availableEmotesCsvData = csvEmotesData.where((element) => element.jpName.isNotEmpty && element.enName.isNotEmpty).toList();
                                                   } else {
-                                                    availableEmotesCsvData = csvEmotesData.where((element) => element.subCategory == dropDownSelectedMotionType).toList();
+                                                    availableEmotesCsvData =
+                                                        csvEmotesData.where((element) => element.subCategory == motionTypes[motionTypeNames.indexOf(dropDownSelectedMotionType)]).toList();
                                                   }
                                                   if (modManCurActiveItemNameLanguage == 'JP') {
                                                     availableEmotesCsvData.sort((a, b) => a.jpName.compareTo(b.jpName));
@@ -503,9 +505,18 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         children: [
                                                           Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                                            children: [
+                                                              Text(modManCurActiveItemNameLanguage == 'JP' ? queueToEmoteCsvFiles[i].jpName : queueToEmoteCsvFiles[i].enName),
+                                                              Text(queueToEmoteCsvFiles[i].gender,
+                                                                  style: TextStyle(fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize, color: Theme.of(context).hintColor)),
+                                                            ],
+                                                          ),
+                                                          const Icon(Icons.arrow_forward_ios),
+                                                          Column(
                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                             children: [
-                                                              Text(queueFromEmoteCsvFiles[i].enName),
+                                                              Text(modManCurActiveItemNameLanguage == 'JP' ? queueFromEmoteCsvFiles[i].jpName : queueFromEmoteCsvFiles[i].enName),
                                                               Text(queueFromEmoteCsvFiles[i].gender,
                                                                   style: TextStyle(fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize, color: Theme.of(context).hintColor)),
 
@@ -514,18 +525,9 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                                               //     line++)
                                                               //   Text(csvInfos.firstWhere((element) => queueFromEmoteCsvFiles[i].getDetailedList().contains(element.first))[line].split(': ').last,
                                                               //       style: TextStyle(fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize, color: Theme.of(context).hintColor))
-                                                              for (int line = 0; line < queueFromEmotesAvailableIces[i].length; line++)
-                                                                Text(queueFromEmotesAvailableIces[i][line].split(': ').last,
-                                                                    style: TextStyle(fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize, color: Theme.of(context).hintColor))
-                                                            ],
-                                                          ),
-                                                          const Icon(Icons.arrow_forward_ios),
-                                                          Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                                            children: [
-                                                              Text(queueToEmoteCsvFiles[i].enName),
-                                                              Text(queueToEmoteCsvFiles[i].gender,
-                                                                  style: TextStyle(fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize, color: Theme.of(context).hintColor)),
+                                                              // for (int line = 0; line < queueFromEmotesAvailableIces[i].length; line++)
+                                                              //   Text(queueFromEmotesAvailableIces[i][line].split(': ').last,
+                                                              //       style: TextStyle(fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize, color: Theme.of(context).hintColor))
                                                             ],
                                                           ),
                                                         ],
@@ -779,7 +781,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                 ),
                               ),
                             ],
-                          ))
+                          )),
                         ],
                       ),
                     ),
@@ -809,7 +811,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                     queueFromEmoteCsvFiles.clear();
                                     queueToEmoteCsvFiles.clear();
                                     isEmotesToStandbyMotions = false;
-                                    dropDownSelectedMotionType = motionTypes.first;
+                                    dropDownSelectedMotionType = motionTypeNames.first;
                                     toIEmotesSearchResults.clear();
                                     fromItemSearchResults.clear();
                                     Navigator.pop(context);
@@ -929,7 +931,7 @@ Future<void> swapperLaConfirmDialog(context, SubMod fromSubmod, List<String> fro
                               ),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ],
@@ -943,7 +945,7 @@ Future<void> swapperLaConfirmDialog(context, SubMod fromSubmod, List<String> fro
                   ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        msls.swapperLaSwappingDialog(context, true, fromSubmod, toItemName, fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths);
+                        msls.swapperLaSwappingDialog(context, true, fromItemModGet(), fromSubmod, toItemName, fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths);
                       },
                       child: Text(curLangText!.uiSwap))
                 ]);
@@ -987,7 +989,7 @@ Future<void> swapperLaQueueConfirmDialog(
                                     Expanded(
                                         flex: 1,
                                         child: Text(
-                                          queueFromEmoteCsvFiles[i].enName,
+                                          modManCurActiveItemNameLanguage == 'JP' ? queueFromEmoteCsvFiles[i].jpName : queueFromEmoteCsvFiles[i].enName,
                                           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                         )),
                                     const SizedBox(
@@ -996,7 +998,7 @@ Future<void> swapperLaQueueConfirmDialog(
                                     Expanded(
                                         flex: 1,
                                         child: Text(
-                                          queueToEmoteCsvFiles[i].enName,
+                                          modManCurActiveItemNameLanguage == 'JP' ? queueToEmoteCsvFiles[i].jpName : queueToEmoteCsvFiles[i].enName,
                                           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                         )),
                                   ],
@@ -1054,7 +1056,7 @@ Future<void> swapperLaQueueConfirmDialog(
                                           ),
                                         ),
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
                               ],
@@ -1123,7 +1125,8 @@ Future<void> swapperLaQueueConfirmDialog(
                           for (int i = 0; i < queueFromEmotesAvailableIceList.length; i++) {
                             fromEmotesAvailableIces = queueFromEmotesAvailableIceList[i].toList();
                             toEmotesAvailableIces = queueToEmotesAvailableIceList[i].toList();
-                            await msls.swapperLaQueueSwappingDialog(context, true, fromSubmod, queueToItemNameList[i], fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths);
+                            await msls.swapperLaQueueSwappingDialog(
+                                context, true, fromItemModGet(), fromSubmod, queueToItemNameList[i], fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths);
                             setState(
                               () {},
                             );

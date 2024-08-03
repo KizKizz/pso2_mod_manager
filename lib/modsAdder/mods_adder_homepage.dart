@@ -1869,8 +1869,8 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
   // List<String> pathsWithNoIceInRoot = [];
   //copy files to temp
   for (var xFile in xFilePaths) {
-    String tempModDirName = p.basenameWithoutExtension(xFile.path);
-    if (Directory(modManAddModsTempDirPath).existsSync() && Directory(modManAddModsTempDirPath).listSync().where((element) => p.basenameWithoutExtension(element.path) == tempModDirName).isNotEmpty) {
+    String tempModDirName = p.basename(xFile.path);
+    if (Directory(modManAddModsTempDirPath).existsSync() && Directory(modManAddModsTempDirPath).listSync().where((element) => p.basename(element.path) == tempModDirName).isNotEmpty) {
       DateTime now = DateTime.now();
       String formattedDate = DateFormat('MM-dd-yyyy-kk-mm-ss').format(now);
       tempModDirName += '_$formattedDate';

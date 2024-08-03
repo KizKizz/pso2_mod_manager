@@ -211,7 +211,7 @@ class _ItemsSwapperAccHomePageState extends State<ItemsSwapperAccHomePage> {
                                                               borderRadius: BorderRadius.circular(3),
                                                               border: Border.all(color: Theme.of(context).hintColor, width: 1),
                                                             ),
-                                                            child: swapperSearchTextController.text.isEmpty
+                                                            child: swapperFromItemsSearchTextController.text.isEmpty
                                                                 ? Image.network(
                                                                     '$modManMAIconDatabaseLink${fromItemCsvData[i].iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}',
                                                                     errorBuilder: (context, error, stackTrace) => Image.asset(
@@ -234,13 +234,9 @@ class _ItemsSwapperAccHomePageState extends State<ItemsSwapperAccHomePage> {
                                                                   )),
                                                       ),
                                                       //name
-                                                      modManCurActiveItemNameLanguage == 'JP'
-                                                          ? swapperFromItemsSearchTextController.text.isEmpty
-                                                              ? Text(fromItemCsvData[i].jpName)
-                                                              : Text(fromItemSearchResults[i].jpName)
-                                                          : swapperFromItemsSearchTextController.text.isEmpty
-                                                              ? Text(fromItemCsvData[i].enName)
-                                                              : Text(fromItemSearchResults[i].enName),
+                                                      swapperFromItemsSearchTextController.text.isEmpty
+                                                          ? Text(modManCurActiveItemNameLanguage == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName)
+                                                          : Text(modManCurActiveItemNameLanguage == 'JP' ? fromItemSearchResults[i].jpName : fromItemSearchResults[i].enName),
                                                     ]),
                                                     subtitle: swapperFromItemsSearchTextController.text.isEmpty
                                                         ? selectedFromAccCsvFile == fromItemCsvData[i]
@@ -284,8 +280,7 @@ class _ItemsSwapperAccHomePageState extends State<ItemsSwapperAccHomePage> {
                                                         }
                                                       }
                                                       //confirm icon set
-                                                      fromItemIconLink =
-                                                          '$modManMAIconDatabaseLink${currentItem.iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}';
+                                                      fromItemIconLink = '$modManMAIconDatabaseLink${currentItem.iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}';
 
                                                       setState(
                                                         () {},
@@ -484,36 +479,23 @@ class _ItemsSwapperAccHomePageState extends State<ItemsSwapperAccHomePage> {
                                                                   borderRadius: BorderRadius.circular(3),
                                                                   border: Border.all(color: Theme.of(context).hintColor, width: 1),
                                                                 ),
-                                                                child: swapperSearchTextController.text.isEmpty
-                                                                    ? Image.network(
-                                                                        '$modManMAIconDatabaseLink${availableAccCsvData[i].iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}',
-                                                                        errorBuilder: (context, error, stackTrace) => Image.asset(
-                                                                          'assets/img/placeholdersquare.png',
-                                                                          filterQuality: FilterQuality.none,
-                                                                          fit: BoxFit.fitWidth,
-                                                                        ),
-                                                                        filterQuality: FilterQuality.none,
-                                                                        fit: BoxFit.fitWidth,
-                                                                      )
-                                                                    : Image.network(
-                                                                        '$modManMAIconDatabaseLink${toAccSearchResults[i].iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}',
-                                                                        errorBuilder: (context, error, stackTrace) => Image.asset(
-                                                                          'assets/img/placeholdersquare.png',
-                                                                          filterQuality: FilterQuality.none,
-                                                                          fit: BoxFit.fitWidth,
-                                                                        ),
-                                                                        filterQuality: FilterQuality.none,
-                                                                        fit: BoxFit.fitWidth,
-                                                                      )),
+                                                                child: Image.network(
+                                                                  swapperSearchTextController.text.isEmpty
+                                                                      ? '$modManMAIconDatabaseLink${availableAccCsvData[i].iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}'
+                                                                      : '$modManMAIconDatabaseLink${toAccSearchResults[i].iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}',
+                                                                  errorBuilder: (context, error, stackTrace) => Image.asset(
+                                                                    'assets/img/placeholdersquare.png',
+                                                                    filterQuality: FilterQuality.none,
+                                                                    fit: BoxFit.fitWidth,
+                                                                  ),
+                                                                  filterQuality: FilterQuality.none,
+                                                                  fit: BoxFit.fitWidth,
+                                                                )),
                                                           ),
                                                           //name
-                                                          modManCurActiveItemNameLanguage == 'JP'
-                                                              ? swapperSearchTextController.text.isEmpty
-                                                                  ? Text(availableAccCsvData[i].jpName)
-                                                                  : Text(toAccSearchResults[i].jpName)
-                                                              : swapperSearchTextController.text.isEmpty
-                                                                  ? Text(availableAccCsvData[i].enName)
-                                                                  : Text(toAccSearchResults[i].enName),
+                                                          swapperSearchTextController.text.isEmpty
+                                                              ? Text(modManCurActiveItemNameLanguage == 'JP' ? availableAccCsvData[i].jpName : availableAccCsvData[i].enName)
+                                                              : Text(modManCurActiveItemNameLanguage == 'JP' ? toAccSearchResults[i].jpName : toAccSearchResults[i].enName)
                                                         ]),
                                                         onChanged: (CsvAccessoryIceFile? currentItem) {
                                                           //print("Current ${moddedItemsList[i].groupName}");
@@ -534,8 +516,7 @@ class _ItemsSwapperAccHomePageState extends State<ItemsSwapperAccHomePage> {
                                                             }
                                                           }
                                                           //confirm icon set
-                                                          toItemIconLink =
-                                                              '$modManMAIconDatabaseLink${currentItem.iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}';
+                                                          toItemIconLink = '$modManMAIconDatabaseLink${currentItem.iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}';
 
                                                           setState(
                                                             () {},
@@ -549,7 +530,7 @@ class _ItemsSwapperAccHomePageState extends State<ItemsSwapperAccHomePage> {
                                 ),
                               ),
                             ],
-                          ))
+                          )),
                         ],
                       ),
                     ),
@@ -718,7 +699,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, String fromAccItem
                               ),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ],
@@ -732,7 +713,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, String fromAccItem
                   ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        msas.swapperAccSwappingDialog(context, true, fromSubmod, fromAccItemAvailableIces, toAccItemAvailableIces, toItemName);
+                        msas.swapperAccSwappingDialog(context, true, fromItemModGet(), fromSubmod, fromAccItemAvailableIces, toAccItemAvailableIces, toItemName);
                       },
                       child: Text(curLangText!.uiSwap))
                 ]);

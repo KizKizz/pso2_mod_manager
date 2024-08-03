@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cross_file/cross_file.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
@@ -17,8 +18,8 @@ import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-Future<String> modsSwapperIceFilesGet(
-    context, bool isVanillaItemSwap, SubMod fromSubmod, List<String> fromItemAvailableIces, List<String> toItemAvailableIces, String toItemName, String fromItemId, String toItemId) async {
+Future<String> modsSwapperIceFilesGet(context, bool isVanillaItemSwap, Mod fromMod, SubMod fromSubmod, List<String> fromItemAvailableIces, List<String> toItemAvailableIces, String toItemName,
+    String fromItemId, String toItemId) async {
   //clean
   if (Directory(modManSwapperOutputDirPath).existsSync()) {
     Directory(modManSwapperOutputDirPath).deleteSync(recursive: true);
@@ -182,6 +183,28 @@ Future<String> modsSwapperIceFilesGet(
     if (File(Uri.file('$tempSubmodPathF/${iceNameF}_ext.ice').toFilePath()).existsSync()) {
       await File(Uri.file('$tempSubmodPathF/${iceNameF}_ext.ice').toFilePath()).rename(Uri.file('$packDirPath/$iceNameT').toFilePath());
     }
+    //mod previews
+    //image
+    for (var imagePath in fromMod.previewImages) {
+      if (Directory(Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath())
+          .listSync()
+          .whereType<File>()
+          .where((element) => p.basename(element.path) == p.basename(imagePath))
+          .isEmpty) {
+        File(imagePath).copySync(Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}/${p.basename(imagePath)}').toFilePath());
+      }
+    }
+    //video
+    for (var videoPath in fromMod.previewVideos) {
+      if (Directory(Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath())
+          .listSync()
+          .whereType<File>()
+          .where((element) => p.basename(element.path) == p.basename(videoPath))
+          .isEmpty) {
+        File(videoPath).copySync(Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}/${p.basename(videoPath)}').toFilePath());
+      }
+    }
+    //submod previews
     //image
     for (var imagePath in fromSubmod.previewImages) {
       if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(imagePath)).isEmpty) {
@@ -192,6 +215,23 @@ Future<String> modsSwapperIceFilesGet(
     for (var videoPath in fromSubmod.previewVideos) {
       if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(videoPath)).isEmpty) {
         File(videoPath).copySync(Uri.file('$packDirPath/${p.basename(videoPath)}').toFilePath());
+      }
+    }
+    //modfile previews
+    //image
+    for (var imagePaths in fromSubmod.modFiles.map((e) => e.previewImages!).toList()) {
+      for (var imagePath in imagePaths) {
+        if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(imagePath)).isEmpty) {
+          File(imagePath).copySync(Uri.file('$packDirPath/${p.basename(imagePath)}').toFilePath());
+        }
+      }
+    }
+    //video
+    for (var videoPaths in fromSubmod.modFiles.map((e) => e.previewVideos!).toList()) {
+      for (var videoPath in videoPaths) {
+        if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(videoPath)).isEmpty) {
+          File(videoPath).copySync(Uri.file('$packDirPath/${p.basename(videoPath)}').toFilePath());
+        }
       }
     }
     //cmx
@@ -210,8 +250,8 @@ Future<String> modsSwapperIceFilesGet(
   return Uri.file('$modManSwapperOutputDirPath/$toItemName').toFilePath();
 }
 
-Future<void> swapperSwappingDialog(
-    context, bool isVanillaItemSwap, SubMod fromSubmod, List<String> fromItemAvailableIces, List<String> toItemAvailableIces, String toItemName, String fromItemId, String toItemId) async {
+Future<void> swapperSwappingDialog(context, bool isVanillaItemSwap, Mod fromMod, SubMod fromSubmod, List<String> fromItemAvailableIces, List<String> toItemAvailableIces, String toItemName,
+    String fromItemId, String toItemId) async {
   String swappedModPath = '';
   await showDialog(
       barrierDismissible: false,
@@ -222,8 +262,9 @@ Future<void> swapperSwappingDialog(
                 backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                 contentPadding: const EdgeInsets.all(16),
                 content: FutureBuilder(
-                    future:
-                        swappedModPath.isEmpty ? modsSwapperIceFilesGet(context, isVanillaItemSwap, fromSubmod, fromItemAvailableIces, toItemAvailableIces, toItemName, fromItemId, toItemId) : null,
+                    future: swappedModPath.isEmpty
+                        ? modsSwapperIceFilesGet(context, isVanillaItemSwap, fromMod, fromSubmod, fromItemAvailableIces, toItemAvailableIces, toItemName, fromItemId, toItemId)
+                        : null,
                     builder: (
                       BuildContext context,
                       AsyncSnapshot snapshot,
@@ -371,7 +412,7 @@ Future<void> swapperSwappingDialog(
                                                 ),
                                               ),
                                             ),
-                                          )
+                                          ),
                                         ],
                                       )
                                     : ScrollbarTheme(

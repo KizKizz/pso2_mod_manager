@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
 import 'package:pso2_mod_manager/classes/csv_item_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
+import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/functions/player_item_data.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
@@ -121,9 +122,10 @@ Future<List<CsvWeaponIceFile>> getWeaponsSwapToCsvList(List<CsvWeaponIceFile> cv
 }
 
 class ModsSwapperDataLoader extends StatefulWidget {
-  const ModsSwapperDataLoader({super.key, required this.fromItem, required this.fromSubmod});
+  const ModsSwapperDataLoader({super.key, required this.fromItem, required this.fromMod, required this.fromSubmod});
 
   final Item fromItem;
+  final Mod fromMod;
   final SubMod fromSubmod;
 
   @override
@@ -131,7 +133,6 @@ class ModsSwapperDataLoader extends StatefulWidget {
 }
 
 class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -292,6 +293,7 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
                           }
                           return ModsSwapperAccHomePage(
                             fromItem: widget.fromItem,
+                            fromMod: widget.fromMod,
                             fromSubmod: widget.fromSubmod,
                           );
                         } else if (csvEmotesData.isNotEmpty) {
@@ -307,6 +309,7 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
                           }
                           return ModsSwapperEmotesHomePage(
                             fromItem: widget.fromItem,
+                            fromMod: widget.fromMod,
                             fromSubmod: widget.fromSubmod,
                           );
                         } else if (csvWeaponsData.isNotEmpty) {
@@ -337,6 +340,7 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
                           }
                           return ModsSwapperHomePage(
                             fromItem: widget.fromItem,
+                            fromMod: widget.fromMod,
                             fromSubmod: widget.fromSubmod,
                           );
                         }

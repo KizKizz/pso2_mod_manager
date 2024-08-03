@@ -4,6 +4,7 @@ import 'package:cross_file/cross_file.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
@@ -17,7 +18,7 @@ import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-Future<String> modsSwapperAccIceFilesGet(context, bool isVanillaItemSwap, SubMod fromSubmod, List<String> fromAccItemAvailableIces, List<String> toAccItemAvailableIces, String toItemName) async {
+Future<String> modsSwapperAccIceFilesGet(context, bool isVanillaItemSwap, Mod fromMod, SubMod fromSubmod, List<String> fromAccItemAvailableIces, List<String> toAccItemAvailableIces, String toItemName) async {
   //clean
   if (Directory(modManSwapperOutputDirPath).existsSync()) {
     Directory(modManSwapperOutputDirPath).deleteSync(recursive: true);
@@ -324,6 +325,20 @@ Future<String> modsSwapperAccIceFilesGet(context, bool isVanillaItemSwap, SubMod
     if (File(Uri.file('$tempSubmodPathF/${iceNameF}_ext.ice').toFilePath()).existsSync()) {
       File(Uri.file('$tempSubmodPathF/${iceNameF}_ext.ice').toFilePath()).renameSync(Uri.file('$packDirPath/$iceNameT').toFilePath());
     }
+    //mod previews
+    //image
+    for (var imagePath in fromMod.previewImages) {
+      if (Directory(Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath()).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(imagePath)).isEmpty) {
+        File(imagePath).copySync(Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}/${p.basename(imagePath)}').toFilePath());
+      }
+    }
+    //video
+    for (var videoPath in fromMod.previewVideos) {
+      if (Directory(Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath()).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(videoPath)).isEmpty) {
+        File(videoPath).copySync(Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}/${p.basename(videoPath)}').toFilePath());
+      }
+    }
+    //submod previews
     //image
     for (var imagePath in fromSubmod.previewImages) {
       if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(imagePath)).isEmpty) {
@@ -336,12 +351,29 @@ Future<String> modsSwapperAccIceFilesGet(context, bool isVanillaItemSwap, SubMod
         File(videoPath).copySync(Uri.file('$packDirPath/${p.basename(videoPath)}').toFilePath());
       }
     }
+    //modfile previews
+    //image
+    for (var imagePaths in fromSubmod.modFiles.map((e) => e.previewImages!).toList()) {
+      for (var imagePath in imagePaths) {
+        if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(imagePath)).isEmpty) {
+          File(imagePath).copySync(Uri.file('$packDirPath/${p.basename(imagePath)}').toFilePath());
+        }
+      }
+    }
+    //video
+    for (var videoPaths in fromSubmod.modFiles.map((e) => e.previewVideos!).toList()) {
+      for (var videoPath in videoPaths) {
+        if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(videoPath)).isEmpty) {
+          File(videoPath).copySync(Uri.file('$packDirPath/${p.basename(videoPath)}').toFilePath());
+        }
+      }
+    }
   }
 
   return Uri.file('$modManSwapperOutputDirPath/$toItemName').toFilePath();
 }
 
-Future<void> swapperAccSwappingDialog(context, bool isVanillaItemSwap, SubMod fromSubmod, List<String> fromAccItemAvailableIces, List<String> toAccItemAvailableIces, String toItemName) async {
+Future<void> swapperAccSwappingDialog(context, bool isVanillaItemSwap, Mod fromMod, SubMod fromSubmod, List<String> fromAccItemAvailableIces, List<String> toAccItemAvailableIces, String toItemName) async {
   String swappedModPath = '';
   await showDialog(
       barrierDismissible: false,
@@ -352,7 +384,7 @@ Future<void> swapperAccSwappingDialog(context, bool isVanillaItemSwap, SubMod fr
                 backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                 contentPadding: const EdgeInsets.all(16),
                 content: FutureBuilder(
-                    future: swappedModPath.isEmpty ? modsSwapperAccIceFilesGet(context, isVanillaItemSwap, fromSubmod, fromAccItemAvailableIces, toAccItemAvailableIces, toItemName) : null,
+                    future: swappedModPath.isEmpty ? modsSwapperAccIceFilesGet(context, isVanillaItemSwap, fromMod, fromSubmod, fromAccItemAvailableIces, toAccItemAvailableIces, toItemName) : null,
                     builder: (
                       BuildContext context,
                       AsyncSnapshot snapshot,
@@ -499,7 +531,8 @@ Future<void> swapperAccSwappingDialog(context, bool isVanillaItemSwap, SubMod fr
                                                   ),
                                                 ),
                                               ),
-                                            )
+                                            ),
+                                            
                                           ],
                                         )
                                       : ScrollbarTheme(
