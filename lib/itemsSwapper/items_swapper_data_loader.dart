@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
+import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
@@ -34,13 +34,18 @@ SubMod fromItemSubmodGet(List<String> iceFileNames) {
         orElse: () => '',
       );
       if (p.basename(icePathFromOgData) == iceName) {
-        modFileList.add(ModFile(iceName, fromItemNameSwap, fromItemNameSwap, fromItemNameSwap, selectedCategoryF!, '', [], icePathFromOgData, false, DateTime(0), 0, false, false, false, [], [], [], [], [], []));
+        modFileList.add(
+            ModFile(iceName, fromItemNameSwap, fromItemNameSwap, fromItemNameSwap, selectedCategoryF!, '', [], icePathFromOgData, false, DateTime(0), 0, false, false, false, [], [], [], [], [], []));
       }
     }
     //}
   }
 
   return SubMod(fromItemNameSwap, fromItemNameSwap, fromItemName, selectedCategoryF!, '', false, DateTime(0), 0, false, false, false, false, false, -1, -1, '', [], [], [], [], [], modFileList);
+}
+
+Mod fromItemModGet() {
+  return Mod('', '', '', '', false, DateTime(0), 0, false, false, false, [], [], [], [], []);
 }
 
 Future<List<CsvAccessoryIceFile>> getAccSwapToCsvList(List<CsvAccessoryIceFile> cvsAccDataInput, String category) async {
@@ -248,8 +253,7 @@ class _ItemsSwapperDataLoaderState extends State<ItemsSwapperDataLoader> {
                           //     (a, b) => a.enName.compareTo(b.enName),
                           //   );
                           // }
-                          return const ItemsSwapperWeaponHomePage(
-                          );
+                          return const ItemsSwapperWeaponHomePage();
                         } else {
                           availableItemsCsvData = snapshot.data;
                           if (modManCurActiveItemNameLanguage == 'JP') {

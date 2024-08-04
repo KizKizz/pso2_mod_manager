@@ -1767,18 +1767,55 @@ class _HomePageState extends State<HomePage> {
                           ),
                         //set
                         if (modViewItem != null && context.watch<StateProvider>().setsWindowVisible && !isFavListVisible && searchTextController.value.text.isEmpty && !isModViewFromApplied)
-                          Container(
-                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Theme.of(context).primaryColorLight),
-                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                            ),
-                            child: Text(
-                              modViewItem!.mods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length < 2
-                                  ? '${modViewItem!.mods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} ${curLangText!.uiMod}'
-                                  : '${modViewItem!.mods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} ${curLangText!.uiMods}',
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
-                            ),
+                          Wrap(
+                            spacing: 2.5,
+                            runSpacing: 2.5,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                                child: Text(
+                                  modViewItem!.mods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length < 2
+                                      ? '${modViewItem!.mods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} ${curLangText!.uiMod}'
+                                      : '${modViewItem!.mods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} ${curLangText!.uiMods}',
+                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
+                                ),
+                              ),
+                              // export
+                              InkWell(
+                                onTap: () async {
+                                  List<SubMod> submodsToExport = [];
+                                  for (var mod in modViewItem!.mods.where((element) => element.isSet && element.setNames.contains(selectedModSetName))) {
+                                    submodsToExport.addAll(mod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)));
+                                  }
+                                  await modExportHomePage(context, moddedItemsList, submodsToExport, false);
+                                },
+                                child: Container(
+                                    height: 22,
+                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Theme.of(context).primaryColorLight),
+                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                    ),
+                                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 5),
+                                        child: Icon(
+                                          Icons.import_export,
+                                          color: Theme.of(context).buttonTheme.colorScheme!.primary,
+                                          size: 18,
+                                        ),
+                                      ),
+                                      Text(
+                                        curLangText!.uiExportAllMods,
+                                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).buttonTheme.colorScheme!.primary),
+                                      )
+                                    ])),
+                              ),
+                            ],
                           ),
 
                         //Applied text
@@ -2453,7 +2490,7 @@ class _HomePageState extends State<HomePage> {
                                                       return RoundedRectangleBorder(
                                                           side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
                                                     })),
-                                                    menuChildren: quickApplyMenuButtons(context, curMod.submods.first)),
+                                                    menuChildren: quickApplyMenuButtons(context, curMod, curMod.submods.first)),
                                               ),
 
                                               //More menu
@@ -2697,7 +2734,7 @@ class _HomePageState extends State<HomePage> {
                                                         if (!defaultCategoryDirs.contains(modViewItem!.category)) {
                                                           fromItemCategory = await modsSwapperCategorySelect(context);
                                                         }
-                                                        modsSwapperDialog(context, modViewItem!, curMod.submods.first);
+                                                        modsSwapperDialog(context, modViewItem!, curMod, curMod.submods.first);
                                                       },
                                                     ),
 
@@ -3058,7 +3095,7 @@ class _HomePageState extends State<HomePage> {
                                                       return RoundedRectangleBorder(
                                                           side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
                                                     })),
-                                                    menuChildren: quickApplyMenuButtons(context, curMod.submods[modViewModSetSubModIndex])),
+                                                    menuChildren: quickApplyMenuButtons(context, curMod, curMod.submods[modViewModSetSubModIndex])),
                                               ),
 
                                               //More menu
@@ -3287,7 +3324,7 @@ class _HomePageState extends State<HomePage> {
                                                         if (!defaultCategoryDirs.contains(modViewItem!.category)) {
                                                           fromItemCategory = await modsSwapperCategorySelect(context);
                                                         }
-                                                        modsSwapperDialog(context, modViewItem!, curMod.submods[modViewModSetSubModIndex]);
+                                                        modsSwapperDialog(context, modViewItem!, curMod, curMod.submods[modViewModSetSubModIndex]);
                                                       },
                                                     ),
 
@@ -3762,7 +3799,7 @@ class _HomePageState extends State<HomePage> {
                                                                     return RoundedRectangleBorder(
                                                                         side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
                                                                   })),
-                                                                  menuChildren: quickApplyMenuButtons(context, curSubmod)),
+                                                                  menuChildren: quickApplyMenuButtons(context, curMod, curSubmod)),
                                                             ),
 
                                                             //More menu
@@ -3996,7 +4033,7 @@ class _HomePageState extends State<HomePage> {
                                                                       if (!defaultCategoryDirs.contains(modViewItem!.category)) {
                                                                         fromItemCategory = await modsSwapperCategorySelect(context);
                                                                       }
-                                                                      modsSwapperDialog(context, modViewItem!, curSubmod);
+                                                                      modsSwapperDialog(context, modViewItem!, curMod, curSubmod);
                                                                     },
                                                                   ),
 
@@ -5690,59 +5727,80 @@ class _HomePageState extends State<HomePage> {
                                                       isModViewModsApplying = true;
                                                       setState(() {});
                                                       Future.delayed(Duration(milliseconds: applyButtonsDelay), () async {
-                                                        List<ModFile> allAppliedModFiles = [];
-                                                        for (var item in curSet.setItems.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
-                                                          for (var mod in item.mods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
-                                                            for (var submod in mod.submods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
-                                                              allAppliedModFiles.addAll(submod.modFiles.where((element) => !element.applyStatus));
+                                                        // List<ModFile> allAppliedModFiles = [];
+                                                        // for (var item in curSet.setItems.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+                                                        //   for (var mod in item.mods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+                                                        //     for (var submod in mod.submods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+                                                        //       allAppliedModFiles.addAll(submod.modFiles.where((element) => !element.applyStatus));
+                                                        //     }
+                                                        //   }
+                                                        // }
+
+                                                        //apply mod files
+                                                        // if (await originalFilesCheck(context, allAppliedModFiles)) {
+                                                        // modFilesApply(context, allAppliedModFiles).then((value) async {
+                                                        // if (value.indexWhere((element) => element.applyStatus) != -1) {
+                                                        // for (var curItem in curSet.setItems) {
+                                                        //   for (var curMod in curItem.mods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+                                                        //     for (var curSubmod in curMod.submods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+                                                        //       curSubmod.applyStatus = true;
+                                                        //       curSubmod.isNew = false;
+                                                        //       curSubmod.applyDate = DateTime.now();
+                                                        //       if (autoAqmInject) await aqmInjectionOnModsApply(context, curSubmod);
+                                                        //     }
+                                                        //     curMod.applyStatus = true;
+                                                        //     curMod.isNew = false;
+                                                        //     curMod.applyDate = DateTime.now();
+                                                        //   }
+                                                        //   curItem.applyDate = DateTime.now();
+                                                        //   curItem.applyStatus = true;
+                                                        //   if (curItem.mods.where((element) => element.isNew).isEmpty) {
+                                                        //     curItem.isNew = false;
+                                                        //   }
+                                                        //   if (Provider.of<StateProvider>(context, listen: false).markModdedItem) await applyOverlayedIcon(context, curItem);
+                                                        //   Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('extra');
+                                                        // }
+
+                                                        for (var item in curSet.setItems) {
+                                                          for (var mod in item.mods) {
+                                                            for (var submod in mod.submods) {
+                                                              //apply mod files
+                                                              if (await originalFilesCheck(context, submod.modFiles)) {
+                                                                //apply auto radius removal if on
+                                                                if (removeBoundaryRadiusOnModsApply) await removeBoundaryOnModsApply(context, submod);
+                                                                if (autoAqmInject) await aqmInjectionOnModsApply(context, submod);
+
+                                                                await applyModsToTheGame(context, item, mod, submod);
+
+                                                                if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
+                                                                  await applyOverlayedIcon(context, item);
+                                                                }
+                                                                Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('extra');
+                                                              }
                                                             }
                                                           }
                                                         }
 
-                                                        //apply mod files
-                                                        if (await originalFilesCheck(context, allAppliedModFiles)) {
-                                                          modFilesApply(context, allAppliedModFiles).then((value) async {
-                                                            if (value.indexWhere((element) => element.applyStatus) != -1) {
-                                                              for (var curItem in curSet.setItems) {
-                                                                for (var curMod in curItem.mods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
-                                                                  for (var curSubmod in curMod.submods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
-                                                                    curSubmod.applyStatus = true;
-                                                                    curSubmod.isNew = false;
-                                                                    curSubmod.applyDate = DateTime.now();
-                                                                    if (autoAqmInject) await aqmInjectionOnModsApply(context, curSubmod);
-                                                                  }
-                                                                  curMod.applyStatus = true;
-                                                                  curMod.isNew = false;
-                                                                  curMod.applyDate = DateTime.now();
-                                                                }
-                                                                curItem.applyDate = DateTime.now();
-                                                                curItem.applyStatus = true;
-                                                                if (curItem.mods.where((element) => element.isNew).isEmpty) {
-                                                                  curItem.isNew = false;
-                                                                }
-                                                                if (Provider.of<StateProvider>(context, listen: false).markModdedItem) await applyOverlayedIcon(context, curItem);
-                                                                Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('extra');
-                                                              }
-                                                              List<ModFile> appliedModFiles = value;
-                                                              String fileAppliedText = '';
+                                                        // List<ModFile> appliedModFiles = value;
+                                                        // String fileAppliedText = '';
 
-                                                              for (var element in appliedModFiles.where((e) => e.applyStatus)) {
-                                                                if (fileAppliedText.isEmpty) {
-                                                                  fileAppliedText = uiInTextArg(curLangText!.uiSuccessfullyAppliedX, curSet.setName);
-                                                                }
-                                                                if (!fileAppliedText.contains('${element.itemName} > ${element.modName} > ${element.submodName}\n')) {
-                                                                  fileAppliedText += '${element.itemName} > ${element.modName} > ${element.submodName}\n';
-                                                                }
-                                                              }
-                                                              ScaffoldMessenger.of(context)
-                                                                  .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
-                                                            }
-                                                            isModViewModsApplying = false;
-                                                            saveModdedItemListToJson();
-                                                            setState(() {});
-                                                          });
-                                                        }
+                                                        // for (var element in appliedModFiles.where((e) => e.applyStatus)) {
+                                                        //   if (fileAppliedText.isEmpty) {
+                                                        //     fileAppliedText = uiInTextArg(curLangText!.uiSuccessfullyAppliedX, curSet.setName);
+                                                        //   }
+                                                        //   if (!fileAppliedText.contains('${element.itemName} > ${element.modName} > ${element.submodName}\n')) {
+                                                        //     fileAppliedText += '${element.itemName} > ${element.modName} > ${element.submodName}\n';
+                                                        //   }
+                                                        // }
+                                                        // ScaffoldMessenger.of(context)
+                                                        //     .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                        // }
+                                                        isModViewModsApplying = false;
+                                                        saveModdedItemListToJson();
                                                         setState(() {});
+                                                        // });
+                                                        //   }
+                                                        //   setState(() {});
                                                       });
                                                     },
                                                     child: const Icon(
@@ -5753,6 +5811,27 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                             ],
                                           ),
+
+                                        //Export All
+                                        ModManTooltip(
+                                          message: curLangText!.uiExportAllMods,
+                                          child: InkWell(
+                                            onTap: () async {
+                                              List<SubMod> submodsToExport = [];
+                                              for (var item in curSet.setItems) {
+                                                for (var mod in item.mods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+                                                  submodsToExport.addAll(mod.submods.where((element) => element.isSet && element.setNames.contains(curSet.setName)));
+                                                }
+                                              }
+                                              await modExportHomePage(context, moddedItemsList, submodsToExport, false);
+                                            },
+                                            child: const Icon(
+                                              Icons.import_export,
+                                              size: 26,
+                                              //color: curSet.setItems.where((element) => element.applyStatus).isNotEmpty ? Theme.of(context).disabledColor : null,
+                                            ),
+                                          ),
+                                        ),
 
                                         //Rename
                                         ModManTooltip(
@@ -6240,7 +6319,7 @@ class _HomePageState extends State<HomePage> {
   }
 
 //WIDGETS=============================================================================
-  List<Widget> quickApplyMenuButtons(context, SubMod submod) {
+  List<Widget> quickApplyMenuButtons(context, Mod mod, SubMod submod) {
     List<Widget> menuButtonList = [];
     List<CsvItem> quickApplyItems = quickApplyItemList.where((e) => e.category == submod.category || (e.category == defaultCategoryDirs[1] && submod.category == defaultCategoryDirs[16])).toList();
     //add popup
@@ -6318,7 +6397,7 @@ class _HomePageState extends State<HomePage> {
                         }
 
                         String swappedPath = await modsSwapperAccIceFilesGet(
-                            context, false, submod, fromItemIces, toItemIces, modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName());
+                            context, false, mod, submod, fromItemIces, toItemIces, modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName());
                         //adding
                         var returnedVar = await modsAdderModFilesAdder(
                             context,
@@ -6350,8 +6429,8 @@ class _HomePageState extends State<HomePage> {
                         }
                         String toItemId = toItem.id.toString();
 
-                        String swappedPath = await modsSwapperIceFilesGet(
-                            context, false, submod, fromItemIces, toItemIces, modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName(), fromItemId, toItemId);
+                        String swappedPath = await modsSwapperIceFilesGet(context, false, mod, submod, fromItemIces, toItemIces,
+                            modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName(), fromItemId, toItemId);
                         //adding
                         var returnedVar = await modsAdderModFilesAdder(
                             context,

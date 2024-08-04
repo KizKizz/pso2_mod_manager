@@ -15,8 +15,8 @@ import 'package:path/path.dart' as p;
 
 Future<void> modExportHomePage(context, List<CategoryType> baseList, List<SubMod> exportSubmods, appliedModsExport) async {
   File exportedZip = File('');
-  bool isWaiting = true;
   List<String> exportNames = exportSubmods.map((e) => '${e.itemName} > ${e.modName} > ${e.submodName}').toList();
+  Provider.of<StateProvider>(context, listen: false).createModExportProgressStatus(List.generate(exportNames.length, (index) => false));
   return await showDialog(
       barrierDismissible: false,
       context: context,
@@ -46,14 +46,34 @@ Future<void> modExportHomePage(context, List<CategoryType> baseList, List<SubMod
                           padding: const EdgeInsets.only(bottom: 5),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const CircularProgressIndicator(),
-                              const SizedBox(height: 5),
-                              Text(
-                                isWaiting ? exportNames.join('\n') : curLangText!.uiExportingMods,
-                                style: const TextStyle(fontSize: 15),
+                              const Center(
+                                  child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 10),
+                                child: CircularProgressIndicator(),
+                              )),
+                              Visibility(
+                                visible: !context.watch<StateProvider>().modExportProgessZipping,
+                                child: const Center(
+                                    child: Padding(
+                                  padding: EdgeInsets.only(bottom: 10),
+                                  child: Text('', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
+                                )),
                               ),
+                              Visibility(
+                                visible: context.watch<StateProvider>().modExportProgessZipping,
+                                child: Center(
+                                    child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: Text(curLangText!.uiPackingFiles, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
+                                )),
+                              ),
+                              for (int i = 0; i < exportNames.length; i++)
+                                Text(
+                                  exportNames[i],
+                                  style: TextStyle(fontSize: 15, color: context.watch<StateProvider>().modExportProgressStatus[i] ? Colors.green : null),
+                                ),
                             ],
                           )),
                     ),
@@ -74,6 +94,7 @@ Future<void> modExportHomePage(context, List<CategoryType> baseList, List<SubMod
                           children: [
                             ElevatedButton(
                                 onPressed: () {
+                                  Provider.of<StateProvider>(context, listen: false).modExportProgessZippingStateSet(false);
                                   Navigator.pop(context, true);
                                 },
                                 child: Text(curLangText!.uiClose)),
@@ -83,8 +104,7 @@ Future<void> modExportHomePage(context, List<CategoryType> baseList, List<SubMod
                                 padding: const EdgeInsets.only(left: 5),
                                 child: ElevatedButton(
                                     onPressed: () async {
-                                      isWaiting = false;
-                                      String exportedZipPath = await modExport(baseList, exportSubmods, appliedModsExport);
+                                      String exportedZipPath = await modExport(context, baseList, exportSubmods, appliedModsExport);
                                       exportedZip = File(exportedZipPath);
                                       setState(
                                         () {},
@@ -99,7 +119,7 @@ Future<void> modExportHomePage(context, List<CategoryType> baseList, List<SubMod
                                 padding: const EdgeInsets.only(left: 5),
                                 child: ElevatedButton(
                                     onPressed: () async {
-                                      isWaiting = true;
+                                      Provider.of<StateProvider>(context, listen: false).modExportProgessZippingStateSet(false);
                                       await launchUrl(Uri.file(exportedZip.parent.path));
                                       // ignore: use_build_context_synchronously
                                       Navigator.pop(context, true);
@@ -116,7 +136,7 @@ Future<void> modExportHomePage(context, List<CategoryType> baseList, List<SubMod
       });
 }
 
-Future<String> modExport(List<CategoryType> baseList, List<SubMod> exportSubmods, bool appliedModsExport) async {
+Future<String> modExport(context, List<CategoryType> baseList, List<SubMod> exportSubmods, bool appliedModsExport) async {
   DateTime now = DateTime.now();
   String formattedDate = DateFormat('MM-dd-yyyy-kk-mm-ss').format(now);
   String rootExportDir = '$modManExportedDirPath/PSO2NGSMMExportedMods_$formattedDate';
@@ -145,30 +165,39 @@ Future<String> modExport(List<CategoryType> baseList, List<SubMod> exportSubmods
                   expModDir.createSync(recursive: true);
                   Directory expSubmodDir = Directory(exportSubmod.location.replaceFirst(modManModsDirPath, rootExportDir));
                   expSubmodDir.createSync(recursive: true);
+                  //previews file for mod
+                  for (var filePath in mod.previewImages.where((element) => File(element).parent.path == mod.location)) {
+                    await File(filePath).copy(filePath.replaceFirst(modManModsDirPath, rootExportDir));
+                  }
+                  for (var filePath in mod.previewVideos.where((element) => File(element).parent.path == mod.location)) {
+                    await File(filePath).copy(filePath.replaceFirst(modManModsDirPath, rootExportDir));
+                  }
+                  //previews for submod
+                  for (var filePath in exportSubmod.previewImages) {
+                    await File(filePath).copy(filePath.replaceFirst(modManModsDirPath, rootExportDir));
+                  }
+                  for (var filePath in exportSubmod.previewVideos) {
+                    await File(filePath).copy(filePath.replaceFirst(modManModsDirPath, rootExportDir));
+                  }
                   for (var modFile in exportSubmod.modFiles) {
                     if (appliedModsExport) {
                       if (modFile.applyStatus) await File(modFile.location).copy(modFile.location.replaceFirst(modManModsDirPath, rootExportDir));
                     } else {
                       await File(modFile.location).copy(modFile.location.replaceFirst(modManModsDirPath, rootExportDir));
                     }
-                    //previews for submod
-                    for (var filePath in exportSubmod.previewImages) {
+                    //previews file for modFile
+                    for (var filePath in modFile.previewImages!) {
                       await File(filePath).copy(filePath.replaceFirst(modManModsDirPath, rootExportDir));
                     }
-                    for (var filePath in exportSubmod.previewVideos) {
+                    for (var filePath in modFile.previewVideos!) {
                       await File(filePath).copy(filePath.replaceFirst(modManModsDirPath, rootExportDir));
                     }
-                    //previews file for mod
-                    for (var filePath in mod.previewImages.where((element) => File(element).parent.path == mod.location)) {
-                      await File(filePath).copy(filePath.replaceFirst(modManModsDirPath, rootExportDir));
-                    }
-                    for (var filePath in mod.previewVideos.where((element) => File(element).parent.path == mod.location)) {
-                      await File(filePath).copy(filePath.replaceFirst(modManModsDirPath, rootExportDir));
-                    }
-                    if (log.isNotEmpty) {
+                    if (log.isNotEmpty && log.contains(exportSubmod.submodName)) {
                       exportedLog.add(log);
+                      Provider.of<StateProvider>(context, listen: false).setModExportProgressStatus(exportSubmods.indexOf(exportSubmod), true);
                     }
                     log = '';
+                    await Future.delayed(const Duration(milliseconds: 10));
                   }
                 }
               }
@@ -176,9 +205,11 @@ Future<String> modExport(List<CategoryType> baseList, List<SubMod> exportSubmods
           }
         }
       }
-      await Future.delayed(const Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 50));
     }
   }
+  Provider.of<StateProvider>(context, listen: false).modExportProgessZippingStateSet(true);
+  await Future.delayed(const Duration(milliseconds: 50));
   //Save logs
   File logFile = File(Uri.file('$rootExportDir/${curLangText!.uiExportedNote}.txt').toFilePath());
   await logFile.create(recursive: true);

@@ -5,6 +5,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/aqmInjection/aqm_inject_functions.dart';
+import 'package:pso2_mod_manager/boundary/mods_boundary_functions.dart';
 import 'package:pso2_mod_manager/classes/category_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
@@ -13,6 +15,8 @@ import 'package:pso2_mod_manager/classes/mod_set_class.dart';
 import 'package:pso2_mod_manager/classes/mods_adder_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
+import 'package:pso2_mod_manager/functions/apply_mods_functions.dart';
+import 'package:pso2_mod_manager/functions/icon_overlay.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/modfiles_apply.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
@@ -111,12 +115,17 @@ Future<bool> modsImportFilesAdder(context, List<ModsAdderItem> itemsToAddList, S
                 itemInList.mods.addAll(newModsFetcher(itemInList.location, cateInList.categoryName, foldersInNewItemPath, importedSetName));
               }
               itemInList.isNew = true;
+              itemInList.setLatestCreationDate();
               //Sort alpha
-              itemInList.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
+              // itemInList.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
               newSet.setItems.add(itemInList);
             }
-            //Sort alpha
-            cateInList.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
+            //Sort
+            if (itemsWithNewModsOnTop) {
+              cateInList.items.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
+            } else {
+              cateInList.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
+            }
             cateInList.visible = cateInList.items.isNotEmpty ? true : false;
             cateType.visible = cateType.categories.where((element) => element.items.isNotEmpty).isNotEmpty ? true : false;
 
@@ -152,11 +161,15 @@ Future<bool> modsImportFilesAdder(context, List<ModsAdderItem> itemsToAddList, S
               }
               itemInList.isNew = true;
               //Sort alpha
-              itemInList.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
+              // itemInList.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
               newSet.setItems.add(itemInList);
             }
-            //Sort alpha
-            newCate.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
+            //Sort
+            if (itemsWithNewModsOnTop) {
+              newCate.items.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
+            } else {
+              newCate.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
+            }
             newCate.visible = newCate.items.isNotEmpty ? true : false;
             cateType.categories.add(newCate);
             cateType.visible = cateType.categories.where((element) => element.items.isNotEmpty).isNotEmpty ? true : false;
@@ -204,8 +217,11 @@ Future<Item> newItemsFetcher(String catePath, String itemPath, String importedSe
     itemIcons = ['assets/img/placeholdersquare.png'];
   }
 
-  return Item(p.basename(itemPath), [], itemIcons, '', '', '', false, p.basename(catePath), Uri.file(itemPath).toFilePath(), false, DateTime(0), 0, false, true, true, [importedSetName],
+  Item newItem = Item(p.basename(itemPath), [], itemIcons, '', '', '', false, p.basename(catePath), Uri.file(itemPath).toFilePath(), false, DateTime(0), 0, false, true, true, [importedSetName],
       newModsFetcher(itemPath, p.basename(catePath), [], importedSetName));
+  newItem.setLatestCreationDate();
+
+  return newItem;
 }
 
 List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newModFolders, String importedSetName) {
@@ -250,10 +266,13 @@ List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newMo
     //add to submod
     SubMod subModInItemDir = SubMod(p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, true, false, false, -1, -1, '',
         [importedSetName], [], modPreviewImages, modPreviewVideos, [], modFilesInItemDir);
+    subModInItemDir.setLatestCreationDate();
 
     //add to mod
-    mods.add(
-        Mod(p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, true, [importedSetName], modPreviewImages, modPreviewVideos, [], [subModInItemDir]));
+    Mod newMod =
+        Mod(p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, true, [importedSetName], modPreviewImages, modPreviewVideos, [], [subModInItemDir]);
+    newMod.setLatestCreationDate();
+    mods.add(newMod);
   }
 
   // get submods in mod folders
@@ -275,12 +294,14 @@ List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newMo
       }
     }
 
-    mods.add(Mod(p.basename(dir.path), p.basename(itemPath), cateName, dir.path, false, DateTime(0), 0, true, false, true, [importedSetName], modPreviewImages, modPreviewVideos, [],
-        newSubModFetcher(dir.path, cateName, p.basename(itemPath), importedSetName)));
+    Mod newMod = Mod(p.basename(dir.path), p.basename(itemPath), cateName, dir.path, false, DateTime(0), 0, true, false, true, [importedSetName], modPreviewImages, modPreviewVideos, [],
+        newSubModFetcher(dir.path, cateName, p.basename(itemPath), importedSetName));
+    newMod.setLatestCreationDate();
+    mods.add(newMod);
   }
 
   //Sort alpha
-  mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
+  // mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
 
   return mods;
 }
@@ -297,8 +318,8 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName, 
       // for (var element in ogFiles) {
       //   ogFilePaths.add(element.path);
       // }
-      modFiles
-          .add(ModFile(p.basename(file.path), p.basename(modPath), p.basename(modPath), itemName, cateName, '', [], file.path, false, DateTime(0), 0, false, true, true, [importedSetName], [], [], [], [], []));
+      modFiles.add(ModFile(
+          p.basename(file.path), p.basename(modPath), p.basename(modPath), itemName, cateName, '', [], file.path, false, DateTime(0), 0, false, true, true, [importedSetName], [], [], [], [], []));
       //Sort alpha
       modFiles.sort((a, b) => a.modFileName.toLowerCase().compareTo(b.modFileName.toLowerCase()));
     }
@@ -327,8 +348,10 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName, 
       hasCmx = true;
     }
 
-    submods.add(SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), 0, true, false, true, hasCmx, false, -1, -1, cmxFile, [importedSetName], [],
-        modPreviewImages, modPreviewVideos, [], modFiles));
+    SubMod newSubmod = SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), 0, true, false, true, hasCmx, false, -1, -1, cmxFile, [importedSetName], [],
+        modPreviewImages, modPreviewVideos, [], modFiles);
+    newSubmod.setLatestCreationDate();
+    submods.add(newSubmod);
   }
 
   //ices in sub dirs
@@ -370,8 +393,8 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName, 
       List<String> parentPaths = file.parent.path.split(modPath).last.trim().split(Uri.file('/').toFilePath());
       parentPaths.removeWhere((element) => element.isEmpty);
 
-      modFiles.add(
-          ModFile(p.basename(file.path), parentPaths.join(' > '), p.basename(modPath), itemName, cateName, '', [], file.path, false, DateTime(0), 0, false, true, true, [importedSetName], [], [], [], [], []));
+      modFiles.add(ModFile(
+          p.basename(file.path), parentPaths.join(' > '), p.basename(modPath), itemName, cateName, '', [], file.path, false, DateTime(0), 0, false, true, true, [importedSetName], [], [], [], [], []));
       //Sort alpha
       modFiles.sort((a, b) => a.modFileName.toLowerCase().compareTo(b.modFileName.toLowerCase()));
     }
@@ -379,15 +402,17 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName, 
     //Get submod name
     List<String> parentPaths = dir.path.split(modPath).last.trim().split(Uri.file('/').toFilePath());
     parentPaths.removeWhere((element) => element.isEmpty);
-    submods.add(SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), 0, true, false, true, hasCmx, false, -1, -1, cmxFile, [importedSetName], [],
-        modPreviewImages, modPreviewVideos, [], modFiles));
+    SubMod newSubmod = SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), 0, true, false, true, hasCmx, false, -1, -1, cmxFile, [importedSetName],
+        [], modPreviewImages, modPreviewVideos, [], modFiles);
+    newSubmod.setLatestCreationDate();
+    submods.add(newSubmod);
   }
 
   //remove empty submods
   submods.removeWhere((element) => element.modFiles.isEmpty);
 
   //Sort alpha
-  submods.sort((a, b) => a.submodName.toLowerCase().compareTo(b.submodName.toLowerCase()));
+  // submods.sort((a, b) => a.submodName.toLowerCase().compareTo(b.submodName.toLowerCase()));
 
   return submods;
 }
@@ -478,56 +503,78 @@ Future<(String, bool)> newImportModSetDialog(context) async {
 
 Future<void> applyImportedMods(context, ModSet curSet) async {
   isModViewModsApplying = true;
-  Future.delayed(const Duration(milliseconds: 200), () async {
-    List<ModFile> allAppliedModFiles = [];
-    for (var item in curSet.setItems.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
-      for (var mod in item.mods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
-        for (var submod in mod.submods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
-          allAppliedModFiles.addAll(submod.modFiles.where((element) => !element.applyStatus));
+  for (var item in curSet.setItems) {
+    for (var mod in item.mods) {
+      for (var submod in mod.submods) {
+        //apply mod files
+        if (await originalFilesCheck(context, submod.modFiles)) {
+          //apply auto radius removal if on
+          if (removeBoundaryRadiusOnModsApply) await removeBoundaryOnModsApply(context, submod);
+          if (autoAqmInject) await aqmInjectionOnModsApply(context, submod);
+
+          await applyModsToTheGame(context, item, mod, submod);
+
+          if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
+            await applyOverlayedIcon(context, item);
+          }
+          Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('extra');
         }
       }
     }
+  }
+  isModViewModsApplying = false;
+  saveModdedItemListToJson();
+  Navigator.pop(context);
+  // Future.delayed(const Duration(milliseconds: 200), () async {
+  // List<ModFile> allAppliedModFiles = [];
+  // for (var item in curSet.setItems.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+  //   for (var mod in item.mods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+  //     for (var submod in mod.submods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+  //       allAppliedModFiles.addAll(submod.modFiles.where((element) => !element.applyStatus));
+  //     }
+  //   }
+  // }
 
-    //apply mod files
-    if (await originalFilesCheck(context, allAppliedModFiles)) {
-      modFilesApply(context, allAppliedModFiles).then((value) async {
-        if (value.indexWhere((element) => element.applyStatus) != -1) {
-          for (var curItem in curSet.setItems) {
-            for (var curMod in curItem.mods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
-              for (var curSubmod in curMod.submods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
-                curSubmod.applyStatus = true;
-                curSubmod.isNew = false;
-                curSubmod.applyDate = DateTime.now();
-              }
-              curMod.applyStatus = true;
-              curMod.isNew = false;
-              curMod.applyDate = DateTime.now();
-            }
-            curItem.applyDate = DateTime.now();
-            curItem.applyStatus = true;
-            if (curItem.mods.where((element) => element.isNew).isEmpty) {
-              curItem.isNew = false;
-            }
-          }
-          List<ModFile> appliedModFiles = value;
-          String fileAppliedText = '';
+  //apply mod files
+  // if (await originalFilesCheck(context, allAppliedModFiles)) {
+  //   modFilesApply(context, allAppliedModFiles).then((value) async {
+  //     if (value.indexWhere((element) => element.applyStatus) != -1) {
+  //       for (var curItem in curSet.setItems) {
+  //         for (var curMod in curItem.mods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+  //           for (var curSubmod in curMod.submods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+  //             curSubmod.applyStatus = true;
+  //             curSubmod.isNew = false;
+  //             curSubmod.applyDate = DateTime.now();
+  //           }
+  //           curMod.applyStatus = true;
+  //           curMod.isNew = false;
+  //           curMod.applyDate = DateTime.now();
+  //         }
+  //         curItem.applyDate = DateTime.now();
+  //         curItem.applyStatus = true;
+  //         if (curItem.mods.where((element) => element.isNew).isEmpty) {
+  //           curItem.isNew = false;
+  //         }
+  //       }
+  //       List<ModFile> appliedModFiles = value;
+  //       String fileAppliedText = '';
 
-          for (var element in appliedModFiles.where((e) => e.applyStatus)) {
-            if (fileAppliedText.isEmpty) {
-              fileAppliedText = uiInTextArg(curLangText!.uiSuccessfullyAppliedX, curSet.setName);
-            }
-            if (!fileAppliedText.contains('${element.itemName} > ${element.modName} > ${element.submodName}\n')) {
-              fileAppliedText += '${element.itemName} > ${element.modName} > ${element.submodName}\n';
-            }
-          }
-          ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
-        }
-        isModViewModsApplying = false;
-        saveModdedItemListToJson();
-        Navigator.pop(context);
-      });
-    }
-  });
+  //       for (var element in appliedModFiles.where((e) => e.applyStatus)) {
+  //         if (fileAppliedText.isEmpty) {
+  //           fileAppliedText = uiInTextArg(curLangText!.uiSuccessfullyAppliedX, curSet.setName);
+  //         }
+  //         if (!fileAppliedText.contains('${element.itemName} > ${element.modName} > ${element.submodName}\n')) {
+  //           fileAppliedText += '${element.itemName} > ${element.modName} > ${element.submodName}\n';
+  //         }
+  //       }
+  //       ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+  //     }
+  //     isModViewModsApplying = false;
+  //     saveModdedItemListToJson();
+  //     Navigator.pop(context);
+  //   });
+  // }
+  // });
 }
 
 Future<void> applyingImportedModLoader(context, ModSet curSet) async {

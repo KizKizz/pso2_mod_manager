@@ -49,6 +49,8 @@ class StateProvider with ChangeNotifier {
   String _aqmInjectionProgressStatus = '';
   ItemListSort _itemListSortState = ItemListSort.alphabeticalOrder;
   ModViewListSort _modViewListSortState = ModViewListSort.alphabeticalOrder;
+  List<bool> _modExportProgressStatus = [];
+  bool _modExportProgessZipping = false;
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -96,6 +98,23 @@ class StateProvider with ChangeNotifier {
   String get aqmInjectionProgressStatus => _aqmInjectionProgressStatus;
   ItemListSort get itemListSortState => _itemListSortState;
   ModViewListSort get modViewListSortState => _modViewListSortState;
+  List<bool> get modExportProgressStatus => _modExportProgressStatus;
+  bool get modExportProgessZipping => _modExportProgessZipping;
+
+  void modExportProgessZippingStateSet(bool state) {
+    _modExportProgessZipping = state;
+    notifyListeners();
+  }
+
+  void setModExportProgressStatus(int index, bool status) {
+    _modExportProgressStatus[index] = status;
+    notifyListeners();
+  }
+
+  void createModExportProgressStatus(List<bool> list) {
+    _modExportProgressStatus = list;
+    notifyListeners();
+  }
 
   void modViewListSortStateSet(ModViewListSort state) {
     _modViewListSortState = state;
