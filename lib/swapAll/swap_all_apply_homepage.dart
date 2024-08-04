@@ -764,13 +764,13 @@ Future<bool> swapAllPopup(context, List<Mod> mods, List<SubMod> submods, List<Cs
                     Visibility(
                       visible: !isSwapped || isSwapping,
                       child: const Padding(
-                        padding: EdgeInsets.only(top: 20),
+                        padding: EdgeInsets.only(top: 10),
                         child: SizedBox(width: 25, height: 25, child: CircularProgressIndicator()),
                       ),
                     ),
                     Visibility(
                       visible: isSwapped,
-                      child: const Padding(padding: EdgeInsets.only(top: 20), child: SizedBox(width: 25, height: 25)),
+                      child: const Padding(padding: EdgeInsets.only(top: 10), child: SizedBox(width: 25, height: 25, child: Icon(Icons.check, size: 25),)),
                     ),
                     Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10),

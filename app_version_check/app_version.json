@@ -1,10 +1,12 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.8.8",
+    "version": "2.8.9",
     "description": [
-        "Added Swap All function which allows swapping all mods in an item to multiple other items at once",
+        "Added Mod Set Export function",
+        "Fixed some bugs and improved Item/Mod swapping",
         "More bug fixes",
-        "アイテム内のすべてのMODを他の複数のアイテムに一度にスワップできるスワップ・オール機能を追加",
+        "MODセットエクスポート機能の追加",
+        "いくつかのバグを修正し、アイテム/Modの交換を改善しました",
         "その他のバグ修正"
     ],
     "windows_file": "",
