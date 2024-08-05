@@ -36,6 +36,7 @@ import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
+import 'package:pso2_mod_manager/pages/home_page.dart';
 import 'package:pso2_mod_manager/pages/player_item_data_preload_page.dart';
 import 'package:pso2_mod_manager/pages/profiles_loading_page.dart';
 import 'package:pso2_mod_manager/sharing/mods_import.dart';
@@ -2289,13 +2290,16 @@ class _MainPageState extends State<MainPage> {
                                       onPressed: (() async {
                                         if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
                                           isModViewListHidden = true;
+                                          modViewListVisible = false;
                                           Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
                                           saveSetListToJson();
                                         } else {
                                           isModViewListHidden = false;
                                           // modSetList = await modSetLoader();
                                           // saveSetListToJson();
+                                          modViewListVisible = false;
                                           saveModdedItemListToJson();
+                                          // modViewItem = null;
                                           Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
                                         }
                                       }),

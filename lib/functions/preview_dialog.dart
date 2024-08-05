@@ -52,8 +52,7 @@ void previewDialog(context) async {
                     });
                   },
                   indicatorMargin: 4,
-                  slideIndicator: CircularWaveSlideIndicator(
-                      itemSpacing: 10, indicatorRadius: 4, currentIndicatorColor: Theme.of(context).colorScheme.primary, indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3))),
+                  slideIndicator: CircularWaveSlideIndicator(slideIndicatorOptions: SlideIndicatorOptions(itemSpacing: 10, indicatorRadius: 4, currentIndicatorColor: Theme.of(context).colorScheme.primary, indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3)))),
               items: previewDialogImages,
             ),
            

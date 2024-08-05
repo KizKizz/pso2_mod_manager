@@ -81,6 +81,7 @@ import 'package:path/path.dart' as p;
 
 bool hoveringOnSubmod = false;
 bool hoveringOnModFile = false;
+bool modViewListVisible = false;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -1436,6 +1437,7 @@ class _HomePageState extends State<HomePage> {
                                                                         // modViewETKeys.clear();
                                                                         isModViewListHidden = false;
                                                                         isModViewFromApplied = false;
+                                                                        modViewListVisible = true;
                                                                         modViewCate = curCategory;
                                                                         modViewItem = curItem;
                                                                         setState(() {});
@@ -1537,9 +1539,11 @@ class _HomePageState extends State<HomePage> {
         automaticallyImplyLeading: false,
         titleSpacing: 0,
         actions: <Widget>[
-          if (isModViewListHidden || modViewItem == null) Container(),
-          if (!isModViewListHidden && modViewItem != null)
-            Align(
+          // if (isModViewListHidden || modViewItem == null) Container(),
+          // if (modViewListVisible)
+          Visibility(
+            visible: modViewListVisible,
+            child: Align(
               alignment: Alignment.topCenter,
               child: ModManTooltip(
                 message: curLangText!.uiClearAvailableModsView,
@@ -1549,10 +1553,12 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onTap: () async {
                       modViewItem = null;
+                      modViewListVisible = false;
                       setState(() {});
                     }),
               ),
             ),
+          ),
         ],
         title: Padding(
           padding: const EdgeInsets.only(left: 5),
@@ -1560,7 +1566,7 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              if (!isModViewListHidden && modViewItem != null)
+              if (modViewListVisible)
                 Padding(
                   padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
                   child: Container(
@@ -1586,15 +1592,15 @@ class _HomePageState extends State<HomePage> {
                 ),
               Expanded(
                 child: SizedBox(
-                  height: !isModViewListHidden && modViewItem != null ? 84 : 30,
+                  height: modViewListVisible ? 84 : 30,
                   child: ScrollbarTheme(
                     data: ScrollbarThemeData(
                       // ignore: deprecated_member_use
                       thickness: MaterialStateProperty.resolveWith((states) {
                         if (states.contains(WidgetState.hovered)) {
-                          return !isModViewListHidden && modViewItem != null ? 5 : 0;
+                          return modViewListVisible ? 5 : 0;
                         }
-                        return !isModViewListHidden && modViewItem != null ? 3 : 0;
+                        return modViewListVisible ? 3 : 0;
                       }),
                       thumbColor: WidgetStateProperty.resolveWith((states) {
                         if (states.contains(WidgetState.hovered)) {
@@ -1606,7 +1612,7 @@ class _HomePageState extends State<HomePage> {
                     child: SingleChildScrollView(
                       physics: modViewItem == null ? const NeverScrollableScrollPhysics() : null,
                       child: Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        !isModViewListHidden && modViewItem != null
+                        modViewListVisible
                             ? Text(modViewItem!.category == defaultCategoryDirs[17]
                                 ? modViewItem!.itemName.split('_').isNotEmpty && modViewItem!.itemName.split('_').first == 'it' && modViewItem!.itemName.split('_')[1] == 'wp'
                                     ? modViewItem!.itemName
@@ -1616,7 +1622,7 @@ class _HomePageState extends State<HomePage> {
                                 padding: const EdgeInsets.only(bottom: 5),
                                 child: Text(curLangText!.uiAvailableMods),
                               ),
-                        if (modViewItem != null)
+                        if (modViewListVisible)
                           const Divider(
                             endIndent: 5,
                             height: 5,
@@ -1624,7 +1630,7 @@ class _HomePageState extends State<HomePage> {
                           ),
 
                         //normal
-                        if (modViewItem != null && !isFavListVisible && searchTextController.value.text.isEmpty && !context.watch<StateProvider>().setsWindowVisible)
+                        if (modViewListVisible && modViewItem != null && !isFavListVisible && searchTextController.value.text.isEmpty && !context.watch<StateProvider>().setsWindowVisible)
                           Wrap(spacing: 2.5, runSpacing: 2.5, children: [
                             Container(
                               padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
@@ -1714,7 +1720,7 @@ class _HomePageState extends State<HomePage> {
                             )
                           ]),
                         //fav
-                        if (modViewItem != null && isFavListVisible && searchTextController.value.text.isEmpty && !isModViewFromApplied)
+                        if (modViewListVisible && modViewItem != null && isFavListVisible && searchTextController.value.text.isEmpty && !isModViewFromApplied)
                           Container(
                             padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                             decoration: BoxDecoration(
@@ -1729,7 +1735,11 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         //searching
-                        if (modViewItem != null && searchTextController.value.text.isNotEmpty && !isModViewFromApplied && itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text) == 0)
+                        if (modViewListVisible &&
+                            modViewItem != null &&
+                            searchTextController.value.text.isNotEmpty &&
+                            !isModViewFromApplied &&
+                            itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text) == 0)
                           Container(
                             padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                             decoration: BoxDecoration(
@@ -1741,7 +1751,11 @@ class _HomePageState extends State<HomePage> {
                               style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
                             ),
                           ),
-                        if (modViewItem != null && searchTextController.value.text.isNotEmpty && !isModViewFromApplied && itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text) > 0)
+                        if (modViewListVisible &&
+                            modViewItem != null &&
+                            searchTextController.value.text.isNotEmpty &&
+                            !isModViewFromApplied &&
+                            itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text) > 0)
                           Container(
                             padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                             decoration: BoxDecoration(
@@ -1756,7 +1770,12 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         //set
-                        if (modViewItem != null && context.watch<StateProvider>().setsWindowVisible && !isFavListVisible && searchTextController.value.text.isEmpty && !isModViewFromApplied)
+                        if (modViewListVisible &&
+                            modViewItem != null &&
+                            context.watch<StateProvider>().setsWindowVisible &&
+                            !isFavListVisible &&
+                            searchTextController.value.text.isEmpty &&
+                            !isModViewFromApplied)
                           Wrap(
                             spacing: 2.5,
                             runSpacing: 2.5,
@@ -1809,7 +1828,7 @@ class _HomePageState extends State<HomePage> {
                           ),
 
                         //Applied text
-                        if (modViewItem != null && appBarAppliedModNames.isNotEmpty)
+                        if (modViewListVisible && modViewItem != null && appBarAppliedModNames.isNotEmpty)
                           for (int i = 0; i < appBarAppliedModNames.length; i++)
                             Text(
                               '${curLangText!.uiApplied}: ${appBarAppliedModNames[i]}',
@@ -1825,7 +1844,7 @@ class _HomePageState extends State<HomePage> {
         ),
         backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(headersOpacityValue),
         foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
-        toolbarHeight: !isModViewListHidden && modViewItem != null ? 84 : 30,
+        toolbarHeight: modViewListVisible ? 84 : 30,
         elevation: 0,
       ),
       const Divider(
@@ -1833,7 +1852,7 @@ class _HomePageState extends State<HomePage> {
         thickness: 1,
       ),
       //Main list
-      if (!isModViewListHidden && modViewItem != null)
+      if (modViewListVisible)
         Flexible(
             child: ScrollbarTheme(
                 data: ScrollbarThemeData(
@@ -1847,12 +1866,12 @@ class _HomePageState extends State<HomePage> {
                 child: SuperListView.builder(
                     // shrinkWrap: true,
                     physics: const SuperRangeMaintainingScrollPhysics(),
+
                     // primary: true,
                     // cacheExtent: double.maxFinite,
                     //padding: const EdgeInsets.symmetric(horizontal: 1),
                     itemCount: modViewItem!.mods.length,
                     itemBuilder: (context, modIndex) {
-                      // modViewETKeys.add(GlobalKey());
                       var curMod = modViewItem!.mods[modIndex];
                       // if (modViewETKeys.isEmpty || modViewETKeys.length != modViewItem!.mods.length) {
                       //   modViewETKeys = List.generate(modViewItem!.mods.length, (index) => GlobalKey());
@@ -1946,10 +1965,11 @@ class _HomePageState extends State<HomePage> {
                                               enableInfiniteScroll: true,
                                               indicatorMargin: 4,
                                               slideIndicator: CircularWaveSlideIndicator(
-                                                  itemSpacing: 10,
-                                                  indicatorRadius: 4,
-                                                  currentIndicatorColor: Theme.of(context).colorScheme.primary,
-                                                  indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3))),
+                                                  slideIndicatorOptions: SlideIndicatorOptions(
+                                                      itemSpacing: 10,
+                                                      indicatorRadius: 4,
+                                                      currentIndicatorColor: Theme.of(context).colorScheme.primary,
+                                                      indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3)))),
                                           items: previewImages,
                                         ),
                                       ),
@@ -1968,8 +1988,9 @@ class _HomePageState extends State<HomePage> {
                                   iconColor: Theme.of(context).textTheme.bodyMedium!.color,
                                   collapsedIconColor: Theme.of(context).textTheme.bodyMedium!.color,
                                   // key: modViewETKeys[modIndex],
-                                  onExpansionChanged: (value) {
+                                  onExpansionChanged: (value) async {
                                     isModViewItemListExpanded[modIndex] = value;
+                                    await Future.delayed(const Duration(milliseconds: 210));
                                     setState(() {});
                                   },
                                   title: Row(
@@ -3575,10 +3596,11 @@ class _HomePageState extends State<HomePage> {
                                                                 enableInfiniteScroll: true,
                                                                 indicatorMargin: 4,
                                                                 slideIndicator: CircularWaveSlideIndicator(
-                                                                    itemSpacing: 10,
-                                                                    indicatorRadius: 4,
-                                                                    currentIndicatorColor: Theme.of(context).colorScheme.primary,
-                                                                    indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3))),
+                                                                    slideIndicatorOptions: SlideIndicatorOptions(
+                                                                        itemSpacing: 10,
+                                                                        indicatorRadius: 4,
+                                                                        currentIndicatorColor: Theme.of(context).colorScheme.primary,
+                                                                        indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3)))),
                                                             items: previewImages,
                                                           ),
                                                         ),
@@ -4277,10 +4299,11 @@ class _HomePageState extends State<HomePage> {
                                                                                     enableInfiniteScroll: true,
                                                                                     indicatorMargin: 4,
                                                                                     slideIndicator: CircularWaveSlideIndicator(
-                                                                                        itemSpacing: 10,
-                                                                                        indicatorRadius: 4,
-                                                                                        currentIndicatorColor: Theme.of(context).colorScheme.primary,
-                                                                                        indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3))),
+                                                                                        slideIndicatorOptions: SlideIndicatorOptions(
+                                                                                            itemSpacing: 10,
+                                                                                            indicatorRadius: 4,
+                                                                                            currentIndicatorColor: Theme.of(context).colorScheme.primary,
+                                                                                            indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3)))),
                                                                                 items: previewImages,
                                                                               ),
                                                                             ),
@@ -4523,7 +4546,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       );
-                    })))
+                    }))),
     ]);
   }
 
@@ -4981,10 +5004,11 @@ class _HomePageState extends State<HomePage> {
                                                                   enableInfiniteScroll: true,
                                                                   indicatorMargin: 4,
                                                                   slideIndicator: CircularWaveSlideIndicator(
-                                                                      itemSpacing: 10,
-                                                                      indicatorRadius: 4,
-                                                                      currentIndicatorColor: Theme.of(context).colorScheme.primary,
-                                                                      indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3))),
+                                                                      slideIndicatorOptions: SlideIndicatorOptions(
+                                                                          itemSpacing: 10,
+                                                                          indicatorRadius: 4,
+                                                                          currentIndicatorColor: Theme.of(context).colorScheme.primary,
+                                                                          indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3)))),
                                                               items: previewImages,
                                                             ),
                                                           ),
@@ -4995,6 +5019,7 @@ class _HomePageState extends State<HomePage> {
                                                     onTap: () {
                                                       isModViewListHidden = false;
                                                       isModViewFromApplied = true;
+                                                      modViewListVisible = true;
                                                       modViewItem = curItem;
                                                       setState(() {});
                                                     },
@@ -5405,7 +5430,8 @@ class _HomePageState extends State<HomePage> {
                 enableInfiniteScroll: true,
                 indicatorMargin: 4,
                 slideIndicator: CircularWaveSlideIndicator(
-                    itemSpacing: 10, indicatorRadius: 4, currentIndicatorColor: Theme.of(context).colorScheme.primary, indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3))),
+                    slideIndicatorOptions: SlideIndicatorOptions(
+                        itemSpacing: 10, indicatorRadius: 4, currentIndicatorColor: Theme.of(context).colorScheme.primary, indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3)))),
             items: previewImages,
           ),
         )
@@ -5964,10 +5990,11 @@ class _HomePageState extends State<HomePage> {
                                                               enableInfiniteScroll: true,
                                                               indicatorMargin: 4,
                                                               slideIndicator: CircularWaveSlideIndicator(
-                                                                  itemSpacing: 10,
-                                                                  indicatorRadius: 4,
-                                                                  currentIndicatorColor: Theme.of(context).colorScheme.primary,
-                                                                  indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3))),
+                                                                  slideIndicatorOptions: SlideIndicatorOptions(
+                                                                      itemSpacing: 10,
+                                                                      indicatorRadius: 4,
+                                                                      currentIndicatorColor: Theme.of(context).colorScheme.primary,
+                                                                      indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3)))),
                                                           items: previewImages,
                                                         ),
                                                       ),
@@ -5978,6 +6005,7 @@ class _HomePageState extends State<HomePage> {
                                                 onTap: () {
                                                   isModViewListHidden = false;
                                                   isModViewFromApplied = false;
+                                                  modViewListVisible = true;
                                                   modViewItem = curItem;
                                                   selectedModSetName = curSet.setName;
                                                   setState(() {});
