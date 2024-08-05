@@ -2,7 +2,6 @@
 
 import 'dart:io';
 
-import 'package:advance_expansion_tile/advance_expansion_tile.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
@@ -93,7 +92,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final MultiSplitViewController _viewsController = MultiSplitViewController(areas: [Area(weight: 0.285), Area(weight: 0.335)]);
   final MultiSplitViewController _verticalViewsController = MultiSplitViewController(areas: [Area(weight: 0.40)]);
-  List<GlobalKey<AdvanceExpansionTileState>> modViewETKeys = [];
+  // List<GlobalKey<AdvanceExpansionTileState>> modViewETKeys = [];
 
   Category? modViewCate;
   double headersOpacityValue = 0.7;
@@ -430,14 +429,6 @@ class _HomePageState extends State<HomePage> {
                           child: const Icon(
                             Icons.more_vert,
                           ),
-                          onHover: (value) {
-                            if (value) {
-                              _previewDismiss = true;
-                            } else {
-                              _previewDismiss = false;
-                            }
-                            setState(() {});
-                          },
                           onTap: () {
                             if (controller.isOpen) {
                               controller.close();
@@ -1439,10 +1430,10 @@ class _HomePageState extends State<HomePage> {
                                                                         itemClicked[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => []);
                                                                         itemClicked[groupIndex][categoryIndex] = List.generate(curCategory.items.length, (index) => false);
                                                                         itemClicked[groupIndex][categoryIndex][itemIndex] = true;
-                                                                        for (var element in modViewETKeys) {
-                                                                          element.currentState?.collapse();
-                                                                        }
-                                                                        modViewETKeys.clear();
+                                                                        // for (var element in modViewETKeys) {
+                                                                        //   element.currentState?.collapse();
+                                                                        // }
+                                                                        // modViewETKeys.clear();
                                                                         isModViewListHidden = false;
                                                                         isModViewFromApplied = false;
                                                                         modViewCate = curCategory;
@@ -1450,13 +1441,12 @@ class _HomePageState extends State<HomePage> {
                                                                         setState(() {});
                                                                       },
                                                                       onHover: (value) {
-                                                                        setState(() {
-                                                                          if (value) {
-                                                                            itemButtonsVisible[groupIndex][categoryIndex][itemIndex] = true;
-                                                                          } else {
-                                                                            itemButtonsVisible[groupIndex][categoryIndex][itemIndex] = false;
-                                                                          }
-                                                                        });
+                                                                        if (value) {
+                                                                          itemButtonsVisible[groupIndex][categoryIndex][itemIndex] = true;
+                                                                        } else {
+                                                                          itemButtonsVisible[groupIndex][categoryIndex][itemIndex] = false;
+                                                                        }
+                                                                        setState(() {});
                                                                       },
                                                                     ),
                                                                   ),
@@ -1857,16 +1847,16 @@ class _HomePageState extends State<HomePage> {
                 child: SuperListView.builder(
                     // shrinkWrap: true,
                     physics: const SuperRangeMaintainingScrollPhysics(),
-                    primary: true,
+                    // primary: true,
                     // cacheExtent: double.maxFinite,
                     //padding: const EdgeInsets.symmetric(horizontal: 1),
                     itemCount: modViewItem!.mods.length,
                     itemBuilder: (context, modIndex) {
                       // modViewETKeys.add(GlobalKey());
                       var curMod = modViewItem!.mods[modIndex];
-                      if (modViewETKeys.isEmpty || modViewETKeys.length != modViewItem!.mods.length) {
-                        modViewETKeys = List.generate(modViewItem!.mods.length, (index) => GlobalKey());
-                      }
+                      // if (modViewETKeys.isEmpty || modViewETKeys.length != modViewItem!.mods.length) {
+                      //   modViewETKeys = List.generate(modViewItem!.mods.length, (index) => GlobalKey());
+                      // }
 
                       if (isModViewItemListExpanded.isEmpty || isModViewItemListExpanded.length != modViewItem!.mods.length) {
                         isModViewItemListExpanded = List.generate(modViewItem!.mods.length, (index) => false);
@@ -1913,29 +1903,17 @@ class _HomePageState extends State<HomePage> {
                                 previewImages.clear();
                                 previewImages.addAll(curMod.previewImages.toSet().map((path) => PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
                                 previewImages.addAll(curMod.previewVideos.toSet().map((path) => PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
-                                // previewImages.addAll(curMod.submods[modViewModSetSubModIndex].previewImages
-                                //     .toSet()
-                                //     .map((path) => PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
-                                // previewImages.addAll(curMod.submods[modViewModSetSubModIndex].previewVideos
-                                //     .toSet()
-                                //     .map((path) => PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
                               } else {
                                 previewModName = curMod.modName;
                                 previewImages.clear();
                                 previewImages.addAll(curMod.previewImages.toSet().map((path) => PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
                                 previewImages.addAll(curMod.previewVideos.toSet().map((path) => PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
-                                // for (var element in curMod.submods) {
-                                //   previewImages.addAll(element.previewImages.toSet().map((path) => PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
-                                // }
-                                // for (var element in curMod.submods) {
-                                //   previewImages.addAll(element.previewVideos.toSet().map((path) => PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(curMod.itemName).last)));
-                                // }
                               }
                             } else {
                               previewModName = '';
                               previewImages.clear();
                             }
-                            setState(() {});
+                            // setState(() {});
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 1),
@@ -1982,15 +1960,14 @@ class _HomePageState extends State<HomePage> {
                                 color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
                                 //color: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
                                 shape: RoundedRectangleBorder(
-                                    side: BorderSide(width: curMod.isNew ? 2 : 1, color: curMod.isNew ? Colors.amber : Theme.of(context).primaryColorLight),
-                                    borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                    side: BorderSide(width: 2, color: curMod.isNew ? Colors.amber : Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                 //advanced
                                 child: ExpansionTile(
                                   backgroundColor: Colors.transparent,
                                   textColor: Theme.of(context).textTheme.bodyMedium!.color,
                                   iconColor: Theme.of(context).textTheme.bodyMedium!.color,
                                   collapsedIconColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                  key: modViewETKeys[modIndex],
+                                  // key: modViewETKeys[modIndex],
                                   onExpansionChanged: (value) {
                                     isModViewItemListExpanded[modIndex] = value;
                                     setState(() {});
@@ -3562,7 +3539,7 @@ class _HomePageState extends State<HomePage> {
                                                     previewImages.add(PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(curMod.itemName).last));
                                                   }
                                                 }
-                                                setState(() {});
+                                                // setState(() {});
                                               },
                                               child: InfoPopupWidget(
                                                 horizontalDirection: 'right',
@@ -4263,7 +4240,7 @@ class _HomePageState extends State<HomePage> {
                                                                       previewImages.add(PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(curSubmod.itemName).last));
                                                                     }
                                                                   }
-                                                                  setState(() {});
+                                                                  // setState(() {});
                                                                 },
                                                                 child: InfoPopupWidget(
                                                                     horizontalDirection: 'right',
@@ -4968,7 +4945,7 @@ class _HomePageState extends State<HomePage> {
                                                     previewModName = '';
                                                     previewImages.clear();
                                                   }
-                                                  setState(() {});
+                                                  // setState(() {});
                                                 },
                                                 child: InfoPopupWidget(
                                                   horizontalDirection: 'left',
@@ -5951,7 +5928,7 @@ class _HomePageState extends State<HomePage> {
                                                 previewModName = '';
                                                 previewImages.clear();
                                               }
-                                              setState(() {});
+                                              // setState(() {});
                                             },
                                             child: InfoPopupWidget(
                                               horizontalDirection: 'right',

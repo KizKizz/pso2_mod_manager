@@ -3,7 +3,6 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  advance_expansion_tile
   bitsdojo_window_linux
   desktop_drop
   file_selector_linux

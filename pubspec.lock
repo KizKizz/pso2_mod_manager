@@ -9,14 +9,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "67.0.0"
-  advance_expansion_tile:
-    dependency: "direct main"
-    description:
-      name: advance_expansion_tile
-      sha256: d542e8a31d67c99f7161eb00b8edadcc55b766574988b7db3c222b96d8a5c61d
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.2"
   analyzer:
     dependency: "direct dev"
     description:

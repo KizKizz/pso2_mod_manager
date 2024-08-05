@@ -5,7 +5,6 @@
 import FlutterMacOS
 import Foundation
 
-import advance_expansion_tile
 import bitsdojo_window_macos
 import desktop_drop
 import file_selector_macos
@@ -21,7 +20,6 @@ import wakelock_plus
 import window_manager
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
-  AdvanceExpansionTilePlugin.register(with: registry.registrar(forPlugin: "AdvanceExpansionTilePlugin"))
   BitsdojoWindowPlugin.register(with: registry.registrar(forPlugin: "BitsdojoWindowPlugin"))
   DesktopDropPlugin.register(with: registry.registrar(forPlugin: "DesktopDropPlugin"))
   FileSelectorPlugin.register(with: registry.registrar(forPlugin: "FileSelectorPlugin"))
