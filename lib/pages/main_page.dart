@@ -2290,16 +2290,15 @@ class _MainPageState extends State<MainPage> {
                                       onPressed: (() async {
                                         if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
                                           isModViewListHidden = true;
+                                          isFavListVisible = false;
                                           modViewListVisible = false;
                                           Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
                                           saveSetListToJson();
                                         } else {
                                           isModViewListHidden = false;
-                                          // modSetList = await modSetLoader();
-                                          // saveSetListToJson();
+                                          isFavListVisible = false;
                                           modViewListVisible = false;
                                           saveModdedItemListToJson();
-                                          // modViewItem = null;
                                           Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
                                         }
                                       }),
