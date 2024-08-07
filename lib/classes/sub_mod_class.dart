@@ -1,12 +1,13 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'sub_mod_class.g.dart';
 
 @JsonSerializable()
-class SubMod {
+class SubMod with ChangeNotifier{
   SubMod(this.submodName, this.modName, this.itemName, this.category, this.location, this.applyStatus, this.applyDate, this.position, this.isNew, this.isFavorite, this.isSet, this.hasCmx,
       this.cmxApplied, this.cmxStartPos, this.cmxEndPos, this.cmxFile, this.setNames, this.applyLocations, this.previewImages, this.previewVideos, this.appliedModFiles, this.modFiles);
   String submodName;
@@ -32,6 +33,13 @@ class SubMod {
   List<String> previewVideos;
   List<ModFile> appliedModFiles;
   List<ModFile> modFiles;
+
+  void setApplyState(bool state) {
+    applyStatus = state;
+    notifyListeners();
+  }
+
+  //helpers
 
   List<String> getModFileNames() {
     List<String> names = [];

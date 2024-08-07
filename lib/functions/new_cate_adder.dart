@@ -7,6 +7,7 @@ import 'package:pso2_mod_manager/classes/category_class.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/homepage/mod_view.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 
 import '../state_provider.dart';
@@ -191,7 +192,7 @@ Future<void> categoryGroupRemover(context, CategoryType cateTypeToDel) async {
                   ElevatedButton(
                       child: Text(curLangText!.uiMoveEverythingToOthers),
                       onPressed: () {
-                        modViewItem = null;
+                        modViewItem.value = null;
                         //copy to Others
                         for (var cate in cateTypeToDel.categories) {
                           int othersTypeIndex = moddedItemsList.indexWhere((element) => element.groupName == 'Others');
@@ -209,7 +210,7 @@ Future<void> categoryGroupRemover(context, CategoryType cateTypeToDel) async {
                       }),
                   ElevatedButton(
                       onPressed: () {
-                        modViewItem = null;
+                        modViewItem.value = null;
                         for (var cate in cateTypeToDel.categories) {
                           if (Directory(cate.location).existsSync()) {
                             Directory(cate.location).deleteSync(recursive: true);
@@ -248,7 +249,7 @@ Future<void> categoryRemover(context, CategoryType cateTypeToDel, Category cateT
                       }),
                   ElevatedButton(
                       onPressed: () {
-                        modViewItem = null;
+                        modViewItem.value = null;
                         Directory(cateToDel.location).deleteSync(recursive: true);
                         cateTypeToDel.categories.remove(cateToDel);
                         for (var cate in cateTypeToDel.categories) {

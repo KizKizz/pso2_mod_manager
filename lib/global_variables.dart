@@ -16,6 +16,7 @@ import 'package:media_kit_video/media_kit_video.dart';
 import 'package:pso2_mod_manager/classes/profile_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
+import 'package:signals/signals.dart';
 
 String curActiveLang = '';
 List<String> langDropDownList = [];
@@ -53,7 +54,7 @@ List<CategoryType> hiddenItemCategories = [];
 List<ModSet> modSetList = [];
 List<Item> allSetItems = [];
 // bool isModSetAdding = false;
-Item? modViewItem;
+// Item? modViewItem;
 bool isModViewListHidden = false;
 bool isModViewFromApplied = false;
 List<Widget> previewImages = [];

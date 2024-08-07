@@ -17,7 +17,6 @@ import 'package:pso2_mod_manager/cmx/cmx_functions.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/app_update_dialog.dart';
-import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/checksum_check.dart';
 import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
@@ -29,6 +28,8 @@ import 'package:pso2_mod_manager/functions/player_item_data.dart';
 import 'package:pso2_mod_manager/functions/quick_apply.dart';
 import 'package:pso2_mod_manager/functions/text_input_uppercase.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/homepage/item_list.dart';
+import 'package:pso2_mod_manager/homepage/mod_view.dart';
 import 'package:pso2_mod_manager/itemsSwapper/items_swapper_popup.dart';
 import 'package:pso2_mod_manager/lineDuel/line_duel_selection.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
@@ -36,7 +37,7 @@ import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
-import 'package:pso2_mod_manager/pages/home_page.dart';
+import 'package:pso2_mod_manager/homepage/home_page.dart';
 import 'package:pso2_mod_manager/pages/player_item_data_preload_page.dart';
 import 'package:pso2_mod_manager/pages/profiles_loading_page.dart';
 import 'package:pso2_mod_manager/sharing/mods_import.dart';
@@ -457,7 +458,7 @@ class _MainPageState extends State<MainPage> {
                                                       modManCurActiveProfile = 1;
                                                       prefs.setInt('modManCurActiveProfile', modManCurActiveProfile);
                                                       Provider.of<StateProvider>(context, listen: false).reloadProfileTrue();
-                                                      modViewItem = null;
+                                                      modViewItem.value = null;
                                                       ogModFilesReset();
                                                       Future.delayed(const Duration(milliseconds: 500), () {
                                                         setState(() {});
@@ -514,7 +515,7 @@ class _MainPageState extends State<MainPage> {
                                                       modManCurActiveProfile = 2;
                                                       prefs.setInt('modManCurActiveProfile', modManCurActiveProfile);
                                                       Provider.of<StateProvider>(context, listen: false).reloadProfileTrue();
-                                                      modViewItem = null;
+                                                      modViewItem.value = null;
                                                       ogModFilesReset();
                                                       Future.delayed(const Duration(milliseconds: 500), () {
                                                         setState(() {});
@@ -2001,7 +2002,7 @@ class _MainPageState extends State<MainPage> {
                                         });
                                       });
                                       listsReloading = false;
-                                      modViewItem = null;
+                                      modViewItem.value = null;
                                       Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
                                     });
                                   });
@@ -2291,13 +2292,15 @@ class _MainPageState extends State<MainPage> {
                                         if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
                                           isModViewListHidden = true;
                                           isFavListVisible = false;
-                                          modViewListVisible = false;
+                                          // modViewListVisible = false;
+                                          modViewItem.value = null;
                                           Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
                                           saveSetListToJson();
                                         } else {
                                           isModViewListHidden = false;
                                           isFavListVisible = false;
-                                          modViewListVisible = false;
+                                          // modViewListVisible = false;
+                                          modViewItem.value = null;
                                           saveModdedItemListToJson();
                                           Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
                                         }

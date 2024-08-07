@@ -1,9 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'mod_file_class.g.dart';
 
 @JsonSerializable()
-class ModFile {
+class ModFile with  ChangeNotifier{
   ModFile(this.modFileName, this.submodName, this.modName, this.itemName, this.category, this.md5, this.ogMd5s, this.location, this.applyStatus, this.applyDate, this.position, this.isFavorite,
       this.isSet, this.isNew, this.setNames, this.applyLocations, this.ogLocations, this.bkLocations, this.previewImages, this.previewVideos);
   String modFileName;
@@ -26,6 +27,11 @@ class ModFile {
   List<String> bkLocations;
   List<String>? previewImages = [];
   List<String>? previewVideos = [];
+
+  void setApplyState(bool state) {
+    applyStatus = state;
+    notifyListeners();
+  }
 
   factory ModFile.fromJson(Map<String, dynamic> json) => _$ModFileFromJson(json);
   Map<String, dynamic> toJson() => _$ModFileToJson(this);

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/functions/mod_set_functions.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
-import 'package:pso2_mod_manager/pages/home_page.dart';
+import 'package:pso2_mod_manager/homepage/home_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:window_manager/window_manager.dart';
 

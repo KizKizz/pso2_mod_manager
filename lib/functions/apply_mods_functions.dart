@@ -7,7 +7,6 @@ import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/cmx/cmx_functions.dart';
-import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/modfiles_apply.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
@@ -21,11 +20,11 @@ Future<bool> applyModsToTheGame(context, Item curItem, Mod curMod, SubMod curSub
         curSubmod.applyDate = DateTime.now();
         curItem.applyDate = DateTime.now();
         curMod.applyDate = DateTime.now();
-        curSubmod.applyStatus = true;
+        curSubmod.setApplyState(true);
         curSubmod.isNew = false;
-        curMod.applyStatus = true;
+        curMod.setApplyState(true);
         curMod.isNew = false;
-        curItem.applyStatus = true;
+        curItem.setApplyState(true);
         if (curItem.mods.where((element) => element.isNew).isEmpty) {
           curItem.isNew = false;
         }

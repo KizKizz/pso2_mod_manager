@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'category_class.g.dart';
 
 @JsonSerializable()
-class Category {
+class Category with ChangeNotifier {
   Category(this.categoryName, this.group, this.location, this.position, this.visible, this.items);
   String categoryName;
   String group;
