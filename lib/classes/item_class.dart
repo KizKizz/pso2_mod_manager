@@ -30,6 +30,11 @@ class Item with ChangeNotifier {
   List<String> setNames;
   List<Mod> mods;
 
+  void removeMod(Mod mod) {
+    mods.remove(mod);
+    notifyListeners();
+  }
+
   void setApplyState(bool state) {
     applyStatus = state;
     notifyListeners();

@@ -55,8 +55,6 @@ import 'package:pso2_mod_manager/swapAll/swap_all_apply_popup.dart';
 import 'package:pso2_mod_manager/ui_translation_helper.dart';
 import 'package:pso2_mod_manager/widgets/item_icons_carousel.dart';
 import 'package:pso2_mod_manager/widgets/preview_hover_panel.dart';
-import 'package:pso2_mod_manager/widgets/preview_image_stack.dart';
-import 'package:pso2_mod_manager/widgets/preview_video_stack.dart';
 import 'package:pso2_mod_manager/widgets/snackbar.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
@@ -814,7 +812,7 @@ class _ModViewState extends State<ModView> {
                                                                   } else {
                                                                     deleteModFromModMan(curMod.location, modViewItem.value!.location).then((value) async {
                                                                       String removedName = '${curMod.modName} > ${curMod.submods.first.submodName}';
-                                                                      modViewItem.value!.mods.remove(curMod);
+                                                                      modViewItem.value!.removeMod(curMod);
                                                                       if (modViewItem.value!.mods.isEmpty) {
                                                                         modViewCate!.removeItem(modViewItem.value);
                                                                         modViewItem.value != null;
@@ -1292,7 +1290,7 @@ class _ModViewState extends State<ModView> {
                                                                             String removedName = '${curMod.modName} > ${curMod.submods.first.submodName}';
                                                                             curMod.submods.remove(curMod.submods.first);
                                                                             if (curMod.submods.isEmpty) {
-                                                                              modViewItem.value!.mods.remove(curMod);
+                                                                              modViewItem.value!.removeMod(curMod);
                                                                             } else {
                                                                               curMod.isNew = curMod.getSubmodsIsNewState();
                                                                             }
@@ -1779,7 +1777,7 @@ class _ModViewState extends State<ModView> {
                                                                             String removedName = '${curMod.modName} > ${curMod.submods[modViewModSetSubModIndex].submodName}';
                                                                             curMod.submods.remove(curMod.submods[modViewModSetSubModIndex]);
                                                                             if (curMod.submods.isEmpty) {
-                                                                              modViewItem.value!.mods.remove(curMod);
+                                                                              modViewItem.value!.removeMod(curMod);
                                                                             } else {
                                                                               curMod.isNew = curMod.getSubmodsIsNewState();
                                                                             }
@@ -1857,21 +1855,11 @@ class _ModViewState extends State<ModView> {
                                                         if (hovering && hoveringOnSubmod && !hoveringOnModFile && previewWindowVisible) {
                                                           previewModName = curSubmod.submodName;
                                                           previewImages.clear();
-                                                          for (var path in curSubmod.previewImages.toSet()) {
-                                                            previewImages.add(PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(curSubmod.itemName).last));
-                                                          }
-                                                          for (var path in curSubmod.previewVideos.toSet()) {
-                                                            previewImages.add(PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(curSubmod.itemName).last));
-                                                          }
+                                                          previewImages = curSubmod.getPreviewWidgets();
                                                         } else {
                                                           previewImages.clear();
                                                           previewModName = curMod.modName;
-                                                          for (var path in curMod.previewImages) {
-                                                            previewImages.add(PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(curMod.itemName).last));
-                                                          }
-                                                          for (var path in curMod.previewVideos) {
-                                                            previewImages.add(PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(curMod.itemName).last));
-                                                          }
+                                                          previewImages = curMod.getPreviewWidgets();
                                                         }
                                                         // setState(() {});
                                                       },
@@ -2353,7 +2341,7 @@ class _ModViewState extends State<ModView> {
                                                                                           String removedName = '${curMod.modName} > ${curSubmod.submodName}';
                                                                                           curMod.submods.remove(curSubmod);
                                                                                           if (curMod.submods.isEmpty) {
-                                                                                            modViewItem.value!.mods.remove(curMod);
+                                                                                            modViewItem.value!.removeMod(curMod);
                                                                                           } else {
                                                                                             curMod.isNew = curMod.getSubmodsIsNewState();
                                                                                           }
@@ -2420,25 +2408,10 @@ class _ModViewState extends State<ModView> {
                                                                           }
                                                                           if (hovering && previewWindowVisible && hoveringOnModFile) {
                                                                             previewModName = curModFile.modFileName;
-
-                                                                            //set preview images
-                                                                            previewImages.addAll(curModFile.previewImages!
-                                                                                .toSet()
-                                                                                .map((path) => PreviewImageStack(imagePath: path, overlayText: path.split(curSubmod.itemName).last)));
-                                                                            //set preview videos
-                                                                            previewImages.addAll(curModFile.previewVideos!
-                                                                                .toSet()
-                                                                                .map((path) => PreviewVideoStack(videoPath: path, overlayText: path.split(curSubmod.itemName).last)));
                                                                           } else if (previewWindowVisible && hoveringOnSubmod && !hoveringOnModFile) {
                                                                             previewModName = curSubmod.submodName;
-                                                                            previewImages.clear();
-                                                                            for (var path in curSubmod.previewImages.toSet()) {
-                                                                              previewImages.add(PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(curSubmod.itemName).last));
-                                                                            }
-                                                                            for (var path in curSubmod.previewVideos.toSet()) {
-                                                                              previewImages.add(PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(curSubmod.itemName).last));
-                                                                            }
                                                                           }
+                                                                          previewImages = curSubmod.getPreviewWidgets();
                                                                         },
                                                                         child: InfoPopupWidget(
                                                                             horizontalDirection: 'right',
@@ -2648,7 +2621,7 @@ class _ModViewState extends State<ModView> {
                                                                                                     curSubmod.isNew = curSubmod.getModFilesIsNewState();
                                                                                                   }
                                                                                                   if (curMod.submods.isEmpty) {
-                                                                                                    modViewItem.value!.mods.remove(curMod);
+                                                                                                    modViewItem.value!.removeMod(curMod);
                                                                                                   } else {
                                                                                                     curMod.isNew = curMod.getSubmodsIsNewState();
                                                                                                   }
@@ -2739,7 +2712,7 @@ class _ModViewState extends State<ModView> {
                     Mod? quickMod;
                     SubMod? quickSubmod;
                     isModViewModsApplying = true;
-                      setState(() {});
+                    setState(() {});
                     //precheck
                     for (var cateType in moddedItemsList) {
                       for (var cate in cateType.categories
@@ -2831,7 +2804,6 @@ class _ModViewState extends State<ModView> {
                     }
                     //apply
                     if (quickItem != null && quickMod != null) {
-                      
                       Future.delayed(Duration(milliseconds: applyButtonsDelay), () async {
                         //apply mod files
                         if (await originalFilesCheck(context, quickSubmod!.modFiles)) {

@@ -35,8 +35,6 @@ import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/ui_translation_helper.dart';
 import 'package:pso2_mod_manager/widgets/item_icons_carousel.dart';
 import 'package:pso2_mod_manager/widgets/preview_hover_panel.dart';
-import 'package:pso2_mod_manager/widgets/preview_image_stack.dart';
-import 'package:pso2_mod_manager/widgets/preview_video_stack.dart';
 import 'package:pso2_mod_manager/widgets/snackbar.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
@@ -453,16 +451,7 @@ class _AppliedListState extends State<AppliedList> {
                                                     // hoveringOnSubmod = true;
                                                     for (var mod in curMods) {
                                                       for (var submod in mod.submods.where((element) => element.applyStatus)) {
-                                                        for (var path in submod.previewImages) {
-                                                          previewImages.add(PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(mod.itemName).last));
-                                                        }
-                                                      }
-                                                    }
-                                                    for (var mod in curMods) {
-                                                      for (var submod in mod.submods.where((element) => element.applyStatus)) {
-                                                        for (var path in submod.previewVideos) {
-                                                          previewImages.add(PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(mod.itemName).last));
-                                                        }
+                                                        previewImages = submod.getPreviewWidgets();
                                                       }
                                                     }
                                                   } else {
@@ -636,7 +625,7 @@ class _AppliedListState extends State<AppliedList> {
                                                                             ),
                                                                           ),
 
-                                                                          if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus == true) != -1)
+                                                                          if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus) != -1)
                                                                             Stack(
                                                                               children: [
                                                                                 Visibility(
@@ -676,28 +665,21 @@ class _AppliedListState extends State<AppliedList> {
                                                                                                   if (autoAqmInject) {
                                                                                                     await aqmInjectionRemovalSilent(context, submod);
                                                                                                   }
-                                                                                                  submod.applyStatus = false;
+                                                                                                  submod.setApplyState(false);
                                                                                                   submod.applyDate = DateTime(0);
                                                                                                 }
                                                                                                 if (submod.applyStatus) {
-                                                                                                  for (var path in submod.previewImages) {
-                                                                                                    previewImages
-                                                                                                        .add(PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(mod.itemName).last));
-                                                                                                  }
-                                                                                                  for (var path in submod.previewVideos) {
-                                                                                                    previewImages
-                                                                                                        .add(PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(mod.itemName).last));
-                                                                                                  }
+                                                                                                  previewImages = submod.getPreviewWidgets();
                                                                                                 }
                                                                                               }
                                                                                               if (mod.submods.indexWhere((element) => element.applyStatus) == -1) {
-                                                                                                mod.applyStatus = false;
+                                                                                                mod.setApplyState(false);
                                                                                                 mod.applyDate = DateTime(0);
                                                                                               }
                                                                                             }
 
                                                                                             if (curItem.mods.indexWhere((element) => element.applyStatus) == -1) {
-                                                                                              curItem.applyStatus = false;
+                                                                                              curItem.setApplyState(false);
                                                                                               curItem.applyDate = DateTime(0);
                                                                                               if (curItem.backupIconPath!.isNotEmpty) {
                                                                                                 await restoreOverlayedIcon(curItem);
@@ -745,13 +727,13 @@ class _AppliedListState extends State<AppliedList> {
                                                                                       int curModIndex = curItem.mods.indexWhere((element) => element.modName == allAppliedModFiles[m].first.modName);
                                                                                       int curSubModIndex = curItem.mods[curModIndex].submods
                                                                                           .indexWhere((element) => element.submodName == allAppliedModFiles[m].first.submodName);
-                                                                                      curItem.mods[curModIndex].submods[curSubModIndex].applyStatus = true;
+                                                                                      curItem.mods[curModIndex].submods[curSubModIndex].setApplyState(true);
                                                                                       curItem.mods[curModIndex].submods[curSubModIndex].isNew = false;
                                                                                       curItem.mods[curModIndex].submods[curSubModIndex].applyDate = DateTime.now();
-                                                                                      curItem.mods[curModIndex].applyStatus = true;
+                                                                                      curItem.mods[curModIndex].setApplyState(true);
                                                                                       curItem.mods[curModIndex].isNew = false;
                                                                                       curItem.mods[curModIndex].applyDate = DateTime.now();
-                                                                                      curItem.applyStatus = true;
+                                                                                      curItem.setApplyState(true);
                                                                                       if (curItem.mods.where((element) => element.isNew).isEmpty) {
                                                                                         curItem.isNew = false;
                                                                                       }
