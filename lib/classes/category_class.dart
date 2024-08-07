@@ -14,6 +14,13 @@ class Category with ChangeNotifier {
   bool visible;
   List<Item> items;
 
+  void removeItem(Item? item) {
+    if (item != null) {
+      items.remove(item);
+    }
+    notifyListeners();
+  }
+
   int getNumOfAppliedItems() {
     return items.where((e) => e.applyStatus).length;
   }

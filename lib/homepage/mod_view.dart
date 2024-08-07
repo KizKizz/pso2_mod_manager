@@ -801,7 +801,7 @@ class _ModViewState extends State<ModView> {
                                                                           }
                                                                         }
                                                                       }
-                                                                      modViewCate!.items.remove(modViewItem.value);
+                                                                      modViewCate!.removeItem(modViewItem.value);
                                                                       modViewItem.value != null;
                                                                       modViewItem.value = null;
                                                                       ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
@@ -814,9 +814,9 @@ class _ModViewState extends State<ModView> {
                                                                   } else {
                                                                     deleteModFromModMan(curMod.location, modViewItem.value!.location).then((value) async {
                                                                       String removedName = '${curMod.modName} > ${curMod.submods.first.submodName}';
-                                                                      modViewMods.remove(curMod);
-                                                                      if (modViewMods.isEmpty) {
-                                                                        modViewCate!.items.remove(modViewItem.value);
+                                                                      modViewItem.value!.mods.remove(curMod);
+                                                                      if (modViewItem.value!.mods.isEmpty) {
+                                                                        modViewCate!.removeItem(modViewItem.value);
                                                                         modViewItem.value != null;
                                                                         modViewItem.value = null;
                                                                       } else {
@@ -1277,7 +1277,7 @@ class _ModViewState extends State<ModView> {
                                                                                 }
                                                                               }
                                                                             }
-                                                                            modViewCate!.items.remove(modViewItem.value);
+                                                                            modViewCate!.removeItem(modViewItem.value);
                                                                             modViewItem.value != null;
                                                                             modViewItem.value = null;
                                                                             ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
@@ -1292,13 +1292,13 @@ class _ModViewState extends State<ModView> {
                                                                             String removedName = '${curMod.modName} > ${curMod.submods.first.submodName}';
                                                                             curMod.submods.remove(curMod.submods.first);
                                                                             if (curMod.submods.isEmpty) {
-                                                                              modViewMods.remove(curMod);
+                                                                              modViewItem.value!.mods.remove(curMod);
                                                                             } else {
                                                                               curMod.isNew = curMod.getSubmodsIsNewState();
                                                                             }
 
-                                                                            if (modViewMods.isEmpty) {
-                                                                              modViewCate!.items.remove(modViewItem.value);
+                                                                            if (modViewItem.value!.mods.isEmpty) {
+                                                                              modViewCate!.removeItem(modViewItem.value);
                                                                               modViewItem.value != null;
                                                                               modViewItem.value = null;
                                                                             } else {
@@ -1764,7 +1764,7 @@ class _ModViewState extends State<ModView> {
                                                                                 }
                                                                               }
                                                                             }
-                                                                            modViewCate!.items.remove(modViewItem.value);
+                                                                            modViewCate!.removeItem(modViewItem.value);
                                                                             modViewItem.value != null;
                                                                             modViewItem.value = null;
                                                                             ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
@@ -1779,13 +1779,13 @@ class _ModViewState extends State<ModView> {
                                                                             String removedName = '${curMod.modName} > ${curMod.submods[modViewModSetSubModIndex].submodName}';
                                                                             curMod.submods.remove(curMod.submods[modViewModSetSubModIndex]);
                                                                             if (curMod.submods.isEmpty) {
-                                                                              modViewMods.remove(curMod);
+                                                                              modViewItem.value!.mods.remove(curMod);
                                                                             } else {
                                                                               curMod.isNew = curMod.getSubmodsIsNewState();
                                                                             }
 
-                                                                            if (modViewMods.isEmpty) {
-                                                                              modViewCate!.items.remove(modViewItem.value);
+                                                                            if (modViewItem.value!.mods.isEmpty) {
+                                                                              modViewCate!.removeItem(modViewItem.value);
                                                                               modViewItem.value != null;
                                                                               modViewItem.value = null;
                                                                             } else {
@@ -2338,7 +2338,7 @@ class _ModViewState extends State<ModView> {
                                                                                               }
                                                                                             }
                                                                                           }
-                                                                                          modViewCate!.items.remove(modViewItem.value);
+                                                                                          modViewCate!.removeItem(modViewItem.value);
                                                                                           modViewItem.value != null;
                                                                                           modViewItem.value = null;
                                                                                           previewModName = '';
@@ -2353,12 +2353,12 @@ class _ModViewState extends State<ModView> {
                                                                                           String removedName = '${curMod.modName} > ${curSubmod.submodName}';
                                                                                           curMod.submods.remove(curSubmod);
                                                                                           if (curMod.submods.isEmpty) {
-                                                                                            modViewMods.remove(curMod);
+                                                                                            modViewItem.value!.mods.remove(curMod);
                                                                                           } else {
                                                                                             curMod.isNew = curMod.getSubmodsIsNewState();
                                                                                           }
-                                                                                          if (modViewMods.isEmpty) {
-                                                                                            modViewCate!.items.remove(modViewItem.value);
+                                                                                          if (modViewItem.value!.mods.isEmpty) {
+                                                                                            modViewCate!.removeItem(modViewItem.value);
                                                                                             modViewItem.value != null;
                                                                                             modViewItem.value = null;
                                                                                           } else {
@@ -2627,7 +2627,7 @@ class _ModViewState extends State<ModView> {
                                                                                               if (curSubmod.modFiles.length < 2 && curMod.submods.length < 2 && modViewMods.length < 2) {
                                                                                                 deleteItemFromModMan(modViewItem.value!.location).then((value) async {
                                                                                                   String removedName = '${modViewCate!.categoryName} > ${modViewItem.value!.itemName}';
-                                                                                                  modViewCate!.items.remove(modViewItem.value);
+                                                                                                  modViewCate!.removeItem(modViewItem.value);
                                                                                                   modViewItem.value != null;
                                                                                                   modViewItem.value = null;
                                                                                                   previewModName = '';
@@ -2648,12 +2648,12 @@ class _ModViewState extends State<ModView> {
                                                                                                     curSubmod.isNew = curSubmod.getModFilesIsNewState();
                                                                                                   }
                                                                                                   if (curMod.submods.isEmpty) {
-                                                                                                    modViewMods.remove(curMod);
+                                                                                                    modViewItem.value!.mods.remove(curMod);
                                                                                                   } else {
                                                                                                     curMod.isNew = curMod.getSubmodsIsNewState();
                                                                                                   }
-                                                                                                  if (modViewMods.isEmpty) {
-                                                                                                    modViewCate!.items.remove(modViewItem.value);
+                                                                                                  if (modViewItem.value!.mods.isEmpty) {
+                                                                                                    modViewCate!.removeItem(modViewItem.value);
                                                                                                     modViewItem.value != null;
                                                                                                     modViewItem.value = null;
                                                                                                   } else {

@@ -856,443 +856,452 @@ class _ItemListState extends State<ItemList> {
                                             itemCount: moddedItemsList[groupIndex].categories.length,
                                             itemBuilder: (context, categoryIndex) {
                                               var curCategory = moddedItemsList[groupIndex].categories[categoryIndex];
-                                              //sort
-                                              if (_itemListSortState != context.watch<StateProvider>().itemListSortState) {
-                                                if (context.watch<StateProvider>().itemListSortState == ItemListSort.alphabeticalOrder) {
-                                                  _itemListSortState = ItemListSort.alphabeticalOrder;
-                                                  itemClicked[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => []);
-                                                } else if (context.watch<StateProvider>().itemListSortState == ItemListSort.recentModsAdded) {
-                                                  _itemListSortState = ItemListSort.recentModsAdded;
-                                                  itemClicked[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => []);
-                                                }
-                                              }
-                                              if (itemButtonsVisible[groupIndex].isEmpty || itemButtonsVisible[groupIndex].length != moddedItemsList[groupIndex].categories.length) {
-                                                itemButtonsVisible[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => []);
-                                              }
-                                              if (itemClicked[groupIndex].isEmpty || itemClicked[groupIndex].length != moddedItemsList[groupIndex].categories.length) {
-                                                itemClicked[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => []);
-                                              }
-                                              if (cateButtonsVisible[groupIndex].isEmpty || cateButtonsVisible[groupIndex].length != moddedItemsList[groupIndex].categories.length) {
-                                                cateButtonsVisible[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => false);
-                                              }
-                                              return Visibility(
-                                                visible: isFavListVisible
-                                                    ? curCategory.items.where((element) => element.isFavorite).isNotEmpty
-                                                    : searchTextController.value.text.isNotEmpty
-                                                        ? curCategory.visible &&
-                                                            (curCategory.categoryName.toLowerCase().contains(searchTextController.value.text.toLowerCase()) ||
-                                                                cateItemSearchMatchesCheck(curCategory, searchTextController.value.text.toLowerCase()) > 0)
-                                                        : curCategory.visible,
-                                                child: InkResponse(
-                                                  highlightShape: BoxShape.rectangle,
-                                                  hoverColor: Colors.transparent,
-                                                  onTap: () {},
-                                                  onHover: (value) {
-                                                    if (value) {
-                                                      cateButtonsVisible[groupIndex][categoryIndex] = true;
-                                                    } else {
-                                                      cateButtonsVisible[groupIndex][categoryIndex] = false;
+
+                                              return ListenableBuilder(
+                                                  listenable: curCategory,
+                                                  builder: (BuildContext context, Widget? child) {
+                                                    //sort
+                                                    if (_itemListSortState != context.watch<StateProvider>().itemListSortState) {
+                                                      if (context.watch<StateProvider>().itemListSortState == ItemListSort.alphabeticalOrder) {
+                                                        _itemListSortState = ItemListSort.alphabeticalOrder;
+                                                        itemClicked[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => []);
+                                                      } else if (context.watch<StateProvider>().itemListSortState == ItemListSort.recentModsAdded) {
+                                                        _itemListSortState = ItemListSort.recentModsAdded;
+                                                        itemClicked[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => []);
+                                                      }
                                                     }
-                                                    setState(() {});
-                                                  },
-                                                  child: ExpansionTile(
-                                                      backgroundColor: Colors.transparent,
-                                                      textColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                                      iconColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                                      collapsedIconColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                                      collapsedTextColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                                      initiallyExpanded: false,
-                                                      childrenPadding: EdgeInsets.zero,
-                                                      title: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                        children: [
-                                                          Row(
-                                                            children: [
-                                                              Text(
-                                                                  defaultCategoryDirs.contains(curCategory.categoryName)
-                                                                      ? defaultCategoryNames[defaultCategoryDirs.indexOf(curCategory.categoryName)]
-                                                                      : curCategory.categoryName,
-                                                                  style: const TextStyle(fontWeight: FontWeight.w600)),
-                                                              Padding(
-                                                                padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13, right: 2.5),
-                                                                child: Container(
-                                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
-                                                                    decoration: BoxDecoration(
-                                                                      border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                                    ),
-                                                                    child: isFavListVisible
-                                                                        ? Text(
-                                                                            curCategory.items.where((element) => element.isFavorite).length < 2
-                                                                                ? '${curCategory.items.where((element) => element.isFavorite).length} ${curLangText!.uiItem} '
-                                                                                : '${curCategory.items.where((element) => element.isFavorite).length} ${curLangText!.uiItems}',
-                                                                            style: const TextStyle(
-                                                                              fontSize: 13,
-                                                                            ))
-                                                                        : searchTextController.value.text.isNotEmpty
-                                                                            ? Text(
-                                                                                cateItemSearchMatchesCheck(curCategory, searchTextController.value.text.toLowerCase()) < 2
-                                                                                    ? '${cateItemSearchMatchesCheck(curCategory, searchTextController.value.text.toLowerCase())} ${curLangText!.uiItem} '
-                                                                                    : '${cateItemSearchMatchesCheck(curCategory, searchTextController.value.text.toLowerCase())} ${curLangText!.uiItems}',
-                                                                                style: const TextStyle(
-                                                                                  fontSize: 13,
-                                                                                ))
-                                                                            : Text(
-                                                                                curCategory.items.length < 2
-                                                                                    ? '${curCategory.items.length} ${curLangText!.uiItem} '
-                                                                                    : '${curCategory.items.length} ${curLangText!.uiItems}',
-                                                                                style: const TextStyle(
-                                                                                  fontSize: 13,
-                                                                                ))),
-                                                              ),
-                                                              Visibility(
-                                                                visible: curCategory.items.where((element) => element.isNew).isNotEmpty,
-                                                                child: Padding(
-                                                                  padding: const EdgeInsets.only(top: 18, bottom: 13, right: 2.5),
-                                                                  child: Container(
-                                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
-                                                                    decoration: BoxDecoration(
-                                                                      border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                                    ),
-                                                                    child: Text(
-                                                                      '${curCategory.items.where((element) => element.isNew).length} ${curLangText!.uiNew}',
-                                                                      style: const TextStyle(fontSize: 13, color: Colors.amber),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          Visibility(
-                                                            visible: cateButtonsVisible[groupIndex][categoryIndex],
-                                                            child: Wrap(
-                                                              crossAxisAlignment: WrapCrossAlignment.center,
-                                                              runAlignment: WrapAlignment.center,
-                                                              spacing: 10,
+                                                    if (itemButtonsVisible[groupIndex].isEmpty || itemButtonsVisible[groupIndex].length != moddedItemsList[groupIndex].categories.length) {
+                                                      itemButtonsVisible[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => []);
+                                                    }
+                                                    if (itemClicked[groupIndex].isEmpty || itemClicked[groupIndex].length != moddedItemsList[groupIndex].categories.length) {
+                                                      itemClicked[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => []);
+                                                    }
+                                                    if (cateButtonsVisible[groupIndex].isEmpty || cateButtonsVisible[groupIndex].length != moddedItemsList[groupIndex].categories.length) {
+                                                      cateButtonsVisible[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => false);
+                                                    }
+                                                    return Visibility(
+                                                      visible: isFavListVisible
+                                                          ? curCategory.items.where((element) => element.isFavorite).isNotEmpty
+                                                          : searchTextController.value.text.isNotEmpty
+                                                              ? curCategory.visible &&
+                                                                  (curCategory.categoryName.toLowerCase().contains(searchTextController.value.text.toLowerCase()) ||
+                                                                      cateItemSearchMatchesCheck(curCategory, searchTextController.value.text.toLowerCase()) > 0)
+                                                              : curCategory.visible,
+                                                      child: InkResponse(
+                                                        highlightShape: BoxShape.rectangle,
+                                                        hoverColor: Colors.transparent,
+                                                        onTap: () {},
+                                                        onHover: (value) {
+                                                          if (value) {
+                                                            cateButtonsVisible[groupIndex][categoryIndex] = true;
+                                                          } else {
+                                                            cateButtonsVisible[groupIndex][categoryIndex] = false;
+                                                          }
+                                                          setState(() {});
+                                                        },
+                                                        child: ExpansionTile(
+                                                            backgroundColor: Colors.transparent,
+                                                            textColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                                            iconColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                                            collapsedIconColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                                            collapsedTextColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                                            initiallyExpanded: false,
+                                                            childrenPadding: EdgeInsets.zero,
+                                                            title: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              crossAxisAlignment: CrossAxisAlignment.center,
                                                               children: [
-                                                                //Move cate
-                                                                ModManTooltip(
-                                                                  message: curLangText!.uiMoveThisCategoryToAnotherGroup,
-                                                                  child: InkWell(
-                                                                      onTap: () async {
-                                                                        await categoryMover(context, moddedItemsList[groupIndex], curCategory);
-                                                                        setState(() {});
-                                                                      },
-                                                                      child: const Icon(Icons.move_down_rounded)),
-                                                                ),
-                                                                //Hide cate
-                                                                ModManTooltip(
-                                                                  message: uiInTextArg(curLangText!.uiHoldToHideXFromItemList, curCategory.categoryName),
-                                                                  child: InkWell(
-                                                                      onLongPress: () async {
-                                                                        hideCategory(moddedItemsList[groupIndex], curCategory);
-                                                                        hiddenItemCategories = await hiddenCategoriesGet(moddedItemsList);
-                                                                        setState(() {});
-                                                                      },
-                                                                      child: const Icon(
-                                                                        FontAwesomeIcons.solidEyeSlash,
-                                                                        size: 16,
-                                                                      )),
+                                                                Row(
+                                                                  children: [
+                                                                    Text(
+                                                                        defaultCategoryDirs.contains(curCategory.categoryName)
+                                                                            ? defaultCategoryNames[defaultCategoryDirs.indexOf(curCategory.categoryName)]
+                                                                            : curCategory.categoryName,
+                                                                        style: const TextStyle(fontWeight: FontWeight.w600)),
+                                                                    Padding(
+                                                                      padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13, right: 2.5),
+                                                                      child: Container(
+                                                                          padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                                                          decoration: BoxDecoration(
+                                                                            border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                            borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                          ),
+                                                                          child: isFavListVisible
+                                                                              ? Text(
+                                                                                  curCategory.items.where((element) => element.isFavorite).length < 2
+                                                                                      ? '${curCategory.items.where((element) => element.isFavorite).length} ${curLangText!.uiItem} '
+                                                                                      : '${curCategory.items.where((element) => element.isFavorite).length} ${curLangText!.uiItems}',
+                                                                                  style: const TextStyle(
+                                                                                    fontSize: 13,
+                                                                                  ))
+                                                                              : searchTextController.value.text.isNotEmpty
+                                                                                  ? Text(
+                                                                                      cateItemSearchMatchesCheck(curCategory, searchTextController.value.text.toLowerCase()) < 2
+                                                                                          ? '${cateItemSearchMatchesCheck(curCategory, searchTextController.value.text.toLowerCase())} ${curLangText!.uiItem} '
+                                                                                          : '${cateItemSearchMatchesCheck(curCategory, searchTextController.value.text.toLowerCase())} ${curLangText!.uiItems}',
+                                                                                      style: const TextStyle(
+                                                                                        fontSize: 13,
+                                                                                      ))
+                                                                                  : Text(
+                                                                                      curCategory.items.length < 2
+                                                                                          ? '${curCategory.items.length} ${curLangText!.uiItem} '
+                                                                                          : '${curCategory.items.length} ${curLangText!.uiItems}',
+                                                                                      style: const TextStyle(
+                                                                                        fontSize: 13,
+                                                                                      ))),
+                                                                    ),
+                                                                    Visibility(
+                                                                      visible: curCategory.items.where((element) => element.isNew).isNotEmpty,
+                                                                      child: Padding(
+                                                                        padding: const EdgeInsets.only(top: 18, bottom: 13, right: 2.5),
+                                                                        child: Container(
+                                                                          padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                                                          decoration: BoxDecoration(
+                                                                            border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                            borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                          ),
+                                                                          child: Text(
+                                                                            '${curCategory.items.where((element) => element.isNew).length} ${curLangText!.uiNew}',
+                                                                            style: const TextStyle(fontSize: 13, color: Colors.amber),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
                                                                 ),
                                                                 Visibility(
-                                                                  visible: !defaultCategoryDirs.contains(curCategory.categoryName),
-                                                                  child: ModManTooltip(
-                                                                    message: uiInTextArgs(
-                                                                        curLangText!.uiHoldToRemoveXfromY, ['<x>', '<y>'], [curCategory.categoryName, moddedItemsList[groupIndex].groupName]),
-                                                                    child: InkWell(
-                                                                        onLongPress: () async {
-                                                                          if (curCategory.items.isEmpty) {
-                                                                            Directory(curCategory.location).deleteSync(recursive: true);
-                                                                            moddedItemsList[groupIndex].categories.remove(curCategory);
-                                                                            for (var cate in moddedItemsList[groupIndex].categories) {
-                                                                              cate.position = moddedItemsList[groupIndex].categories.indexOf(cate);
-                                                                            }
-                                                                            // modViewListVisible = false;
-                                                                            modViewItem.value = null;
-                                                                          } else {
-                                                                            await categoryRemover(context, moddedItemsList[groupIndex], curCategory);
-                                                                          }
-                                                                          saveModdedItemListToJson();
-                                                                          setState(() {});
-                                                                        },
-                                                                        child: const Icon(
-                                                                          Icons.delete_sweep_outlined,
-                                                                        )),
+                                                                  visible: cateButtonsVisible[groupIndex][categoryIndex],
+                                                                  child: Wrap(
+                                                                    crossAxisAlignment: WrapCrossAlignment.center,
+                                                                    runAlignment: WrapAlignment.center,
+                                                                    spacing: 10,
+                                                                    children: [
+                                                                      //Move cate
+                                                                      ModManTooltip(
+                                                                        message: curLangText!.uiMoveThisCategoryToAnotherGroup,
+                                                                        child: InkWell(
+                                                                            onTap: () async {
+                                                                              await categoryMover(context, moddedItemsList[groupIndex], curCategory);
+                                                                              setState(() {});
+                                                                            },
+                                                                            child: const Icon(Icons.move_down_rounded)),
+                                                                      ),
+                                                                      //Hide cate
+                                                                      ModManTooltip(
+                                                                        message: uiInTextArg(curLangText!.uiHoldToHideXFromItemList, curCategory.categoryName),
+                                                                        child: InkWell(
+                                                                            onLongPress: () async {
+                                                                              hideCategory(moddedItemsList[groupIndex], curCategory);
+                                                                              hiddenItemCategories = await hiddenCategoriesGet(moddedItemsList);
+                                                                              setState(() {});
+                                                                            },
+                                                                            child: const Icon(
+                                                                              FontAwesomeIcons.solidEyeSlash,
+                                                                              size: 16,
+                                                                            )),
+                                                                      ),
+                                                                      Visibility(
+                                                                        visible: !defaultCategoryDirs.contains(curCategory.categoryName),
+                                                                        child: ModManTooltip(
+                                                                          message: uiInTextArgs(
+                                                                              curLangText!.uiHoldToRemoveXfromY, ['<x>', '<y>'], [curCategory.categoryName, moddedItemsList[groupIndex].groupName]),
+                                                                          child: InkWell(
+                                                                              onLongPress: () async {
+                                                                                if (curCategory.items.isEmpty) {
+                                                                                  Directory(curCategory.location).deleteSync(recursive: true);
+                                                                                  moddedItemsList[groupIndex].categories.remove(curCategory);
+                                                                                  for (var cate in moddedItemsList[groupIndex].categories) {
+                                                                                    cate.position = moddedItemsList[groupIndex].categories.indexOf(cate);
+                                                                                  }
+                                                                                  // modViewListVisible = false;
+                                                                                  modViewItem.value = null;
+                                                                                } else {
+                                                                                  await categoryRemover(context, moddedItemsList[groupIndex], curCategory);
+                                                                                }
+                                                                                saveModdedItemListToJson();
+                                                                                setState(() {});
+                                                                              },
+                                                                              child: const Icon(
+                                                                                Icons.delete_sweep_outlined,
+                                                                              )),
+                                                                        ),
+                                                                      ),
+                                                                    ],
                                                                   ),
-                                                                ),
+                                                                )
                                                               ],
                                                             ),
-                                                          )
-                                                        ],
-                                                      ),
-                                                      // subtitle: defaultCategoryDirs.contains(curCategory.categoryName) && curActiveLang == 'JP'
-                                                      //     ? Text(defaultCategoryDirsJP[defaultCategoryDirs.indexOf(curCategory.categoryName)])
-                                                      //     : null,
-                                                      children: [
-                                                        SuperListView.builder(
-                                                            shrinkWrap: true,
-                                                            // physics: const NeverScrollableScrollPhysics(),
-                                                            // cacheExtent: double.maxFinite,
-                                                            primary: false,
-                                                            itemCount: curCategory.items.length,
-                                                            // prototypeItem: const SizedBox(height: 84),
-                                                            itemBuilder: (context, itemIndex) {
-                                                              var curItem = curCategory.items[itemIndex];
-                                                              if (itemButtonsVisible[groupIndex][categoryIndex].isEmpty ||
-                                                                  itemButtonsVisible[groupIndex][categoryIndex].length != curCategory.items.length) {
-                                                                itemButtonsVisible[groupIndex][categoryIndex] = List.generate(curCategory.items.length, (index) => false);
-                                                              }
-                                                              if (itemClicked[groupIndex][categoryIndex].isEmpty || itemClicked[groupIndex][categoryIndex].length != curCategory.items.length) {
-                                                                itemClicked[groupIndex][categoryIndex] = List.generate(curCategory.items.length, (index) => false);
-                                                              }
+                                                            // subtitle: defaultCategoryDirs.contains(curCategory.categoryName) && curActiveLang == 'JP'
+                                                            //     ? Text(defaultCategoryDirsJP[defaultCategoryDirs.indexOf(curCategory.categoryName)])
+                                                            //     : null,
+                                                            children: [
+                                                              SuperListView.builder(
+                                                                  shrinkWrap: true,
+                                                                  // physics: const NeverScrollableScrollPhysics(),
+                                                                  // cacheExtent: double.maxFinite,
+                                                                  primary: false,
+                                                                  itemCount: curCategory.items.length,
+                                                                  // prototypeItem: const SizedBox(height: 84),
+                                                                  itemBuilder: (context, itemIndex) {
+                                                                    var curItem = curCategory.items[itemIndex];
+                                                                    if (itemButtonsVisible[groupIndex][categoryIndex].isEmpty ||
+                                                                        itemButtonsVisible[groupIndex][categoryIndex].length != curCategory.items.length) {
+                                                                      itemButtonsVisible[groupIndex][categoryIndex] = List.generate(curCategory.items.length, (index) => false);
+                                                                    }
+                                                                    if (itemClicked[groupIndex][categoryIndex].isEmpty || itemClicked[groupIndex][categoryIndex].length != curCategory.items.length) {
+                                                                      itemClicked[groupIndex][categoryIndex] = List.generate(curCategory.items.length, (index) => false);
+                                                                    }
 
-                                                              return ListenableBuilder(
-                                                                listenable: curItem,
-                                                                builder: (BuildContext context, Widget? child) {
-                                                                  return Visibility(
-                                                                    visible: isFavListVisible
-                                                                        ? curItem.isFavorite
-                                                                        : searchTextController.value.text.isNotEmpty
-                                                                            ? curItem.itemName.toLowerCase().contains(searchTextController.value.text.toLowerCase()) ||
-                                                                                itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase()) > 0
-                                                                            : true,
-                                                                    child: SizedBox(
-                                                                      height: 84,
-                                                                      child: Container(
-                                                                        margin: const EdgeInsets.all(1),
-                                                                        color:
-                                                                            itemClicked[groupIndex][categoryIndex][itemIndex] ? Theme.of(context).highlightColor.withOpacity(0.2) : Colors.transparent,
-                                                                        //shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.zero)),
-                                                                        child: InkWell(
-                                                                          child: Row(
-                                                                            children: [
-                                                                              Padding(
-                                                                                padding: const EdgeInsets.only(top: 2, bottom: 2, left: 15, right: 10),
-                                                                                child: Container(
-                                                                                    width: 80,
-                                                                                    height: 80,
-                                                                                    decoration: BoxDecoration(
-                                                                                      borderRadius: BorderRadius.circular(3),
-                                                                                      border: Border.all(
-                                                                                          color: curItem.applyStatus
-                                                                                              ? Theme.of(context).colorScheme.primary
-                                                                                              : curItem.mods.where((element) => element.isNew).isNotEmpty
-                                                                                                  ? Colors.amber
-                                                                                                  : Theme.of(context).hintColor,
-                                                                                          width: curItem.mods.where((element) => element.isNew).isNotEmpty || curItem.applyStatus ? 3 : 1),
-                                                                                    ),
-                                                                                    child: curItem.icons.first.contains('assets/img/placeholdersquare.png')
-                                                                                        ? Image.asset(
-                                                                                            'assets/img/placeholdersquare.png',
-                                                                                            filterQuality: FilterQuality.none,
-                                                                                            fit: BoxFit.fitWidth,
-                                                                                          )
-                                                                                        : curItem.icons.length > 1
-                                                                                            ? ItemIconsCarousel(iconPaths: curItem.icons)
-                                                                                            : Image.file(
-                                                                                                File(curItem.icons.first),
-                                                                                                filterQuality: FilterQuality.none,
-                                                                                                fit: BoxFit.cover,
-                                                                                              )),
-                                                                              ),
-                                                                              Expanded(
-                                                                                child: Column(
-                                                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    return ListenableBuilder(
+                                                                      listenable: curItem,
+                                                                      builder: (BuildContext context, Widget? child) {
+                                                                        return Visibility(
+                                                                          visible: isFavListVisible
+                                                                              ? curItem.isFavorite
+                                                                              : searchTextController.value.text.isNotEmpty
+                                                                                  ? curItem.itemName.toLowerCase().contains(searchTextController.value.text.toLowerCase()) ||
+                                                                                      itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase()) > 0
+                                                                                  : true,
+                                                                          child: SizedBox(
+                                                                            height: 84,
+                                                                            child: Container(
+                                                                              margin: const EdgeInsets.all(1),
+                                                                              color: itemClicked[groupIndex][categoryIndex][itemIndex]
+                                                                                  ? Theme.of(context).highlightColor.withOpacity(0.2)
+                                                                                  : Colors.transparent,
+                                                                              //shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.zero)),
+                                                                              child: InkWell(
+                                                                                child: Row(
                                                                                   children: [
-                                                                                    Text(
-                                                                                      curItem.category == defaultCategoryDirs[17]
-                                                                                          ? curItem.itemName.split('_').isNotEmpty &&
-                                                                                                  curItem.itemName.split('_').first == 'it' &&
-                                                                                                  curItem.itemName.split('_')[1] == 'wp'
-                                                                                              ? curItem.itemName
-                                                                                              : curItem.itemName.replaceFirst('_', '*').replaceAll('_', '/')
-                                                                                          : curItem.itemName.replaceAll('_', '/'),
-                                                                                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                                                                                    ),
-                                                                                    // Text(
-                                                                                    //   curItem.variantNames.join(' | '),
-                                                                                    //   style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                    // ),
                                                                                     Padding(
-                                                                                      padding: const EdgeInsets.only(top: 5),
-                                                                                      child: Wrap(
-                                                                                        runAlignment: WrapAlignment.center,
-                                                                                        alignment: WrapAlignment.center,
-                                                                                        spacing: 2.5,
-                                                                                        runSpacing: 2.5,
+                                                                                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 15, right: 10),
+                                                                                      child: Container(
+                                                                                          width: 80,
+                                                                                          height: 80,
+                                                                                          decoration: BoxDecoration(
+                                                                                            borderRadius: BorderRadius.circular(3),
+                                                                                            border: Border.all(
+                                                                                                color: curItem.applyStatus
+                                                                                                    ? Theme.of(context).colorScheme.primary
+                                                                                                    : curItem.mods.where((element) => element.isNew).isNotEmpty
+                                                                                                        ? Colors.amber
+                                                                                                        : Theme.of(context).hintColor,
+                                                                                                width: curItem.mods.where((element) => element.isNew).isNotEmpty || curItem.applyStatus ? 3 : 1),
+                                                                                          ),
+                                                                                          child: curItem.icons.first.contains('assets/img/placeholdersquare.png')
+                                                                                              ? Image.asset(
+                                                                                                  'assets/img/placeholdersquare.png',
+                                                                                                  filterQuality: FilterQuality.none,
+                                                                                                  fit: BoxFit.fitWidth,
+                                                                                                )
+                                                                                              : curItem.icons.length > 1
+                                                                                                  ? ItemIconsCarousel(iconPaths: curItem.icons)
+                                                                                                  : Image.file(
+                                                                                                      File(curItem.icons.first),
+                                                                                                      filterQuality: FilterQuality.none,
+                                                                                                      fit: BoxFit.cover,
+                                                                                                    )),
+                                                                                    ),
+                                                                                    Expanded(
+                                                                                      child: Column(
+                                                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
                                                                                         children: [
-                                                                                          Container(
-                                                                                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
-                                                                                            decoration: BoxDecoration(
-                                                                                              border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                                                            ),
-                                                                                            child: isFavListVisible
-                                                                                                ? Text(
-                                                                                                    curItem.mods.where((element) => element.isFavorite).length < 2
-                                                                                                        ? '${curItem.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMod}'
-                                                                                                        : '${curItem.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMods}',
-                                                                                                    style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                                  )
-                                                                                                : searchTextController.value.text.isNotEmpty &&
-                                                                                                        itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase()) <= 0
-                                                                                                    ? Text(
-                                                                                                        curItem.mods.length < 2
-                                                                                                            ? '${curItem.mods.length} ${curLangText!.uiMod}'
-                                                                                                            : '${curItem.mods.length} ${curLangText!.uiMods}',
-                                                                                                        style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                                      )
-                                                                                                    : searchTextController.value.text.isNotEmpty &&
-                                                                                                            itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase()) > 0
-                                                                                                        ? Text(
-                                                                                                            itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase()) < 2
-                                                                                                                ? '${itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase())} ${curLangText!.uiMod}'
-                                                                                                                : '${itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase())} ${curLangText!.uiMods}',
-                                                                                                            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                                          )
-                                                                                                        : Text(
-                                                                                                            curItem.mods.length < 2
-                                                                                                                ? '${curItem.mods.length} ${curLangText!.uiMod}'
-                                                                                                                : '${curItem.mods.length} ${curLangText!.uiMods}',
-                                                                                                            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                                          ),
+                                                                                          Text(
+                                                                                            curItem.category == defaultCategoryDirs[17]
+                                                                                                ? curItem.itemName.split('_').isNotEmpty &&
+                                                                                                        curItem.itemName.split('_').first == 'it' &&
+                                                                                                        curItem.itemName.split('_')[1] == 'wp'
+                                                                                                    ? curItem.itemName
+                                                                                                    : curItem.itemName.replaceFirst('_', '*').replaceAll('_', '/')
+                                                                                                : curItem.itemName.replaceAll('_', '/'),
+                                                                                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                                                                                           ),
-                                                                                          Visibility(
-                                                                                            visible: curItem.mods.where((element) => element.isNew == true).isNotEmpty,
-                                                                                            child: Container(
-                                                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
-                                                                                              decoration: BoxDecoration(
-                                                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                                                              ),
-                                                                                              child: Text(
-                                                                                                curItem.mods.where((element) => element.isNew == true).length < 2
-                                                                                                    ? '${curItem.mods.where((element) => element.isNew == true).length} ${curLangText!.uiNewMod}'
-                                                                                                    : '${curItem.mods.where((element) => element.isNew == true).length} ${curLangText!.uiNewMods}',
-                                                                                                style: const TextStyle(color: Colors.amber),
-                                                                                              ),
+                                                                                          // Text(
+                                                                                          //   curItem.variantNames.join(' | '),
+                                                                                          //   style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                          // ),
+                                                                                          Padding(
+                                                                                            padding: const EdgeInsets.only(top: 5),
+                                                                                            child: Wrap(
+                                                                                              runAlignment: WrapAlignment.center,
+                                                                                              alignment: WrapAlignment.center,
+                                                                                              spacing: 2.5,
+                                                                                              runSpacing: 2.5,
+                                                                                              children: [
+                                                                                                Container(
+                                                                                                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                                                                                  decoration: BoxDecoration(
+                                                                                                    border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                                  ),
+                                                                                                  child: isFavListVisible
+                                                                                                      ? Text(
+                                                                                                          curItem.mods.where((element) => element.isFavorite).length < 2
+                                                                                                              ? '${curItem.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMod}'
+                                                                                                              : '${curItem.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMods}',
+                                                                                                          style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                                        )
+                                                                                                      : searchTextController.value.text.isNotEmpty &&
+                                                                                                              itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase()) <= 0
+                                                                                                          ? Text(
+                                                                                                              curItem.mods.length < 2
+                                                                                                                  ? '${curItem.mods.length} ${curLangText!.uiMod}'
+                                                                                                                  : '${curItem.mods.length} ${curLangText!.uiMods}',
+                                                                                                              style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                                            )
+                                                                                                          : searchTextController.value.text.isNotEmpty &&
+                                                                                                                  itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase()) > 0
+                                                                                                              ? Text(
+                                                                                                                  itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase()) < 2
+                                                                                                                      ? '${itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase())} ${curLangText!.uiMod}'
+                                                                                                                      : '${itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase())} ${curLangText!.uiMods}',
+                                                                                                                  style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                                                )
+                                                                                                              : Text(
+                                                                                                                  curItem.mods.length < 2
+                                                                                                                      ? '${curItem.mods.length} ${curLangText!.uiMod}'
+                                                                                                                      : '${curItem.mods.length} ${curLangText!.uiMods}',
+                                                                                                                  style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                                                ),
+                                                                                                ),
+                                                                                                Visibility(
+                                                                                                  visible: curItem.mods.where((element) => element.isNew == true).isNotEmpty,
+                                                                                                  child: Container(
+                                                                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                                                                                    decoration: BoxDecoration(
+                                                                                                      border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                                    ),
+                                                                                                    child: Text(
+                                                                                                      curItem.mods.where((element) => element.isNew == true).length < 2
+                                                                                                          ? '${curItem.mods.where((element) => element.isNew == true).length} ${curLangText!.uiNewMod}'
+                                                                                                          : '${curItem.mods.where((element) => element.isNew == true).length} ${curLangText!.uiNewMods}',
+                                                                                                      style: const TextStyle(color: Colors.amber),
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                ),
+                                                                                                Container(
+                                                                                                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                                                                                  decoration: BoxDecoration(
+                                                                                                    border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                                  ),
+                                                                                                  child: Text(
+                                                                                                    '${curItem.mods.where((element) => element.applyStatus == true).length} ${curLangText!.uiApplied}',
+                                                                                                    style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ],
                                                                                             ),
-                                                                                          ),
-                                                                                          Container(
-                                                                                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
-                                                                                            decoration: BoxDecoration(
-                                                                                              border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                                                            ),
-                                                                                            child: Text(
-                                                                                              '${curItem.mods.where((element) => element.applyStatus == true).length} ${curLangText!.uiApplied}',
-                                                                                              style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                            ),
-                                                                                          ),
+                                                                                          )
                                                                                         ],
+                                                                                      ),
+                                                                                    ),
+                                                                                    Visibility(
+                                                                                      visible: itemButtonsVisible[groupIndex][categoryIndex][itemIndex],
+                                                                                      child: Padding(
+                                                                                        padding: const EdgeInsets.only(right: 15),
+                                                                                        child: Row(
+                                                                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                                                                          children: [
+                                                                                            //Buttons
+                                                                                            ModManTooltip(
+                                                                                                message: uiInTextArg(
+                                                                                                    curLangText!.uiOpenXInFileExplorer,
+                                                                                                    curItem.category == defaultCategoryDirs[17]
+                                                                                                        ? curItem.itemName.split('_').isNotEmpty &&
+                                                                                                                curItem.itemName.split('_').first == 'it' &&
+                                                                                                                curItem.itemName.split('_')[1] == 'wp'
+                                                                                                            ? curItem.itemName
+                                                                                                            : curItem.itemName.replaceFirst('_', '*').replaceAll('_', '/')
+                                                                                                        : curItem.itemName.replaceAll('_', '/')),
+                                                                                                child: InkWell(
+                                                                                                  child: const Icon(Icons.folder_open),
+                                                                                                  onTap: () async => await launchUrl(Uri.file(curItem.location)),
+                                                                                                )),
+                                                                                            //Delete
+                                                                                            Padding(
+                                                                                              padding: const EdgeInsets.only(left: 5),
+                                                                                              child: ModManTooltip(
+                                                                                                message: uiInTextArg(
+                                                                                                    curLangText!.uiHoldToRemoveXFromModMan,
+                                                                                                    curItem.category == defaultCategoryDirs[17]
+                                                                                                        ? curItem.itemName.split('_').isNotEmpty &&
+                                                                                                                curItem.itemName.split('_').first == 'it' &&
+                                                                                                                curItem.itemName.split('_')[1] == 'wp'
+                                                                                                            ? curItem.itemName
+                                                                                                            : curItem.itemName.replaceFirst('_', '*').replaceAll('_', '/')
+                                                                                                        : curItem.itemName.replaceAll('_', '/')),
+                                                                                                child: InkWell(
+                                                                                                  onLongPress: curItem.applyStatus
+                                                                                                      ? null
+                                                                                                      : () async {
+                                                                                                          deleteItemFromModMan(curItem.location).then((value) async {
+                                                                                                            String removedName =
+                                                                                                                '${curCategory.categoryName} > ${curItem.category == defaultCategoryDirs[17] ? curItem.itemName.split('_').isNotEmpty && curItem.itemName.split('_').first == 'it' && curItem.itemName.split('_')[1] == 'wp' ? curItem.itemName : curItem.itemName.replaceFirst('_', '*').replaceAll('_', '/') : curItem.itemName.replaceAll('_', '/')}';
+                                                                                                            if (modViewItem.value == curItem) {
+                                                                                                              // modViewListVisible = false;
+                                                                                                              modViewItem.value = null;
+                                                                                                            }
+                                                                                                            curCategory.items.remove(curItem);
+                                                                                                            ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                                                                context,
+                                                                                                                '${curLangText!.uiSuccess}!',
+                                                                                                                uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName),
+                                                                                                                3000));
+                                                                                                            saveModdedItemListToJson();
+                                                                                                            setState(() {});
+                                                                                                          });
+                                                                                                        },
+                                                                                                  child: Icon(
+                                                                                                    Icons.delete_forever_outlined,
+                                                                                                    color: curItem.applyStatus ? Theme.of(context).disabledColor : null,
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ],
+                                                                                        ),
                                                                                       ),
                                                                                     )
                                                                                   ],
                                                                                 ),
+                                                                                onTap: () {
+                                                                                  itemClicked = List.generate(moddedItemsList.length, (index) => []);
+                                                                                  itemClicked[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => []);
+                                                                                  itemClicked[groupIndex][categoryIndex] = List.generate(curCategory.items.length, (index) => false);
+                                                                                  itemClicked[groupIndex][categoryIndex][itemIndex] = true;
+                                                                                  // for (var element in modViewETKeys) {
+                                                                                  //   element.currentState?.collapse();
+                                                                                  // }
+                                                                                  // modViewETKeys.clear();
+                                                                                  isModViewListHidden = false;
+                                                                                  isModViewFromApplied = false;
+                                                                                  modViewCate = curCategory;
+                                                                                  modViewItem.value = curItem;
+                                                                                  // modViewListVisible = true;
+                                                                                  setState(() {});
+                                                                                },
+                                                                                onHover: (value) {
+                                                                                  if (value) {
+                                                                                    itemButtonsVisible[groupIndex][categoryIndex][itemIndex] = true;
+                                                                                  } else {
+                                                                                    itemButtonsVisible[groupIndex][categoryIndex][itemIndex] = false;
+                                                                                  }
+                                                                                  setState(() {});
+                                                                                },
                                                                               ),
-                                                                              Visibility(
-                                                                                visible: itemButtonsVisible[groupIndex][categoryIndex][itemIndex],
-                                                                                child: Padding(
-                                                                                  padding: const EdgeInsets.only(right: 15),
-                                                                                  child: Row(
-                                                                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                                                                    children: [
-                                                                                      //Buttons
-                                                                                      ModManTooltip(
-                                                                                          message: uiInTextArg(
-                                                                                              curLangText!.uiOpenXInFileExplorer,
-                                                                                              curItem.category == defaultCategoryDirs[17]
-                                                                                                  ? curItem.itemName.split('_').isNotEmpty &&
-                                                                                                          curItem.itemName.split('_').first == 'it' &&
-                                                                                                          curItem.itemName.split('_')[1] == 'wp'
-                                                                                                      ? curItem.itemName
-                                                                                                      : curItem.itemName.replaceFirst('_', '*').replaceAll('_', '/')
-                                                                                                  : curItem.itemName.replaceAll('_', '/')),
-                                                                                          child: InkWell(
-                                                                                            child: const Icon(Icons.folder_open),
-                                                                                            onTap: () async => await launchUrl(Uri.file(curItem.location)),
-                                                                                          )),
-                                                                                      //Delete
-                                                                                      Padding(
-                                                                                        padding: const EdgeInsets.only(left: 5),
-                                                                                        child: ModManTooltip(
-                                                                                          message: uiInTextArg(
-                                                                                              curLangText!.uiHoldToRemoveXFromModMan,
-                                                                                              curItem.category == defaultCategoryDirs[17]
-                                                                                                  ? curItem.itemName.split('_').isNotEmpty &&
-                                                                                                          curItem.itemName.split('_').first == 'it' &&
-                                                                                                          curItem.itemName.split('_')[1] == 'wp'
-                                                                                                      ? curItem.itemName
-                                                                                                      : curItem.itemName.replaceFirst('_', '*').replaceAll('_', '/')
-                                                                                                  : curItem.itemName.replaceAll('_', '/')),
-                                                                                          child: InkWell(
-                                                                                            onLongPress: curItem.applyStatus
-                                                                                                ? null
-                                                                                                : () async {
-                                                                                                    deleteItemFromModMan(curItem.location).then((value) async {
-                                                                                                      String removedName =
-                                                                                                          '${curCategory.categoryName} > ${curItem.category == defaultCategoryDirs[17] ? curItem.itemName.split('_').isNotEmpty && curItem.itemName.split('_').first == 'it' && curItem.itemName.split('_')[1] == 'wp' ? curItem.itemName : curItem.itemName.replaceFirst('_', '*').replaceAll('_', '/') : curItem.itemName.replaceAll('_', '/')}';
-                                                                                                      if (modViewItem.value == curItem) {
-                                                                                                        // modViewListVisible = false;
-                                                                                                        modViewItem.value = null;
-                                                                                                      }
-                                                                                                      curCategory.items.remove(curItem);
-                                                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
-                                                                                                          uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
-                                                                                                      saveModdedItemListToJson();
-                                                                                                      setState(() {});
-                                                                                                    });
-                                                                                                  },
-                                                                                            child: Icon(
-                                                                                              Icons.delete_forever_outlined,
-                                                                                              color: curItem.applyStatus ? Theme.of(context).disabledColor : null,
-                                                                                            ),
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                    ],
-                                                                                  ),
-                                                                                ),
-                                                                              )
-                                                                            ],
+                                                                            ),
                                                                           ),
-                                                                          onTap: () {
-                                                                            itemClicked = List.generate(moddedItemsList.length, (index) => []);
-                                                                            itemClicked[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => []);
-                                                                            itemClicked[groupIndex][categoryIndex] = List.generate(curCategory.items.length, (index) => false);
-                                                                            itemClicked[groupIndex][categoryIndex][itemIndex] = true;
-                                                                            // for (var element in modViewETKeys) {
-                                                                            //   element.currentState?.collapse();
-                                                                            // }
-                                                                            // modViewETKeys.clear();
-                                                                            isModViewListHidden = false;
-                                                                            isModViewFromApplied = false;
-                                                                            modViewCate = curCategory;
-                                                                            modViewItem.value = curItem;
-                                                                            // modViewListVisible = true;
-                                                                            setState(() {});
-                                                                          },
-                                                                          onHover: (value) {
-                                                                            if (value) {
-                                                                              itemButtonsVisible[groupIndex][categoryIndex][itemIndex] = true;
-                                                                            } else {
-                                                                              itemButtonsVisible[groupIndex][categoryIndex][itemIndex] = false;
-                                                                            }
-                                                                            setState(() {});
-                                                                          },
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                },
-                                                              );
-                                                            }),
-                                                      ]),
-                                                ),
-                                              );
+                                                                        );
+                                                                      },
+                                                                    );
+                                                                  }),
+                                                            ]),
+                                                      ),
+                                                    );
+                                                  });
                                             },
                                           ),
                                         ),
