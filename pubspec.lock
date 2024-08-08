@@ -289,6 +289,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.9"
+  expansion_tile_group:
+    dependency: "direct main"
+    description:
+      name: expansion_tile_group
+      sha256: "9226c6da4759b7c69dc78514d151a05765d7b6e75415eba70c95b032c534d74e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   fake_async:
     dependency: transitive
     description:

@@ -1860,7 +1860,12 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
   // List<String> pathsWithNoIceInRoot = [];
   //copy files to temp
   for (var xFile in xFilePaths) {
-    String tempModDirName = p.basename(xFile.path);
+    String tempModDirName = '';
+    if (p.extension(xFile.path) == '.zip' || p.extension(xFile.path) == '.rar' || p.extension(xFile.path) == '.7z') {
+      tempModDirName = p.basenameWithoutExtension(xFile.path);
+    } else {
+      tempModDirName = p.basename(xFile.path);
+    }
     if (Directory(modManAddModsTempDirPath).existsSync() && Directory(modManAddModsTempDirPath).listSync().where((element) => p.basename(element.path) == tempModDirName).isNotEmpty) {
       DateTime now = DateTime.now();
       String formattedDate = DateFormat('MM-dd-yyyy-kk-mm-ss').format(now);

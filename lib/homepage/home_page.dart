@@ -103,7 +103,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  double headersExtraOpacityValue = 0.3;
+  double headersExtraOpacityValue = 0.1;
   double modviewPanelWidth = 0;
 
   @override

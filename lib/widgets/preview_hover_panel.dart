@@ -16,7 +16,7 @@ class PreviewHoverPanel extends StatelessWidget {
         constraints: BoxConstraints(minWidth: appWindow.size.width / 5, minHeight: appWindow.size.height / 5, maxWidth: appWindow.size.width / 3, maxHeight: appWindow.size.height / 3),
         child: Container(
           decoration: BoxDecoration(
-              color: Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8),
+              color: Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
               border: Border.all(color: Theme.of(context).primaryColorLight),
               borderRadius: const BorderRadius.all(Radius.circular(2))),
           child: FlutterCarousel.builder(

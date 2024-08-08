@@ -67,6 +67,7 @@ dependencies:
   rflutter_alert: ^2.0.7
   super_sliver_list: ^0.4.1
   signals: ^5.3.0
+  expansion_tile_group: ^2.0.0
   
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
