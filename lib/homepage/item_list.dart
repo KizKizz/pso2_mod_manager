@@ -1274,7 +1274,7 @@ class _ItemListState extends State<ItemList> {
                                                                                 itemClicked[groupIndex][categoryIndex] = List.generate(curCategory.items.length, (index) => false);
                                                                                 itemClicked[groupIndex][categoryIndex][itemIndex] = true;
                                                                                 // for (var element in modViewExpansionTileStates) {
-                                                                                  // element.currentState?.collapse();
+                                                                                // element.currentState?.collapse();
                                                                                 // }
                                                                                 // modViewETKeys.clear();
                                                                                 isModViewListHidden = false;

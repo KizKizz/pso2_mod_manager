@@ -1,4 +1,3 @@
-
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:io';
@@ -89,34 +88,34 @@ class _ModViewState extends State<ModView> {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: modViewItem,
-      builder: (BuildContext context, dynamic value, Widget? child) {
+      builder: (BuildContext context, Item? value, Widget? child) {
         modviewPanelWidth = appWindow.size.width * (viewsController.areas[1].weight! / 1);
         List<Mod> modViewMods = [];
         List<Mod> stateModFilters = [];
 
         //reset state
-        if (modViewItem.value != null && modViewItem.value!.mods.indexWhere((e) => e.isNew) == -1) {
+        if (value != null && value.mods.indexWhere((e) => e.isNew) == -1) {
           modViewListShowNew = false;
         }
-        if (modViewItem.value != null && modViewItem.value!.mods.indexWhere((e) => e.applyStatus) == -1) {
+        if (value != null && value.mods.indexWhere((e) => e.applyStatus) == -1) {
           modViewListShowApplied = false;
         }
 
         //Filters
-        if (modViewItem.value != null) {
+        if (value != null) {
           if (modViewListShowNew && !modViewListShowApplied) {
-            stateModFilters.addAll(modViewItem.value!.mods.where((e) => e.isNew).toList());
+            stateModFilters.addAll(value.mods.where((e) => e.isNew).toList());
           } else if (modViewListShowApplied && !modViewListShowNew) {
-            stateModFilters.addAll(modViewItem.value!.mods.where((e) => e.applyStatus).toList());
+            stateModFilters.addAll(value.mods.where((e) => e.applyStatus).toList());
           } else if (modViewListShowNew && modViewListShowApplied) {
-            stateModFilters = modViewItem.value!.mods.where((e) => e.isNew || e.applyStatus).toList();
+            stateModFilters = value.mods.where((e) => e.isNew || e.applyStatus).toList();
           } else {
-            stateModFilters = modViewItem.value!.mods.toList();
+            stateModFilters = value.mods.toList();
           }
 
           if (isFavListVisible && !isModViewFromApplied) {
             modViewMods = stateModFilters.where((e) => e.isFavorite).toList();
-          } else if (searchTextController.value.text.toLowerCase().isNotEmpty && !isModViewFromApplied && itemModSearchMatchesCheck(modViewItem.value!, searchTextController.value.text) > 0) {
+          } else if (searchTextController.value.text.toLowerCase().isNotEmpty && !isModViewFromApplied && itemModSearchMatchesCheck(value, searchTextController.value.text) > 0) {
             modViewMods = stateModFilters
                 .where((e) =>
                     e.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase()) ||
