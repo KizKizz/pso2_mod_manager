@@ -44,7 +44,7 @@ class StateProvider with ChangeNotifier {
   bool _isStartupLoadingFinish = false;
   bool _mouseHoveringSubmods = false;
   // bool _isCursorInAppliedList = true;
-  String _quickApplyState = '';
+  // String _quickApplyState = '';
   bool _autoAqmInject = false;
   String _aqmInjectionProgressStatus = '';
   ItemListSort _itemListSortState = ItemListSort.alphabeticalOrder;
@@ -93,7 +93,7 @@ class StateProvider with ChangeNotifier {
   bool get isStartupLoadingFinish => _isStartupLoadingFinish;
   bool get mouseHoveringSubmods => _mouseHoveringSubmods;
   // bool get isCursorInAppliedList => _isCursorInAppliedList;
-  String get quickApplyState => _quickApplyState;
+  // String get quickApplyState => _quickApplyState;
   bool get autoAqmInject => _autoAqmInject;
   String get aqmInjectionProgressStatus => _aqmInjectionProgressStatus;
   ItemListSort get itemListSortState => _itemListSortState;
@@ -136,11 +136,11 @@ class StateProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void quickApplyStateSet(String state) {
-    //apply or remove
-    _quickApplyState = state;
-    notifyListeners();
-  }
+  // void quickApplyStateSet(String state) {
+  //   //apply or remove
+  //   _quickApplyState = state;
+  //   notifyListeners();
+  // }
 
   // void cursorInALSet(bool state) {
   //   _isCursorInAppliedList = state;

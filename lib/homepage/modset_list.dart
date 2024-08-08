@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/aqmInjection/aqm_inject_functions.dart';
 import 'package:pso2_mod_manager/aqmInjection/aqm_removal.dart';
 import 'package:pso2_mod_manager/boundary/mods_boundary_functions.dart';
+import 'package:pso2_mod_manager/classes/enum_classes.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/mod_set_class.dart';
@@ -37,6 +38,7 @@ import 'package:pso2_mod_manager/widgets/preview_image_stack.dart';
 import 'package:pso2_mod_manager/widgets/preview_video_stack.dart';
 import 'package:pso2_mod_manager/widgets/snackbar.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
+import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:url_launcher/url_launcher.dart';
 // ignore: depend_on_referenced_packages
@@ -220,7 +222,7 @@ class _ModSetListState extends State<ModSetList> {
                                           Stack(
                                             children: [
                                               Visibility(
-                                                visible: isModViewModsRemoving,
+                                                visible: modViewModsApplyRemoving.watch(context),
                                                 child: const SizedBox(
                                                   width: 20,
                                                   height: 20,
@@ -228,7 +230,7 @@ class _ModSetListState extends State<ModSetList> {
                                                 ),
                                               ),
                                               Visibility(
-                                                visible: !isModViewModsRemoving,
+                                                visible: !modViewModsApplyRemoving.watch(context),
                                                 child: ModManTooltip(
                                                   message: uiInTextArg(curLangText!.uiRemoveAllModsInXFromTheGame, curSet.setName),
                                                   child: InkWell(
@@ -236,8 +238,7 @@ class _ModSetListState extends State<ModSetList> {
                                                       FontAwesomeIcons.squareMinus,
                                                     ),
                                                     onTap: () async {
-                                                      isModViewModsRemoving = true;
-                                                      isModViewModsApplying = true;
+                                                      modViewModsApplyRemoving.value = true;
                                                       setState(() {});
                                                       Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
                                                         //status
@@ -304,10 +305,9 @@ class _ModSetListState extends State<ModSetList> {
                                                           if (moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isEmpty) {
                                                             previewModName = '';
                                                             previewImages.clear();
-                                                            Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('');
+                                                            saveApplyButtonState.value = SaveApplyButtonState.none;
                                                           }
-                                                          isModViewModsRemoving = false;
-                                                          isModViewModsApplying = false;
+                                                          modViewModsApplyRemoving.value = false;
                                                           saveModdedItemListToJson();
                                                           setState(() {});
                                                         });
@@ -326,7 +326,7 @@ class _ModSetListState extends State<ModSetList> {
                                           Stack(
                                             children: [
                                               Visibility(
-                                                visible: isModViewModsApplying,
+                                                visible: modViewModsApplyRemoving.watch(context),
                                                 child: const SizedBox(
                                                   width: 20,
                                                   height: 20,
@@ -334,15 +334,14 @@ class _ModSetListState extends State<ModSetList> {
                                                 ),
                                               ),
                                               Visibility(
-                                                visible: !isModViewModsApplying,
+                                                visible: !modViewModsApplyRemoving.watch(context),
                                                 child: ModManTooltip(
                                                   message: uiInTextArg(curLangText!.uiApplyAllModsInXToTheGame, curSet.setName),
                                                   child: InkWell(
                                                     onTap: () async {
-                                                      isModViewModsApplying = true;
+                                                      modViewModsApplyRemoving.value = true;
                                                       setState(() {});
                                                       Future.delayed(Duration(milliseconds: applyButtonsDelay), () async {
-
                                                         for (var item in curSet.setItems) {
                                                           for (var mod in item.mods) {
                                                             for (var submod in mod.submods) {
@@ -357,7 +356,7 @@ class _ModSetListState extends State<ModSetList> {
                                                                 if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
                                                                   await applyOverlayedIcon(context, item);
                                                                 }
-                                                                Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('extra');
+                                                                saveApplyButtonState.value = SaveApplyButtonState.extra;
                                                               }
                                                             }
                                                           }
@@ -377,7 +376,7 @@ class _ModSetListState extends State<ModSetList> {
                                                         // ScaffoldMessenger.of(context)
                                                         //     .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
                                                         // }
-                                                        isModViewModsApplying = false;
+                                                        modViewModsApplyRemoving.value = false;
                                                         saveModdedItemListToJson();
                                                         setState(() {});
                                                         // });
@@ -688,7 +687,7 @@ class _ModSetListState extends State<ModSetList> {
                                                                         Stack(
                                                                           children: [
                                                                             Visibility(
-                                                                              visible: isModViewModsRemoving,
+                                                                              visible: modViewModsApplyRemoving.watch(context),
                                                                               child: const SizedBox(
                                                                                 width: 20,
                                                                                 height: 20,
@@ -696,7 +695,7 @@ class _ModSetListState extends State<ModSetList> {
                                                                               ),
                                                                             ),
                                                                             Visibility(
-                                                                              visible: !isModViewModsRemoving,
+                                                                              visible: !modViewModsApplyRemoving.watch(context),
                                                                               child: ModManTooltip(
                                                                                 message: uiInTextArg(curLangText!.uiRemoveXFromTheGame, applyingModNames[m]),
                                                                                 child: InkWell(
@@ -704,7 +703,7 @@ class _ModSetListState extends State<ModSetList> {
                                                                                     FontAwesomeIcons.squareMinus,
                                                                                   ),
                                                                                   onTap: () async {
-                                                                                    isModViewModsRemoving = true;
+                                                                                    modViewModsApplyRemoving.value = true;
                                                                                     setState(() {});
                                                                                     Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () async {
                                                                                       //status
@@ -753,10 +752,10 @@ class _ModSetListState extends State<ModSetList> {
                                                                                       if (moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isEmpty) {
                                                                                         previewModName = '';
                                                                                         previewImages.clear();
-                                                                                        Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('');
+                                                                                        saveApplyButtonState.value = SaveApplyButtonState.none;
                                                                                       }
 
-                                                                                      isModViewModsRemoving = false;
+                                                                                      modViewModsApplyRemoving.value = false;
                                                                                       saveModdedItemListToJson();
                                                                                       setState(() {});
                                                                                       // });
@@ -809,7 +808,7 @@ class _ModSetListState extends State<ModSetList> {
                                                                                     }
                                                                                     ScaffoldMessenger.of(context).showSnackBar(
                                                                                         snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
-                                                                                    Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('extra');
+                                                                                    saveApplyButtonState.value = SaveApplyButtonState.extra;
                                                                                     setState(() {});
                                                                                   }
 

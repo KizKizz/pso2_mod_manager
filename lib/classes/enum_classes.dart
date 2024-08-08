@@ -9,3 +9,9 @@ enum ModViewListSort {
   final String value;
   const ModViewListSort(this.value);
 }
+
+enum SaveApplyButtonState {
+  none('none'), apply('apply'), remove('remove'), extra('extra');
+  final String value;
+  const SaveApplyButtonState(this.value);
+}

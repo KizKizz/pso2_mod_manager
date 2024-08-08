@@ -5,7 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'category_type_class.g.dart';
 
 @JsonSerializable()
-class CategoryType with ChangeNotifier{
+class CategoryType with ChangeNotifier {
   CategoryType(this.groupName, this.position, this.visible, this.expanded, this.categories);
   String groupName;
   int position;
@@ -13,7 +13,9 @@ class CategoryType with ChangeNotifier{
   bool expanded;
   List<Category> categories;
 
-  
+  void refresh() {
+    notifyListeners();
+  }
 
   int getNumOfAppliedCates() {
     return categories.where((e) => e.getNumOfAppliedItems() > 0).length;

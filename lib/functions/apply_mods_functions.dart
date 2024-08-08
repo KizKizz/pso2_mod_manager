@@ -1,4 +1,3 @@
-
 // ignore_for_file: unused_import
 
 import 'package:flutter/material.dart';
@@ -11,6 +10,7 @@ import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/modfiles_apply.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
+import 'package:pso2_mod_manager/pages/main_page.dart';
 import 'package:pso2_mod_manager/widgets/snackbar.dart';
 
 Future<bool> applyModsToTheGame(context, Item curItem, Mod curMod, SubMod curSubmod) async {
@@ -36,10 +36,10 @@ Future<bool> applyModsToTheGame(context, Item curItem, Mod curMod, SubMod curSub
           }
           fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
         }
-        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+        ScaffoldMessenger.of(mainPageScaffoldKey.currentState!.context).showSnackBar(snackBarMessage(mainPageScaffoldKey.currentState!.context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
       }
 
-      isModViewModsApplying = false;
+      modViewModsApplyRemoving.value = false;
       saveModdedItemListToJson();
 
       //apply cmx
@@ -57,8 +57,9 @@ Future<bool> applyModsToTheGame(context, Item curItem, Mod curMod, SubMod curSub
       return true;
     });
   } catch (e) {
-    isModViewModsApplying = false;
-    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', e.toString(), 5000));
+    modViewModsApplyRemoving.value = false;
+    // ignore: use_build_context_synchronously
+    ScaffoldMessenger.of(mainPageScaffoldKey.currentState!.context).showSnackBar(snackBarMessage(mainPageScaffoldKey.currentState!.context, '${curLangText!.uiError}!', e.toString(), 5000));
   }
 
   return false;

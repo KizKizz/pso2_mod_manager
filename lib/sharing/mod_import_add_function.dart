@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/aqmInjection/aqm_inject_functions.dart';
 import 'package:pso2_mod_manager/boundary/mods_boundary_functions.dart';
 import 'package:pso2_mod_manager/classes/category_class.dart';
+import 'package:pso2_mod_manager/classes/enum_classes.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
@@ -501,7 +502,7 @@ Future<(String, bool)> newImportModSetDialog(context) async {
 }
 
 Future<void> applyImportedMods(context, ModSet curSet) async {
-  isModViewModsApplying = true;
+  modViewModsApplyRemoving.value = true;
   for (var item in curSet.setItems) {
     for (var mod in item.mods) {
       for (var submod in mod.submods) {
@@ -516,12 +517,12 @@ Future<void> applyImportedMods(context, ModSet curSet) async {
           if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
             await applyOverlayedIcon(context, item);
           }
-          Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('extra');
+          saveApplyButtonState.value = SaveApplyButtonState.extra;
         }
       }
     }
   }
-  isModViewModsApplying = false;
+  modViewModsApplyRemoving.value = false;
   saveModdedItemListToJson();
   Navigator.pop(context);
 }

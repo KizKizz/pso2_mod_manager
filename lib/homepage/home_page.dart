@@ -116,7 +116,7 @@ class _HomePageState extends State<HomePage> {
       ogFilesPermChecker(context);
       Provider.of<StateProvider>(context, listen: false).startupLoadingFinishSet(true);
       //quick button state
-      if (File(modManAppliedModsJsonPath).existsSync()) Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('apply');
+      if (File(modManAppliedModsJsonPath).existsSync()) saveApplyButtonState.value = SaveApplyButtonState.apply;
       //quick apply items
       quickApplyItemList = await quickSwapApplyItemListGet();
     });

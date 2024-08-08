@@ -50,6 +50,7 @@ import 'package:pso2_mod_manager/widgets/snackbar.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:signals/signals_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
@@ -2505,15 +2506,15 @@ class _MainPageState extends State<MainPage> {
                                 File(modManAppliedModsJsonPath).existsSync() ? curLangText!.uiReapplyAllRemovedModsBackToTheGame : curLangText!.uiRemoveAllModsFromTheGameAndSaveThemToReApplyLater,
                             child: MaterialButton(
                               color: Theme.of(context).colorScheme.primary.withBlue(180).withOpacity(0.6),
-                              onPressed: File(modManAppliedModsJsonPath).existsSync() || moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isNotEmpty
+                              onPressed: File(modManAppliedModsJsonPath).existsSync() || moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isNotEmpty || saveApplyButtonState.watch(context) != SaveApplyButtonState.none
                                   ? () async {
                                       if (File(modManAppliedModsJsonPath).existsSync()) {
                                         await quickModsReapply(context);
-                                        setState(() {});
                                       } else {
                                         await quickModsRemoval(context);
-                                        Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('apply');
+                                        saveApplyButtonState.value = SaveApplyButtonState.apply;
                                       }
+                                      setState(() {});
                                     }
                                   : null,
                               child: Row(

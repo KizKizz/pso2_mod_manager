@@ -4,9 +4,11 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
 import 'package:pso2_mod_manager/classes/csv_item_class.dart';
+import 'package:pso2_mod_manager/classes/enum_classes.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
@@ -142,8 +144,7 @@ List<String> defaultCategoryDirsToIgnoreQuickSwapApply = [
 //   'アウターウェア', //15
 //   'セットウェア' //16
 // ];
-bool isModViewModsApplying = false;
-bool isModViewModsRemoving = false;
+final modViewModsApplyRemoving = signal<bool>(false);
 List<ModFile> startupReappliedModFiles = [];
 List<Widget> previewDialogImages = [];
 String previewDialogModName = '';
@@ -194,3 +195,5 @@ bool gameguardAnticheat = true;
 List<CsvItem> quickApplyItemList = [];
 bool itemsWithNewModsOnTop = false;
 bool newModsOnTop = false;
+bool markModdedItem = false;
+final saveApplyButtonState = signal<SaveApplyButtonState>(SaveApplyButtonState.none);

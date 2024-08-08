@@ -57,6 +57,7 @@ import 'package:pso2_mod_manager/widgets/item_icons_carousel.dart';
 import 'package:pso2_mod_manager/widgets/preview_hover_panel.dart';
 import 'package:pso2_mod_manager/widgets/snackbar.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
+import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
@@ -355,7 +356,7 @@ class _ModViewState extends State<ModView> {
                                   ),
                                   // swap all
                                   Visibility(
-                                    visible: !isModViewModsApplying && !defaultCategoryDirsToIgnoreQuickSwapApply.contains(modViewItem.value!.category),
+                                    visible: !modViewModsApplyRemoving.watch(context) && !defaultCategoryDirsToIgnoreQuickSwapApply.contains(modViewItem.value!.category),
                                     child: InkWell(
                                       onTap: () async {
                                         swapAllDialog(context, modViewItem.value!);
@@ -842,35 +843,27 @@ class _ModViewState extends State<ModView> {
                                                     ]),
 
                                               //normal
-                                              if (curMod.submods.length == 1 && !isModViewItemListExpanded[modIndex] && !context.watch<StateProvider>().setsWindowVisible ||
-                                                  isModViewFromApplied && curMod.submods.length == 1 && !isModViewItemListExpanded[modIndex])
-                                                Padding(
+                                              Visibility(
+                                                visible: curMod.submods.length == 1 && !isModViewItemListExpanded[modIndex] && !context.watch<StateProvider>().setsWindowVisible ||
+                                                    isModViewFromApplied && curMod.submods.length == 1 && !isModViewItemListExpanded[modIndex],
+                                                child: Padding(
                                                   padding: const EdgeInsets.only(left: 5),
                                                   child: Wrap(
                                                     crossAxisAlignment: WrapCrossAlignment.center,
                                                     runAlignment: WrapAlignment.center,
                                                     spacing: 0,
                                                     children: [
-                                                      //unapply button
-                                                      if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus) != -1)
-                                                        UnApplyModsButton(curItem: modViewItem.value, curMod: curMod, curSubmod: curMod.submods.first),
-                                                      if (curMod.submods.first.modFiles.indexWhere((element) => !element.applyStatus) != -1)
-                                                        ApplyModsButton(curItem: modViewItem.value, curMod: curMod, curSubmod: curMod.submods.first),
+                                                      //apply unapply button
+                                                      ApplyRemoveModsButton(curItem: modViewItem.value, curMod: curMod, curSubmod: curMod.submods.first),
 
                                                       //quick apply
                                                       Visibility(
-                                                        visible: !isModViewModsApplying && !defaultCategoryDirsToIgnoreQuickSwapApply.contains(modViewItem.value!.category),
+                                                        visible: !defaultCategoryDirsToIgnoreQuickSwapApply.contains(modViewItem.value!.category),
                                                         child: MenuAnchor(
                                                             builder: (BuildContext context, MenuController controller, Widget? child) {
                                                               return ModManTooltip(
                                                                 message: curLangText!.uiSwapThisModToSelectedItemInList,
                                                                 child: InkWell(
-                                                                  child: const Stack(
-                                                                    alignment: Alignment.bottomRight,
-                                                                    children: [
-                                                                      Icon(Icons.arrow_drop_down),
-                                                                    ],
-                                                                  ),
                                                                   onHover: (value) {
                                                                     if (value) {
                                                                       previewDismiss = true;
@@ -879,13 +872,16 @@ class _ModViewState extends State<ModView> {
                                                                     }
                                                                     setState(() {});
                                                                   },
-                                                                  onTap: () {
-                                                                    if (controller.isOpen) {
-                                                                      controller.close();
-                                                                    } else {
-                                                                      controller.open();
-                                                                    }
-                                                                  },
+                                                                  onTap: !modViewModsApplyRemoving.watch(context)
+                                                                      ? () {
+                                                                          if (controller.isOpen) {
+                                                                            controller.close();
+                                                                          } else {
+                                                                            controller.open();
+                                                                          }
+                                                                        }
+                                                                      : null,
+                                                                  child: Icon(Icons.arrow_drop_down, color: modViewModsApplyRemoving.watch(context) ? Theme.of(context).disabledColor : null),
                                                                 ),
                                                               );
                                                             },
@@ -1325,6 +1321,7 @@ class _ModViewState extends State<ModView> {
                                                     ],
                                                   ),
                                                 ),
+                                              ),
 
                                               //ModSet
                                               if (!isModViewFromApplied && !isModViewItemListExpanded[modIndex] && modViewModSetSubModIndex != -1 && context.watch<StateProvider>().setsWindowVisible)
@@ -1353,27 +1350,16 @@ class _ModViewState extends State<ModView> {
                                                         ),
 
                                                       //Add-Remove button
-                                                      if (modViewModSetSubModIndex != -1 &&
-                                                          curMod.submods[modViewModSetSubModIndex].modFiles.indexWhere((element) => element.applyStatus) != -1 &&
-                                                          curMod.submods.length == 1)
-                                                        UnApplyModsButton(curItem: modViewItem.value, curMod: curMod, curSubmod: curMod.submods[modViewModSetSubModIndex]),
-
-                                                      if (modViewModSetSubModIndex != -1 &&
-                                                          curMod.submods[modViewModSetSubModIndex].modFiles.indexWhere((element) => !element.applyStatus) != -1 &&
-                                                          curMod.submods.length == 1)
-                                                        ApplyModsButton(curItem: modViewItem.value, curMod: curMod, curSubmod: curMod.submods[modViewModSetSubModIndex]),
+                                                      ApplyRemoveModsButton(curItem: modViewItem.value, curMod: curMod, curSubmod: curMod.submods[modViewModSetSubModIndex]),
 
                                                       //quick apply
                                                       Visibility(
-                                                        visible: !isModViewModsApplying && !defaultCategoryDirsToIgnoreQuickSwapApply.contains(modViewItem.value!.category),
+                                                        visible: !defaultCategoryDirsToIgnoreQuickSwapApply.contains(modViewItem.value!.category),
                                                         child: MenuAnchor(
                                                             builder: (BuildContext context, MenuController controller, Widget? child) {
                                                               return ModManTooltip(
                                                                 message: curLangText!.uiSwapThisModToSelectedItemInList,
                                                                 child: InkWell(
-                                                                  child: const Icon(
-                                                                    Icons.arrow_drop_down,
-                                                                  ),
                                                                   onHover: (value) {
                                                                     if (value) {
                                                                       previewDismiss = true;
@@ -1382,13 +1368,19 @@ class _ModViewState extends State<ModView> {
                                                                     }
                                                                     setState(() {});
                                                                   },
-                                                                  onTap: () {
-                                                                    if (controller.isOpen) {
-                                                                      controller.close();
-                                                                    } else {
-                                                                      controller.open();
-                                                                    }
-                                                                  },
+                                                                  onTap: !modViewModsApplyRemoving.watch(context)
+                                                                      ? () {
+                                                                          if (controller.isOpen) {
+                                                                            controller.close();
+                                                                          } else {
+                                                                            controller.open();
+                                                                          }
+                                                                        }
+                                                                      : null,
+                                                                  child: Icon(
+                                                                    Icons.arrow_drop_down,
+                                                                    color: modViewModsApplyRemoving.watch(context) ? Theme.of(context).disabledColor : null,
+                                                                  ),
                                                                 ),
                                                               );
                                                             },
@@ -1916,23 +1908,17 @@ class _ModViewState extends State<ModView> {
                                                                     if (curSubmod.applyLocations!.isNotEmpty) const Icon(Icons.location_on_outlined),
 
                                                                     //Apply button in submod
-                                                                    //remove button
-                                                                    if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) != -1)
-                                                                      UnApplyModsButton(curItem: modViewItem.value, curMod: curMod, curSubmod: curSubmod),
-                                                                    if (curSubmod.modFiles.indexWhere((element) => !element.applyStatus) != -1)
-                                                                      ApplyModsButton(curItem: modViewItem.value, curMod: curMod, curSubmod: curSubmod),
+                                                                    //add remove mods button
+                                                                    ApplyRemoveModsButton(curItem: modViewItem.value, curMod: curMod, curSubmod: curSubmod),
 
                                                                     // quick apply
                                                                     Visibility(
-                                                                      visible: !isModViewModsApplying && !defaultCategoryDirsToIgnoreQuickSwapApply.contains(modViewItem.value!.category),
+                                                                      visible: !defaultCategoryDirsToIgnoreQuickSwapApply.contains(modViewItem.value!.category),
                                                                       child: MenuAnchor(
                                                                           builder: (BuildContext context, MenuController controller, Widget? child) {
                                                                             return ModManTooltip(
                                                                               message: curLangText!.uiSwapThisModToSelectedItemInList,
                                                                               child: InkWell(
-                                                                                child: const Icon(
-                                                                                  Icons.arrow_drop_down,
-                                                                                ),
                                                                                 onHover: (value) {
                                                                                   if (value) {
                                                                                     previewDismiss = true;
@@ -1941,13 +1927,19 @@ class _ModViewState extends State<ModView> {
                                                                                   }
                                                                                   setState(() {});
                                                                                 },
-                                                                                onTap: () {
-                                                                                  if (controller.isOpen) {
-                                                                                    controller.close();
-                                                                                  } else {
-                                                                                    controller.open();
-                                                                                  }
-                                                                                },
+                                                                                onTap: !modViewModsApplyRemoving.watch(context)
+                                                                                    ? () {
+                                                                                        if (controller.isOpen) {
+                                                                                          controller.close();
+                                                                                        } else {
+                                                                                          controller.open();
+                                                                                        }
+                                                                                      }
+                                                                                    : null,
+                                                                                child: Icon(
+                                                                                  Icons.arrow_drop_down,
+                                                                                  color: modViewModsApplyRemoving.watch(context) ? Theme.of(context).disabledColor : null,
+                                                                                ),
                                                                               ),
                                                                             );
                                                                           },
@@ -2408,10 +2400,11 @@ class _ModViewState extends State<ModView> {
                                                                           }
                                                                           if (hovering && previewWindowVisible && hoveringOnModFile) {
                                                                             previewModName = curModFile.modFileName;
+                                                                            previewImages = curModFile.getPreviewWidgets();
                                                                           } else if (previewWindowVisible && hoveringOnSubmod && !hoveringOnModFile) {
                                                                             previewModName = curSubmod.submodName;
+                                                                            previewImages = curSubmod.getPreviewWidgets();
                                                                           }
-                                                                          previewImages = curSubmod.getPreviewWidgets();
                                                                         },
                                                                         child: InfoPopupWidget(
                                                                             horizontalDirection: 'right',
@@ -2430,100 +2423,114 @@ class _ModViewState extends State<ModView> {
                                                                                 runAlignment: WrapAlignment.center,
                                                                                 spacing: 5,
                                                                                 children: [
-                                                                                  //Add-Remove button
-                                                                                  if (!curModFile.applyStatus)
-                                                                                    ModManTooltip(
-                                                                                      message: uiInTextArg(curLangText!.uiApplyXToTheGame, curModFile.modFileName),
-                                                                                      child: InkWell(
-                                                                                        child: const Icon(
-                                                                                          Icons.add,
+                                                                                  //Apply remove modfiles
+                                                                                  Stack(
+                                                                                    children: [
+                                                                                      Visibility(
+                                                                                        visible: modViewModsApplyRemoving.watch(context),
+                                                                                        child: const SizedBox(
+                                                                                          width: 20,
+                                                                                          height: 20,
+                                                                                          child: CircularProgressIndicator(),
                                                                                         ),
-                                                                                        onTap: () async {
-                                                                                          //apply mod files
-                                                                                          if (await originalFilesCheck(context, [curModFile])) {
-                                                                                            modFilesApply(context, [curModFile]).then((value) async {
-                                                                                              if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
-                                                                                                curSubmod.applyDate = DateTime.now();
-                                                                                                modViewItem.value!.applyDate = DateTime.now();
-                                                                                                curMod.applyDate = DateTime.now();
-                                                                                                curSubmod.setApplyState(true);
-                                                                                                curSubmod.isNew = false;
-                                                                                                curMod.setApplyState(true);
-                                                                                                curMod.isNew = false;
-                                                                                                modViewItem.value!.setApplyState(true);
-                                                                                                if (modViewMods.where((element) => element.isNew).isEmpty) {
-                                                                                                  modViewItem.value!.isNew = false;
-                                                                                                }
-                                                                                                if (autoAqmInject) await aqmInjectionOnModsApply(context, curSubmod);
-                                                                                                if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
-                                                                                                  await applyOverlayedIcon(context, modViewItem.value!);
-                                                                                                }
-                                                                                                Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('extra');
-                                                                                                List<ModFile> appliedModFiles = value;
-                                                                                                String fileAppliedText = '';
-                                                                                                for (var element in appliedModFiles) {
-                                                                                                  if (fileAppliedText.isEmpty) {
-                                                                                                    fileAppliedText = uiInTextArgs(
-                                                                                                        curLangText!.uiSuccessfullyAppliedXInY, ['<x>', '<y>'], [curMod.modName, curSubmod.submodName]);
+                                                                                      ),
+                                                                                      //Add-Remove button
+                                                                                      if (!curModFile.applyStatus && !modViewModsApplyRemoving.watch(context))
+                                                                                        ModManTooltip(
+                                                                                          message: uiInTextArg(curLangText!.uiApplyXToTheGame, curModFile.modFileName),
+                                                                                          child: InkWell(
+                                                                                            child: const Icon(
+                                                                                              Icons.add,
+                                                                                            ),
+                                                                                            onTap: () async {
+                                                                                              //apply mod files
+                                                                                              if (await originalFilesCheck(context, [curModFile])) {
+                                                                                                modViewModsApplyRemoving.value = true;
+                                                                                                modFilesApply(context, [curModFile]).then((value) async {
+                                                                                                  if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
+                                                                                                    curSubmod.applyDate = DateTime.now();
+                                                                                                    modViewItem.value!.applyDate = DateTime.now();
+                                                                                                    curMod.applyDate = DateTime.now();
+                                                                                                    curSubmod.setApplyState(true);
+                                                                                                    curSubmod.isNew = false;
+                                                                                                    curMod.setApplyState(true);
+                                                                                                    curMod.isNew = false;
+                                                                                                    modViewItem.value!.setApplyState(true);
+                                                                                                    if (modViewMods.where((element) => element.isNew).isEmpty) {
+                                                                                                      modViewItem.value!.isNew = false;
+                                                                                                    }
+                                                                                                    if (autoAqmInject) await aqmInjectionOnModsApply(context, curSubmod);
+                                                                                                    if (markModdedItem) {
+                                                                                                      await applyOverlayedIcon(context, modViewItem.value!);
+                                                                                                    }
+                                                                                                    saveApplyButtonState.value = SaveApplyButtonState.extra;
+                                                                                                    List<ModFile> appliedModFiles = value;
+                                                                                                    String fileAppliedText = '';
+                                                                                                    for (var element in appliedModFiles) {
+                                                                                                      if (fileAppliedText.isEmpty) {
+                                                                                                        fileAppliedText = uiInTextArgs(curLangText!.uiSuccessfullyAppliedXInY, ['<x>', '<y>'],
+                                                                                                            [curMod.modName, curSubmod.submodName]);
+                                                                                                      }
+                                                                                                      fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                                                                    }
+                                                                                                    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                                                        context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
                                                                                                   }
-                                                                                                  fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
-                                                                                                }
-                                                                                                ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                                                    context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
-                                                                                              }
 
-                                                                                              saveModdedItemListToJson();
-                                                                                              setState(() {});
-                                                                                            });
-                                                                                          }
-                                                                                          setState(() {});
-                                                                                        },
-                                                                                      ),
-                                                                                    ),
-                                                                                  if (curModFile.applyStatus)
-                                                                                    ModManTooltip(
-                                                                                      message: uiInTextArg(curLangText!.uiRemoveXFromTheGame, curModFile.modFileName),
-                                                                                      child: InkWell(
-                                                                                        child: const Icon(
-                                                                                          Icons.remove,
+                                                                                                  saveModdedItemListToJson();
+                                                                                                  modViewModsApplyRemoving.value = false;
+                                                                                                });
+                                                                                              }
+                                                                                            },
+                                                                                          ),
                                                                                         ),
-                                                                                        onTap: () async {
-                                                                                          //status
-                                                                                          restoreOriginalFilesToTheGame(context, [curModFile]).then((value) async {
-                                                                                            if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
-                                                                                              curSubmod.setApplyState(false);
-                                                                                              if (curSubmod.cmxApplied!) {
-                                                                                                bool status = await cmxModRemoval(curSubmod.cmxStartPos!, curSubmod.cmxEndPos!);
-                                                                                                if (status) {
-                                                                                                  curSubmod.cmxApplied = false;
-                                                                                                  curSubmod.cmxStartPos = -1;
-                                                                                                  curSubmod.cmxEndPos = -1;
+                                                                                      if (curModFile.applyStatus && !modViewModsApplyRemoving.watch(context))
+                                                                                        ModManTooltip(
+                                                                                          message: uiInTextArg(curLangText!.uiRemoveXFromTheGame, curModFile.modFileName),
+                                                                                          child: InkWell(
+                                                                                            child: const Icon(
+                                                                                              Icons.remove,
+                                                                                            ),
+                                                                                            onTap: () async {
+                                                                                              //status
+                                                                                              restoreOriginalFilesToTheGame(context, [curModFile]).then((value) async {
+                                                                                                modViewModsApplyRemoving.value = true;
+                                                                                                if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                                  curSubmod.setApplyState(false);
+                                                                                                  if (curSubmod.cmxApplied!) {
+                                                                                                    bool status = await cmxModRemoval(curSubmod.cmxStartPos!, curSubmod.cmxEndPos!);
+                                                                                                    if (status) {
+                                                                                                      curSubmod.cmxApplied = false;
+                                                                                                      curSubmod.cmxStartPos = -1;
+                                                                                                      curSubmod.cmxEndPos = -1;
+                                                                                                    }
+                                                                                                  }
+                                                                                                  if (autoAqmInject) {
+                                                                                                    await aqmInjectionRemovalSilent(context, curSubmod);
+                                                                                                  }
                                                                                                 }
-                                                                                              }
-                                                                                              if (autoAqmInject) {
-                                                                                                await aqmInjectionRemovalSilent(context, curSubmod);
-                                                                                              }
-                                                                                            }
-                                                                                            if (curMod.submods.indexWhere((element) => element.applyStatus) == -1) {
-                                                                                              curMod.setApplyState(false);
-                                                                                            }
-                                                                                            if (modViewItem.value!.mods.indexWhere((element) => element.applyStatus) == -1) {
-                                                                                              modViewItem.value!.setApplyState(false);
-                                                                                              if (modViewItem.value!.backupIconPath!.isNotEmpty) {
-                                                                                                await restoreOverlayedIcon(modViewItem.value!);
-                                                                                              }
-                                                                                            }
+                                                                                                if (curMod.submods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                                  curMod.setApplyState(false);
+                                                                                                }
+                                                                                                if (modViewItem.value!.mods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                                  modViewItem.value!.setApplyState(false);
+                                                                                                  if (modViewItem.value!.backupIconPath!.isNotEmpty) {
+                                                                                                    await restoreOverlayedIcon(modViewItem.value!);
+                                                                                                  }
+                                                                                                }
 
-                                                                                            await filesRestoredMessage(mainPageScaffoldKey.currentContext, [curModFile], value);
-                                                                                            if (moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isEmpty) {
-                                                                                              Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('');
-                                                                                            }
-                                                                                            saveModdedItemListToJson();
-                                                                                            setState(() {});
-                                                                                          });
-                                                                                        },
-                                                                                      ),
-                                                                                    ),
+                                                                                                await filesRestoredMessage(mainPageScaffoldKey.currentContext, [curModFile], value);
+                                                                                                if (moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isEmpty) {
+                                                                                                  saveApplyButtonState.value = SaveApplyButtonState.none;
+                                                                                                }
+                                                                                                saveModdedItemListToJson();
+                                                                                                modViewModsApplyRemoving.value = false;
+                                                                                              });
+                                                                                            },
+                                                                                          ),
+                                                                                        ),
+                                                                                    ],
+                                                                                  ),
 
                                                                                   //Remove from current Set
                                                                                   Visibility(
@@ -2711,7 +2718,7 @@ class _ModViewState extends State<ModView> {
                     Item? quickItem;
                     Mod? quickMod;
                     SubMod? quickSubmod;
-                    isModViewModsApplying = true;
+                    modViewModsApplyRemoving.value = true;
                     setState(() {});
                     //precheck
                     for (var cateType in moddedItemsList) {
@@ -2813,10 +2820,10 @@ class _ModViewState extends State<ModView> {
 
                           await applyModsToTheGame(context, quickItem!, quickMod!, quickSubmod);
 
-                          if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
+                          if (markModdedItem) {
                             await applyOverlayedIcon(context, quickItem);
                           }
-                          Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('extra');
+                          saveApplyButtonState.value = SaveApplyButtonState.extra;
                         }
                         setState(() {});
                       });

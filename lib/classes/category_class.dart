@@ -21,6 +21,10 @@ class Category with ChangeNotifier {
     notifyListeners();
   }
 
+  void refresh() {
+    notifyListeners();
+  }
+
   int getNumOfAppliedItems() {
     return items.where((e) => e.applyStatus).length;
   }
