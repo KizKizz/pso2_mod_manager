@@ -208,6 +208,7 @@ Future<int> applyAllGetOgPaths(List<CategoryType> moddedList) async {
 }
 
 Future<void> applyAllCallBack(context) async {
+  modViewModsApplyRemoving.value = true;
   //Provider.of<StateProvider>(context, listen: false).applyAllProgressCounterReset();
   for (var cateType in moddedItemsList) {
     for (var cate in cateType.categories) {
@@ -225,6 +226,7 @@ Future<void> applyAllCallBack(context) async {
     }
   }
   isApplyAllApplied = true;
+  modViewModsApplyRemoving.value = false;
 }
 
 Future<String> applyAllAvailableMods(context, Item item, Mod mod, SubMod submod) async {
