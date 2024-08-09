@@ -1,6 +1,6 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.8.11",
+    "version": "2.8.12",
     "description": [
         "Fixed a bug with Mod Sets when applying mods",
         "Removed fixed mod preview panel",

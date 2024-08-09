@@ -256,7 +256,7 @@ List<Widget> modSetsMenuButtons(context, Item item, Mod mod, SubMod submod) {
         if (newSetName.isNotEmpty) {
           ModSet newSet = ModSet(newSetName, 0, true, false, DateTime.now(), []);
 
-          newSet.setItems.add(item);
+          newSet.addItem(item);
           setModSetNameToSingleItem(newSet.setName, item, mod, submod, submod.modFiles);
           modSetList.add(newSet);
           modSetList.sort(
@@ -318,7 +318,7 @@ List<Widget> modSetsMenuButtons(context, Item item, Mod mod, SubMod submod) {
 
           //add to set
           if (readyToAdd) {
-            set.setItems.add(item);
+            set.addItem(item);
             setModSetNameToSingleItem(set.setName, item, mod, submod, submod.modFiles);
             saveSetListToJson();
             saveModdedItemListToJson();
@@ -381,7 +381,7 @@ List<Widget> modSetsMenuItemButtons(context, List<ModFile> selectedModFiles) {
               for (var submod in mod.submods.where((element) => matchedSubmods.where((e) => e.location == element.location).isNotEmpty)) {
                 setModSetNameToSingleItem(newSet.setName, item, mod, submod, selectedModFiles);
                 if (newSet.setItems.where((element) => element.location == item.location).isEmpty) {
-                  newSet.setItems.add(item);
+                  newSet.addItem(item);
                 }
               }
             }
@@ -485,7 +485,7 @@ List<Widget> modSetsMenuItemButtons(context, List<ModFile> selectedModFiles) {
 
                 //add to set
                 if (readyToAdd) {
-                  set.setItems.add(item);
+                  set.addItem(item);
                   setModSetNameToSingleItem(set.setName, item, mod, submod, selectedModFiles);
                   saveSetListToJson();
                   saveModdedItemListToJson();
