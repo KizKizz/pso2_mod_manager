@@ -254,7 +254,7 @@ class _ModSetListState extends State<ModSetList> {
                                                       }
                                                     }
                                                   }
-        
+
                                                   restoreOriginalFilesToTheGame(context, allAppliedModFiles).then((value) async {
                                                     previewImages.clear();
                                                     // videoPlayer.remove(0);
@@ -289,7 +289,7 @@ class _ModSetListState extends State<ModSetList> {
                                                         }
                                                       }
                                                     }
-        
+
                                                     for (var item in curSet.setItems) {
                                                       if (item.mods.indexWhere((element) => element.applyStatus) == -1) {
                                                         item.setApplyState(false);
@@ -298,7 +298,7 @@ class _ModSetListState extends State<ModSetList> {
                                                         }
                                                       }
                                                     }
-        
+
                                                     await filesRestoredMessage(mainPageScaffoldKey.currentContext, allAppliedModFiles, value);
                                                     if (moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isEmpty) {
                                                       previewModName = '';
@@ -317,7 +317,7 @@ class _ModSetListState extends State<ModSetList> {
                                         ),
                                       ],
                                     ),
-        
+
                                   //Apply button in submod
                                   if (curSet.setItems.indexWhere((element) => element.mods.where((e) => e.isSet && e.setNames.contains(curSet.setName) && e.applyStatus == false).isNotEmpty) != -1)
                                     Stack(
@@ -337,19 +337,19 @@ class _ModSetListState extends State<ModSetList> {
                                             child: InkWell(
                                               onTap: () async {
                                                 modViewModsApplyRemoving.value = true;
-                                                setState(() {});
+                                                // setState(() {});
                                                 Future.delayed(const Duration(milliseconds: applyButtonsDelay), () async {
                                                   for (var item in curSet.setItems) {
-                                                    for (var mod in item.mods) {
-                                                      for (var submod in mod.submods) {
+                                                    for (var mod in item.mods.where((e) => e.isSet && e.setNames.contains(curSet.setName))) {
+                                                      for (var submod in mod.submods.where((e) => e.isSet && e.setNames.contains(curSet.setName))) {
                                                         //apply mod files
                                                         if (await originalFilesCheck(context, submod.modFiles)) {
                                                           //apply auto radius removal if on
                                                           if (removeBoundaryRadiusOnModsApply) await removeBoundaryOnModsApply(context, submod);
                                                           if (autoAqmInject) await aqmInjectionOnModsApply(context, submod);
-        
+
                                                           await applyModsToTheGame(context, item, mod, submod);
-        
+
                                                           if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
                                                             await applyOverlayedIcon(context, item);
                                                           }
@@ -357,11 +357,12 @@ class _ModSetListState extends State<ModSetList> {
                                                         }
                                                       }
                                                     }
+                                                    modViewModsApplyRemoving.value = true;
                                                   }
-        
+
                                                   // List<ModFile> appliedModFiles = value;
                                                   // String fileAppliedText = '';
-        
+
                                                   // for (var element in appliedModFiles.where((e) => e.applyStatus)) {
                                                   //   if (fileAppliedText.isEmpty) {
                                                   //     fileAppliedText = uiInTextArg(curLangText!.uiSuccessfullyAppliedX, curSet.setName);
@@ -376,6 +377,7 @@ class _ModSetListState extends State<ModSetList> {
                                                   modViewModsApplyRemoving.value = false;
                                                   saveModdedItemListToJson();
                                                   setState(() {});
+
                                                   // });
                                                   //   }
                                                   //   setState(() {});
@@ -389,7 +391,7 @@ class _ModSetListState extends State<ModSetList> {
                                         ),
                                       ],
                                     ),
-        
+
                                   //Export All
                                   ModManTooltip(
                                     message: curLangText!.uiExportAllMods,
@@ -410,7 +412,7 @@ class _ModSetListState extends State<ModSetList> {
                                       ),
                                     ),
                                   ),
-        
+
                                   //Rename
                                   ModManTooltip(
                                     message: curLangText!.uiRenameThisSet,
@@ -426,7 +428,7 @@ class _ModSetListState extends State<ModSetList> {
                                       ),
                                     ),
                                   ),
-        
+
                                   //Delete
                                   ModManTooltip(
                                     message: uiInTextArg(curLangText!.uiHoldToRemoveXFromModMan, curSet.setName),
@@ -515,11 +517,11 @@ class _ModSetListState extends State<ModSetList> {
                                                   ? curItem.itemName
                                                   : curItem.itemName.replaceFirst('_', '*').replaceAll('_', '/')
                                               : curItem.itemName.replaceAll('_', '/');
-        
+
                                           for (var path in allPreviewImages) {
                                             previewImages.add(PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(curItem.itemName).last));
                                           }
-        
+
                                           for (var path in allPreviewVideos) {
                                             previewImages.add(PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(curItem.itemName).last));
                                           }
@@ -610,7 +612,9 @@ class _ModSetListState extends State<ModSetList> {
                                                                   message: uiInTextArg(
                                                                       curLangText!.uiOpenXInFileExplorer,
                                                                       curItem.category == defaultCategoryDirs[17]
-                                                                          ? curItem.itemName.split('_').isNotEmpty && curItem.itemName.split('_').first == 'it' && curItem.itemName.split('_')[1] == 'wp'
+                                                                          ? curItem.itemName.split('_').isNotEmpty &&
+                                                                                  curItem.itemName.split('_').first == 'it' &&
+                                                                                  curItem.itemName.split('_')[1] == 'wp'
                                                                               ? curItem.itemName
                                                                               : curItem.itemName.replaceFirst('_', '*').replaceAll('_', '/')
                                                                           : curItem.itemName.replaceAll('_', '/')),
@@ -623,14 +627,18 @@ class _ModSetListState extends State<ModSetList> {
                                                                   message: uiInTextArg(
                                                                       curLangText!.uiHoldToRemoveXFromThisSet,
                                                                       curItem.category == defaultCategoryDirs[17]
-                                                                          ? curItem.itemName.split('_').isNotEmpty && curItem.itemName.split('_').first == 'it' && curItem.itemName.split('_')[1] == 'wp'
+                                                                          ? curItem.itemName.split('_').isNotEmpty &&
+                                                                                  curItem.itemName.split('_').first == 'it' &&
+                                                                                  curItem.itemName.split('_')[1] == 'wp'
                                                                               ? curItem.itemName
                                                                               : curItem.itemName.replaceFirst('_', '*').replaceAll('_', '/')
                                                                           : curItem.itemName.replaceAll('_', '/')),
                                                                   child: InkWell(
                                                                     onLongPress: () async {
                                                                       String tempItemName = curItem.category == defaultCategoryDirs[17]
-                                                                          ? curItem.itemName.split('_').isNotEmpty && curItem.itemName.split('_').first == 'it' && curItem.itemName.split('_')[1] == 'wp'
+                                                                          ? curItem.itemName.split('_').isNotEmpty &&
+                                                                                  curItem.itemName.split('_').first == 'it' &&
+                                                                                  curItem.itemName.split('_')[1] == 'wp'
                                                                               ? curItem.itemName
                                                                               : curItem.itemName.replaceFirst('_', '*').replaceAll('_', '/')
                                                                           : curItem.itemName.replaceAll('_', '/');
@@ -731,21 +739,21 @@ class _ModSetListState extends State<ModSetList> {
                                                                                     mod.setApplyState(false);
                                                                                   }
                                                                                 }
-        
+
                                                                                 if (curItem.mods.indexWhere((element) => element.applyStatus) == -1) {
                                                                                   curItem.setApplyState(false);
                                                                                   if (curItem.backupIconPath!.isNotEmpty) {
                                                                                     await restoreOverlayedIcon(curItem);
                                                                                   }
                                                                                 }
-        
+
                                                                                 await filesRestoredMessage(mainPageScaffoldKey.currentContext, allAppliedModFiles[m], unappliedList);
                                                                                 if (moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isEmpty) {
                                                                                   previewModName = '';
                                                                                   previewImages.clear();
                                                                                   saveApplyButtonState.value = SaveApplyButtonState.none;
                                                                                 }
-        
+
                                                                                 modViewModsApplyRemoving.value = false;
                                                                                 saveModdedItemListToJson();
                                                                                 setState(() {});
@@ -771,15 +779,15 @@ class _ModSetListState extends State<ModSetList> {
                                                                           modFilesApply(context, allAppliedModFiles[m]).then((value) async {
                                                                             if (value.indexWhere((element) => element.applyStatus) != -1) {
                                                                               int curModIndex = curItem.mods.indexWhere((element) => element.modName == allAppliedModFiles[m].first.modName);
-                                                                              int curSubModIndex =
-                                                                                  curItem.mods[curModIndex].submods.indexWhere((element) => element.submodName == allAppliedModFiles[m].first.submodName);
+                                                                              int curSubModIndex = curItem.mods[curModIndex].submods
+                                                                                  .indexWhere((element) => element.submodName == allAppliedModFiles[m].first.submodName);
                                                                               curItem.mods[curModIndex].submods[curSubModIndex].setApplyState(true);
                                                                               curItem.mods[curModIndex].submods[curSubModIndex].isNew = false;
                                                                               curItem.mods[curModIndex].submods[curSubModIndex].applyDate = DateTime.now();
                                                                               curItem.mods[curModIndex].setApplyState(true);
                                                                               curItem.mods[curModIndex].isNew = false;
                                                                               curItem.mods[curModIndex].applyDate = DateTime.now();
-        
+
                                                                               curItem.setApplyState(true);
                                                                               if (curItem.mods.where((element) => element.isNew).isEmpty) {
                                                                                 curItem.isNew = false;
@@ -802,7 +810,7 @@ class _ModSetListState extends State<ModSetList> {
                                                                               saveApplyButtonState.value = SaveApplyButtonState.extra;
                                                                               setState(() {});
                                                                             }
-        
+
                                                                             saveModdedItemListToJson();
                                                                           });
                                                                         }
