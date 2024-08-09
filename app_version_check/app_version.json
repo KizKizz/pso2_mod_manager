@@ -1,10 +1,11 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.8.9",
+    "version": "2.8.10",
     "description": [
-        "Added Mod Set Export function",
-        "Fixed some bugs and improved Item/Mod swapping",
+        "Removed fixed mod preview panel",
+        "Code and performance optimization",
         "More bug fixes",
+        "固定MODプレビューパネルを削除",
         "MODセットエクスポート機能の追加",
         "いくつかのバグを修正し、アイテム/Modの交換を改善しました",
         "その他のバグ修正"

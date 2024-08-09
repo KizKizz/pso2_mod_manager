@@ -4,9 +4,11 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
 import 'package:pso2_mod_manager/classes/csv_item_class.dart';
+import 'package:pso2_mod_manager/classes/enum_classes.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
@@ -16,6 +18,7 @@ import 'package:media_kit_video/media_kit_video.dart';
 import 'package:pso2_mod_manager/classes/profile_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
+import 'package:signals/signals.dart';
 
 String curActiveLang = '';
 List<String> langDropDownList = [];
@@ -53,7 +56,7 @@ List<CategoryType> hiddenItemCategories = [];
 List<ModSet> modSetList = [];
 List<Item> allSetItems = [];
 // bool isModSetAdding = false;
-Item? modViewItem;
+// Item? modViewItem;
 bool isModViewListHidden = false;
 bool isModViewFromApplied = false;
 List<Widget> previewImages = [];
@@ -141,8 +144,7 @@ List<String> defaultCategoryDirsToIgnoreQuickSwapApply = [
 //   'アウターウェア', //15
 //   'セットウェア' //16
 // ];
-bool isModViewModsApplying = false;
-bool isModViewModsRemoving = false;
+final modViewModsApplyRemoving = signal<bool>(false);
 List<ModFile> startupReappliedModFiles = [];
 List<Widget> previewDialogImages = [];
 String previewDialogModName = '';
@@ -193,3 +195,5 @@ bool gameguardAnticheat = true;
 List<CsvItem> quickApplyItemList = [];
 bool itemsWithNewModsOnTop = false;
 bool newModsOnTop = false;
+bool markModdedItem = false;
+final saveApplyButtonState = signal<SaveApplyButtonState>(SaveApplyButtonState.none);

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
@@ -7,7 +8,7 @@ import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 part 'item_class.g.dart';
 
 @JsonSerializable()
-class Item {
+class Item with ChangeNotifier {
   Item(this.itemName, this.variantNames, this.icons, this.iconPath, this.overlayedIconPath, this.backupIconPath, this.isOverlayedIconApplied, this.category, this.location, this.applyStatus,
       this.applyDate, this.position, this.isFavorite, this.isSet, this.isNew, this.setNames, this.mods);
   String itemName;
@@ -29,6 +30,17 @@ class Item {
   List<String> setNames;
   List<Mod> mods;
 
+  void removeMod(Mod mod) {
+    mods.remove(mod);
+    notifyListeners();
+  }
+
+  void setApplyState(bool state) {
+    applyStatus = state;
+    notifyListeners();
+  }
+
+  // helpers
   List<String> getDistinctModFilePaths() {
     List<String> paths = [];
     for (var mod in mods) {

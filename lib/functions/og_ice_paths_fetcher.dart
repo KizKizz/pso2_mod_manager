@@ -30,7 +30,7 @@ Future<bool> originalFilesCheck(context, List<ModFile> modFiles) async {
       }
       modFile.ogLocations = tempOgFiles;
       if (modFile.ogLocations.isEmpty) {
-        isModViewModsApplying = false;
+        modViewModsApplyRemoving.value = false;
         ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${modFile.modFileName}', 3000));
         // return false;
       }

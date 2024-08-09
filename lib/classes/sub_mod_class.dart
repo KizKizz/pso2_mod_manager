@@ -1,12 +1,17 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:pso2_mod_manager/widgets/preview_image_stack.dart';
+import 'package:pso2_mod_manager/widgets/preview_video_stack.dart';
+// ignore: depend_on_referenced_packages
+import 'package:path/path.dart' as p;
 
 part 'sub_mod_class.g.dart';
 
 @JsonSerializable()
-class SubMod {
+class SubMod with ChangeNotifier{
   SubMod(this.submodName, this.modName, this.itemName, this.category, this.location, this.applyStatus, this.applyDate, this.position, this.isNew, this.isFavorite, this.isSet, this.hasCmx,
       this.cmxApplied, this.cmxStartPos, this.cmxEndPos, this.cmxFile, this.setNames, this.applyLocations, this.previewImages, this.previewVideos, this.appliedModFiles, this.modFiles);
   String submodName;
@@ -32,6 +37,23 @@ class SubMod {
   List<String> previewVideos;
   List<ModFile> appliedModFiles;
   List<ModFile> modFiles;
+
+  void setApplyState(bool state) {
+    applyStatus = state;
+    notifyListeners();
+  }
+
+  //helpers
+  List<Widget> getPreviewWidgets() {
+    List<Widget> widgets = [];
+    if (previewImages.isNotEmpty) {
+      widgets.addAll(previewImages.toSet().map((path) => PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(itemName).last)));
+    }
+    if (previewVideos.isNotEmpty) {
+      widgets.addAll(previewVideos.toSet().map((path) => PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(itemName).last)));
+    }
+    return widgets;
+  }
 
   List<String> getModFileNames() {
     List<String> names = [];

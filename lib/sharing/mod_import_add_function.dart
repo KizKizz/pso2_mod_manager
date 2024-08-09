@@ -8,13 +8,13 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/aqmInjection/aqm_inject_functions.dart';
 import 'package:pso2_mod_manager/boundary/mods_boundary_functions.dart';
 import 'package:pso2_mod_manager/classes/category_class.dart';
+import 'package:pso2_mod_manager/classes/enum_classes.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/mod_set_class.dart';
 import 'package:pso2_mod_manager/classes/mods_adder_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
-import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/apply_mods_functions.dart';
 import 'package:pso2_mod_manager/functions/icon_overlay.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
@@ -502,7 +502,7 @@ Future<(String, bool)> newImportModSetDialog(context) async {
 }
 
 Future<void> applyImportedMods(context, ModSet curSet) async {
-  isModViewModsApplying = true;
+  modViewModsApplyRemoving.value = true;
   for (var item in curSet.setItems) {
     for (var mod in item.mods) {
       for (var submod in mod.submods) {
@@ -517,64 +517,14 @@ Future<void> applyImportedMods(context, ModSet curSet) async {
           if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
             await applyOverlayedIcon(context, item);
           }
-          Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('extra');
+          saveApplyButtonState.value = SaveApplyButtonState.extra;
         }
       }
     }
   }
-  isModViewModsApplying = false;
+  modViewModsApplyRemoving.value = false;
   saveModdedItemListToJson();
   Navigator.pop(context);
-  // Future.delayed(const Duration(milliseconds: 200), () async {
-  // List<ModFile> allAppliedModFiles = [];
-  // for (var item in curSet.setItems.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
-  //   for (var mod in item.mods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
-  //     for (var submod in mod.submods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
-  //       allAppliedModFiles.addAll(submod.modFiles.where((element) => !element.applyStatus));
-  //     }
-  //   }
-  // }
-
-  //apply mod files
-  // if (await originalFilesCheck(context, allAppliedModFiles)) {
-  //   modFilesApply(context, allAppliedModFiles).then((value) async {
-  //     if (value.indexWhere((element) => element.applyStatus) != -1) {
-  //       for (var curItem in curSet.setItems) {
-  //         for (var curMod in curItem.mods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
-  //           for (var curSubmod in curMod.submods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
-  //             curSubmod.applyStatus = true;
-  //             curSubmod.isNew = false;
-  //             curSubmod.applyDate = DateTime.now();
-  //           }
-  //           curMod.applyStatus = true;
-  //           curMod.isNew = false;
-  //           curMod.applyDate = DateTime.now();
-  //         }
-  //         curItem.applyDate = DateTime.now();
-  //         curItem.applyStatus = true;
-  //         if (curItem.mods.where((element) => element.isNew).isEmpty) {
-  //           curItem.isNew = false;
-  //         }
-  //       }
-  //       List<ModFile> appliedModFiles = value;
-  //       String fileAppliedText = '';
-
-  //       for (var element in appliedModFiles.where((e) => e.applyStatus)) {
-  //         if (fileAppliedText.isEmpty) {
-  //           fileAppliedText = uiInTextArg(curLangText!.uiSuccessfullyAppliedX, curSet.setName);
-  //         }
-  //         if (!fileAppliedText.contains('${element.itemName} > ${element.modName} > ${element.submodName}\n')) {
-  //           fileAppliedText += '${element.itemName} > ${element.modName} > ${element.submodName}\n';
-  //         }
-  //       }
-  //       ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
-  //     }
-  //     isModViewModsApplying = false;
-  //     saveModdedItemListToJson();
-  //     Navigator.pop(context);
-  //   });
-  // }
-  // });
 }
 
 Future<void> applyingImportedModLoader(context, ModSet curSet) async {

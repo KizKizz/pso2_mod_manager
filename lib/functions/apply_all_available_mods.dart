@@ -9,7 +9,6 @@ import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/cmx/cmx_functions.dart';
-import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/icon_overlay.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/modfiles_apply.dart';
@@ -209,6 +208,7 @@ Future<int> applyAllGetOgPaths(List<CategoryType> moddedList) async {
 }
 
 Future<void> applyAllCallBack(context) async {
+  modViewModsApplyRemoving.value = true;
   //Provider.of<StateProvider>(context, listen: false).applyAllProgressCounterReset();
   for (var cateType in moddedItemsList) {
     for (var cate in cateType.categories) {
@@ -226,6 +226,7 @@ Future<void> applyAllCallBack(context) async {
     }
   }
   isApplyAllApplied = true;
+  modViewModsApplyRemoving.value = false;
 }
 
 Future<String> applyAllAvailableMods(context, Item item, Mod mod, SubMod submod) async {
@@ -246,11 +247,11 @@ Future<String> applyAllAvailableMods(context, Item item, Mod mod, SubMod submod)
         submod.applyDate = DateTime.now();
         item.applyDate = DateTime.now();
         mod.applyDate = DateTime.now();
-        submod.applyStatus = true;
+        submod.setApplyState(true);
         submod.isNew = false;
-        mod.applyStatus = true;
+        mod.setApplyState(true);
         mod.isNew = false;
-        item.applyStatus = true;
+        item.setApplyState(true);
         item.isNew = false;
         saveModdedItemListToJson();
       }

@@ -334,7 +334,10 @@ class TranslationText {
       uiSelected = 'Selected',
       uiNewMods = 'New Mods',
       uiNewMod = 'New Mod',
-      uiNew = 'New';
+      uiNew = 'New',
+      uiShowNew = 'Show New',
+      uiShowApplied = 'Show Applied',
+      uiUndo = 'Undo';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',

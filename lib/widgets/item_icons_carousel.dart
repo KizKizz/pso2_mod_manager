@@ -34,8 +34,7 @@ class ItemIconsCarousel extends StatelessWidget {
           floatingIndicator: true,
           enableInfiniteScroll: true,
           indicatorMargin: 2,
-          slideIndicator: CircularWaveSlideIndicator(
-              itemSpacing: 10, indicatorRadius: 3, currentIndicatorColor: Theme.of(context).colorScheme.primary, indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3))),
+          slideIndicator: CircularWaveSlideIndicator(slideIndicatorOptions: SlideIndicatorOptions(itemSpacing: 10, indicatorRadius: 4, currentIndicatorColor: Theme.of(context).colorScheme.primary, indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3)))),
       items: imgWidgetList,
     );
   }

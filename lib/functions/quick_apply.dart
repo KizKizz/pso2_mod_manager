@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/category_class.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
+import 'package:pso2_mod_manager/classes/enum_classes.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
@@ -19,8 +20,11 @@ import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
+import 'package:signals/signals_flutter.dart';
 
 Future<void> quickModsRemoval(context) async {
+  final isRunning = signal<bool>(false);
+  final status = signal<String>('');
   File appliedModsFile = File(modManAppliedModsJsonPath);
   if (!appliedModsFile.existsSync()) {
     await appliedModsFile.create();
@@ -50,20 +54,24 @@ Future<void> quickModsRemoval(context) async {
           }
         }
       }
-      Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('remove');
+      saveApplyButtonState.value = SaveApplyButtonState.remove;
       await showDialog(
           barrierDismissible: false,
           context: context,
           builder: (BuildContext context) {
             return StatefulBuilder(builder: (dialogContext, setState) {
               WidgetsBinding.instance.addPostFrameCallback((_) async {
-                if (Provider.of<StateProvider>(context, listen: false).quickApplyState == 'remove') {
+                if (!isRunning.value && saveApplyButtonState.value == SaveApplyButtonState.remove) {
+                  isRunning.value = true;
+                  modViewModsApplyRemoving.value = true;
                   List<ModFile> reappliedModFiles = await restoreOriginalFilesToTheGame(context, allModFilesInAppliedList);
+                  List<CategoryType> matchedTypes = [];
                   List<Item> matchedItems = [];
                   List<Mod> matchedMods = [];
                   List<SubMod> matchedSubmods = [];
                   for (var modFile in reappliedModFiles) {
                     var matchingTypes = moddedItemsList.where((element) => element.categories.where((cate) => cate.categoryName == modFile.category).isNotEmpty);
+                    matchedTypes.addAll(matchingTypes);
                     for (var type in matchingTypes) {
                       var matchingCates = type.categories.where((element) => modFile.location.contains(element.location));
                       for (var cate in matchingCates) {
@@ -94,63 +102,81 @@ Future<void> quickModsRemoval(context) async {
                       for (var submod in mod.submods.where((element) => matchedSubmods.where((e) => e.location == element.location).isNotEmpty)) {
                         if (submod.applyStatus) {
                           // unappliedFileNames += '${item.itemName} > ${mod.modName} > ${submod.submodName}\n';
-                          submod.applyStatus = false;
+                          submod.setApplyState(false);
                           submod.applyDate = DateTime(0);
                           previewImages.clear();
                           //videoPlayer.remove(0);
                           previewModName = '';
+                          status.value += '${item.category} > ${item.itemName} > ${mod.modName} > ${submod.submodName}\n';
                         }
 
                         if (mod.submods.where((element) => element.applyStatus).isEmpty) {
-                          mod.applyStatus = false;
+                          mod.setApplyState(false);
                           mod.applyDate = DateTime(0);
                         }
                         if (item.mods.where((element) => element.applyStatus).isEmpty) {
-                          item.applyStatus = false;
                           item.applyDate = DateTime(0);
                           if (item.isOverlayedIconApplied!) {
                             await restoreOverlayedIcon(item);
                           }
+                          item.setApplyState(false);
                         }
                       }
                     }
                   }
 
-                  saveModdedItemListToJson();
-                  if (moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isEmpty && Provider.of<StateProvider>(context, listen: false).quickApplyState.isNotEmpty) {
-                    Navigator.pop(context);
+                  for (var type in matchedTypes) {
+                    type.refresh();
                   }
+
+                  saveModdedItemListToJson();
+                  if (moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isEmpty && saveApplyButtonState.value != SaveApplyButtonState.none) {
+                    // Navigator.pop(context);
+                  }
+                  isRunning.value = false;
+                  modViewModsApplyRemoving.value = false;
                 }
               });
               return AlertDialog(
-                  shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
-                  backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                  contentPadding: const EdgeInsets.all(10),
-                  content: ConstrainedBox(
-                    constraints: const BoxConstraints(minHeight: 250, minWidth: 250, maxHeight: double.infinity, maxWidth: double.infinity),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 30),
-                          child: Text(
-                            curLangText!.uiRemovingAllModsFromTheGame,
-                            style: const TextStyle(fontSize: 20),
-                          ),
+                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                titlePadding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+                title: Center(child: Text(!isRunning.watch(context) ? curLangText!.uiQuickRemoveAllMods : curLangText!.uiRemovingAllModsFromTheGame)),
+                contentPadding: const EdgeInsets.all(20),
+                content: ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 150, minWidth: 250, maxHeight: double.infinity, maxWidth: double.infinity),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Visibility(visible: isRunning.watch(context), child: const CircularProgressIndicator()),
+                      Visibility(visible: !isRunning.watch(context), child: Text(curLangText!.uiAllDone, style: const TextStyle(fontWeight: FontWeight.bold),)),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: Text(
+                          status.watch(context),
+                          textAlign: TextAlign.center,
                         ),
-                        const CircularProgressIndicator(),
-                        // Padding(
-                        //   padding: const EdgeInsets.only(top: 5),
-                        //   child: Text(
-                        //     context.watch<StateProvider>().boundaryEditProgressStatus,
-                        //     textAlign: TextAlign.center,
-                        //   ),
-                        // ),
-                      ],
-                    ),
-                  ));
+                      ),
+                    ],
+                  ),
+                ),
+                actionsAlignment: MainAxisAlignment.center,
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: ElevatedButton(
+                        onPressed: !isRunning.watch(context)
+                            ? () {
+                                isRunning.value = false;
+                                Navigator.pop(context, true);
+                              }
+                            : null,
+                        child: Text(curLangText!.uiReturn)),
+                  ),
+                ],
+              );
             });
           });
     }
@@ -158,6 +184,8 @@ Future<void> quickModsRemoval(context) async {
 }
 
 Future<void> quickModsReapply(context) async {
+  final isRunning = signal<bool>(false);
+  final status = signal<String>('');
   File appliedModsFile = File(modManAppliedModsJsonPath);
   if (appliedModsFile.existsSync()) {
     await showDialog(
@@ -167,7 +195,9 @@ Future<void> quickModsReapply(context) async {
           return StatefulBuilder(builder: (dialogContext, setState) {
             WidgetsBinding.instance.addPostFrameCallback((_) async {
               //Load list from json
-              if (File(modManAppliedModsJsonPath).existsSync()) {
+              if (!isRunning.value && File(modManAppliedModsJsonPath).existsSync()) {
+                modViewModsApplyRemoving.value = true;
+                isRunning.value = true;
                 List<CategoryType> structureFromJson = [];
                 String modSettingsFromJson = await File(modManAppliedModsJsonPath).readAsString();
                 if (modSettingsFromJson.isNotEmpty) {
@@ -201,20 +231,18 @@ Future<void> quickModsReapply(context) async {
                                 modFilesToReApply.add(matchingModFile);
                               }
                               await modFilesApply(context, modFilesToReApply);
-                              matchingSubmod.applyStatus = true;
+                              matchingSubmod.setApplyState(true);
                               matchingSubmod.applyDate = DateTime.now();
+                              status.value += '${cate.categoryName} > ${item.itemName} > ${mod.modName} > ${submod.submodName}\n';
                             }
-                            matchingMod.applyStatus = true;
+                            matchingMod.setApplyState(true);
                             matchingMod.applyDate = DateTime.now();
                           }
-                          matchingItem.applyStatus = true;
                           matchingItem.applyDate = DateTime.now();
-                          if (Provider.of<StateProvider>(context, listen: false).markModdedItem &&
-                              matchingItem.applyStatus &&
-                              matchingItem.icons.isNotEmpty &&
-                              !matchingItem.icons.contains('assets/img/placeholdersquare.png')) {
+                          if (markModdedItem && matchingItem.applyStatus && matchingItem.icons.isNotEmpty && !matchingItem.icons.contains('assets/img/placeholdersquare.png')) {
                             await applyOverlayedIcon(context, matchingItem);
                           }
+                          matchingItem.setApplyState(true);
                         }
                       }
                     }
@@ -222,40 +250,53 @@ Future<void> quickModsReapply(context) async {
                 }
 
                 saveModdedItemListToJson();
-                Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('');
-                File(modManAppliedModsJsonPath).deleteSync();
-                Navigator.pop(context);
+                saveApplyButtonState.value = SaveApplyButtonState.none;
+                if (File(modManAppliedModsJsonPath).existsSync()) File(modManAppliedModsJsonPath).deleteSync();
+                isRunning.value = false;
+                modViewModsApplyRemoving.value = false;
               }
+              // Navigator.pop(context);
             });
             return AlertDialog(
-                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
-                backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                contentPadding: const EdgeInsets.all(10),
-                content: ConstrainedBox(
-                  constraints: const BoxConstraints(minHeight: 250, minWidth: 250, maxHeight: double.infinity, maxWidth: double.infinity),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 30),
-                        child: Text(
-                          curLangText!.uiReApplyingAllModsBackToTheGame,
-                          style: const TextStyle(fontSize: 20),
-                        ),
+              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+              backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+              titlePadding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+              title: Center(child: Text(!isRunning.watch(context) ? curLangText!.uiQuickReapplyAllModsToTheGame : curLangText!.uiReApplyingAllModsBackToTheGame)),
+              contentPadding: const EdgeInsets.all(20),
+              content: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 150, minWidth: 250, maxHeight: double.infinity, maxWidth: double.infinity),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Visibility(visible: isRunning.watch(context), child: const CircularProgressIndicator()),
+                    Visibility(visible: !isRunning.watch(context), child: Text(curLangText!.uiAllDone, style: const TextStyle(fontWeight: FontWeight.bold),)),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: Text(
+                        status.watch(context),
+                        textAlign: TextAlign.center,
                       ),
-                      const CircularProgressIndicator(),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(top: 5),
-                      //   child: Text(
-                      //     context.watch<StateProvider>().boundaryEditProgressStatus,
-                      //     textAlign: TextAlign.center,
-                      //   ),
-                      // ),
-                    ],
-                  ),
-                ));
+                    ),
+                  ],
+                ),
+              ),
+              actionsAlignment: MainAxisAlignment.center,
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 0),
+                  child: ElevatedButton(
+                      onPressed: !isRunning.watch(context)
+                          ? () {
+                              isRunning.value = false;
+                              Navigator.pop(context, true);
+                            }
+                          : null,
+                      child: Text(curLangText!.uiReturn)),
+                ),
+              ],
+            );
           });
         });
   }

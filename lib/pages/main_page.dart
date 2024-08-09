@@ -17,7 +17,6 @@ import 'package:pso2_mod_manager/cmx/cmx_functions.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/app_update_dialog.dart';
-import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/checksum_check.dart';
 import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
@@ -29,6 +28,8 @@ import 'package:pso2_mod_manager/functions/player_item_data.dart';
 import 'package:pso2_mod_manager/functions/quick_apply.dart';
 import 'package:pso2_mod_manager/functions/text_input_uppercase.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/homepage/item_list.dart';
+import 'package:pso2_mod_manager/homepage/mod_view.dart';
 import 'package:pso2_mod_manager/itemsSwapper/items_swapper_popup.dart';
 import 'package:pso2_mod_manager/lineDuel/line_duel_selection.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
@@ -36,6 +37,7 @@ import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
+import 'package:pso2_mod_manager/homepage/home_page.dart';
 import 'package:pso2_mod_manager/pages/player_item_data_preload_page.dart';
 import 'package:pso2_mod_manager/pages/profiles_loading_page.dart';
 import 'package:pso2_mod_manager/sharing/mods_import.dart';
@@ -48,6 +50,7 @@ import 'package:pso2_mod_manager/widgets/snackbar.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:signals/signals_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
@@ -456,7 +459,7 @@ class _MainPageState extends State<MainPage> {
                                                       modManCurActiveProfile = 1;
                                                       prefs.setInt('modManCurActiveProfile', modManCurActiveProfile);
                                                       Provider.of<StateProvider>(context, listen: false).reloadProfileTrue();
-                                                      modViewItem = null;
+                                                      modViewItem.value = null;
                                                       ogModFilesReset();
                                                       Future.delayed(const Duration(milliseconds: 500), () {
                                                         setState(() {});
@@ -513,7 +516,7 @@ class _MainPageState extends State<MainPage> {
                                                       modManCurActiveProfile = 2;
                                                       prefs.setInt('modManCurActiveProfile', modManCurActiveProfile);
                                                       Provider.of<StateProvider>(context, listen: false).reloadProfileTrue();
-                                                      modViewItem = null;
+                                                      modViewItem.value = null;
                                                       ogModFilesReset();
                                                       Future.delayed(const Duration(milliseconds: 500), () {
                                                         setState(() {});
@@ -1261,36 +1264,36 @@ class _MainPageState extends State<MainPage> {
                           ),
 
                           //show hide preview panel
-                          ModManTooltip(
-                            message: curLangText!.uiPreviewShowHide,
-                            child: MaterialButton(
-                              height: 40,
-                              onPressed: (() async {
-                                final prefs = await SharedPreferences.getInstance();
-                                if (Provider.of<StateProvider>(context, listen: false).showPreviewPanel) {
-                                  prefs.setBool('showPreviewPanel', false);
-                                  Provider.of<StateProvider>(context, listen: false).showPreviewPanelSet(false);
-                                  showPreviewPanel = false;
-                                } else {
-                                  prefs.setBool('showPreviewPanel', true);
-                                  Provider.of<StateProvider>(context, listen: false).showPreviewPanelSet(true);
-                                  showPreviewPanel = true;
-                                }
-                                setState(() {});
-                              }),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.preview_outlined,
-                                    size: 18,
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Text(Provider.of<StateProvider>(context, listen: false).showPreviewPanel ? '${curLangText!.uiPreviewWindow}: ON' : '${curLangText!.uiPreviewWindow}: OFF',
-                                      style: const TextStyle(fontWeight: FontWeight.w400))
-                                ],
-                              ),
-                            ),
-                          ),
+                          // ModManTooltip(
+                          //   message: curLangText!.uiPreviewShowHide,
+                          //   child: MaterialButton(
+                          //     height: 40,
+                          //     onPressed: (() async {
+                          //       final prefs = await SharedPreferences.getInstance();
+                          //       if (Provider.of<StateProvider>(context, listen: false).showPreviewPanel) {
+                          //         prefs.setBool('showPreviewPanel', false);
+                          //         Provider.of<StateProvider>(context, listen: false).showPreviewPanelSet(false);
+                          //         showPreviewPanel = false;
+                          //       } else {
+                          //         prefs.setBool('showPreviewPanel', true);
+                          //         Provider.of<StateProvider>(context, listen: false).showPreviewPanelSet(true);
+                          //         showPreviewPanel = true;
+                          //       }
+                          //       setState(() {});
+                          //     }),
+                          //     child: Row(
+                          //       children: [
+                          //         const Icon(
+                          //           Icons.preview_outlined,
+                          //           size: 18,
+                          //         ),
+                          //         const SizedBox(width: 10),
+                          //         Text(Provider.of<StateProvider>(context, listen: false).showPreviewPanel ? '${curLangText!.uiPreviewWindow}: ON' : '${curLangText!.uiPreviewWindow}: OFF',
+                          //             style: const TextStyle(fontWeight: FontWeight.w400))
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
 
                           //Auto fetching item icon on startup
                           Padding(
@@ -2000,7 +2003,7 @@ class _MainPageState extends State<MainPage> {
                                         });
                                       });
                                       listsReloading = false;
-                                      modViewItem = null;
+                                      modViewItem.value = null;
                                       Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
                                     });
                                   });
@@ -2289,12 +2292,16 @@ class _MainPageState extends State<MainPage> {
                                       onPressed: (() async {
                                         if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
                                           isModViewListHidden = true;
+                                          isFavListVisible = false;
+                                          // modViewListVisible = false;
+                                          modViewItem.value = null;
                                           Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
                                           saveSetListToJson();
                                         } else {
                                           isModViewListHidden = false;
-                                          // modSetList = await modSetLoader();
-                                          // saveSetListToJson();
+                                          isFavListVisible = false;
+                                          // modViewListVisible = false;
+                                          modViewItem.value = null;
                                           saveModdedItemListToJson();
                                           Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
                                         }
@@ -2499,15 +2506,15 @@ class _MainPageState extends State<MainPage> {
                                 File(modManAppliedModsJsonPath).existsSync() ? curLangText!.uiReapplyAllRemovedModsBackToTheGame : curLangText!.uiRemoveAllModsFromTheGameAndSaveThemToReApplyLater,
                             child: MaterialButton(
                               color: Theme.of(context).colorScheme.primary.withBlue(180).withOpacity(0.6),
-                              onPressed: File(modManAppliedModsJsonPath).existsSync() || moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isNotEmpty
+                              onPressed: File(modManAppliedModsJsonPath).existsSync() || moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isNotEmpty || saveApplyButtonState.watch(context) != SaveApplyButtonState.none
                                   ? () async {
                                       if (File(modManAppliedModsJsonPath).existsSync()) {
                                         await quickModsReapply(context);
-                                        setState(() {});
                                       } else {
                                         await quickModsRemoval(context);
-                                        Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('apply');
+                                        saveApplyButtonState.value = SaveApplyButtonState.apply;
                                       }
+                                      setState(() {});
                                     }
                                   : null,
                               child: Row(
