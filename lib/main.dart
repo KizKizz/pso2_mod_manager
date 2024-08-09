@@ -365,12 +365,12 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       }
 
       //preview panel Check
-      showPreviewPanel = (prefs.getBool('showPreviewPanel') ?? false);
-      if (showPreviewPanel) {
-        Provider.of<StateProvider>(context, listen: false).showPreviewPanelSet(true);
-      } else {
-        Provider.of<StateProvider>(context, listen: false).showPreviewPanelSet(false);
-      }
+      // showPreviewPanel = (prefs.getBool('showPreviewPanel') ?? false);
+      // if (showPreviewPanel) {
+      //   Provider.of<StateProvider>(context, listen: false).showPreviewPanelSet(true);
+      // } else {
+      //   Provider.of<StateProvider>(context, listen: false).showPreviewPanelSet(false);
+      // }
 
       //overlay icon
       markModdedItem = (prefs.getBool('markModdedItemIcon') ?? true);

@@ -1264,36 +1264,36 @@ class _MainPageState extends State<MainPage> {
                           ),
 
                           //show hide preview panel
-                          ModManTooltip(
-                            message: curLangText!.uiPreviewShowHide,
-                            child: MaterialButton(
-                              height: 40,
-                              onPressed: (() async {
-                                final prefs = await SharedPreferences.getInstance();
-                                if (Provider.of<StateProvider>(context, listen: false).showPreviewPanel) {
-                                  prefs.setBool('showPreviewPanel', false);
-                                  Provider.of<StateProvider>(context, listen: false).showPreviewPanelSet(false);
-                                  showPreviewPanel = false;
-                                } else {
-                                  prefs.setBool('showPreviewPanel', true);
-                                  Provider.of<StateProvider>(context, listen: false).showPreviewPanelSet(true);
-                                  showPreviewPanel = true;
-                                }
-                                setState(() {});
-                              }),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.preview_outlined,
-                                    size: 18,
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Text(Provider.of<StateProvider>(context, listen: false).showPreviewPanel ? '${curLangText!.uiPreviewWindow}: ON' : '${curLangText!.uiPreviewWindow}: OFF',
-                                      style: const TextStyle(fontWeight: FontWeight.w400))
-                                ],
-                              ),
-                            ),
-                          ),
+                          // ModManTooltip(
+                          //   message: curLangText!.uiPreviewShowHide,
+                          //   child: MaterialButton(
+                          //     height: 40,
+                          //     onPressed: (() async {
+                          //       final prefs = await SharedPreferences.getInstance();
+                          //       if (Provider.of<StateProvider>(context, listen: false).showPreviewPanel) {
+                          //         prefs.setBool('showPreviewPanel', false);
+                          //         Provider.of<StateProvider>(context, listen: false).showPreviewPanelSet(false);
+                          //         showPreviewPanel = false;
+                          //       } else {
+                          //         prefs.setBool('showPreviewPanel', true);
+                          //         Provider.of<StateProvider>(context, listen: false).showPreviewPanelSet(true);
+                          //         showPreviewPanel = true;
+                          //       }
+                          //       setState(() {});
+                          //     }),
+                          //     child: Row(
+                          //       children: [
+                          //         const Icon(
+                          //           Icons.preview_outlined,
+                          //           size: 18,
+                          //         ),
+                          //         const SizedBox(width: 10),
+                          //         Text(Provider.of<StateProvider>(context, listen: false).showPreviewPanel ? '${curLangText!.uiPreviewWindow}: ON' : '${curLangText!.uiPreviewWindow}: OFF',
+                          //             style: const TextStyle(fontWeight: FontWeight.w400))
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
 
                           //Auto fetching item icon on startup
                           Padding(

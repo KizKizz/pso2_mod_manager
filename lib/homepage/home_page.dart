@@ -86,7 +86,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:path/path.dart' as p;
 
 final MultiSplitViewController viewsController = MultiSplitViewController(areas: [Area(weight: 0.285), Area(weight: 0.335)]);
-final MultiSplitViewController _verticalViewsController = MultiSplitViewController(areas: [Area(weight: 0.40)]);
+// final MultiSplitViewController _verticalViewsController = MultiSplitViewController(areas: [Area(weight: 0.40)]);
 Category? modViewCate;
 double headersOpacityValue = 0.7;
 TextEditingController searchTextController = TextEditingController();
@@ -145,14 +145,15 @@ class _HomePageState extends State<HomePage> {
         if (context.watch<StateProvider>().setsWindowVisible) const ModSetList(),
         //if (!context.watch<StateProvider>().setsWindowVisible)
         const ModView(),
+        const AppliedList(),
         //if (context.watch<StateProvider>().setsWindowVisible) modInSetList(),
-        if (!context.watch<StateProvider>().previewWindowVisible || !context.watch<StateProvider>().showPreviewPanel) const AppliedList(),
-        if (context.watch<StateProvider>().previewWindowVisible && context.watch<StateProvider>().showPreviewPanel)
-          MultiSplitView(
-            axis: Axis.vertical,
-            controller: _verticalViewsController,
-            children: const [Preview(), AppliedList()],
-          )
+        // if (!context.watch<StateProvider>().previewWindowVisible || !context.watch<StateProvider>().showPreviewPanel) const AppliedList(),
+        // if (context.watch<StateProvider>().previewWindowVisible && context.watch<StateProvider>().showPreviewPanel)
+          // MultiSplitView(
+          //   axis: Axis.vertical,
+          //   controller: _verticalViewsController,
+          //   children: const [Preview(), AppliedList()],
+          // )
       ],
     );
 

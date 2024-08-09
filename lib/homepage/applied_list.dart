@@ -73,8 +73,9 @@ class _AppliedListState extends State<AppliedList> {
         }
       }
     }
-    return Column(children: [
-      AppBar(
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
         automaticallyImplyLeading: false,
         titleSpacing: 0,
         actions: <Widget>[
@@ -291,14 +292,7 @@ class _AppliedListState extends State<AppliedList> {
         toolbarHeight: 30,
         elevation: 0,
       ),
-      const Divider(
-        height: 1,
-        thickness: 1,
-        //color: Theme.of(context).textTheme.headlineMedium?.color,
-      ),
-      if (moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isNotEmpty)
-        Flexible(
-          child: ScrollbarTheme(
+      body: ScrollbarTheme(
             data: ScrollbarThemeData(
               thumbColor: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.hovered)) {
@@ -837,7 +831,6 @@ class _AppliedListState extends State<AppliedList> {
               },
             ),
           ),
-        ),
-    ]);
+    );
   }
 }
