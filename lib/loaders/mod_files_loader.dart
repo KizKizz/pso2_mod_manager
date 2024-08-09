@@ -16,6 +16,7 @@ import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
+import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/functions/csv_list_fetcher.dart';
 import 'package:pso2_mod_manager/functions/item_icons_fetcher.dart';
 import 'package:pso2_mod_manager/functions/item_variants_fetcher.dart';
@@ -307,11 +308,7 @@ Future<List<Item>> itemsFetcher(context, List<CsvItem> playerItemData, String ca
     List<String> nameVariants = [];
 
     //CLear temp dir
-    Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-      if (element.existsSync()) {
-        element.deleteSync(recursive: true);
-      }
-    });
+    clearModAdderDirs();
 
     if (cateToIgnoreScan.contains(p.basename(catePath))) {
       itemIcons.add('assets/img/placeholdersquare.png');
@@ -350,11 +347,7 @@ Future<List<Item>> itemsFetcher(context, List<CsvItem> playerItemData, String ca
       await Future.delayed(const Duration(milliseconds: 10));
     }
   }
-  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-    if (element.existsSync()) {
-      element.deleteSync(recursive: true);
-    }
-  });
+  clearModAdderDirs();
 
   //backup all json files
   await jsonAutoBackup();
