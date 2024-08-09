@@ -67,6 +67,10 @@ dependencies:
   rflutter_alert: ^2.0.7
   super_sliver_list: ^0.4.1
   signals: ^5.3.0
+  advance_expansion_tile:
+    git:
+      url: https://github.com/seddikmomo/advance_expansion_tile.git
+      ref: upgrade-material # branch name
   
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

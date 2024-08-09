@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:advance_expansion_tile/advance_expansion_tile.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
@@ -69,7 +70,7 @@ bool modViewListShowNew = false;
 bool modViewListShowApplied = false;
 // bool modViewListVisible != null;
 final ValueNotifier<Item?> modViewItem = ValueNotifier<Item?>(null);
-// List<GlobalKey<ExpansionTileCoreState>> modViewExpansionTileStates = [];
+List<GlobalKey<AdvanceExpansionTileState>> modViewExpansionTileStates = [];
 
 class ModView extends StatefulWidget {
   const ModView({super.key});
@@ -138,228 +139,199 @@ class _ModViewState extends State<ModView> {
         }
 
         return Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            titleSpacing: 0,
-            actions: <Widget>[
-              Visibility(
-                visible: modViewItem.value != null,
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: ModManTooltip(
-                    message: curLangText!.uiClearAvailableModsView,
-                    child: InkWell(
-                        child: const Icon(
-                          Icons.clear,
-                        ),
-                        onTap: () async {
-                          modViewCate = null;
-                          modViewItem.value = null;
-                          setState(() {});
-                        }),
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              titleSpacing: 0,
+              actions: <Widget>[
+                Visibility(
+                  visible: modViewItem.value != null,
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: ModManTooltip(
+                      message: curLangText!.uiClearAvailableModsView,
+                      child: InkWell(
+                          child: const Icon(
+                            Icons.clear,
+                          ),
+                          onTap: () async {
+                            modViewCate = null;
+                            modViewItem.value = null;
+                            setState(() {});
+                          }),
+                    ),
                   ),
                 ),
-              ),
-            ],
-            title: Padding(
-              padding: const EdgeInsets.only(left: 5),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  if (modViewItem.value != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
-                      child: Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(3),
-                            border: Border.all(
-                                color: modViewItem.value!.applyStatus
-                                    ? Theme.of(context).colorScheme.primary
-                                    : modViewItem.value!.isNew
-                                        ? Colors.amber
-                                        : Theme.of(context).hintColor,
-                                width: modViewItem.value!.isNew || modViewItem.value!.applyStatus ? 3 : 1),
+              ],
+              title: Padding(
+                padding: const EdgeInsets.only(left: 5),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    if (modViewItem.value != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
+                        child: Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(3),
+                              border: Border.all(
+                                  color: modViewItem.value!.applyStatus
+                                      ? Theme.of(context).colorScheme.primary
+                                      : modViewItem.value!.isNew
+                                          ? Colors.amber
+                                          : Theme.of(context).hintColor,
+                                  width: modViewItem.value!.isNew || modViewItem.value!.applyStatus ? 3 : 1),
+                            ),
+                            child: modViewItem.value!.icons.first.contains('assets/img/placeholdersquare.png')
+                                ? Image.asset(
+                                    'assets/img/placeholdersquare.png',
+                                    filterQuality: FilterQuality.none,
+                                    fit: BoxFit.fitWidth,
+                                  )
+                                : ItemIconsCarousel(iconPaths: modViewItem.value!.icons)),
+                      ),
+                    Expanded(
+                      child: SizedBox(
+                        height: modViewItem.value != null ? 84 : 30,
+                        child: ScrollbarTheme(
+                          data: ScrollbarThemeData(
+                            // ignore: deprecated_member_use
+                            thickness: MaterialStateProperty.resolveWith((states) {
+                              if (states.contains(WidgetState.hovered)) {
+                                return modViewItem.value != null ? 5 : 0;
+                              }
+                              return modViewItem.value != null ? 3 : 0;
+                            }),
+                            thumbColor: WidgetStateProperty.resolveWith((states) {
+                              if (states.contains(WidgetState.hovered)) {
+                                return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
+                              }
+                              return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
+                            }),
                           ),
-                          child: modViewItem.value!.icons.first.contains('assets/img/placeholdersquare.png')
-                              ? Image.asset(
-                                  'assets/img/placeholdersquare.png',
-                                  filterQuality: FilterQuality.none,
-                                  fit: BoxFit.fitWidth,
-                                )
-                              : ItemIconsCarousel(iconPaths: modViewItem.value!.icons)),
-                    ),
-                  Expanded(
-                    child: SizedBox(
-                      height: modViewItem.value != null ? 84 : 30,
-                      child: ScrollbarTheme(
-                        data: ScrollbarThemeData(
-                          // ignore: deprecated_member_use
-                          thickness: MaterialStateProperty.resolveWith((states) {
-                            if (states.contains(WidgetState.hovered)) {
-                              return modViewItem.value != null ? 5 : 0;
-                            }
-                            return modViewItem.value != null ? 3 : 0;
-                          }),
-                          thumbColor: WidgetStateProperty.resolveWith((states) {
-                            if (states.contains(WidgetState.hovered)) {
-                              return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
-                            }
-                            return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
-                          }),
-                        ),
-                        child: SingleChildScrollView(
-                          physics: modViewItem.value == null ? const NeverScrollableScrollPhysics() : null,
-                          child: Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            modViewItem.value != null
-                                ? Text(modViewItem.value!.category == defaultCategoryDirs[17]
-                                    ? modViewItem.value!.itemName.split('_').isNotEmpty && modViewItem.value!.itemName.split('_').first == 'it' && modViewItem.value!.itemName.split('_')[1] == 'wp'
-                                        ? modViewItem.value!.itemName
-                                        : modViewItem.value!.itemName.replaceFirst('_', '*').replaceAll('_', '/')
-                                    : modViewItem.value!.itemName.replaceAll('_', '/'))
-                                : Padding(
-                                    padding: const EdgeInsets.only(bottom: 5),
-                                    child: Text(curLangText!.uiAvailableMods),
-                                  ),
-                            if (modViewItem.value != null)
-                              const Divider(
-                                endIndent: 5,
-                                height: 5,
-                                thickness: 1,
-                              ),
-
-                            //status
-                            if (modViewItem.value != null)
-                              Wrap(spacing: 2.5, runSpacing: 2.5, children: [
-                                // mod count
-                                Container(
-                                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Theme.of(context).primaryColorLight),
-                                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                  ),
-                                  child: Text(
-                                    modViewMods.length < 2 ? '${modViewMods.length} ${curLangText!.uiMod}' : '${modViewMods.length} ${curLangText!.uiMods}',
-                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
-                                  ),
+                          child: SingleChildScrollView(
+                            physics: modViewItem.value == null ? const NeverScrollableScrollPhysics() : null,
+                            child: Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                              modViewItem.value != null
+                                  ? Text(modViewItem.value!.category == defaultCategoryDirs[17]
+                                      ? modViewItem.value!.itemName.split('_').isNotEmpty && modViewItem.value!.itemName.split('_').first == 'it' && modViewItem.value!.itemName.split('_')[1] == 'wp'
+                                          ? modViewItem.value!.itemName
+                                          : modViewItem.value!.itemName.replaceFirst('_', '*').replaceAll('_', '/')
+                                      : modViewItem.value!.itemName.replaceAll('_', '/'))
+                                  : Padding(
+                                      padding: const EdgeInsets.only(bottom: 5),
+                                      child: Text(curLangText!.uiAvailableMods),
+                                    ),
+                              if (modViewItem.value != null)
+                                const Divider(
+                                  endIndent: 5,
+                                  height: 5,
+                                  thickness: 1,
                                 ),
-                                //new count
-                                Visibility(
-                                  visible: modViewItem.value!.mods.indexWhere((element) => element.isNew) != -1,
-                                  child: Container(
+
+                              //status
+                              if (modViewItem.value != null)
+                                Wrap(spacing: 2.5, runSpacing: 2.5, children: [
+                                  // mod count
+                                  Container(
                                     padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                     decoration: BoxDecoration(
                                       border: Border.all(color: Theme.of(context).primaryColorLight),
                                       borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                     ),
                                     child: Text(
-                                      '${modViewMods.where((element) => element.isNew == true).length} ${curLangText!.uiNew}',
-                                      style: const TextStyle(fontSize: 14, color: Colors.amber),
+                                      modViewMods.length < 2 ? '${modViewMods.length} ${curLangText!.uiMod}' : '${modViewMods.length} ${curLangText!.uiMods}',
+                                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
                                     ),
                                   ),
-                                ),
-                                //show new
-                                Visibility(
-                                  visible: modViewItem.value!.mods.indexWhere((element) => element.isNew) != -1,
-                                  child: InkWell(
-                                    onTap: () async {
-                                      if (modViewListShowNew) {
-                                        modViewListShowNew = false;
-                                      } else {
-                                        modViewListShowNew = true;
-                                      }
-                                      setState(() {});
-                                    },
-                                    child: Container(
-                                        height: 22,
-                                        padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(color: Theme.of(context).primaryColorLight),
-                                          borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                        ),
-                                        child: Text(
-                                          modViewListShowNew ? curLangText!.uiUndo : curLangText!.uiShowNew,
-                                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).buttonTheme.colorScheme!.primary),
-                                        )),
-                                  ),
-                                ),
-                                Visibility(
-                                  visible: modViewItem.value!.mods.indexWhere((element) => element.applyStatus) != -1,
-                                  child: InkWell(
-                                    onTap: () async {
-                                      if (modViewListShowApplied) {
-                                        modViewListShowApplied = false;
-                                      } else {
-                                        modViewListShowApplied = true;
-                                      }
-                                      setState(() {});
-                                    },
-                                    child: Container(
-                                        height: 22,
-                                        padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(color: Theme.of(context).primaryColorLight),
-                                          borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                        ),
-                                        child: Text(
-                                          modViewListShowApplied ? curLangText!.uiUndo : curLangText!.uiShowApplied,
-                                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).buttonTheme.colorScheme!.primary),
-                                        )),
-                                  ),
-                                )
-                              ]),
-
-                            //buttons
-                            if (modViewItem.value != null)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 2.5),
-                                child: Wrap(spacing: 2.5, runSpacing: 2.5, children: [
-                                  // export
-                                  InkWell(
-                                    onTap: () async {
-                                      List<SubMod> submodsToExport = [];
-                                      for (var mod in modViewMods) {
-                                        if (isFavListVisible) {
-                                          submodsToExport.addAll(mod.submods.where((e) => e.isFavorite));
-                                        } else if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
-                                          submodsToExport.addAll(mod.submods.where((e) => e.isSet && e.setNames.contains(selectedModSetName)));
-                                        } else {
-                                          submodsToExport.addAll(mod.submods);
-                                        }
-                                      }
-                                      await modExportHomePage(context, moddedItemsList, submodsToExport, false);
-                                    },
-                                    child: Container(
-                                        height: 22,
-                                        padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(color: Theme.of(context).primaryColorLight),
-                                          borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                        ),
-                                        child: Row(mainAxisSize: MainAxisSize.min, children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(right: 5),
-                                            child: Icon(
-                                              Icons.import_export,
-                                              color: Theme.of(context).buttonTheme.colorScheme!.primary,
-                                              size: 18,
-                                            ),
-                                          ),
-                                          Text(
-                                            curLangText!.uiExportAllMods,
-                                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).buttonTheme.colorScheme!.primary),
-                                          )
-                                        ])),
-                                  ),
-                                  // swap all
+                                  //new count
                                   Visibility(
-                                    visible: !modViewModsApplyRemoving.watch(context) && !defaultCategoryDirsToIgnoreQuickSwapApply.contains(modViewItem.value!.category),
+                                    visible: modViewItem.value!.mods.indexWhere((element) => element.isNew) != -1,
+                                    child: Container(
+                                      padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Theme.of(context).primaryColorLight),
+                                        borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                      ),
+                                      child: Text(
+                                        '${modViewMods.where((element) => element.isNew == true).length} ${curLangText!.uiNew}',
+                                        style: const TextStyle(fontSize: 14, color: Colors.amber),
+                                      ),
+                                    ),
+                                  ),
+                                  //show new
+                                  Visibility(
+                                    visible: modViewItem.value!.mods.indexWhere((element) => element.isNew) != -1,
                                     child: InkWell(
                                       onTap: () async {
-                                        swapAllDialog(context, modViewItem.value!);
+                                        if (modViewListShowNew) {
+                                          modViewListShowNew = false;
+                                        } else {
+                                          modViewListShowNew = true;
+                                        }
+                                        setState(() {});
+                                      },
+                                      child: Container(
+                                          height: 22,
+                                          padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(color: Theme.of(context).primaryColorLight),
+                                            borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                          ),
+                                          child: Text(
+                                            modViewListShowNew ? curLangText!.uiUndo : curLangText!.uiShowNew,
+                                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).buttonTheme.colorScheme!.primary),
+                                          )),
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: modViewItem.value!.mods.indexWhere((element) => element.applyStatus) != -1,
+                                    child: InkWell(
+                                      onTap: () async {
+                                        if (modViewListShowApplied) {
+                                          modViewListShowApplied = false;
+                                        } else {
+                                          modViewListShowApplied = true;
+                                        }
+                                        setState(() {});
+                                      },
+                                      child: Container(
+                                          height: 22,
+                                          padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(color: Theme.of(context).primaryColorLight),
+                                            borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                          ),
+                                          child: Text(
+                                            modViewListShowApplied ? curLangText!.uiUndo : curLangText!.uiShowApplied,
+                                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).buttonTheme.colorScheme!.primary),
+                                          )),
+                                    ),
+                                  )
+                                ]),
+
+                              //buttons
+                              if (modViewItem.value != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 2.5),
+                                  child: Wrap(spacing: 2.5, runSpacing: 2.5, children: [
+                                    // export
+                                    InkWell(
+                                      onTap: () async {
+                                        List<SubMod> submodsToExport = [];
+                                        for (var mod in modViewMods) {
+                                          if (isFavListVisible) {
+                                            submodsToExport.addAll(mod.submods.where((e) => e.isFavorite));
+                                          } else if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
+                                            submodsToExport.addAll(mod.submods.where((e) => e.isSet && e.setNames.contains(selectedModSetName)));
+                                          } else {
+                                            submodsToExport.addAll(mod.submods);
+                                          }
+                                        }
+                                        await modExportHomePage(context, moddedItemsList, submodsToExport, false);
                                       },
                                       child: Container(
                                           height: 22,
@@ -372,36 +344,65 @@ class _ModViewState extends State<ModView> {
                                             Padding(
                                               padding: const EdgeInsets.only(right: 5),
                                               child: Icon(
-                                                Icons.swap_horizontal_circle_outlined,
+                                                Icons.import_export,
                                                 color: Theme.of(context).buttonTheme.colorScheme!.primary,
                                                 size: 18,
                                               ),
                                             ),
                                             Text(
-                                              curLangText!.uiSwapAllMods,
+                                              curLangText!.uiExportAllMods,
                                               style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).buttonTheme.colorScheme!.primary),
                                             )
                                           ])),
                                     ),
-                                  )
-                                ]),
-                              ),
-                          ]),
+                                    // swap all
+                                    Visibility(
+                                      visible: !modViewModsApplyRemoving.watch(context) && !defaultCategoryDirsToIgnoreQuickSwapApply.contains(modViewItem.value!.category),
+                                      child: InkWell(
+                                        onTap: () async {
+                                          swapAllDialog(context, modViewItem.value!);
+                                        },
+                                        child: Container(
+                                            height: 22,
+                                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                            ),
+                                            child: Row(mainAxisSize: MainAxisSize.min, children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(right: 5),
+                                                child: Icon(
+                                                  Icons.swap_horizontal_circle_outlined,
+                                                  color: Theme.of(context).buttonTheme.colorScheme!.primary,
+                                                  size: 18,
+                                                ),
+                                              ),
+                                              Text(
+                                                curLangText!.uiSwapAllMods,
+                                                style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).buttonTheme.colorScheme!.primary),
+                                              )
+                                            ])),
+                                      ),
+                                    )
+                                  ]),
+                                ),
+                            ]),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+              backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(headersOpacityValue),
+              foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
+              toolbarHeight: modViewItem.value != null ? 84 : 30,
+              elevation: 0,
             ),
-            backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(headersOpacityValue),
-            foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
-            toolbarHeight: modViewItem.value != null ? 84 : 30,
-            elevation: 0,
-          ),
-          body: Padding(
-            padding: const EdgeInsets.only(top: 1),
-            child: ScrollbarTheme(
+            body: Padding(
+              padding: const EdgeInsets.only(top: 1),
+              child: ScrollbarTheme(
                 data: ScrollbarThemeData(
                   thumbColor: WidgetStateProperty.resolveWith((states) {
                     if (states.contains(WidgetState.hovered)) {
@@ -415,28 +416,28 @@ class _ModViewState extends State<ModView> {
                       itemCount: modViewMods.length,
                       itemBuilder: (context, modIndex) {
                         var curMod = modViewMods[modIndex];
-            
+
                         return ListenableBuilder(
                             listenable: curMod,
                             builder: (BuildContext context, Widget? child) {
-                              // if (modViewExpansionTileStates.isEmpty || modViewExpansionTileStates.length != modViewItem.value!.mods.length) {
-                              //   modViewExpansionTileStates = List.generate(modViewItem.value!.mods.length, (index) => ExpansionTileController());
-                              // }
-            
+                              if (modViewExpansionTileStates.isEmpty || modViewExpansionTileStates.length != modViewItem.value!.mods.length) {
+                                modViewExpansionTileStates = List.generate(modViewItem.value!.mods.length, (index) => GlobalKey());
+                              }
+
                               if (isModViewItemListExpanded.isEmpty || isModViewItemListExpanded.length != modViewMods.length) {
                                 isModViewItemListExpanded = List.generate(modViewMods.length, (index) => false);
                               }
-            
+
                               if (expansionListFNodes.isEmpty || expansionListFNodes.length != modViewMods.length) {
                                 expansionListFNodes = List.generate(modViewMods.length, (index) => FocusNode());
                               }
-            
+
                               //modset
                               int modViewModSetSubModIndex = -1;
                               if (context.watch<StateProvider>().setsWindowVisible && curMod.submods.where((element) => element.isSet).isNotEmpty) {
                                 modViewModSetSubModIndex = curMod.submods.indexWhere((e) => e.isSet);
                               }
-            
+
                               return InkWell(
                                 focusColor: Colors.transparent,
                                 focusNode: expansionListFNodes[modIndex],
@@ -471,8 +472,9 @@ class _ModViewState extends State<ModView> {
                                     dismissTriggerBehavior: PopupDismissTriggerBehavior.anyWhere,
                                     popupClickTriggerBehavior: PopupClickTriggerBehavior.none,
                                     arrowTheme: const InfoPopupArrowTheme(arrowSize: Size.zero),
-                                    customContent: () =>
-                                        !hoveringOnSubmod && !hoveringOnModFile && previewWindowVisible && !showPreviewPanel && !previewDismiss ? PreviewHoverPanel(previewWidgets: previewImages) : null,
+                                    customContent: () => !hoveringOnSubmod && !hoveringOnModFile && previewWindowVisible && !showPreviewPanel && !previewDismiss
+                                        ? PreviewHoverPanel(previewWidgets: previewImages)
+                                        : null,
                                     child: ExpansionTile(
                                       backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
                                       collapsedBackgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
@@ -483,8 +485,7 @@ class _ModViewState extends State<ModView> {
                                       iconColor: Theme.of(context).textTheme.bodyMedium!.color,
                                       collapsedIconColor: Theme.of(context).textTheme.bodyMedium!.color,
                                       // childrenPadding: EdgeInsets.zero,
-                                      // controller: modViewExpansionTileStates[modIndex],
-                                      // expansionKey: modViewExpansionTileStates[modIndex],
+                                      key: modViewExpansionTileStates[modIndex],
                                       onExpansionChanged: (value) async {
                                         isModViewItemListExpanded[modIndex] = value;
                                         await Future.delayed(const Duration(milliseconds: 210));
@@ -602,7 +603,7 @@ class _ModViewState extends State<ModView> {
                                               ],
                                             ),
                                           ),
-            
+
                                           //More menu for normal mods
                                           if (curMod.submods.length > 1 && !context.watch<StateProvider>().setsWindowVisible ||
                                               isModViewFromApplied && curMod.submods.length > 1 ||
@@ -740,7 +741,7 @@ class _ModViewState extends State<ModView> {
                                                       }
                                                     },
                                                   ),
-            
+
                                                   // export
                                                   MenuItemButton(
                                                     leadingIcon: const Icon(
@@ -749,7 +750,7 @@ class _ModViewState extends State<ModView> {
                                                     child: Text(curLangText!.uiExportThisMod),
                                                     onPressed: () async => modExportHomePage(context, moddedItemsList, curMod.submods, false),
                                                   ),
-            
+
                                                   // open in file explorer
                                                   MenuItemButton(
                                                     leadingIcon: const Icon(
@@ -764,7 +765,7 @@ class _ModViewState extends State<ModView> {
                                                       }
                                                     },
                                                   ),
-            
+
                                                   // delete
                                                   MenuItemButton(
                                                     leadingIcon: Icon(
@@ -774,54 +775,54 @@ class _ModViewState extends State<ModView> {
                                                           ? Theme.of(context).disabledColor
                                                           : Colors.red,
                                                     ),
-                                                    onPressed:
-                                                        curMod.applyStatus || curMod.submods.first.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
-                                                            ? null
-                                                            : () async {
-                                                                bool deleteConfirm = await modDeletionDialog(context, curMod.modName);
-                                                                if (deleteConfirm) {
-                                                                  if (modViewMods.length < 2) {
-                                                                    deleteItemFromModMan(modViewItem.value!.location).then((value) async {
-                                                                      String removedName = '${modViewCate!.categoryName} > ${modViewItem.value!.itemName}';
-                                                                      if (modViewItem.value!.isSet) {
-                                                                        for (var setName in modViewItem.value!.setNames) {
-                                                                          int setIndex = modSetList.indexWhere((element) => element.setName == setName);
-                                                                          if (setIndex != -1) {
-                                                                            modSetList[setIndex].setItems.remove(modViewItem.value);
-                                                                          }
-                                                                        }
+                                                    onPressed: curMod.applyStatus ||
+                                                            curMod.submods.first.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
+                                                        ? null
+                                                        : () async {
+                                                            bool deleteConfirm = await modDeletionDialog(context, curMod.modName);
+                                                            if (deleteConfirm) {
+                                                              if (modViewMods.length < 2) {
+                                                                deleteItemFromModMan(modViewItem.value!.location).then((value) async {
+                                                                  String removedName = '${modViewCate!.categoryName} > ${modViewItem.value!.itemName}';
+                                                                  if (modViewItem.value!.isSet) {
+                                                                    for (var setName in modViewItem.value!.setNames) {
+                                                                      int setIndex = modSetList.indexWhere((element) => element.setName == setName);
+                                                                      if (setIndex != -1) {
+                                                                        modSetList[setIndex].setItems.remove(modViewItem.value);
                                                                       }
-                                                                      modViewCate!.removeItem(modViewItem.value);
-                                                                      modViewItem.value != null;
-                                                                      modViewItem.value = null;
-                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                          context, '${curLangText!.uiSuccess}!', uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
-                                                                      previewModName = '';
-                                                                      previewImages.clear();
-                                                                      saveModdedItemListToJson();
-                                                                      setState(() {});
-                                                                    });
-                                                                  } else {
-                                                                    deleteModFromModMan(curMod.location, modViewItem.value!.location).then((value) async {
-                                                                      String removedName = '${curMod.modName} > ${curMod.submods.first.submodName}';
-                                                                      modViewItem.value!.removeMod(curMod);
-                                                                      if (modViewItem.value!.mods.isEmpty) {
-                                                                        modViewCate!.removeItem(modViewItem.value);
-                                                                        modViewItem.value != null;
-                                                                        modViewItem.value = null;
-                                                                      } else {
-                                                                        modViewItem.value!.isNew = modViewItem.value!.getModsIsNewState();
-                                                                      }
-                                                                      previewModName = '';
-                                                                      previewImages.clear();
-                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                          context, '${curLangText!.uiSuccess}!', uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
-                                                                      saveModdedItemListToJson();
-                                                                      setState(() {});
-                                                                    });
+                                                                    }
                                                                   }
-                                                                }
-                                                              },
+                                                                  modViewCate!.removeItem(modViewItem.value);
+                                                                  modViewItem.value != null;
+                                                                  modViewItem.value = null;
+                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                      context, '${curLangText!.uiSuccess}!', uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
+                                                                  previewModName = '';
+                                                                  previewImages.clear();
+                                                                  saveModdedItemListToJson();
+                                                                  setState(() {});
+                                                                });
+                                                              } else {
+                                                                deleteModFromModMan(curMod.location, modViewItem.value!.location).then((value) async {
+                                                                  String removedName = '${curMod.modName} > ${curMod.submods.first.submodName}';
+                                                                  modViewItem.value!.removeMod(curMod);
+                                                                  if (modViewItem.value!.mods.isEmpty) {
+                                                                    modViewCate!.removeItem(modViewItem.value);
+                                                                    modViewItem.value != null;
+                                                                    modViewItem.value = null;
+                                                                  } else {
+                                                                    modViewItem.value!.isNew = modViewItem.value!.getModsIsNewState();
+                                                                  }
+                                                                  previewModName = '';
+                                                                  previewImages.clear();
+                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                      context, '${curLangText!.uiSuccess}!', uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
+                                                                  saveModdedItemListToJson();
+                                                                  setState(() {});
+                                                                });
+                                                              }
+                                                            }
+                                                          },
                                                     child: Text(
                                                       curLangText!.uiRemoveFromMM,
                                                       style: TextStyle(
@@ -832,7 +833,7 @@ class _ModViewState extends State<ModView> {
                                                     ),
                                                   ),
                                                 ]),
-            
+
                                           //normal
                                           Visibility(
                                             visible: curMod.submods.length == 1 && !isModViewItemListExpanded[modIndex] && !context.watch<StateProvider>().setsWindowVisible ||
@@ -846,7 +847,7 @@ class _ModViewState extends State<ModView> {
                                                 children: [
                                                   //apply unapply button
                                                   ApplyRemoveModsButton(curItem: modViewItem.value, curMod: curMod, curSubmod: curMod.submods.first),
-            
+
                                                   //quick apply
                                                   Visibility(
                                                     visible: !defaultCategoryDirsToIgnoreQuickSwapApply.contains(modViewItem.value!.category),
@@ -887,7 +888,7 @@ class _ModViewState extends State<ModView> {
                                                         })),
                                                         menuChildren: quickApplyMenuButtons(context, curMod, curMod.submods.first)),
                                                   ),
-            
+
                                                   //More menu
                                                   MenuAnchor(
                                                       builder: (BuildContext context, MenuController controller, Widget? child) {
@@ -954,7 +955,7 @@ class _ModViewState extends State<ModView> {
                                                             setState(() {});
                                                           },
                                                         ),
-            
+
                                                         //Add to set
                                                         SubmenuButton(
                                                           menuStyle: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
@@ -970,7 +971,7 @@ class _ModViewState extends State<ModView> {
                                                           ),
                                                           child: Text(curLangText!.uiAddToModSets),
                                                         ),
-            
+
                                                         // Apply location select
                                                         SubmenuButton(
                                                           menuStyle: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
@@ -986,7 +987,7 @@ class _ModViewState extends State<ModView> {
                                                           ),
                                                           child: Text(curLangText!.uiSelectApplyingLocations),
                                                         ),
-            
+
                                                         // add or change cmx file
                                                         Visibility(
                                                             visible: curMod.submods.first.category == defaultCategoryDirs[1] ||
@@ -1026,7 +1027,7 @@ class _ModViewState extends State<ModView> {
                                                                 setState(() {});
                                                               },
                                                             )),
-            
+
                                                         //add preview
                                                         MenuItemButton(
                                                           leadingIcon: const Icon(Icons.preview_outlined),
@@ -1041,7 +1042,8 @@ class _ModViewState extends State<ModView> {
                                                               final copiedFile = await File(selectedFile.path).copy(curMod.location + p.separator + p.basename(selectedFile.path));
                                                               if (copiedFile.existsSync()) {
                                                                 //save to mod
-                                                                if (p.extension(copiedFile.path) == '.jpg' || p.extension(copiedFile.path) == '.png' && !curMod.previewImages.contains(copiedFile.path)) {
+                                                                if (p.extension(copiedFile.path) == '.jpg' ||
+                                                                    p.extension(copiedFile.path) == '.png' && !curMod.previewImages.contains(copiedFile.path)) {
                                                                   curMod.previewImages.add(copiedFile.path);
                                                                 }
                                                                 if (p.extension(copiedFile.path) == '.mp4' ||
@@ -1054,7 +1056,7 @@ class _ModViewState extends State<ModView> {
                                                             setState(() {});
                                                           },
                                                         ),
-            
+
                                                         // rename
                                                         MenuItemButton(
                                                           leadingIcon: const Icon(
@@ -1120,7 +1122,7 @@ class _ModViewState extends State<ModView> {
                                                             }
                                                           },
                                                         ),
-            
+
                                                         // swap
                                                         MenuItemButton(
                                                           leadingIcon: const Icon(
@@ -1134,7 +1136,7 @@ class _ModViewState extends State<ModView> {
                                                             modsSwapperDialog(context, modViewItem.value!, curMod, curMod.submods.first);
                                                           },
                                                         ),
-            
+
                                                         // export
                                                         MenuItemButton(
                                                           leadingIcon: const Icon(
@@ -1143,7 +1145,7 @@ class _ModViewState extends State<ModView> {
                                                           child: Text(curLangText!.uiExportThisMod),
                                                           onPressed: () async => modExportHomePage(context, moddedItemsList, [curMod.submods.first], false),
                                                         ),
-            
+
                                                         // open in file explorer
                                                         MenuItemButton(
                                                           leadingIcon: const Icon(
@@ -1158,7 +1160,7 @@ class _ModViewState extends State<ModView> {
                                                             }
                                                           },
                                                         ),
-            
+
                                                         // boundary
                                                         Visibility(
                                                           visible: curMod.submods.first.category == defaultCategoryDirs[1] ||
@@ -1181,7 +1183,7 @@ class _ModViewState extends State<ModView> {
                                                             },
                                                           ),
                                                         ),
-            
+
                                                         // aqm inject
                                                         Visibility(
                                                           visible: curMod.submods.first.category == defaultCategoryDirs[1] || curMod.submods.first.category == defaultCategoryDirs[16],
@@ -1200,7 +1202,7 @@ class _ModViewState extends State<ModView> {
                                                                 : '${curLangText!.uiInjectCustomAqmFile}\n${curLangText!.uiSelectFileInSettings}'),
                                                           ),
                                                         ),
-            
+
                                                         // aqm inject removal
                                                         Visibility(
                                                           visible: curMod.submods.first.category == defaultCategoryDirs[1] || curMod.submods.first.category == defaultCategoryDirs[16],
@@ -1215,7 +1217,7 @@ class _ModViewState extends State<ModView> {
                                                             child: Text(curLangText!.uiRemoveInjectedCustomAqm),
                                                           ),
                                                         ),
-            
+
                                                         //remove from set
                                                         Visibility(
                                                           visible: context.watch<StateProvider>().setsWindowVisible && curMod.submods.first.isSet,
@@ -1234,7 +1236,7 @@ class _ModViewState extends State<ModView> {
                                                             ),
                                                           ),
                                                         ),
-            
+
                                                         // delete
                                                         MenuItemButton(
                                                           leadingIcon: Icon(
@@ -1280,7 +1282,7 @@ class _ModViewState extends State<ModView> {
                                                                         } else {
                                                                           curMod.isNew = curMod.getSubmodsIsNewState();
                                                                         }
-            
+
                                                                         if (modViewItem.value!.mods.isEmpty) {
                                                                           modViewCate!.removeItem(modViewItem.value);
                                                                           modViewItem.value != null;
@@ -1312,7 +1314,7 @@ class _ModViewState extends State<ModView> {
                                               ),
                                             ),
                                           ),
-            
+
                                           //ModSet
                                           if (!isModViewFromApplied && !isModViewItemListExpanded[modIndex] && modViewModSetSubModIndex != -1 && context.watch<StateProvider>().setsWindowVisible)
                                             Padding(
@@ -1337,10 +1339,10 @@ class _ModViewState extends State<ModView> {
                                                             fontSize: 15,
                                                           )),
                                                     ),
-            
+
                                                   //Add-Remove button
                                                   ApplyRemoveModsButton(curItem: modViewItem.value, curMod: curMod, curSubmod: curMod.submods[modViewModSetSubModIndex]),
-            
+
                                                   //quick apply
                                                   Visibility(
                                                     visible: !defaultCategoryDirsToIgnoreQuickSwapApply.contains(modViewItem.value!.category),
@@ -1384,7 +1386,7 @@ class _ModViewState extends State<ModView> {
                                                         })),
                                                         menuChildren: quickApplyMenuButtons(context, curMod, curMod.submods[modViewModSetSubModIndex])),
                                                   ),
-            
+
                                                   //More menu
                                                   MenuAnchor(
                                                       builder: (BuildContext context, MenuController controller, Widget? child) {
@@ -1451,7 +1453,7 @@ class _ModViewState extends State<ModView> {
                                                             setState(() {});
                                                           },
                                                         ),
-            
+
                                                         //Add to set
                                                         SubmenuButton(
                                                           menuStyle: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
@@ -1467,7 +1469,7 @@ class _ModViewState extends State<ModView> {
                                                           ),
                                                           child: Text(curLangText!.uiAddToModSets),
                                                         ),
-            
+
                                                         // Apply location select
                                                         SubmenuButton(
                                                           menuStyle: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
@@ -1483,7 +1485,7 @@ class _ModViewState extends State<ModView> {
                                                           ),
                                                           child: Text(curLangText!.uiSelectApplyingLocations),
                                                         ),
-            
+
                                                         // add or change cmx file
                                                         Visibility(
                                                           visible: curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[1] ||
@@ -1524,7 +1526,7 @@ class _ModViewState extends State<ModView> {
                                                             },
                                                           ),
                                                         ),
-            
+
                                                         //add preview
                                                         MenuItemButton(
                                                           leadingIcon: const Icon(Icons.preview_outlined),
@@ -1554,7 +1556,7 @@ class _ModViewState extends State<ModView> {
                                                             setState(() {});
                                                           },
                                                         ),
-            
+
                                                         // rename
                                                         MenuItemButton(
                                                           leadingIcon: const Icon(
@@ -1601,7 +1603,7 @@ class _ModViewState extends State<ModView> {
                                                             }
                                                           },
                                                         ),
-            
+
                                                         // swap
                                                         MenuItemButton(
                                                           leadingIcon: const Icon(
@@ -1615,7 +1617,7 @@ class _ModViewState extends State<ModView> {
                                                             modsSwapperDialog(context, modViewItem.value!, curMod, curMod.submods[modViewModSetSubModIndex]);
                                                           },
                                                         ),
-            
+
                                                         // export
                                                         MenuItemButton(
                                                           leadingIcon: const Icon(
@@ -1624,7 +1626,7 @@ class _ModViewState extends State<ModView> {
                                                           child: Text(curLangText!.uiExportThisMod),
                                                           onPressed: () async => modExportHomePage(context, moddedItemsList, [curMod.submods[modViewModSetSubModIndex]], false),
                                                         ),
-            
+
                                                         // open in file explorer
                                                         MenuItemButton(
                                                           leadingIcon: const Icon(
@@ -1639,7 +1641,7 @@ class _ModViewState extends State<ModView> {
                                                             }
                                                           },
                                                         ),
-            
+
                                                         // boundary
                                                         Visibility(
                                                           visible: curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[1] ||
@@ -1662,7 +1664,7 @@ class _ModViewState extends State<ModView> {
                                                             },
                                                           ),
                                                         ),
-            
+
                                                         // aqm inject
                                                         Visibility(
                                                           visible: curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[1] ||
@@ -1682,7 +1684,7 @@ class _ModViewState extends State<ModView> {
                                                                 : '${curLangText!.uiInjectCustomAqmFile}\n${curLangText!.uiSelectFileInSettings}'),
                                                           ),
                                                         ),
-            
+
                                                         // aqm inject removal
                                                         Visibility(
                                                           visible: curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[1] ||
@@ -1698,7 +1700,7 @@ class _ModViewState extends State<ModView> {
                                                             child: Text(curLangText!.uiRemoveInjectedCustomAqm),
                                                           ),
                                                         ),
-            
+
                                                         // remove from modset
                                                         MenuItemButton(
                                                           leadingIcon: const Icon(
@@ -1714,7 +1716,7 @@ class _ModViewState extends State<ModView> {
                                                             curLangText!.uiRemoveFromThisSet,
                                                           ),
                                                         ),
-            
+
                                                         // delete
                                                         MenuItemButton(
                                                           leadingIcon: Icon(
@@ -1762,7 +1764,7 @@ class _ModViewState extends State<ModView> {
                                                                         } else {
                                                                           curMod.isNew = curMod.getSubmodsIsNewState();
                                                                         }
-            
+
                                                                         if (modViewItem.value!.mods.isEmpty) {
                                                                           modViewCate!.removeItem(modViewItem.value);
                                                                           modViewItem.value != null;
@@ -1895,11 +1897,11 @@ class _ModViewState extends State<ModView> {
                                                                     ),
                                                                   // apply locations
                                                                   if (curSubmod.applyLocations!.isNotEmpty) const Icon(Icons.location_on_outlined),
-            
+
                                                                   //Apply button in submod
                                                                   //add remove mods button
                                                                   ApplyRemoveModsButton(curItem: modViewItem.value, curMod: curMod, curSubmod: curSubmod),
-            
+
                                                                   // quick apply
                                                                   Visibility(
                                                                     visible: !defaultCategoryDirsToIgnoreQuickSwapApply.contains(modViewItem.value!.category),
@@ -1943,7 +1945,7 @@ class _ModViewState extends State<ModView> {
                                                                         })),
                                                                         menuChildren: quickApplyMenuButtons(context, curMod, curSubmod)),
                                                                   ),
-            
+
                                                                   //More menu
                                                                   MenuAnchor(
                                                                       builder: (BuildContext context, MenuController controller, Widget? child) {
@@ -2009,7 +2011,7 @@ class _ModViewState extends State<ModView> {
                                                                             setState(() {});
                                                                           },
                                                                         ),
-            
+
                                                                         //Add to set
                                                                         SubmenuButton(
                                                                           menuStyle: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
@@ -2025,7 +2027,7 @@ class _ModViewState extends State<ModView> {
                                                                           ),
                                                                           child: Text(curLangText!.uiAddToModSets),
                                                                         ),
-            
+
                                                                         // Apply location select
                                                                         SubmenuButton(
                                                                           menuStyle: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
@@ -2041,7 +2043,7 @@ class _ModViewState extends State<ModView> {
                                                                           ),
                                                                           child: Text(curLangText!.uiSelectApplyingLocations),
                                                                         ),
-            
+
                                                                         // add or change cmx file
                                                                         Visibility(
                                                                             visible: curSubmod.category == defaultCategoryDirs[1] ||
@@ -2081,7 +2083,7 @@ class _ModViewState extends State<ModView> {
                                                                                 setState(() {});
                                                                               },
                                                                             )),
-            
+
                                                                         //add preview
                                                                         MenuItemButton(
                                                                           leadingIcon: const Icon(Icons.preview_outlined),
@@ -2119,7 +2121,7 @@ class _ModViewState extends State<ModView> {
                                                                             setState(() {});
                                                                           },
                                                                         ),
-            
+
                                                                         // rename
                                                                         MenuItemButton(
                                                                           leadingIcon: const Icon(
@@ -2164,7 +2166,7 @@ class _ModViewState extends State<ModView> {
                                                                             }
                                                                           },
                                                                         ),
-            
+
                                                                         // swap
                                                                         MenuItemButton(
                                                                           leadingIcon: const Icon(
@@ -2178,7 +2180,7 @@ class _ModViewState extends State<ModView> {
                                                                             modsSwapperDialog(context, modViewItem.value!, curMod, curSubmod);
                                                                           },
                                                                         ),
-            
+
                                                                         // export
                                                                         MenuItemButton(
                                                                           leadingIcon: const Icon(
@@ -2187,7 +2189,7 @@ class _ModViewState extends State<ModView> {
                                                                           child: Text(curLangText!.uiExportThisMod),
                                                                           onPressed: () async => modExportHomePage(context, moddedItemsList, [curSubmod], false),
                                                                         ),
-            
+
                                                                         // open in file explorer
                                                                         MenuItemButton(
                                                                           leadingIcon: const Icon(
@@ -2203,7 +2205,7 @@ class _ModViewState extends State<ModView> {
                                                                             }
                                                                           },
                                                                         ),
-            
+
                                                                         // boundary
                                                                         Visibility(
                                                                           visible: curSubmod.category == defaultCategoryDirs[1] ||
@@ -2226,7 +2228,7 @@ class _ModViewState extends State<ModView> {
                                                                             },
                                                                           ),
                                                                         ),
-            
+
                                                                         // aqm inject
                                                                         Visibility(
                                                                           visible: curSubmod.category == defaultCategoryDirs[1] || curSubmod.category == defaultCategoryDirs[16],
@@ -2245,7 +2247,7 @@ class _ModViewState extends State<ModView> {
                                                                                 : '${curLangText!.uiInjectCustomAqmFile}\n${curLangText!.uiSelectFileInSettings}'),
                                                                           ),
                                                                         ),
-            
+
                                                                         // aqm inject removal
                                                                         Visibility(
                                                                           visible: curSubmod.category == defaultCategoryDirs[1] || curSubmod.category == defaultCategoryDirs[16],
@@ -2260,7 +2262,7 @@ class _ModViewState extends State<ModView> {
                                                                             child: Text(curLangText!.uiRemoveInjectedCustomAqm),
                                                                           ),
                                                                         ),
-            
+
                                                                         //remove from set
                                                                         Visibility(
                                                                           visible: context.watch<StateProvider>().setsWindowVisible && curSubmod.isSet,
@@ -2464,10 +2466,10 @@ class _ModViewState extends State<ModView> {
                                                                                                         }
                                                                                                         fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                                                       }
-                                                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                                                          context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
+                                                                                                          fileAppliedText.trim(), appliedModFiles.length * 1000));
                                                                                                     }
-            
+
                                                                                                     saveModdedItemListToJson();
                                                                                                     modViewModsApplyRemoving.value = false;
                                                                                                   });
@@ -2509,7 +2511,7 @@ class _ModViewState extends State<ModView> {
                                                                                                       await restoreOverlayedIcon(modViewItem.value!);
                                                                                                     }
                                                                                                   }
-            
+
                                                                                                   await filesRestoredMessage(mainPageScaffoldKey.currentContext, [curModFile], value);
                                                                                                   if (moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isEmpty) {
                                                                                                     saveApplyButtonState.value = SaveApplyButtonState.none;
@@ -2522,7 +2524,7 @@ class _ModViewState extends State<ModView> {
                                                                                           ),
                                                                                       ],
                                                                                     ),
-            
+
                                                                                     //Remove from current Set
                                                                                     Visibility(
                                                                                       visible: context.watch<StateProvider>().setsWindowVisible,
@@ -2539,7 +2541,7 @@ class _ModViewState extends State<ModView> {
                                                                                         ),
                                                                                       ),
                                                                                     ),
-            
+
                                                                                     //add preview
                                                                                     ModManTooltip(
                                                                                       message: curLangText!.uiAddPreviews,
@@ -2587,7 +2589,7 @@ class _ModViewState extends State<ModView> {
                                                                                         child: const Icon(Icons.preview_outlined),
                                                                                       ),
                                                                                     ),
-            
+
                                                                                     //Delete
                                                                                     ModManTooltip(
                                                                                       message: uiInTextArg(curLangText!.uiHoldToRemoveXFromModMan, curModFile.modFileName),
@@ -2612,7 +2614,7 @@ class _ModViewState extends State<ModView> {
                                                                                                   deleteModFileFromModMan(curModFile.location, curSubmod.location, curMod.location).then((value) async {
                                                                                                     String removedName = '${curMod.modName} > ${curSubmod.submodName} > $curModFile';
                                                                                                     curSubmod.modFiles.remove(curModFile);
-            
+
                                                                                                     if (curSubmod.modFiles.isEmpty) {
                                                                                                       curMod.submods.remove(curSubmod);
                                                                                                     } else {
@@ -2672,8 +2674,8 @@ class _ModViewState extends State<ModView> {
                         // )
                       }),
                 ]),
-                    ),
-          ));
+              ),
+            ));
       },
     );
   }

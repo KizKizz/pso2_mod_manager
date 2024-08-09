@@ -54,7 +54,7 @@ class _ItemListState extends State<ItemList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+        backgroundColor: Colors.transparent,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           actions: <Widget>[
@@ -1268,10 +1268,10 @@ class _ItemListState extends State<ItemList> {
                                                                                   itemClicked[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => []);
                                                                                   itemClicked[groupIndex][categoryIndex] = List.generate(curCategory.items.length, (index) => false);
                                                                                   itemClicked[groupIndex][categoryIndex][itemIndex] = true;
-                                                                                  // for (var element in modViewExpansionTileStates) {
-                                                                                  // element.currentState?.collapse();
-                                                                                  // }
-                                                                                  // modViewETKeys.clear();
+                                                                                  for (var element in modViewExpansionTileStates) {
+                                                                                    element.currentState?.collapse();
+                                                                                  }
+                                                                                  modViewExpansionTileStates.clear();
                                                                                   isModViewListHidden = false;
                                                                                   isModViewFromApplied = false;
                                                                                   modViewCate = curCategory;
