@@ -230,7 +230,7 @@ Future<void> quickModsReapply(context) async {
                                 matchingModFile.ogLocations = modFile.ogLocations;
                                 modFilesToReApply.add(matchingModFile);
                               }
-                              await modFilesApply(context, modFilesToReApply);
+                              await modFilesApply(context, submod, modFilesToReApply);
                               matchingSubmod.setApplyState(true);
                               matchingSubmod.applyDate = DateTime.now();
                               status.value += '${cate.categoryName} > ${item.itemName} > ${mod.modName} > ${submod.submodName}\n';

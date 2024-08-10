@@ -737,6 +737,8 @@ class _ModViewState extends State<ModView> {
                                                         modSetList = await modSetLoader();
                                                         saveSetListToJson();
                                                         saveModdedItemListToJson();
+                                                        modViewModsApplyRemoving.value = true;
+                                                        modViewModsApplyRemoving.value = false;
                                                         setState(() {});
                                                       }
                                                     },
@@ -1118,6 +1120,8 @@ class _ModViewState extends State<ModView> {
                                                               modSetList = await modSetLoader();
                                                               saveSetListToJson();
                                                               saveModdedItemListToJson();
+                                                              modViewModsApplyRemoving.value = true;
+                                                              modViewModsApplyRemoving.value = false;
                                                               setState(() {});
                                                             }
                                                           },
@@ -1599,6 +1603,8 @@ class _ModViewState extends State<ModView> {
                                                               modSetList = await modSetLoader();
                                                               saveSetListToJson();
                                                               saveModdedItemListToJson();
+                                                              modViewModsApplyRemoving.value = true;
+                                                              modViewModsApplyRemoving.value = false;
                                                               setState(() {});
                                                             }
                                                           },
@@ -2162,6 +2168,8 @@ class _ModViewState extends State<ModView> {
                                                                               modSetList = await modSetLoader();
                                                                               saveSetListToJson();
                                                                               saveModdedItemListToJson();
+                                                                              modViewModsApplyRemoving.value = true;
+                                                                              modViewModsApplyRemoving.value = false;
                                                                               setState(() {});
                                                                             }
                                                                           },
@@ -2439,7 +2447,7 @@ class _ModViewState extends State<ModView> {
                                                                                                 //apply mod files
                                                                                                 if (await originalFilesCheck(context, [curModFile])) {
                                                                                                   modViewModsApplyRemoving.value = true;
-                                                                                                  modFilesApply(context, [curModFile]).then((value) async {
+                                                                                                  modFilesApply(context, curSubmod, [curModFile]).then((value) async {
                                                                                                     if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
                                                                                                       curSubmod.applyDate = DateTime.now();
                                                                                                       modViewItem.value!.applyDate = DateTime.now();
@@ -2455,6 +2463,7 @@ class _ModViewState extends State<ModView> {
                                                                                                       if (autoAqmInject) await aqmInjectionOnModsApply(context, curSubmod);
                                                                                                       if (markModdedItem) {
                                                                                                         await applyOverlayedIcon(context, modViewItem.value!);
+                                                                                                        saveModdedItemListToJson();
                                                                                                       }
                                                                                                       saveApplyButtonState.value = SaveApplyButtonState.extra;
                                                                                                       List<ModFile> appliedModFiles = value;
@@ -2819,6 +2828,7 @@ class _ModViewState extends State<ModView> {
 
                           if (markModdedItem) {
                             await applyOverlayedIcon(context, quickItem);
+                            saveModdedItemListToJson();
                           }
                           saveApplyButtonState.value = SaveApplyButtonState.extra;
                         }

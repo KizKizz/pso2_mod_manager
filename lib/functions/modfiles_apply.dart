@@ -7,6 +7,7 @@ import 'package:pso2_mod_manager/aqmInjection/aqm_removal.dart';
 import 'package:pso2_mod_manager/classes/aqm_item_class.dart';
 
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
+import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/functions/apply_mod_file.dart';
 import 'package:pso2_mod_manager/functions/checksum_check.dart';
 import 'package:pso2_mod_manager/functions/modfile_applied_dup.dart';
@@ -17,7 +18,7 @@ import 'package:pso2_mod_manager/state_provider.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 
-Future<List<ModFile>> modFilesApply(context, List<ModFile> modFiles) async {
+Future<List<ModFile>> modFilesApply(context, SubMod? submod, List<ModFile> modFiles) async {
   List<ModFile> alreadyAppliedModFiles = [];
   List<ModFile> appliedModFiles = [];
   // bool applyMods = true;
@@ -57,7 +58,7 @@ Future<List<ModFile>> modFilesApply(context, List<ModFile> modFiles) async {
   }
 
   if (alreadyAppliedModFiles.isNotEmpty) {
-    List<ModFile> modFilesToReplace = await duplicateAppliedDialog(context, alreadyAppliedModFiles);
+    List<ModFile> modFilesToReplace = await duplicateAppliedDialog(context, submod, alreadyAppliedModFiles);
     if (modFilesToReplace.isNotEmpty) {
       for (var modFile in modFilesToReplace) {
         await modFileAppliedDupRestore(context, moddedItemsList, modFile);
@@ -119,7 +120,7 @@ Future<List<ModFile>> modFilesApply(context, List<ModFile> modFiles) async {
   return appliedModFiles;
 }
 
-Future<List<ModFile>> duplicateAppliedDialog(context, List<ModFile> dupModFiles) async {
+Future<List<ModFile>> duplicateAppliedDialog(context, SubMod? applyingSubmod, List<ModFile> dupModFiles) async {
   var selectedList = List.generate(dupModFiles.length, (int index) => true);
   List<ModFile> modFilesToReplace = dupModFiles.toList();
   return await showDialog(
@@ -137,6 +138,24 @@ Future<List<ModFile>> duplicateAppliedDialog(context, List<ModFile> dupModFiles)
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    Visibility(
+                      visible: applyingSubmod != null,
+                      child: Padding(
+                          padding: const EdgeInsets.only(bottom: 5, top: 10),
+                          child: Text(
+                            '${curLangText!.uiApplying}:',
+                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                          )),
+                    ),
+                    Visibility(
+                      visible: applyingSubmod != null,
+                      child: Padding(
+                          padding: const EdgeInsets.only(bottom: 10, left: 15),
+                          child: Text(
+                            '${applyingSubmod!.category} > ${applyingSubmod.itemName} > ${applyingSubmod.modName} > ${applyingSubmod.submodName}',
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),
+                          )),
+                    ),
                     Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: Text(

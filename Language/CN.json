@@ -308,6 +308,9 @@
   "uiNewMods": "新Mod",
   "uiNewMod": "新Mod",
   "uiNew": "新",
+  "uiShowNew": "Show New",
+  "uiShowApplied": "Show Applied",
+  "uiUndo": "Undo",
   "uiPreparing": "准备中",
   "uiDragDropFiles": "拖放文件夹、.zip、.rar、.7z文件\n以及.ice文件到这里\n或者点击\"添加文件夹或文件\"按钮选择文件夹或文件。\n大量文件的处理可能会花费较长时间。",
   "uiAchiveCurrentlyNotSupported": "当前不支持的压缩文件类型。请解压存档文件后，再将内容拖到此处。",
@@ -334,6 +337,7 @@
   "uiDuplicatesInAppliedModsFound": "在应用的MOD中发现了重复的物品",
   "uiApplyingWouldReplaceModFiles": "注意:应用此MOD将替换这些已应用的MOD文件。",
   "uiSelectWhichFilesToBeReplacedWithThisMod": "选中的已应用文件将替换为此MOD",
+  "uiApplying": "Applying",
   "uiNewCateGroup": "新建类别集",
   "uiNameAlreadyExisted": "名称已存在!",
   "uiNewCateGroupName": "新建类别集名称",
@@ -600,4 +604,3 @@
   "uiAddToQuickApplyList": "加入快捷应用列表",
   "uiRemoveFromQuickApplyList": "从快捷应用列表移除"
 }
-
