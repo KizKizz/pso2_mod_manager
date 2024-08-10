@@ -12,6 +12,7 @@ import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
+import 'package:pso2_mod_manager/pages/main_page.dart';
 import 'package:pso2_mod_manager/widgets/snackbar.dart';
 
 Future<List<ModFile>> restoreOriginalFilesToTheGame(context, List<ModFile> modFiles) async {
@@ -114,7 +115,8 @@ Future<void> restoreOriginalFilesLocalBackups(context, List<ModFile> modFiles) a
           }
           originalPathsToRemove.add(originalFilePath);
         } catch (e) {
-          ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', e.toString(), 1000));
+          // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(mainPageScaffoldKey.currentState!.context).showSnackBar(snackBarMessage(mainPageScaffoldKey.currentState!.context, '${curLangText!.uiError}!', e.toString(), 1000));
         }
       }
     }
@@ -145,14 +147,14 @@ Future<void> filesRestoredMessage(context, List<ModFile> curModFiles, List<ModFi
 
   if (successMessage.isNotEmpty && failedMessage.isEmpty) {
     message = '${curLangText!.uiSuccessfullyRemoved} ${curModFiles.first.modName} > ${curModFiles.first.submodName}:\n$successMessage';
-    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', message.trim(), unappliedModFiles.length * 1000));
+    ScaffoldMessenger.of(mainPageScaffoldKey.currentState!.context).showSnackBar(snackBarMessage(mainPageScaffoldKey.currentState!.context, '${curLangText!.uiSuccess}!', message.trim(), unappliedModFiles.length * 1000));
   } else if (successMessage.isEmpty && failedMessage.isNotEmpty) {
     message = '${curLangText!.uiFailedToRemove} ${curModFiles.first.modName} > ${curModFiles.first.submodName}:\n$failedMessage';
-    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiFailed}!', message.trim(), unappliedModFiles.length * 1000));
+    ScaffoldMessenger.of(mainPageScaffoldKey.currentState!.context).showSnackBar(snackBarMessage(mainPageScaffoldKey.currentState!.context, '${curLangText!.uiFailed}!', message.trim(), unappliedModFiles.length * 1000));
   } else if (successMessage.isNotEmpty && failedMessage.isNotEmpty) {
     message = '${curLangText!.uiSuccessfullyRemoved} ${curModFiles.first.modName} > ${curModFiles.first.submodName}:\n$successMessage\n${curLangText!.uiFailedToRemove}:\n$failedMessage';
-    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccessWithErrors}!', message.trim(), unappliedModFiles.length * 1000));
+    ScaffoldMessenger.of(mainPageScaffoldKey.currentState!.context).showSnackBar(snackBarMessage(mainPageScaffoldKey.currentState!.context, '${curLangText!.uiSuccessWithErrors}!', message.trim(), unappliedModFiles.length * 1000));
   } else {
-    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', curLangText!.uiUnknownErrorWhenRemovingModFromTheGame, unappliedModFiles.length * 1000));
+    ScaffoldMessenger.of(mainPageScaffoldKey.currentState!.context).showSnackBar(snackBarMessage(mainPageScaffoldKey.currentState!.context, '${curLangText!.uiError}!', curLangText!.uiUnknownErrorWhenRemovingModFromTheGame, unappliedModFiles.length * 1000));
   }
 }

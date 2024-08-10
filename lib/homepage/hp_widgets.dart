@@ -17,7 +17,6 @@ import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
 import 'package:pso2_mod_manager/functions/restore_functions.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/homepage/home_page.dart';
-import 'package:pso2_mod_manager/homepage/mod_view.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/pages/main_page.dart';
 import 'package:pso2_mod_manager/ui_translation_helper.dart';
@@ -70,9 +69,6 @@ class _ApplyRemoveModsButtonState extends State<ApplyRemoveModsButton> {
 
                         await applyModsToTheGame(context, widget.curItem!, widget.curMod, widget.curSubmod);
 
-                        if (markModdedItem) {
-                          await applyOverlayedIcon(context, modViewItem.value!);
-                        }
                         saveApplyButtonState.value = SaveApplyButtonState.extra;
                       }
                       // setState(() {});

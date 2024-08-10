@@ -1,14 +1,11 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.8.12",
+    "version": "2.8.13",
     "description": [
         "Fixed a bug with Mod Sets when applying mods",
-        "Removed fixed mod preview panel",
         "Code and performance optimization",
         "More bug fixes",
         "MOD適用時のMODセットのバグを修正",
-        "固定MODプレビューパネルを削除",
-        "MODセットエクスポート機能の追加",
         "いくつかのバグを修正し、アイテム/Modの交換を改善しました",
         "その他のバグ修正"
     ],

@@ -242,7 +242,7 @@ Future<String> applyAllAvailableMods(context, Item item, Mod mod, SubMod submod)
       }
     }
     if (toBeAppliedModFiles.isNotEmpty) {
-      final appliedFiles = await modFilesApply(context, toBeAppliedModFiles);
+      final appliedFiles = await modFilesApply(context, submod, toBeAppliedModFiles);
       if (appliedFiles.where((element) => element.applyStatus).isNotEmpty) {
         submod.applyDate = DateTime.now();
         item.applyDate = DateTime.now();

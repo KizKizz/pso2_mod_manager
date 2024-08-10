@@ -370,7 +370,8 @@ class TranslationText {
   //modfiles_apply
   String uiDuplicatesInAppliedModsFound = 'Duplicate(s) in applied mods found',
       uiApplyingWouldReplaceModFiles = 'Applying this mod would replace these applied mod files',
-      uiSelectWhichFilesToBeReplacedWithThisMod = 'Select which currently applied files bellow to be replaced with files in this mod';
+      uiSelectWhichFilesToBeReplacedWithThisMod = 'Select which currently applied files bellow to be replaced with files in this mod',
+      uiApplying = 'Applying';
 
   //new_cate_adder
   String uiNewCateGroup = 'New Category Group',

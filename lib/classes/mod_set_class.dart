@@ -19,6 +19,11 @@ class ModSet with ChangeNotifier {
     notifyListeners();
   }
 
+  void removeItem(Item item) {
+    setItems.remove(item);
+    notifyListeners();
+  }
+
   void refresh() {
     notifyListeners();
   }

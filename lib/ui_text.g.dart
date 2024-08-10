@@ -387,6 +387,9 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiNewMods = json['uiNewMods'] as String
       ..uiNewMod = json['uiNewMod'] as String
       ..uiNew = json['uiNew'] as String
+      ..uiShowNew = json['uiShowNew'] as String
+      ..uiShowApplied = json['uiShowApplied'] as String
+      ..uiUndo = json['uiUndo'] as String
       ..uiPreparing = json['uiPreparing'] as String
       ..uiDragDropFiles = json['uiDragDropFiles'] as String
       ..uiAchiveCurrentlyNotSupported =
@@ -420,6 +423,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiApplyingWouldReplaceModFiles'] as String
       ..uiSelectWhichFilesToBeReplacedWithThisMod =
           json['uiSelectWhichFilesToBeReplacedWithThisMod'] as String
+      ..uiApplying = json['uiApplying'] as String
       ..uiNewCateGroup = json['uiNewCateGroup'] as String
       ..uiNameAlreadyExisted = json['uiNameAlreadyExisted'] as String
       ..uiNewCateGroupName = json['uiNewCateGroupName'] as String
@@ -1087,6 +1091,9 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiNewMods': instance.uiNewMods,
       'uiNewMod': instance.uiNewMod,
       'uiNew': instance.uiNew,
+      'uiShowNew': instance.uiShowNew,
+      'uiShowApplied': instance.uiShowApplied,
+      'uiUndo': instance.uiUndo,
       'uiPreparing': instance.uiPreparing,
       'uiDragDropFiles': instance.uiDragDropFiles,
       'uiAchiveCurrentlyNotSupported': instance.uiAchiveCurrentlyNotSupported,
@@ -1116,6 +1123,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiApplyingWouldReplaceModFiles': instance.uiApplyingWouldReplaceModFiles,
       'uiSelectWhichFilesToBeReplacedWithThisMod':
           instance.uiSelectWhichFilesToBeReplacedWithThisMod,
+      'uiApplying': instance.uiApplying,
       'uiNewCateGroup': instance.uiNewCateGroup,
       'uiNameAlreadyExisted': instance.uiNameAlreadyExisted,
       'uiNewCateGroupName': instance.uiNewCateGroupName,

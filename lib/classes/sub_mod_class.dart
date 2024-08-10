@@ -11,7 +11,7 @@ import 'package:path/path.dart' as p;
 part 'sub_mod_class.g.dart';
 
 @JsonSerializable()
-class SubMod with ChangeNotifier{
+class SubMod with ChangeNotifier {
   SubMod(this.submodName, this.modName, this.itemName, this.category, this.location, this.applyStatus, this.applyDate, this.position, this.isNew, this.isFavorite, this.isSet, this.hasCmx,
       this.cmxApplied, this.cmxStartPos, this.cmxEndPos, this.cmxFile, this.setNames, this.applyLocations, this.previewImages, this.previewVideos, this.appliedModFiles, this.modFiles);
   String submodName;
@@ -44,6 +44,15 @@ class SubMod with ChangeNotifier{
   }
 
   //helpers
+  bool compareModFilesInList(List<String> modFileNames) {
+    for (var modFile in modFiles) {
+      if (!modFileNames.contains(modFile.modFileName)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   List<Widget> getPreviewWidgets() {
     List<Widget> widgets = [];
     if (previewImages.isNotEmpty) {
