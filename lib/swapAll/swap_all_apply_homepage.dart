@@ -896,7 +896,7 @@ Future<SubMod?> swapAll(context, Mod mod, SubMod submod, CsvItem swapToItem) asy
         var returnedVar = await modsAdderModFilesAdder(
             context,
             await modsAdderFilesProcess(context, [XFile(Uri.file('$swappedPath/${submod.modName.replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath())],
-                modManCurActiveItemNameLanguage == 'JP' ? swapToItem.getJPName() : swapToItem.getENName()));
+                modManCurActiveItemNameLanguage == 'JP' ? swapToItem.getJPName() : swapToItem.getENName()), false);
         List<Item> returnedItems = returnedVar.$2;
         swapItem = returnedItems.first;
         swapMod = swapItem.mods.firstWhere((e) => e.modName == submod.modName);
@@ -932,7 +932,7 @@ Future<SubMod?> swapAll(context, Mod mod, SubMod submod, CsvItem swapToItem) asy
           var returnedVar = await modsAdderModFilesAdder(
               context,
               await modsAdderFilesProcess(context, [XFile(Uri.file('$swappedPath/${submod.modName.replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath())],
-                  modManCurActiveItemNameLanguage == 'JP' ? swapToItem.getJPName() : swapToItem.getENName()));
+                  modManCurActiveItemNameLanguage == 'JP' ? swapToItem.getJPName() : swapToItem.getENName()), false);
           List<Item> returnedItems = returnedVar.$2;
           swapItem = returnedItems.first;
           swapMod = swapItem.mods.firstWhere((e) => e.modName == submod.modName);

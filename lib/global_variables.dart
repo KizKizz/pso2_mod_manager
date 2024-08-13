@@ -197,3 +197,5 @@ bool itemsWithNewModsOnTop = false;
 bool newModsOnTop = false;
 bool markModdedItem = false;
 final saveApplyButtonState = signal<SaveApplyButtonState>(SaveApplyButtonState.none);
+bool itemListCateExpansionState = false;
+bool modAdderAddToModSets = false;

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:expansion_tile_group/expansion_tile_group.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,7 @@ import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 bool isFavListVisible = false;
+List<List<GlobalKey<ExpansionTileCoreState>>> itemViewCateExpansionTileStates = [];
 
 class ItemList extends StatefulWidget {
   const ItemList({super.key});
@@ -50,6 +52,20 @@ class _ItemListState extends State<ItemList> {
   List<List<bool>> cateButtonsVisible = [];
   List<String> searchResultCateTypes = [];
   ItemListSort _itemListSortState = ItemListSort.none;
+
+  List<List<bool>> cateExpansionStates = [];
+
+  @override
+  void initState() {
+    if (itemListCateExpansionState) {
+      for (var type in moddedItemsList) {
+        for (var cate in type.categories) {
+          cate.setExpansionState(true);
+        }
+      }
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +94,7 @@ class _ItemListState extends State<ItemList> {
                 ),
               ),
             ),
+            //fav
             Visibility(
               visible: !isCateTypeReordering && !isShowHideCates && searchTextController.value.text.isEmpty,
               child: Padding(
@@ -97,6 +114,54 @@ class _ItemListState extends State<ItemList> {
                       },
                       child: Icon(
                         isFavListVisible ? Icons.arrow_back_ios_new : FontAwesomeIcons.heart,
+                        size: 18,
+                      )),
+                ),
+              ),
+            ),
+
+            //expand collapse
+            Visibility(
+              visible: !isCateTypeReordering && !isShowHideCates,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 5),
+                child: ModManTooltip(
+                  message: itemListCateExpansionState ? curLangText!.uiCollapseAllCategories : curLangText!.uiExpandAllCategories,
+                  child: InkWell(
+                      onTap: () async {
+                        final prefs = await SharedPreferences.getInstance();
+
+                        if (itemListCateExpansionState) {
+                          for (var type in moddedItemsList) {
+                            for (var cate in type.categories) {
+                              cate.setExpansionState(false);
+                            }
+                          }
+                          for (var type in itemViewCateExpansionTileStates) {
+                            for (var e in type) {
+                              e.currentState?.collapse();
+                            }
+                          }
+                          itemListCateExpansionState = false;
+                          prefs.setBool('itemListCateExpansionState', false);
+                        } else {
+                          for (var type in moddedItemsList) {
+                            for (var cate in type.categories) {
+                              cate.setExpansionState(true);
+                            }
+                          }
+                          for (var type in itemViewCateExpansionTileStates) {
+                            for (var e in type) {
+                              e.currentState?.expand();
+                            }
+                          }
+                          itemListCateExpansionState = true;
+                          prefs.setBool('itemListCateExpansionState', true);
+                        }
+                        setState(() {});
+                      },
+                      child: Icon(
+                        itemListCateExpansionState ? Icons.compress : Icons.expand,
                         size: 18,
                       )),
                 ),
@@ -317,72 +382,78 @@ class _ItemListState extends State<ItemList> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 5, bottom: 5, right: 5),
-                child: Text(isFavListVisible
-                    ? curLangText!.uiFavItemList
-                    : isShowHideCates
-                        ? curLangText!.uiHiddenItemList
-                        : isCateTypeReordering
-                            ? curLangText!.uiSortItemList
-                            : curLangText!.uiItemList),
+              Visibility(
+                visible: searchTextController.text.isEmpty,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 5, bottom: 5),
+                  child: Text(isFavListVisible
+                      ? curLangText!.uiFavItemList
+                      : isShowHideCates
+                          ? curLangText!.uiHiddenItemList
+                          : isCateTypeReordering
+                              ? curLangText!.uiSortItemList
+                              : curLangText!.uiItemList),
+                ),
               ),
               //Search
               Visibility(
                 visible: !isCateTypeReordering && !isShowHideCates && !isFavListVisible,
                 child: Expanded(
-                    child: TextField(
-                  controller: searchTextController,
-                  maxLines: 1,
-                  textAlignVertical: TextAlignVertical.center,
-                  decoration: InputDecoration(
-                      hintText: curLangText!.uiSearchForMods,
-                      hintStyle: TextStyle(color: Theme.of(context).hintColor),
-                      isCollapsed: true,
-                      isDense: true,
-                      contentPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 2),
-                      suffixIconConstraints: const BoxConstraints(minWidth: 20, minHeight: 28),
-                      suffixIcon: InkWell(
-                        onTap: searchTextController.text.isEmpty
-                            ? null
-                            : () {
-                                searchTextController.clear();
-                                // searchedItemList.clear();
-                                searchResultCateTypes.clear();
-                                // modViewListVisible = false;
-                                modViewItem.value = null;
-                                setState(() {});
-                              },
-                        child: Icon(
-                          searchTextController.text.isEmpty ? Icons.search : Icons.close,
-                          color: Theme.of(context).hintColor,
+                    child: Padding(
+                  padding: const EdgeInsets.only(left: 5),
+                  child: TextField(
+                    controller: searchTextController,
+                    maxLines: 1,
+                    textAlignVertical: TextAlignVertical.center,
+                    decoration: InputDecoration(
+                        hintText: curLangText!.uiSearchForMods,
+                        hintStyle: TextStyle(color: Theme.of(context).hintColor),
+                        isCollapsed: true,
+                        isDense: true,
+                        contentPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 2),
+                        suffixIconConstraints: const BoxConstraints(minWidth: 20, minHeight: 28),
+                        suffixIcon: InkWell(
+                          onTap: searchTextController.text.isEmpty
+                              ? null
+                              : () {
+                                  searchTextController.clear();
+                                  // searchedItemList.clear();
+                                  searchResultCateTypes.clear();
+                                  // modViewListVisible = false;
+                                  modViewItem.value = null;
+                                  setState(() {});
+                                },
+                          child: Icon(
+                            searchTextController.text.isEmpty ? Icons.search : Icons.close,
+                            color: Theme.of(context).hintColor,
+                          ),
                         ),
-                      ),
-                      constraints: BoxConstraints.tight(const Size.fromHeight(26)),
-                      // Set border for enabled state (default)
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(width: 1, color: Theme.of(context).hintColor),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      // Set border for focused state
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.primary),
-                        borderRadius: BorderRadius.circular(10),
-                      )),
-                  onChanged: (value) async {
-                    if (value.isNotEmpty) {
-                      // searchedItemList = await searchListBuilder(moddedItemsList, value);
-                      searchResultCateTypes = searchResultCateTypesGet(moddedItemsList, value);
-                      // modViewListVisible = false;
-                      modViewItem.value = null;
-                    } else {
-                      // searchedItemList.clear();
-                      searchResultCateTypes.clear();
-                      // modViewListVisible = false;
-                      modViewItem.value = null;
-                    }
-                    setState(() {});
-                  },
+                        constraints: BoxConstraints.tight(const Size.fromHeight(26)),
+                        // Set border for enabled state (default)
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: Theme.of(context).hintColor),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        // Set border for focused state
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.primary),
+                          borderRadius: BorderRadius.circular(10),
+                        )),
+                    onChanged: (value) async {
+                      if (value.isNotEmpty) {
+                        // searchedItemList = await searchListBuilder(moddedItemsList, value);
+                        searchResultCateTypes = searchResultCateTypesGet(moddedItemsList, value);
+                        // modViewListVisible = false;
+                        modViewItem.value = null;
+                      } else {
+                        // searchedItemList.clear();
+                        searchResultCateTypes.clear();
+                        // modViewListVisible = false;
+                        modViewItem.value = null;
+                      }
+                      setState(() {});
+                    },
+                  ),
                 )),
               )
             ],
@@ -601,6 +672,12 @@ class _ItemListState extends State<ItemList> {
                           if (isCatesAscenAlpha.isEmpty || isCatesAscenAlpha.length != moddedItemsList.length) {
                             isCatesAscenAlpha = List.generate(moddedItemsList.length, (index) => false);
                           }
+                          if (itemViewCateExpansionTileStates.isEmpty || itemViewCateExpansionTileStates.length != moddedItemsList.length) {
+                            itemViewCateExpansionTileStates = List.generate(moddedItemsList.length, (index) => []);
+                          }
+                          if (cateExpansionStates.isEmpty || cateExpansionStates.length != moddedItemsList.length) {
+                            cateExpansionStates = List.generate(moddedItemsList.length, (index) => []);
+                          }
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -642,6 +719,7 @@ class _ItemListState extends State<ItemList> {
                                         isCateTypeListExpanded[groupIndex] = value;
                                         setState(() {});
                                       },
+                                      maintainState: true,
                                       title: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
@@ -875,6 +953,13 @@ class _ItemListState extends State<ItemList> {
                                                     if (cateButtonsVisible[groupIndex].isEmpty || cateButtonsVisible[groupIndex].length != moddedItemsList[groupIndex].categories.length) {
                                                       cateButtonsVisible[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => false);
                                                     }
+                                                    if (itemViewCateExpansionTileStates[groupIndex].isEmpty ||
+                                                        itemViewCateExpansionTileStates[groupIndex].length != moddedItemsList[groupIndex].categories.length) {
+                                                      itemViewCateExpansionTileStates[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => GlobalKey());
+                                                    }
+                                                    if (cateExpansionStates[groupIndex].isEmpty || cateExpansionStates[groupIndex].length != moddedItemsList[groupIndex].categories.length) {
+                                                      cateExpansionStates[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => false);
+                                                    }
                                                     return Visibility(
                                                       visible: isFavListVisible
                                                           ? curCategory.items.where((element) => element.isFavorite).isNotEmpty
@@ -895,14 +980,18 @@ class _ItemListState extends State<ItemList> {
                                                           }
                                                           setState(() {});
                                                         },
-                                                        child: ExpansionTile(
+                                                        child: ExpansionTileCore(
                                                             backgroundColor: Colors.transparent,
                                                             textColor: Theme.of(context).textTheme.bodyMedium!.color,
                                                             iconColor: Theme.of(context).textTheme.bodyMedium!.color,
                                                             collapsedIconColor: Theme.of(context).textTheme.bodyMedium!.color,
                                                             collapsedTextColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                                            initiallyExpanded: false,
+                                                            initiallyExpanded: curCategory.getExpansionState(),
                                                             childrenPadding: EdgeInsets.zero,
+                                                            key: itemViewCateExpansionTileStates[groupIndex][categoryIndex],
+                                                            onExpansionChanged: (value) {
+                                                              value ? curCategory.setExpansionState(true) : curCategory.setExpansionState(false);
+                                                            },
                                                             title: Row(
                                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                               crossAxisAlignment: CrossAxisAlignment.center,

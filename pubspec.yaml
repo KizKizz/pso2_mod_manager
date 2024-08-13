@@ -71,6 +71,7 @@ dependencies:
     git:
       url: https://github.com/seddikmomo/advance_expansion_tile.git
       ref: upgrade-material # branch name
+  expansion_tile_group: ^2.0.0
   
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

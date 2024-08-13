@@ -291,6 +291,7 @@ class _ModSetListState extends State<ModSetList> {
                                                                   mod.setApplyState(false);
                                                                 }
                                                               }
+                                                              modViewModsApplyRemoving.value = true;
                                                             }
 
                                                             for (var item in curSet.setItems) {

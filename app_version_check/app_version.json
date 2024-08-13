@@ -2,7 +2,9 @@
     "name": "PSO2NGS Mod Manager",
     "version": "2.8.13",
     "description": [
-        "Fixed a bug with Mod Sets when applying mods",
+        "Added Expand and Collapse all categories to Item List",
+        "Added an option to add newly added mods to Mod Sets",
+        "Fixed a bug where Applied List would not refresh correctly in Mod Sets",
         "Code and performance optimization",
         "More bug fixes",
         "MOD適用時のMODセットのバグを修正",
