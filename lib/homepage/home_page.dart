@@ -143,17 +143,8 @@ class _HomePageState extends State<HomePage> {
       children: [
         if (!context.watch<StateProvider>().setsWindowVisible) const ItemList(),
         if (context.watch<StateProvider>().setsWindowVisible) const ModSetList(),
-        //if (!context.watch<StateProvider>().setsWindowVisible)
         const ModView(),
         const AppliedList(),
-        //if (context.watch<StateProvider>().setsWindowVisible) modInSetList(),
-        // if (!context.watch<StateProvider>().previewWindowVisible || !context.watch<StateProvider>().showPreviewPanel) const AppliedList(),
-        // if (context.watch<StateProvider>().previewWindowVisible && context.watch<StateProvider>().showPreviewPanel)
-          // MultiSplitView(
-          //   axis: Axis.vertical,
-          //   controller: _verticalViewsController,
-          //   children: const [Preview(), AppliedList()],
-          // )
       ],
     );
 

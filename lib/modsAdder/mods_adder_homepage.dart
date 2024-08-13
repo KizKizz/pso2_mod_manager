@@ -725,7 +725,7 @@ void modsAdderHomePage(context) {
                                                                                     Expanded(
                                                                                       child: SizedBox(
                                                                                         //width: constraints.maxWidth * 0.4,
-                                                                                        height: 40,
+                                                                                        // height: context.watch<StateProvider>().itemAdderSubItemETHeight,
                                                                                         child: Form(
                                                                                           key: _subItemFormValidate,
                                                                                           child: TextFormField(
@@ -742,17 +742,22 @@ void modsAdderHomePage(context) {
                                                                                             inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
                                                                                             validator: (value) {
                                                                                               if (value == null || value.isEmpty) {
-                                                                                                Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
+                                                                                                // Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
                                                                                                 return curLangText!.uiNameCannotBeEmpty;
                                                                                               }
 
-                                                                                              if (Directory(p.dirname(processedFileList[index].itemDirPath))
+                                                                                              if (Directory(p.dirname(
+                                                                                                      processedFileList[index].itemDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath)))
                                                                                                   .listSync()
                                                                                                   .whereType<Directory>()
                                                                                                   .where((element) => p.basename(element.path).toLowerCase() == value.toLowerCase())
                                                                                                   .isNotEmpty) {
-                                                                                                Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
+                                                                                                // Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
                                                                                                 return curLangText!.uiNameAlreadyExisted;
+                                                                                              }
+
+                                                                                              if (renameTextBoxController.text.characters.last == ' ') {
+                                                                                                return curLangText!.uiNameCannotHaveSpacesAtTheEnd;
                                                                                               }
 
                                                                                               return null;
@@ -797,6 +802,7 @@ void modsAdderHomePage(context) {
                                                                                                 _itemNameRenameIndex[index] = false;
                                                                                                 renameTextBoxController.clear();
                                                                                                 _isNameEditing = false;
+                                                                                                _duplicateCounter--;
 
                                                                                                 setState(
                                                                                                   () {},
@@ -816,7 +822,8 @@ void modsAdderHomePage(context) {
                                                                                         onPressed: renameTextBoxController.text == processedFileList[index].itemName
                                                                                             ? null
                                                                                             : () async {
-                                                                                                if (_subItemFormValidate.currentState!.validate()) {
+                                                                                                if (_subItemFormValidate.currentState!.validate() &&
+                                                                                                    renameTextBoxController.text != processedFileList[index].itemName) {
                                                                                                   if (renameTextBoxController.text.isNotEmpty) {
                                                                                                     //rename text
                                                                                                     String newItemName = renameTextBoxController.text.trim();
@@ -849,6 +856,7 @@ void modsAdderHomePage(context) {
                                                                                                   _itemNameRenameIndex[index] = false;
                                                                                                   renameTextBoxController.clear();
                                                                                                   _isNameEditing = false;
+                                                                                                  _duplicateCounter--;
 
                                                                                                   setState(
                                                                                                     () {},
@@ -1063,7 +1071,7 @@ void modsAdderHomePage(context) {
                                                                                   Expanded(
                                                                                     child: SizedBox(
                                                                                       //width: constraints.maxWidth * 0.4,
-                                                                                      height: 40,
+                                                                                      // height: context.watch<StateProvider>().itemAdderSubItemETHeight,
                                                                                       child: Form(
                                                                                         key: _subItemFormValidate,
                                                                                         child: TextFormField(
@@ -1080,17 +1088,25 @@ void modsAdderHomePage(context) {
                                                                                           inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
                                                                                           validator: (value) {
                                                                                             if (value == null || value.isEmpty) {
-                                                                                              Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
+                                                                                              // Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
                                                                                               return curLangText!.uiNameCannotBeEmpty;
                                                                                             }
 
-                                                                                            if (Directory(processedFileList[index].itemDirPath)
+                                                                                            if (Directory(processedFileList[index]
+                                                                                                    .modList[mIndex]
+                                                                                                    .modDirPath
+                                                                                                    .replaceFirst(modManModsAdderPath, modManModsDirPath))
+                                                                                                .parent
                                                                                                 .listSync()
                                                                                                 .whereType<Directory>()
-                                                                                                .where((element) => p.basename(element.path).toLowerCase() == value.toLowerCase())
+                                                                                                .where((e) => p.basename(e.path) == renameTextBoxController.value.text)
                                                                                                 .isNotEmpty) {
-                                                                                              Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
+                                                                                              // Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
                                                                                               return curLangText!.uiNameAlreadyExisted;
+                                                                                            }
+
+                                                                                            if (renameTextBoxController.text.characters.last == ' ') {
+                                                                                              return curLangText!.uiNameCannotHaveSpacesAtTheEnd;
                                                                                             }
 
                                                                                             return null;
@@ -1132,6 +1148,7 @@ void modsAdderHomePage(context) {
                                                                                               mainFolderRenameIndex[index][mIndex] = false;
                                                                                               renameTextBoxController.clear();
                                                                                               _isNameEditing = false;
+                                                                                              _duplicateCounter--;
 
                                                                                               setState(
                                                                                                 () {},
@@ -1157,7 +1174,7 @@ void modsAdderHomePage(context) {
                                                                                       onPressed: renameTextBoxController.text == curMod.modName
                                                                                           ? null
                                                                                           : () async {
-                                                                                              if (_subItemFormValidate.currentState!.validate()) {
+                                                                                              if (_subItemFormValidate.currentState!.validate() && renameTextBoxController.text != curMod.modName) {
                                                                                                 if (renameTextBoxController.text.isNotEmpty) {
                                                                                                   curMod.modName = renameTextBoxController.text;
                                                                                                   var newModDir = await Directory(curMod.modDirPath)
@@ -1170,6 +1187,7 @@ void modsAdderHomePage(context) {
                                                                                                 renameTextBoxController.clear();
                                                                                                 _isNameEditing = false;
                                                                                                 _pathLengthInNameEdit = 0;
+                                                                                                _duplicateCounter--;
 
                                                                                                 setState(
                                                                                                   () {},
@@ -1379,7 +1397,7 @@ void modsAdderHomePage(context) {
                                                                                             children: [
                                                                                               Expanded(
                                                                                                 child: SizedBox(
-                                                                                                  height: context.watch<StateProvider>().itemAdderSubItemETHeight,
+                                                                                                  // height: context.watch<StateProvider>().itemAdderSubItemETHeight,
                                                                                                   child: Form(
                                                                                                     key: _subItemFormValidate,
                                                                                                     child: TextFormField(
@@ -1396,17 +1414,23 @@ void modsAdderHomePage(context) {
                                                                                                       inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
                                                                                                       validator: (value) {
                                                                                                         if (value == null || value.isEmpty) {
-                                                                                                          Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
+                                                                                                          // Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
                                                                                                           return curLangText!.uiNameCannotBeEmpty;
                                                                                                         }
 
-                                                                                                        if (Directory(curMod.modDirPath)
+                                                                                                        if (Directory(curMod.submodList[sIndex].submodDirPath
+                                                                                                                .replaceFirst(modManModsAdderPath, modManModsDirPath))
+                                                                                                            .parent
                                                                                                             .listSync()
                                                                                                             .whereType<Directory>()
-                                                                                                            .where((element) => p.basename(element.path).toLowerCase() == value.toLowerCase())
+                                                                                                            .where((e) => p.basename(e.path) == renameTextBoxController.value.text)
                                                                                                             .isNotEmpty) {
-                                                                                                          Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
+                                                                                                          // Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
                                                                                                           return curLangText!.uiNameAlreadyExisted;
+                                                                                                        }
+
+                                                                                                        if (renameTextBoxController.text.characters.last == ' ') {
+                                                                                                          return curLangText!.uiNameCannotHaveSpacesAtTheEnd;
                                                                                                         }
 
                                                                                                         return null;
@@ -1433,7 +1457,7 @@ void modsAdderHomePage(context) {
 
                                                                                                           //Clear
                                                                                                           // ignore: use_build_context_synchronously
-                                                                                                          Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
+                                                                                                          // Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
                                                                                                           subFoldersRenameIndex[index][mIndex][sIndex] = false;
                                                                                                           renameTextBoxController.clear();
                                                                                                           _isNameEditing = false;
@@ -1473,7 +1497,7 @@ void modsAdderHomePage(context) {
                                                                                                             renameTextBoxController.clear();
                                                                                                             _isNameEditing = false;
                                                                                                             // ignore: use_build_context_synchronously
-                                                                                                            Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
+                                                                                                            // Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
                                                                                                             setState(
                                                                                                               () {},
                                                                                                             );
@@ -1493,7 +1517,7 @@ void modsAdderHomePage(context) {
                                                                                                     renameTextBoxController.clear();
                                                                                                     _isNameEditing = false;
                                                                                                     // ignore: use_build_context_synchronously
-                                                                                                    Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
+                                                                                                    // Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
 
                                                                                                     setState(
                                                                                                       () {},
@@ -1745,10 +1769,6 @@ void modsAdderHomePage(context) {
                                                     subFoldersRenameIndex.clear();
                                                     _selectedCategories.clear();
                                                     pathCharLengthList.clear();
-                                                    // if (csvInfosFromSheets.isNotEmpty) {
-                                                    //   csvInfosFromSheets.clear();
-                                                    // }
-                                                    //_exitConfirmDialog = false;
                                                     clearModAdderDirs();
                                                     Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
                                                     _isNameEditing = false;
@@ -1758,6 +1778,29 @@ void modsAdderHomePage(context) {
                                                     );
                                                   }),
                                             child: Text(curLangText!.uiClearAll)),
+                                      ),
+                                    ),
+                                    Visibility(
+                                      visible: !dropZoneMax,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 5),
+                                        child: ElevatedButton(
+                                            onPressed: processedFileList.isEmpty || !context.watch<StateProvider>().modAdderReload
+                                                ? null
+                                                : (() async {
+                                                    final prefs = await SharedPreferences.getInstance();
+                                                    if (modAdderAddToModSets) {
+                                                      modAdderAddToModSets = false;
+                                                      prefs.setBool('modAdderAddToModSets', false);
+                                                    } else {
+                                                      modAdderAddToModSets = true;
+                                                      prefs.setBool('modAdderAddToModSets', true);
+                                                    }
+                                                    setState(
+                                                      () {},
+                                                    );
+                                                  }),
+                                            child: Text(modAdderAddToModSets ? '${curLangText!.uiAddToModSets}: ON' : '${curLangText!.uiAddToModSets}: OFF')),
                                       ),
                                     ),
                                     Visibility(
@@ -1788,7 +1831,7 @@ void modsAdderHomePage(context) {
                                                         setState(
                                                           () {},
                                                         );
-                                                        modsAdderModFilesAdder(context, toAddList).then(
+                                                        modsAdderModFilesAdder(context, toAddList, modAdderAddToModSets).then(
                                                           (value) {
                                                             if (value.$1) {
                                                               clearModAdderDirs();

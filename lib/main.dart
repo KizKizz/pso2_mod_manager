@@ -241,6 +241,10 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   Future<void> miscCheck() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
+       //mod adder add to mod sets
+      modAdderAddToModSets = (prefs.getBool('modAdderAddToModSets') ?? false);
+      //cate list expansion
+      itemListCateExpansionState = (prefs.getBool('itemListCateExpansionState') ?? false);
       //first Time Language Set
       firstTimeLanguageSet = (prefs.getBool('firstTimeLanguageSet') ?? false);
       //items With New Mods On Top

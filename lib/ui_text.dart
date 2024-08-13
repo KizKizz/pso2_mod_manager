@@ -337,7 +337,9 @@ class TranslationText {
       uiNew = 'New',
       uiShowNew = 'Show New',
       uiShowApplied = 'Show Applied',
-      uiUndo = 'Undo';
+      uiUndo = 'Undo',
+      uiExpandAllCategories = 'Expand All Categories',
+      uiCollapseAllCategories = 'Collapse All Categories';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
@@ -362,7 +364,8 @@ class TranslationText {
       uiRenameTheModsBelowBeforeAdding = 'Rename the mods below before adding',
       uiDuplicateModsIn = 'in',
       uiRenameForMe = 'Rename for me!',
-      uiAddingMods = 'Adding mods';
+      uiAddingMods = 'Adding mods',
+      uiNameCannotHaveSpacesAtTheEnd = 'Name cannot have spaces at the end';
 
   //color_picker
   String uiPickAColor = 'Pick a color';

@@ -528,683 +528,352 @@ void modsImportHomePage(context) {
                                                     }),
                                                   ),
                                                   child: SuperListView.builder(
-                                                          // shrinkWrap: true,
-                                                          physics: const RangeMaintainingScrollPhysics(),
-                                                          itemCount: processedImportFileList.length,
-                                                          itemBuilder: (context, index) {
-                                                            if (processedImportFileList.isNotEmpty) {
-                                                              return Card(
-                                                                margin: const EdgeInsets.only(top: 0, bottom: 2, left: 0, right: 0),
-                                                                color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
-                                                                shape: RoundedRectangleBorder(
-                                                                    side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                                child: ExpansionTile(
-                                                                  initiallyExpanded: true,
-                                                                  maintainState: true,
-                                                                  //Edit Item's name
-                                                                  title: Row(
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
-                                                                        child: Container(
-                                                                          width: 80,
-                                                                          height: 80,
-                                                                          decoration: BoxDecoration(
-                                                                            borderRadius: BorderRadius.circular(3),
-                                                                            border: Border.all(color: Theme.of(context).hintColor),
-                                                                          ),
-                                                                          child: processedImportFileList[index].itemIconPath.isEmpty
-                                                                              ? Image.asset(
-                                                                                  'assets/img/placeholdersquare.png',
-                                                                                  fit: BoxFit.fitWidth,
-                                                                                )
-                                                                              : Image.file(
-                                                                                  File(processedImportFileList[index].itemIconPath),
-                                                                                  fit: BoxFit.fitWidth,
-                                                                                ),
-                                                                        ),
+                                                      // shrinkWrap: true,
+                                                      physics: const RangeMaintainingScrollPhysics(),
+                                                      itemCount: processedImportFileList.length,
+                                                      itemBuilder: (context, index) {
+                                                        if (processedImportFileList.isNotEmpty) {
+                                                          return Card(
+                                                            margin: const EdgeInsets.only(top: 0, bottom: 2, left: 0, right: 0),
+                                                            color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
+                                                            shape: RoundedRectangleBorder(
+                                                                side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                            child: ExpansionTile(
+                                                              initiallyExpanded: true,
+                                                              maintainState: true,
+                                                              //Edit Item's name
+                                                              title: Row(
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
+                                                                    child: Container(
+                                                                      width: 80,
+                                                                      height: 80,
+                                                                      decoration: BoxDecoration(
+                                                                        borderRadius: BorderRadius.circular(3),
+                                                                        border: Border.all(color: Theme.of(context).hintColor),
                                                                       ),
-                                                                      Expanded(
-                                                                        child: Column(
-                                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                                          children: [
-                                                                            if (processedImportFileList[index].isUnknown)
-                                                                              DropdownButton2(
-                                                                                hint: Text(curLangText!.uiSelectACategory),
-                                                                                underline: const SizedBox(),
-                                                                                buttonStyleData: ButtonStyleData(
-                                                                                  decoration: BoxDecoration(
-                                                                                    borderRadius: BorderRadius.circular(3),
-                                                                                    border: Border.all(color: Theme.of(context).hintColor),
-                                                                                  ),
-                                                                                  width: 200,
-                                                                                  height: 35,
-                                                                                ),
-                                                                                dropdownStyleData: DropdownStyleData(
-                                                                                  decoration: BoxDecoration(
-                                                                                    color: Theme.of(context).primaryColorLight,
-                                                                                    borderRadius: BorderRadius.circular(2),
-                                                                                  ),
-                                                                                  padding: const EdgeInsets.symmetric(vertical: 5),
-                                                                                  elevation: 3,
-                                                                                  maxHeight: constraints.maxHeight * 0.5,
-                                                                                ),
-                                                                                iconStyleData: const IconStyleData(icon: Icon(Icons.arrow_drop_down), iconSize: 30),
-                                                                                menuItemStyleData: const MenuItemStyleData(
-                                                                                  height: 30,
-                                                                                ),
-                                                                                items: dropdownButtonCateList
-                                                                                    .map((item) => DropdownMenuItem<String>(
-                                                                                        value: item,
-                                                                                        child: Row(
-                                                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                                                          children: [
-                                                                                            Container(
-                                                                                              padding: const EdgeInsets.only(bottom: 3),
-                                                                                              child: Text(
-                                                                                                item,
-                                                                                                style: const TextStyle(
-                                                                                                    //fontSize: 14,
-                                                                                                    //fontWeight: FontWeight.bold,
-                                                                                                    //color: Colors.white,
-                                                                                                    ),
-                                                                                                overflow: TextOverflow.ellipsis,
-                                                                                              ),
-                                                                                            )
-                                                                                          ],
-                                                                                        )))
-                                                                                    .toList(),
-                                                                                value: _selectedCategories[index],
-                                                                                onChanged: (value) async {
-                                                                                  _selectedCategories[index] = value.toString();
-                                                                                  String newItemPath = processedImportFileList[index].itemDirPath.replaceFirst(
-                                                                                      p.dirname(processedImportFileList[index].itemDirPath),
-                                                                                      Uri.file('$modManImportedDirPath/${_selectedCategories[index]}').toFilePath());
-                                                                                  await io.copyPath(processedImportFileList[index].itemDirPath, newItemPath);
-                                                                                  //delete item dir
-                                                                                  Directory(processedImportFileList[index].itemDirPath).deleteSync(recursive: true);
-                                                                                  //delete parent dir if empty
-                                                                                  if (Directory(p.dirname(processedImportFileList[index].itemDirPath)).listSync().isEmpty) {
-                                                                                    Directory(p.dirname(processedImportFileList[index].itemDirPath)).deleteSync(recursive: true);
-                                                                                  }
-                                                                                  processedImportFileList[index].setNewParentPathToChildren(newItemPath.trim());
-                                                                                  processedImportFileList[index].itemDirPath = newItemPath;
-                                                                                  processedImportFileList[index].category = value.toString();
-                                                                                  debugPrint(processedImportFileList[index].itemDirPath);
-                                                                                  setState(
-                                                                                    () {},
-                                                                                  );
-                                                                                },
+                                                                      child: processedImportFileList[index].itemIconPath.isEmpty
+                                                                          ? Image.asset(
+                                                                              'assets/img/placeholdersquare.png',
+                                                                              fit: BoxFit.fitWidth,
+                                                                            )
+                                                                          : Image.file(
+                                                                              File(processedImportFileList[index].itemIconPath),
+                                                                              fit: BoxFit.fitWidth,
+                                                                            ),
+                                                                    ),
+                                                                  ),
+                                                                  Expanded(
+                                                                    child: Column(
+                                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      children: [
+                                                                        if (processedImportFileList[index].isUnknown)
+                                                                          DropdownButton2(
+                                                                            hint: Text(curLangText!.uiSelectACategory),
+                                                                            underline: const SizedBox(),
+                                                                            buttonStyleData: ButtonStyleData(
+                                                                              decoration: BoxDecoration(
+                                                                                borderRadius: BorderRadius.circular(3),
+                                                                                border: Border.all(color: Theme.of(context).hintColor),
                                                                               ),
-                                                                            if (!processedImportFileList[index].isUnknown)
-                                                                              SizedBox(
-                                                                                width: 150,
-                                                                                height: 40,
-                                                                                child: Padding(
-                                                                                  padding: const EdgeInsets.only(top: 10),
-                                                                                  child: Text(processedImportFileList[index].category,
-                                                                                      style: TextStyle(
-                                                                                          fontWeight: FontWeight.w600,
-                                                                                          color: !processedImportFileList[index].toBeAdded
-                                                                                              ? Theme.of(context).disabledColor
-                                                                                              : Theme.of(context).textTheme.bodyMedium!.color)),
-                                                                                ),
+                                                                              width: 200,
+                                                                              height: 35,
+                                                                            ),
+                                                                            dropdownStyleData: DropdownStyleData(
+                                                                              decoration: BoxDecoration(
+                                                                                color: Theme.of(context).primaryColorLight,
+                                                                                borderRadius: BorderRadius.circular(2),
                                                                               ),
-                                                                            SizedBox(
-                                                                              height: 40,
-                                                                              child: _itemNameRenameIndex[index]
-                                                                                  ? Row(
+                                                                              padding: const EdgeInsets.symmetric(vertical: 5),
+                                                                              elevation: 3,
+                                                                              maxHeight: constraints.maxHeight * 0.5,
+                                                                            ),
+                                                                            iconStyleData: const IconStyleData(icon: Icon(Icons.arrow_drop_down), iconSize: 30),
+                                                                            menuItemStyleData: const MenuItemStyleData(
+                                                                              height: 30,
+                                                                            ),
+                                                                            items: dropdownButtonCateList
+                                                                                .map((item) => DropdownMenuItem<String>(
+                                                                                    value: item,
+                                                                                    child: Row(
+                                                                                      mainAxisAlignment: MainAxisAlignment.center,
                                                                                       children: [
-                                                                                        Expanded(
-                                                                                          child: SizedBox(
-                                                                                            //width: constraints.maxWidth * 0.4,
-                                                                                            height: 40,
-                                                                                            child: Form(
-                                                                                              key: _subItemFormValidate,
-                                                                                              child: TextFormField(
-                                                                                                autofocus: true,
-                                                                                                controller: renameImportTextBoxController,
-                                                                                                maxLines: 1,
-                                                                                                maxLength: 50,
-                                                                                                decoration: InputDecoration(
-                                                                                                  contentPadding: const EdgeInsets.only(left: 10, top: 10),
-                                                                                                  border: const OutlineInputBorder(),
-                                                                                                  hintText: processedImportFileList[index].itemName,
-                                                                                                  counterText: '',
+                                                                                        Container(
+                                                                                          padding: const EdgeInsets.only(bottom: 3),
+                                                                                          child: Text(
+                                                                                            item,
+                                                                                            style: const TextStyle(
+                                                                                                //fontSize: 14,
+                                                                                                //fontWeight: FontWeight.bold,
+                                                                                                //color: Colors.white,
                                                                                                 ),
-                                                                                                inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
-                                                                                                validator: (value) {
-                                                                                                  if (value == null || value.isEmpty) {
-                                                                                                    Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
-                                                                                                    return curLangText!.uiNameCannotBeEmpty;
-                                                                                                  }
-
-                                                                                                  if (Directory(p.dirname(processedImportFileList[index].itemDirPath))
-                                                                                                      .listSync()
-                                                                                                      .whereType<Directory>()
-                                                                                                      .where((element) => p.basename(element.path).toLowerCase() == value.toLowerCase())
-                                                                                                      .isNotEmpty) {
-                                                                                                    Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
-                                                                                                    return curLangText!.uiNameAlreadyExisted;
-                                                                                                  }
-
-                                                                                                  return null;
-                                                                                                },
-                                                                                                onChanged: (value) {
-                                                                                                  setState(
-                                                                                                    () {},
-                                                                                                  );
-                                                                                                },
-                                                                                                onEditingComplete: () async {
-                                                                                                  if (renameImportTextBoxController.text != processedImportFileList[index].itemName &&
-                                                                                                      _subItemFormValidate.currentState!.validate()) {
-                                                                                                    if (renameImportTextBoxController.text.isNotEmpty) {
-                                                                                                      //rename text
-                                                                                                      String newItemName = renameImportTextBoxController.text.trim();
-                                                                                                      if (processedImportFileList[index].category == 'Basewears' &&
-                                                                                                          !renameImportTextBoxController.text.contains('[Ba]')) {
-                                                                                                        newItemName += ' [Ba]';
-                                                                                                      } else if (processedImportFileList[index].category == 'Innerwears' &&
-                                                                                                          !renameImportTextBoxController.text.contains('[In]')) {
-                                                                                                        newItemName += ' [In]';
-                                                                                                      } else if (processedImportFileList[index].category == 'Outerwears' &&
-                                                                                                          !renameImportTextBoxController.text.contains('[Ou]')) {
-                                                                                                        newItemName += ' [Ou]';
-                                                                                                      } else if (processedImportFileList[index].category == 'Setwears' &&
-                                                                                                          !renameImportTextBoxController.text.contains('[Se]')) {
-                                                                                                        newItemName += ' [Se]';
-                                                                                                      } else {
-                                                                                                        newItemName = renameImportTextBoxController.text;
-                                                                                                      }
-                                                                                                      //change dir name
-                                                                                                      processedImportFileList[index].itemName = newItemName;
-                                                                                                      var newItemDir = await Directory(processedImportFileList[index].itemDirPath).rename(
-                                                                                                          Uri.file('${p.dirname(processedImportFileList[index].itemDirPath)}/$newItemName')
-                                                                                                              .toFilePath());
-                                                                                                      processedImportFileList[index].setNewParentPathToChildren(newItemDir.path.trim());
-                                                                                                      processedImportFileList[index].itemIconPath = processedImportFileList[index]
-                                                                                                          .itemIconPath
-                                                                                                          .replaceFirst(processedImportFileList[index].itemDirPath, newItemDir.path);
-                                                                                                      processedImportFileList[index].itemDirPath = newItemDir.path;
-                                                                                                    }
-
-                                                                                                    _itemNameRenameIndex[index] = false;
-                                                                                                    renameImportTextBoxController.clear();
-                                                                                                    _isNameEditing = false;
-
-                                                                                                    setState(
-                                                                                                      () {},
-                                                                                                    );
-                                                                                                  }
-                                                                                                  setState(
-                                                                                                    () {},
-                                                                                                  );
-                                                                                                },
-                                                                                              ),
+                                                                                            overflow: TextOverflow.ellipsis,
+                                                                                          ),
+                                                                                        )
+                                                                                      ],
+                                                                                    )))
+                                                                                .toList(),
+                                                                            value: _selectedCategories[index],
+                                                                            onChanged: (value) async {
+                                                                              _selectedCategories[index] = value.toString();
+                                                                              String newItemPath = processedImportFileList[index].itemDirPath.replaceFirst(
+                                                                                  p.dirname(processedImportFileList[index].itemDirPath),
+                                                                                  Uri.file('$modManImportedDirPath/${_selectedCategories[index]}').toFilePath());
+                                                                              await io.copyPath(processedImportFileList[index].itemDirPath, newItemPath);
+                                                                              //delete item dir
+                                                                              Directory(processedImportFileList[index].itemDirPath).deleteSync(recursive: true);
+                                                                              //delete parent dir if empty
+                                                                              if (Directory(p.dirname(processedImportFileList[index].itemDirPath)).listSync().isEmpty) {
+                                                                                Directory(p.dirname(processedImportFileList[index].itemDirPath)).deleteSync(recursive: true);
+                                                                              }
+                                                                              processedImportFileList[index].setNewParentPathToChildren(newItemPath.trim());
+                                                                              processedImportFileList[index].itemDirPath = newItemPath;
+                                                                              processedImportFileList[index].category = value.toString();
+                                                                              debugPrint(processedImportFileList[index].itemDirPath);
+                                                                              setState(
+                                                                                () {},
+                                                                              );
+                                                                            },
+                                                                          ),
+                                                                        if (!processedImportFileList[index].isUnknown)
+                                                                          SizedBox(
+                                                                            width: 150,
+                                                                            height: 40,
+                                                                            child: Padding(
+                                                                              padding: const EdgeInsets.only(top: 10),
+                                                                              child: Text(processedImportFileList[index].category,
+                                                                                  style: TextStyle(
+                                                                                      fontWeight: FontWeight.w600,
+                                                                                      color: !processedImportFileList[index].toBeAdded
+                                                                                          ? Theme.of(context).disabledColor
+                                                                                          : Theme.of(context).textTheme.bodyMedium!.color)),
+                                                                            ),
+                                                                          ),
+                                                                        SizedBox(
+                                                                          height: 40,
+                                                                          child: _itemNameRenameIndex[index]
+                                                                              ? Row(
+                                                                                  children: [
+                                                                                    Expanded(
+                                                                                      child: SizedBox(
+                                                                                        //width: constraints.maxWidth * 0.4,
+                                                                                        // height: 40,
+                                                                                        child: Form(
+                                                                                          key: _subItemFormValidate,
+                                                                                          child: TextFormField(
+                                                                                            autofocus: true,
+                                                                                            controller: renameImportTextBoxController,
+                                                                                            maxLines: 1,
+                                                                                            maxLength: 50,
+                                                                                            decoration: InputDecoration(
+                                                                                              contentPadding: const EdgeInsets.only(left: 10, top: 10),
+                                                                                              border: const OutlineInputBorder(),
+                                                                                              hintText: processedImportFileList[index].itemName,
+                                                                                              counterText: '',
                                                                                             ),
-                                                                                          ),
-                                                                                        ),
-                                                                                        const SizedBox(
-                                                                                          width: 5,
-                                                                                        ),
-                                                                                        SizedBox(
-                                                                                          width: 40,
-                                                                                          child: MaterialButton(
-                                                                                            onPressed: renameImportTextBoxController.text == processedImportFileList[index].itemName
-                                                                                                ? null
-                                                                                                : () async {
-                                                                                                    if (_subItemFormValidate.currentState!.validate()) {
-                                                                                                      if (renameImportTextBoxController.text.isNotEmpty) {
-                                                                                                        //rename text
-                                                                                                        String newItemName = renameImportTextBoxController.text.trim();
-                                                                                                        if (processedImportFileList[index].category == 'Basewears' &&
-                                                                                                            !renameImportTextBoxController.text.contains('[Ba]')) {
-                                                                                                          newItemName += ' [Ba]';
-                                                                                                        } else if (processedImportFileList[index].category == 'Innerwears' &&
-                                                                                                            !renameImportTextBoxController.text.contains('[In]')) {
-                                                                                                          newItemName += ' [In]';
-                                                                                                        } else if (processedImportFileList[index].category == 'Outerwears' &&
-                                                                                                            !renameImportTextBoxController.text.contains('[Ou]')) {
-                                                                                                          newItemName += ' [Ou]';
-                                                                                                        } else if (processedImportFileList[index].category == 'Setwears' &&
-                                                                                                            !renameImportTextBoxController.text.contains('[Se]')) {
-                                                                                                          newItemName += ' [Se]';
-                                                                                                        } else {
-                                                                                                          newItemName = renameImportTextBoxController.text;
-                                                                                                        }
-                                                                                                        //change dir name
-                                                                                                        processedImportFileList[index].itemName = newItemName;
-                                                                                                        var newItemDir = await Directory(processedImportFileList[index].itemDirPath).rename(
-                                                                                                            Uri.file('${p.dirname(processedImportFileList[index].itemDirPath)}/$newItemName')
-                                                                                                                .toFilePath());
-                                                                                                        processedImportFileList[index].setNewParentPathToChildren(newItemDir.path.trim());
-                                                                                                        processedImportFileList[index].itemIconPath = processedImportFileList[index]
-                                                                                                            .itemIconPath
-                                                                                                            .replaceFirst(processedImportFileList[index].itemDirPath, newItemDir.path);
-                                                                                                        processedImportFileList[index].itemDirPath = newItemDir.path;
-                                                                                                      }
+                                                                                            inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
+                                                                                            validator: (value) {
+                                                                                              if (value == null || value.isEmpty) {
+                                                                                                // Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
+                                                                                                return curLangText!.uiNameCannotBeEmpty;
+                                                                                              }
 
-                                                                                                      _itemNameRenameIndex[index] = false;
-                                                                                                      renameImportTextBoxController.clear();
-                                                                                                      _isNameEditing = false;
+                                                                                              if (Directory(p.dirname(processedImportFileList[index].itemDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath)))
+                                                                                                  .listSync()
+                                                                                                  .whereType<Directory>()
+                                                                                                  .where((element) => p.basename(element.path).toLowerCase() == value.toLowerCase())
+                                                                                                  .isNotEmpty) {
+                                                                                                // Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
+                                                                                                return curLangText!.uiNameAlreadyExisted;
+                                                                                              }
 
-                                                                                                      setState(
-                                                                                                        () {},
-                                                                                                      );
-                                                                                                    }
-                                                                                                  },
-                                                                                            child: const Icon(Icons.check),
-                                                                                          ),
-                                                                                        ),
-                                                                                        const SizedBox(
-                                                                                          width: 5,
-                                                                                        ),
-                                                                                        SizedBox(
-                                                                                          width: 40,
-                                                                                          child: MaterialButton(
-                                                                                            onPressed: () {
-                                                                                              _itemNameRenameIndex[index] = false;
-                                                                                              renameImportTextBoxController.clear();
-                                                                                              _isNameEditing = false;
+                                                                                              if (renameImportTextBoxController.text.characters.last == ' ') {
+                                                                                                return curLangText!.uiNameCannotHaveSpacesAtTheEnd;
+                                                                                              }
 
+                                                                                              return null;
+                                                                                            },
+                                                                                            onChanged: (value) {
                                                                                               setState(
                                                                                                 () {},
                                                                                               );
                                                                                             },
-                                                                                            child: const Icon(Icons.close),
-                                                                                          ),
-                                                                                        ),
-                                                                                      ],
-                                                                                    )
-                                                                                  : Row(
-                                                                                      children: [
-                                                                                        Expanded(
-                                                                                          child: Padding(
-                                                                                            padding: const EdgeInsets.only(bottom: 3),
-                                                                                            child: Text(processedImportFileList[index].itemName.replaceAll('_', '/'),
-                                                                                                style: TextStyle(
-                                                                                                    fontWeight: FontWeight.w600,
-                                                                                                    color: !processedImportFileList[index].toBeAdded
-                                                                                                        ? Theme.of(context).disabledColor
-                                                                                                        : Theme.of(context).textTheme.bodyMedium!.color)),
-                                                                                          ),
-                                                                                        ),
-                                                                                        const SizedBox(
-                                                                                          width: 5,
-                                                                                        ),
-                                                                                        if (processedImportFileList[index].isChildrenDuplicated)
-                                                                                          Padding(
-                                                                                            padding: const EdgeInsets.only(right: 5),
-                                                                                            child: Container(
-                                                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
-                                                                                              decoration: BoxDecoration(
-                                                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                                                              ),
-                                                                                              child: Text(
-                                                                                                curLangText!.uiDuplicateModsInside,
-                                                                                                style: TextStyle(
-                                                                                                    fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                              ),
-                                                                                            ),
-                                                                                          ),
-                                                                                        Visibility(
-                                                                                          visible: !defaultCategoryNames.contains(processedImportFileList[index].category) ||
-                                                                                              processedImportFileList[index].category == defaultCategoryNames[13],
-                                                                                          child: SizedBox(
-                                                                                            width: 40,
-                                                                                            child: Tooltip(
-                                                                                              message: curLangText!.uiEditName,
-                                                                                              height: 25,
-                                                                                              textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                                                                              waitDuration: const Duration(seconds: 1),
-                                                                                              child: MaterialButton(
-                                                                                                onPressed: !_isNameEditing && processedImportFileList[index].toBeAdded
-                                                                                                    ? () {
-                                                                                                        renameImportTextBoxController.text = processedImportFileList[index].itemName;
-                                                                                                        renameImportTextBoxController.selection = TextSelection(
-                                                                                                          baseOffset: 0,
-                                                                                                          extentOffset: renameImportTextBoxController.text.length,
-                                                                                                        );
-                                                                                                        _isNameEditing = true;
-                                                                                                        _itemNameRenameIndex[index] = true;
-                                                                                                        setState(
-                                                                                                          () {},
-                                                                                                        );
-                                                                                                      }
-                                                                                                    : null,
-                                                                                                child: const Icon(Icons.edit),
-                                                                                              ),
-                                                                                            ),
-                                                                                          ),
-                                                                                        ),
-                                                                                        const SizedBox(
-                                                                                          width: 5,
-                                                                                        ),
-                                                                                        if (processedImportFileList[index].toBeAdded)
-                                                                                          SizedBox(
-                                                                                            width: 40,
-                                                                                            child: ModManTooltip(
-                                                                                              message: curLangText!.uiMarkThisNotToBeAdded,
-                                                                                              child: MaterialButton(
-                                                                                                onPressed: () {
-                                                                                                  processedImportFileList[index].toBeAdded = false;
-                                                                                                  for (var mod in processedImportFileList[index].modList) {
-                                                                                                    mod.toBeAdded = false;
-                                                                                                    for (var submod in mod.submodList) {
-                                                                                                      submod.toBeAdded = false;
-                                                                                                    }
+                                                                                            onEditingComplete: () async {
+                                                                                              if (renameImportTextBoxController.text != processedImportFileList[index].itemName &&
+                                                                                                  _subItemFormValidate.currentState!.validate()) {
+                                                                                                if (renameImportTextBoxController.text.isNotEmpty) {
+                                                                                                  //rename text
+                                                                                                  String newItemName = renameImportTextBoxController.text.trim();
+                                                                                                  if (processedImportFileList[index].category == 'Basewears' &&
+                                                                                                      !renameImportTextBoxController.text.contains('[Ba]')) {
+                                                                                                    newItemName += ' [Ba]';
+                                                                                                  } else if (processedImportFileList[index].category == 'Innerwears' &&
+                                                                                                      !renameImportTextBoxController.text.contains('[In]')) {
+                                                                                                    newItemName += ' [In]';
+                                                                                                  } else if (processedImportFileList[index].category == 'Outerwears' &&
+                                                                                                      !renameImportTextBoxController.text.contains('[Ou]')) {
+                                                                                                    newItemName += ' [Ou]';
+                                                                                                  } else if (processedImportFileList[index].category == 'Setwears' &&
+                                                                                                      !renameImportTextBoxController.text.contains('[Se]')) {
+                                                                                                    newItemName += ' [Se]';
+                                                                                                  } else {
+                                                                                                    newItemName = renameImportTextBoxController.text;
                                                                                                   }
-                                                                                                  setState(
-                                                                                                    () {},
-                                                                                                  );
-                                                                                                },
-                                                                                                child: const Icon(
-                                                                                                  Icons.check_box_outlined,
-                                                                                                  color: Colors.green,
-                                                                                                ),
-                                                                                              ),
-                                                                                            ),
-                                                                                          ),
-                                                                                        if (!processedImportFileList[index].toBeAdded)
-                                                                                          SizedBox(
-                                                                                            width: 40,
-                                                                                            child: ModManTooltip(
-                                                                                              message: curLangText!.uiMarkThisToBeAdded,
-                                                                                              child: MaterialButton(
-                                                                                                onPressed: () {
-                                                                                                  processedImportFileList[index].toBeAdded = true;
-                                                                                                  for (var mod in processedImportFileList[index].modList) {
-                                                                                                    mod.toBeAdded = true;
-                                                                                                    for (var submod in mod.submodList) {
-                                                                                                      submod.toBeAdded = true;
-                                                                                                    }
-                                                                                                  }
-                                                                                                  setState(
-                                                                                                    () {},
-                                                                                                  );
-                                                                                                },
-                                                                                                child: const Icon(
-                                                                                                  Icons.check_box_outline_blank_outlined,
-                                                                                                  color: Colors.red,
-                                                                                                ),
-                                                                                              ),
-                                                                                            ),
-                                                                                          ),
-                                                                                      ],
-                                                                                    ),
-                                                                            )
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-
-                                                                  textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                                                  iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                                                  collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                                                  //childrenPadding: const EdgeInsets.only(left: 10),
-                                                                  children: [
-                                                                    //mods list
-                                                                    SuperListView.builder(
-                                                                        shrinkWrap: true,
-                                                                        physics: const RangeMaintainingScrollPhysics(),
-                                                                        itemCount: processedImportFileList[index].modList.length,
-                                                                        itemBuilder: (context, mIndex) {
-                                                                          var curMod = processedImportFileList[index].modList[mIndex];
-                                                                          _isProcessingMoreFiles = false;
-                                                                          //rename trigger
-                                                                          // //List<bool> mainImportedFolderRenameIndex = [];
-                                                                          // if (mainImportedFolderRenameIndex.isEmpty || mainImportedFolderRenameIndex.length != processedImportFileList[index].modList.length) {
-                                                                          //   mainImportedFolderRenameIndex = List.generate(processedImportFileList[index].modList.length, (index) => false);
-                                                                          // }
-                                                                          // if (pathCharLengthList[index].isNotEmpty) {
-                                                                          //   pathCharLengthList[index].clear();
-                                                                          // }
-
-                                                                          int pathLength = 0;
-                                                                          for (var file in curMod.filesInMod) {
-                                                                            String tempPath = file.path.replaceFirst(modManImportedDirPath, modManModsDirPath);
-                                                                            if (tempPath.length > pathLength) {
-                                                                              pathLength = tempPath.length;
-                                                                            }
-                                                                          }
-                                                                          for (var sub in curMod.submodList) {
-                                                                            for (var modFile in sub.files) {
-                                                                              String tempPath = modFile.path.replaceFirst(modManImportedDirPath, modManModsDirPath);
-                                                                              if (tempPath.length > pathLength) {
-                                                                                pathLength = tempPath.length;
-                                                                              }
-                                                                            }
-                                                                          }
-
-                                                                          pathCharLengthList[index].insert(mIndex, pathLength);
-
-                                                                          return ExpansionTile(
-                                                                            initiallyExpanded: false,
-                                                                            childrenPadding: const EdgeInsets.only(left: 15),
-                                                                            textColor:
-                                                                                MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                                                            iconColor:
-                                                                                MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                                                            collapsedTextColor:
-                                                                                MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                                                            //Edit Name
-                                                                            title: mainImportedFolderRenameIndex[index][mIndex]
-                                                                                ? Row(
-                                                                                    children: [
-                                                                                      Expanded(
-                                                                                        child: SizedBox(
-                                                                                          //width: constraints.maxWidth * 0.4,
-                                                                                          height: 40,
-                                                                                          child: Form(
-                                                                                            key: _subItemFormValidate,
-                                                                                            child: TextFormField(
-                                                                                              autofocus: true,
-                                                                                              controller: renameImportTextBoxController,
-                                                                                              maxLines: 1,
-                                                                                              maxLength: 50,
-                                                                                              decoration: InputDecoration(
-                                                                                                contentPadding: const EdgeInsets.only(left: 10, top: 10),
-                                                                                                border: const OutlineInputBorder(),
-                                                                                                hintText: curMod.modName,
-                                                                                                counterText: '',
-                                                                                              ),
-                                                                                              inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
-                                                                                              validator: (value) {
-                                                                                                if (value == null || value.isEmpty) {
-                                                                                                  Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
-                                                                                                  return curLangText!.uiNameCannotBeEmpty;
+                                                                                                  //change dir name
+                                                                                                  processedImportFileList[index].itemName = newItemName;
+                                                                                                  var newItemDir = await Directory(processedImportFileList[index].itemDirPath).rename(
+                                                                                                      Uri.file('${p.dirname(processedImportFileList[index].itemDirPath)}/$newItemName').toFilePath());
+                                                                                                  processedImportFileList[index].setNewParentPathToChildren(newItemDir.path.trim());
+                                                                                                  processedImportFileList[index].itemIconPath = processedImportFileList[index]
+                                                                                                      .itemIconPath
+                                                                                                      .replaceFirst(processedImportFileList[index].itemDirPath, newItemDir.path);
+                                                                                                  processedImportFileList[index].itemDirPath = newItemDir.path;
                                                                                                 }
 
-                                                                                                if (Directory(processedImportFileList[index].itemDirPath)
-                                                                                                    .listSync()
-                                                                                                    .whereType<Directory>()
-                                                                                                    .where((element) => p.basename(element.path).toLowerCase() == value.toLowerCase())
-                                                                                                    .isNotEmpty) {
-                                                                                                  Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
-                                                                                                  return curLangText!.uiNameAlreadyExisted;
-                                                                                                }
+                                                                                                _itemNameRenameIndex[index] = false;
+                                                                                                renameImportTextBoxController.clear();
+                                                                                                _isNameEditing = false;
+                                                                                                _duplicateCounter--;
 
-                                                                                                return null;
-                                                                                              },
-                                                                                              onChanged: (value) {
-                                                                                                int pathLength = 0;
-                                                                                                for (var file in curMod.filesInMod) {
-                                                                                                  String tempPath = file.path.replaceFirst(modManImportedDirPath, modManModsDirPath);
-                                                                                                  if (tempPath.length > pathLength) {
-                                                                                                    pathLength = tempPath.length;
-                                                                                                  }
-                                                                                                }
-                                                                                                for (var sub in curMod.submodList) {
-                                                                                                  for (var modFile in sub.files) {
-                                                                                                    String tempPath = modFile.path
-                                                                                                        .replaceFirst(modManImportedDirPath, modManModsDirPath)
-                                                                                                        .replaceFirst(curMod.modName, value);
-                                                                                                    if (tempPath.length > pathLength) {
-                                                                                                      pathLength = tempPath.length;
-                                                                                                    }
-                                                                                                  }
-                                                                                                }
-
-                                                                                                _pathLengthInNameEdit = pathLength;
                                                                                                 setState(
                                                                                                   () {},
                                                                                                 );
-                                                                                              },
-                                                                                              onEditingComplete: () async {
-                                                                                                if (renameImportTextBoxController.text != curMod.modName &&
-                                                                                                    _subItemFormValidate.currentState!.validate()) {
+                                                                                              }
+                                                                                              setState(
+                                                                                                () {},
+                                                                                              );
+                                                                                            },
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                    const SizedBox(
+                                                                                      width: 5,
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      width: 40,
+                                                                                      child: MaterialButton(
+                                                                                        onPressed: renameImportTextBoxController.text == processedImportFileList[index].itemName
+                                                                                            ? null
+                                                                                            : () async {
+                                                                                                if (_subItemFormValidate.currentState!.validate() &&
+                                                                                                    renameImportTextBoxController.text != processedImportFileList[index].itemName) {
                                                                                                   if (renameImportTextBoxController.text.isNotEmpty) {
-                                                                                                    curMod.modName = renameImportTextBoxController.text;
-                                                                                                    var newModDir = await Directory(curMod.modDirPath).rename(
-                                                                                                        Uri.file('${p.dirname(curMod.modDirPath)}/${renameImportTextBoxController.text}').toFilePath());
-                                                                                                    curMod.setNewParentPathToChildren(newModDir.path.trim());
-                                                                                                    curMod.modDirPath = newModDir.path;
+                                                                                                    //rename text
+                                                                                                    String newItemName = renameImportTextBoxController.text.trim();
+                                                                                                    if (processedImportFileList[index].category == 'Basewears' &&
+                                                                                                        !renameImportTextBoxController.text.contains('[Ba]')) {
+                                                                                                      newItemName += ' [Ba]';
+                                                                                                    } else if (processedImportFileList[index].category == 'Innerwears' &&
+                                                                                                        !renameImportTextBoxController.text.contains('[In]')) {
+                                                                                                      newItemName += ' [In]';
+                                                                                                    } else if (processedImportFileList[index].category == 'Outerwears' &&
+                                                                                                        !renameImportTextBoxController.text.contains('[Ou]')) {
+                                                                                                      newItemName += ' [Ou]';
+                                                                                                    } else if (processedImportFileList[index].category == 'Setwears' &&
+                                                                                                        !renameImportTextBoxController.text.contains('[Se]')) {
+                                                                                                      newItemName += ' [Se]';
+                                                                                                    } else {
+                                                                                                      newItemName = renameImportTextBoxController.text;
+                                                                                                    }
+                                                                                                    //change dir name
+                                                                                                    processedImportFileList[index].itemName = newItemName;
+                                                                                                    var newItemDir = await Directory(processedImportFileList[index].itemDirPath).rename(
+                                                                                                        Uri.file('${p.dirname(processedImportFileList[index].itemDirPath)}/$newItemName').toFilePath());
+                                                                                                    processedImportFileList[index].setNewParentPathToChildren(newItemDir.path.trim());
+                                                                                                    processedImportFileList[index].itemIconPath = processedImportFileList[index]
+                                                                                                        .itemIconPath
+                                                                                                        .replaceFirst(processedImportFileList[index].itemDirPath, newItemDir.path);
+                                                                                                    processedImportFileList[index].itemDirPath = newItemDir.path;
                                                                                                   }
 
-                                                                                                  mainImportedFolderRenameIndex[index][mIndex] = false;
+                                                                                                  _itemNameRenameIndex[index] = false;
                                                                                                   renameImportTextBoxController.clear();
                                                                                                   _isNameEditing = false;
+                                                                                                  _duplicateCounter--;
 
                                                                                                   setState(
                                                                                                     () {},
                                                                                                   );
                                                                                                 }
-                                                                                                setState(
-                                                                                                  () {},
-                                                                                                );
                                                                                               },
-                                                                                            ),
-                                                                                          ),
-                                                                                        ),
+                                                                                        child: const Icon(Icons.check),
                                                                                       ),
-                                                                                      const SizedBox(
-                                                                                        width: 5,
-                                                                                      ),
-                                                                                      Text('$_pathLengthInNameEdit/259 ${curLangText!.uiCharacters}',
-                                                                                          style: TextStyle(color: pathCharLengthList[index][mIndex] > 259 ? Colors.red : null)),
-                                                                                      const SizedBox(
-                                                                                        width: 5,
-                                                                                      ),
-                                                                                      SizedBox(
-                                                                                        width: 40,
-                                                                                        child: MaterialButton(
-                                                                                          onPressed: renameImportTextBoxController.text == curMod.modName
-                                                                                              ? null
-                                                                                              : () async {
-                                                                                                  if (_subItemFormValidate.currentState!.validate()) {
-                                                                                                    if (renameImportTextBoxController.text.isNotEmpty) {
-                                                                                                      curMod.modName = renameImportTextBoxController.text;
-                                                                                                      var newModDir = await Directory(curMod.modDirPath).rename(
-                                                                                                          Uri.file('${p.dirname(curMod.modDirPath)}/${renameImportTextBoxController.text}')
-                                                                                                              .toFilePath());
-                                                                                                      curMod.setNewParentPathToChildren(newModDir.path.trim());
-                                                                                                      curMod.modDirPath = newModDir.path;
-                                                                                                    }
+                                                                                    ),
+                                                                                    const SizedBox(
+                                                                                      width: 5,
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      width: 40,
+                                                                                      child: MaterialButton(
+                                                                                        onPressed: () {
+                                                                                          _itemNameRenameIndex[index] = false;
+                                                                                          renameImportTextBoxController.clear();
+                                                                                          _isNameEditing = false;
 
-                                                                                                    mainImportedFolderRenameIndex[index][mIndex] = false;
-                                                                                                    renameImportTextBoxController.clear();
-                                                                                                    _isNameEditing = false;
-                                                                                                    _pathLengthInNameEdit = 0;
-
-                                                                                                    setState(
-                                                                                                      () {},
-                                                                                                    );
-                                                                                                  }
-                                                                                                },
-                                                                                          child: const Icon(Icons.check),
-                                                                                        ),
+                                                                                          setState(
+                                                                                            () {},
+                                                                                          );
+                                                                                        },
+                                                                                        child: const Icon(Icons.close),
                                                                                       ),
-                                                                                      const SizedBox(
-                                                                                        width: 5,
-                                                                                      ),
-                                                                                      SizedBox(
-                                                                                        width: 40,
-                                                                                        child: MaterialButton(
-                                                                                          onPressed: () {
-                                                                                            mainImportedFolderRenameIndex[index][mIndex] = false;
-                                                                                            renameImportTextBoxController.clear();
-                                                                                            _isNameEditing = false;
-                                                                                            _pathLengthInNameEdit = 0;
-
-                                                                                            setState(
-                                                                                              () {},
-                                                                                            );
-                                                                                          },
-                                                                                          child: const Icon(Icons.close),
-                                                                                        ),
-                                                                                      ),
-                                                                                    ],
-                                                                                  )
-                                                                                : Row(
-                                                                                    children: [
-                                                                                      Expanded(
-                                                                                        child: Text(curMod.modName,
+                                                                                    ),
+                                                                                  ],
+                                                                                )
+                                                                              : Row(
+                                                                                  children: [
+                                                                                    Expanded(
+                                                                                      child: Padding(
+                                                                                        padding: const EdgeInsets.only(bottom: 3),
+                                                                                        child: Text(processedImportFileList[index].itemName.replaceAll('_', '/'),
                                                                                             style: TextStyle(
-                                                                                                fontWeight: FontWeight.w500,
-                                                                                                color: !curMod.toBeAdded
+                                                                                                fontWeight: FontWeight.w600,
+                                                                                                color: !processedImportFileList[index].toBeAdded
                                                                                                     ? Theme.of(context).disabledColor
                                                                                                     : Theme.of(context).textTheme.bodyMedium!.color)),
                                                                                       ),
-                                                                                      const SizedBox(
-                                                                                        width: 5,
-                                                                                      ),
-                                                                                      Text(
-                                                                                        '${pathCharLengthList[index][mIndex]}/259 ${curLangText!.uiCharacters}',
-                                                                                        style: TextStyle(color: pathCharLengthList[index][mIndex] > 259 ? Colors.red : null),
-                                                                                      ),
-                                                                                      const SizedBox(
-                                                                                        width: 5,
-                                                                                      ),
-                                                                                      if (curMod.isChildrenDuplicated)
-                                                                                        Padding(
-                                                                                          padding: const EdgeInsets.only(right: 5),
-                                                                                          child: Container(
-                                                                                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
-                                                                                            decoration: BoxDecoration(
-                                                                                              border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                                                            ),
-                                                                                            child: Text(
-                                                                                              curLangText!.uiDuplicateModsInside,
-                                                                                              style: TextStyle(
-                                                                                                  fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                            ),
+                                                                                    ),
+                                                                                    const SizedBox(
+                                                                                      width: 5,
+                                                                                    ),
+                                                                                    if (processedImportFileList[index].isChildrenDuplicated)
+                                                                                      Padding(
+                                                                                        padding: const EdgeInsets.only(right: 5),
+                                                                                        child: Container(
+                                                                                          padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                          decoration: BoxDecoration(
+                                                                                            border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                            borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                          ),
+                                                                                          child: Text(
+                                                                                            curLangText!.uiDuplicateModsInside,
+                                                                                            style: TextStyle(
+                                                                                                fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                           ),
                                                                                         ),
-                                                                                      if (curMod.isDuplicated)
-                                                                                        Padding(
-                                                                                          padding: const EdgeInsets.only(right: 5),
-                                                                                          child: Container(
-                                                                                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
-                                                                                            decoration: BoxDecoration(
-                                                                                              border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                                                            ),
-                                                                                            child: Text(
-                                                                                              curLangText!.uiRenameThis,
-                                                                                              style: TextStyle(
-                                                                                                  fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                            ),
-                                                                                          ),
-                                                                                        ),
-                                                                                      SizedBox(
+                                                                                      ),
+                                                                                    Visibility(
+                                                                                      visible: !defaultCategoryNames.contains(processedImportFileList[index].category) ||
+                                                                                          processedImportFileList[index].category == defaultCategoryNames[13],
+                                                                                      child: SizedBox(
                                                                                         width: 40,
-                                                                                        child: ModManTooltip(
+                                                                                        child: Tooltip(
                                                                                           message: curLangText!.uiEditName,
+                                                                                          height: 25,
+                                                                                          textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                                                          waitDuration: const Duration(seconds: 1),
                                                                                           child: MaterialButton(
-                                                                                            onPressed: !_isNameEditing && curMod.toBeAdded
+                                                                                            onPressed: !_isNameEditing && processedImportFileList[index].toBeAdded
                                                                                                 ? () {
-                                                                                                    renameImportTextBoxController.text = curMod.modName;
+                                                                                                    renameImportTextBoxController.text = processedImportFileList[index].itemName;
                                                                                                     renameImportTextBoxController.selection = TextSelection(
                                                                                                       baseOffset: 0,
                                                                                                       extentOffset: renameImportTextBoxController.text.length,
                                                                                                     );
                                                                                                     _isNameEditing = true;
-                                                                                                    mainImportedFolderRenameIndex[index][mIndex] = true;
-                                                                                                    _pathLengthInNameEdit = pathCharLengthList[index][mIndex];
+                                                                                                    _itemNameRenameIndex[index] = true;
                                                                                                     setState(
                                                                                                       () {},
                                                                                                     );
@@ -1214,402 +883,745 @@ void modsImportHomePage(context) {
                                                                                           ),
                                                                                         ),
                                                                                       ),
-                                                                                      const SizedBox(
-                                                                                        width: 5,
-                                                                                      ),
-                                                                                      if (curMod.toBeAdded)
-                                                                                        SizedBox(
-                                                                                          width: 40,
-                                                                                          child: Tooltip(
-                                                                                            message: curLangText!.uiMarkThisNotToBeAdded,
-                                                                                            height: 25,
-                                                                                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                                                                            waitDuration: const Duration(seconds: 1),
-                                                                                            child: MaterialButton(
-                                                                                              onPressed: () {
-                                                                                                curMod.toBeAdded = false;
-                                                                                                for (var submod in curMod.submodList) {
+                                                                                    ),
+                                                                                    const SizedBox(
+                                                                                      width: 5,
+                                                                                    ),
+                                                                                    if (processedImportFileList[index].toBeAdded)
+                                                                                      SizedBox(
+                                                                                        width: 40,
+                                                                                        child: ModManTooltip(
+                                                                                          message: curLangText!.uiMarkThisNotToBeAdded,
+                                                                                          child: MaterialButton(
+                                                                                            onPressed: () {
+                                                                                              processedImportFileList[index].toBeAdded = false;
+                                                                                              for (var mod in processedImportFileList[index].modList) {
+                                                                                                mod.toBeAdded = false;
+                                                                                                for (var submod in mod.submodList) {
                                                                                                   submod.toBeAdded = false;
                                                                                                 }
-                                                                                                if (processedImportFileList[index].modList.where((element) => element.toBeAdded).isEmpty) {
-                                                                                                  processedImportFileList[index].toBeAdded = false;
-                                                                                                }
-                                                                                                setState(
-                                                                                                  () {},
-                                                                                                );
-                                                                                              },
-                                                                                              child: const Icon(
-                                                                                                Icons.check_box_outlined,
-                                                                                                color: Colors.green,
-                                                                                              ),
+                                                                                              }
+                                                                                              setState(
+                                                                                                () {},
+                                                                                              );
+                                                                                            },
+                                                                                            child: const Icon(
+                                                                                              Icons.check_box_outlined,
+                                                                                              color: Colors.green,
                                                                                             ),
                                                                                           ),
                                                                                         ),
-                                                                                      if (!curMod.toBeAdded)
-                                                                                        SizedBox(
-                                                                                          width: 40,
-                                                                                          child: Tooltip(
-                                                                                            message: curLangText!.uiMarkThisToBeAdded,
-                                                                                            height: 25,
-                                                                                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                                                                            waitDuration: const Duration(seconds: 1),
-                                                                                            child: MaterialButton(
-                                                                                              onPressed: () {
-                                                                                                curMod.toBeAdded = true;
-                                                                                                for (var submod in curMod.submodList) {
+                                                                                      ),
+                                                                                    if (!processedImportFileList[index].toBeAdded)
+                                                                                      SizedBox(
+                                                                                        width: 40,
+                                                                                        child: ModManTooltip(
+                                                                                          message: curLangText!.uiMarkThisToBeAdded,
+                                                                                          child: MaterialButton(
+                                                                                            onPressed: () {
+                                                                                              processedImportFileList[index].toBeAdded = true;
+                                                                                              for (var mod in processedImportFileList[index].modList) {
+                                                                                                mod.toBeAdded = true;
+                                                                                                for (var submod in mod.submodList) {
                                                                                                   submod.toBeAdded = true;
                                                                                                 }
-                                                                                                if (processedImportFileList[index].modList.where((element) => element.toBeAdded).isNotEmpty) {
-                                                                                                  processedImportFileList[index].toBeAdded = true;
-                                                                                                }
-                                                                                                setState(
-                                                                                                  () {},
-                                                                                                );
-                                                                                              },
-                                                                                              child: const Icon(
-                                                                                                Icons.check_box_outline_blank_outlined,
-                                                                                                color: Colors.red,
-                                                                                              ),
+                                                                                              }
+                                                                                              setState(
+                                                                                                () {},
+                                                                                              );
+                                                                                            },
+                                                                                            child: const Icon(
+                                                                                              Icons.check_box_outline_blank_outlined,
+                                                                                              color: Colors.red,
                                                                                             ),
                                                                                           ),
                                                                                         ),
-                                                                                    ],
-                                                                                  ),
-                                                                            children: [
-                                                                              //if file in mod folder found
-                                                                              if (curMod.filesInMod.isNotEmpty)
-                                                                                SuperListView.builder(
-                                                                                    shrinkWrap: true,
-                                                                                    physics: const RangeMaintainingScrollPhysics(),
-                                                                                    itemCount: curMod.filesInMod.length,
-                                                                                    itemBuilder: (context, fIndex) {
-                                                                                      return ListTile(
-                                                                                        title: Padding(
-                                                                                          padding: const EdgeInsets.only(left: 0),
-                                                                                          child: Text(p.basename(curMod.filesInMod[fIndex].path),
-                                                                                              style: TextStyle(color: !curMod.toBeAdded ? Theme.of(context).disabledColor : null)),
+                                                                                      ),
+                                                                                  ],
+                                                                                ),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+
+                                                              textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                              iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                              collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                              //childrenPadding: const EdgeInsets.only(left: 10),
+                                                              children: [
+                                                                //mods list
+                                                                SuperListView.builder(
+                                                                    shrinkWrap: true,
+                                                                    physics: const RangeMaintainingScrollPhysics(),
+                                                                    itemCount: processedImportFileList[index].modList.length,
+                                                                    itemBuilder: (context, mIndex) {
+                                                                      var curMod = processedImportFileList[index].modList[mIndex];
+                                                                      _isProcessingMoreFiles = false;
+                                                                      //rename trigger
+                                                                      // //List<bool> mainImportedFolderRenameIndex = [];
+                                                                      // if (mainImportedFolderRenameIndex.isEmpty || mainImportedFolderRenameIndex.length != processedImportFileList[index].modList.length) {
+                                                                      //   mainImportedFolderRenameIndex = List.generate(processedImportFileList[index].modList.length, (index) => false);
+                                                                      // }
+                                                                      // if (pathCharLengthList[index].isNotEmpty) {
+                                                                      //   pathCharLengthList[index].clear();
+                                                                      // }
+
+                                                                      int pathLength = 0;
+                                                                      for (var file in curMod.filesInMod) {
+                                                                        String tempPath = file.path.replaceFirst(modManImportedDirPath, modManModsDirPath);
+                                                                        if (tempPath.length > pathLength) {
+                                                                          pathLength = tempPath.length;
+                                                                        }
+                                                                      }
+                                                                      for (var sub in curMod.submodList) {
+                                                                        for (var modFile in sub.files) {
+                                                                          String tempPath = modFile.path.replaceFirst(modManImportedDirPath, modManModsDirPath);
+                                                                          if (tempPath.length > pathLength) {
+                                                                            pathLength = tempPath.length;
+                                                                          }
+                                                                        }
+                                                                      }
+
+                                                                      pathCharLengthList[index].insert(mIndex, pathLength);
+
+                                                                      return ExpansionTile(
+                                                                        initiallyExpanded: false,
+                                                                        childrenPadding: const EdgeInsets.only(left: 15),
+                                                                        textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                        iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                        collapsedTextColor:
+                                                                            MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                        //Edit Name
+                                                                        title: mainImportedFolderRenameIndex[index][mIndex]
+                                                                            ? Row(
+                                                                                children: [
+                                                                                  Expanded(
+                                                                                    child: SizedBox(
+                                                                                      //width: constraints.maxWidth * 0.4,
+                                                                                      // height: 40,
+                                                                                      child: Form(
+                                                                                        key: _subItemFormValidate,
+                                                                                        child: TextFormField(
+                                                                                          autofocus: true,
+                                                                                          controller: renameImportTextBoxController,
+                                                                                          maxLines: 1,
+                                                                                          maxLength: 50,
+                                                                                          decoration: InputDecoration(
+                                                                                            contentPadding: const EdgeInsets.only(left: 10, top: 10),
+                                                                                            border: const OutlineInputBorder(),
+                                                                                            hintText: curMod.modName,
+                                                                                            counterText: '',
+                                                                                          ),
+                                                                                          inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
+                                                                                          validator: (value) {
+                                                                                            if (value == null || value.isEmpty) {
+                                                                                              // Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
+                                                                                              return curLangText!.uiNameCannotBeEmpty;
+                                                                                            }
+
+                                                                                            if (Directory(processedImportFileList[index]
+                                                                                                    .modList[mIndex]
+                                                                                                    .modDirPath
+                                                                                                    .replaceFirst(modManModsAdderPath, modManModsDirPath))
+                                                                                                .parent
+                                                                                                .listSync()
+                                                                                                .whereType<Directory>()
+                                                                                                .where((e) => p.basename(e.path) == renameImportTextBoxController.value.text)
+                                                                                                .isNotEmpty) {
+                                                                                              // Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
+                                                                                              return curLangText!.uiNameAlreadyExisted;
+                                                                                            }
+
+                                                                                            if (renameImportTextBoxController.text.characters.last == ' ') {
+                                                                                              return curLangText!.uiNameCannotHaveSpacesAtTheEnd;
+                                                                                            }
+
+                                                                                            return null;
+                                                                                          },
+                                                                                          onChanged: (value) {
+                                                                                            int pathLength = 0;
+                                                                                            for (var file in curMod.filesInMod) {
+                                                                                              String tempPath = file.path.replaceFirst(modManImportedDirPath, modManModsDirPath);
+                                                                                              if (tempPath.length > pathLength) {
+                                                                                                pathLength = tempPath.length;
+                                                                                              }
+                                                                                            }
+                                                                                            for (var sub in curMod.submodList) {
+                                                                                              for (var modFile in sub.files) {
+                                                                                                String tempPath = modFile.path
+                                                                                                    .replaceFirst(modManImportedDirPath, modManModsDirPath)
+                                                                                                    .replaceFirst(curMod.modName, value);
+                                                                                                if (tempPath.length > pathLength) {
+                                                                                                  pathLength = tempPath.length;
+                                                                                                }
+                                                                                              }
+                                                                                            }
+
+                                                                                            _pathLengthInNameEdit = pathLength;
+                                                                                            setState(
+                                                                                              () {},
+                                                                                            );
+                                                                                          },
+                                                                                          onEditingComplete: () async {
+                                                                                            if (renameImportTextBoxController.text != curMod.modName && _subItemFormValidate.currentState!.validate()) {
+                                                                                              if (renameImportTextBoxController.text.isNotEmpty) {
+                                                                                                curMod.modName = renameImportTextBoxController.text;
+                                                                                                var newModDir = await Directory(curMod.modDirPath).rename(
+                                                                                                    Uri.file('${p.dirname(curMod.modDirPath)}/${renameImportTextBoxController.text}').toFilePath());
+                                                                                                curMod.setNewParentPathToChildren(newModDir.path.trim());
+                                                                                                curMod.modDirPath = newModDir.path;
+                                                                                              }
+
+                                                                                              mainImportedFolderRenameIndex[index][mIndex] = false;
+                                                                                              renameImportTextBoxController.clear();
+                                                                                              _isNameEditing = false;
+                                                                                              _duplicateCounter--;
+
+                                                                                              setState(
+                                                                                                () {},
+                                                                                              );
+                                                                                            }
+                                                                                            setState(
+                                                                                              () {},
+                                                                                            );
+                                                                                          },
                                                                                         ),
-                                                                                      );
-                                                                                    }),
-                                                                              //if submmod list found
-                                                                              if (curMod.submodList.isNotEmpty)
-                                                                                SuperListView.builder(
-                                                                                    shrinkWrap: true,
-                                                                                    physics: const RangeMaintainingScrollPhysics(),
-                                                                                    itemCount: curMod.submodList.length,
-                                                                                    itemBuilder: (context, sIndex) {
-                                                                                      var curSubmod = curMod.submodList[sIndex];
-                                                                                      return ExpansionTile(
-                                                                                        initiallyExpanded: false,
-                                                                                        childrenPadding: const EdgeInsets.only(left: 20),
-                                                                                        textColor: MyApp.themeNotifier.value == ThemeMode.light
-                                                                                            ? Theme.of(context).primaryColor
-                                                                                            : Theme.of(context).iconTheme.color,
-                                                                                        iconColor: MyApp.themeNotifier.value == ThemeMode.light
-                                                                                            ? Theme.of(context).primaryColor
-                                                                                            : Theme.of(context).iconTheme.color,
-                                                                                        collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light
-                                                                                            ? Theme.of(context).primaryColor
-                                                                                            : Theme.of(context).iconTheme.color,
-                                                                                        //Edit Sub Name
-                                                                                        title: subImportedFoldersRenameIndex[index][mIndex][sIndex]
-                                                                                            ? Row(
-                                                                                                children: [
-                                                                                                  Expanded(
-                                                                                                    child: SizedBox(
-                                                                                                      height: context.watch<StateProvider>().itemAdderSubItemETHeight,
-                                                                                                      child: Form(
-                                                                                                        key: _subItemFormValidate,
-                                                                                                        child: TextFormField(
-                                                                                                          autofocus: true,
-                                                                                                          controller: renameImportTextBoxController,
-                                                                                                          maxLines: 1,
-                                                                                                          maxLength: 50,
-                                                                                                          decoration: InputDecoration(
-                                                                                                            contentPadding: const EdgeInsets.only(left: 10, top: 10),
-                                                                                                            border: const OutlineInputBorder(),
-                                                                                                            hintText: curSubmod.submodName.split(' > ').last,
-                                                                                                            counterText: '',
-                                                                                                          ),
-                                                                                                          inputFormatters: <TextInputFormatter>[
-                                                                                                            FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))
-                                                                                                          ],
-                                                                                                          validator: (value) {
-                                                                                                            if (value == null || value.isEmpty) {
-                                                                                                              Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
-                                                                                                              return curLangText!.uiNameCannotBeEmpty;
-                                                                                                            }
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                  const SizedBox(
+                                                                                    width: 5,
+                                                                                  ),
+                                                                                  Text('$_pathLengthInNameEdit/259 ${curLangText!.uiCharacters}',
+                                                                                      style: TextStyle(color: pathCharLengthList[index][mIndex] > 259 ? Colors.red : null)),
+                                                                                  const SizedBox(
+                                                                                    width: 5,
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    width: 40,
+                                                                                    child: MaterialButton(
+                                                                                      onPressed: renameImportTextBoxController.text == curMod.modName
+                                                                                          ? null
+                                                                                          : () async {
+                                                                                              if (_subItemFormValidate.currentState!.validate() &&
+                                                                                                  renameImportTextBoxController.text != curMod.modName) {
+                                                                                                if (renameImportTextBoxController.text.isNotEmpty) {
+                                                                                                  curMod.modName = renameImportTextBoxController.text;
+                                                                                                  var newModDir = await Directory(curMod.modDirPath).rename(
+                                                                                                      Uri.file('${p.dirname(curMod.modDirPath)}/${renameImportTextBoxController.text}').toFilePath());
+                                                                                                  curMod.setNewParentPathToChildren(newModDir.path.trim());
+                                                                                                  curMod.modDirPath = newModDir.path;
+                                                                                                }
 
-                                                                                                            if (Directory(curMod.modDirPath)
-                                                                                                                .listSync()
-                                                                                                                .whereType<Directory>()
-                                                                                                                .where((element) => p.basename(element.path).toLowerCase() == value.toLowerCase())
-                                                                                                                .isNotEmpty) {
-                                                                                                              Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
-                                                                                                              return curLangText!.uiNameAlreadyExisted;
-                                                                                                            }
+                                                                                                mainImportedFolderRenameIndex[index][mIndex] = false;
+                                                                                                renameImportTextBoxController.clear();
+                                                                                                _isNameEditing = false;
+                                                                                                _pathLengthInNameEdit = 0;
+                                                                                                _duplicateCounter--;
 
-                                                                                                            return null;
-                                                                                                          },
-                                                                                                          onChanged: (value) {
-                                                                                                            setState(
-                                                                                                              () {},
-                                                                                                            );
-                                                                                                          },
-                                                                                                          onEditingComplete: (() async {
-                                                                                                            if (renameImportTextBoxController.text != curSubmod.submodName.split(' > ').last &&
-                                                                                                                _subItemFormValidate.currentState!.validate()) {
-                                                                                                              if (renameImportTextBoxController.text.isNotEmpty) {
-                                                                                                                List<String> submodNameParts = curSubmod.submodName.split(' > ');
-                                                                                                                submodNameParts.removeLast();
-                                                                                                                submodNameParts.add(renameImportTextBoxController.text);
-                                                                                                                curSubmod.submodName = submodNameParts.join(' > ');
-                                                                                                                var newSubmodDir = await Directory(curSubmod.submodDirPath).rename(Uri.file(
-                                                                                                                        '${p.dirname(curSubmod.submodDirPath)}/${renameImportTextBoxController.text}')
-                                                                                                                    .toFilePath());
-                                                                                                                curSubmod.files = newSubmodDir.listSync(recursive: true).whereType<File>().toList();
-                                                                                                                curSubmod.submodDirPath = newSubmodDir.path;
-                                                                                                              }
+                                                                                                setState(
+                                                                                                  () {},
+                                                                                                );
+                                                                                              }
+                                                                                            },
+                                                                                      child: const Icon(Icons.check),
+                                                                                    ),
+                                                                                  ),
+                                                                                  const SizedBox(
+                                                                                    width: 5,
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    width: 40,
+                                                                                    child: MaterialButton(
+                                                                                      onPressed: () {
+                                                                                        mainImportedFolderRenameIndex[index][mIndex] = false;
+                                                                                        renameImportTextBoxController.clear();
+                                                                                        _isNameEditing = false;
+                                                                                        _pathLengthInNameEdit = 0;
 
-                                                                                                              //Clear
-                                                                                                              // ignore: use_build_context_synchronously
-                                                                                                              Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
-                                                                                                              subImportedFoldersRenameIndex[index][mIndex][sIndex] = false;
-                                                                                                              renameImportTextBoxController.clear();
-                                                                                                              _isNameEditing = false;
-                                                                                                              setState(
-                                                                                                                () {},
-                                                                                                              );
-                                                                                                            }
-                                                                                                            setState(
-                                                                                                              () {},
-                                                                                                            );
-                                                                                                          }),
-                                                                                                        ),
+                                                                                        setState(
+                                                                                          () {},
+                                                                                        );
+                                                                                      },
+                                                                                      child: const Icon(Icons.close),
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              )
+                                                                            : Row(
+                                                                                children: [
+                                                                                  Expanded(
+                                                                                    child: Text(curMod.modName,
+                                                                                        style: TextStyle(
+                                                                                            fontWeight: FontWeight.w500,
+                                                                                            color:
+                                                                                                !curMod.toBeAdded ? Theme.of(context).disabledColor : Theme.of(context).textTheme.bodyMedium!.color)),
+                                                                                  ),
+                                                                                  const SizedBox(
+                                                                                    width: 5,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    '${pathCharLengthList[index][mIndex]}/259 ${curLangText!.uiCharacters}',
+                                                                                    style: TextStyle(color: pathCharLengthList[index][mIndex] > 259 ? Colors.red : null),
+                                                                                  ),
+                                                                                  const SizedBox(
+                                                                                    width: 5,
+                                                                                  ),
+                                                                                  if (curMod.isChildrenDuplicated)
+                                                                                    Padding(
+                                                                                      padding: const EdgeInsets.only(right: 5),
+                                                                                      child: Container(
+                                                                                        padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                        decoration: BoxDecoration(
+                                                                                          border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                          borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                        ),
+                                                                                        child: Text(
+                                                                                          curLangText!.uiDuplicateModsInside,
+                                                                                          style: TextStyle(
+                                                                                              fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  if (curMod.isDuplicated)
+                                                                                    Padding(
+                                                                                      padding: const EdgeInsets.only(right: 5),
+                                                                                      child: Container(
+                                                                                        padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                        decoration: BoxDecoration(
+                                                                                          border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                          borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                        ),
+                                                                                        child: Text(
+                                                                                          curLangText!.uiRenameThis,
+                                                                                          style: TextStyle(
+                                                                                              fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  SizedBox(
+                                                                                    width: 40,
+                                                                                    child: ModManTooltip(
+                                                                                      message: curLangText!.uiEditName,
+                                                                                      child: MaterialButton(
+                                                                                        onPressed: !_isNameEditing && curMod.toBeAdded
+                                                                                            ? () {
+                                                                                                renameImportTextBoxController.text = curMod.modName;
+                                                                                                renameImportTextBoxController.selection = TextSelection(
+                                                                                                  baseOffset: 0,
+                                                                                                  extentOffset: renameImportTextBoxController.text.length,
+                                                                                                );
+                                                                                                _isNameEditing = true;
+                                                                                                mainImportedFolderRenameIndex[index][mIndex] = true;
+                                                                                                _pathLengthInNameEdit = pathCharLengthList[index][mIndex];
+                                                                                                setState(
+                                                                                                  () {},
+                                                                                                );
+                                                                                              }
+                                                                                            : null,
+                                                                                        child: const Icon(Icons.edit),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                  const SizedBox(
+                                                                                    width: 5,
+                                                                                  ),
+                                                                                  if (curMod.toBeAdded)
+                                                                                    SizedBox(
+                                                                                      width: 40,
+                                                                                      child: Tooltip(
+                                                                                        message: curLangText!.uiMarkThisNotToBeAdded,
+                                                                                        height: 25,
+                                                                                        textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                                                        waitDuration: const Duration(seconds: 1),
+                                                                                        child: MaterialButton(
+                                                                                          onPressed: () {
+                                                                                            curMod.toBeAdded = false;
+                                                                                            for (var submod in curMod.submodList) {
+                                                                                              submod.toBeAdded = false;
+                                                                                            }
+                                                                                            if (processedImportFileList[index].modList.where((element) => element.toBeAdded).isEmpty) {
+                                                                                              processedImportFileList[index].toBeAdded = false;
+                                                                                            }
+                                                                                            setState(
+                                                                                              () {},
+                                                                                            );
+                                                                                          },
+                                                                                          child: const Icon(
+                                                                                            Icons.check_box_outlined,
+                                                                                            color: Colors.green,
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  if (!curMod.toBeAdded)
+                                                                                    SizedBox(
+                                                                                      width: 40,
+                                                                                      child: Tooltip(
+                                                                                        message: curLangText!.uiMarkThisToBeAdded,
+                                                                                        height: 25,
+                                                                                        textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                                                        waitDuration: const Duration(seconds: 1),
+                                                                                        child: MaterialButton(
+                                                                                          onPressed: () {
+                                                                                            curMod.toBeAdded = true;
+                                                                                            for (var submod in curMod.submodList) {
+                                                                                              submod.toBeAdded = true;
+                                                                                            }
+                                                                                            if (processedImportFileList[index].modList.where((element) => element.toBeAdded).isNotEmpty) {
+                                                                                              processedImportFileList[index].toBeAdded = true;
+                                                                                            }
+                                                                                            setState(
+                                                                                              () {},
+                                                                                            );
+                                                                                          },
+                                                                                          child: const Icon(
+                                                                                            Icons.check_box_outline_blank_outlined,
+                                                                                            color: Colors.red,
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                ],
+                                                                              ),
+                                                                        children: [
+                                                                          //if file in mod folder found
+                                                                          if (curMod.filesInMod.isNotEmpty)
+                                                                            SuperListView.builder(
+                                                                                shrinkWrap: true,
+                                                                                physics: const RangeMaintainingScrollPhysics(),
+                                                                                itemCount: curMod.filesInMod.length,
+                                                                                itemBuilder: (context, fIndex) {
+                                                                                  return ListTile(
+                                                                                    title: Padding(
+                                                                                      padding: const EdgeInsets.only(left: 0),
+                                                                                      child: Text(p.basename(curMod.filesInMod[fIndex].path),
+                                                                                          style: TextStyle(color: !curMod.toBeAdded ? Theme.of(context).disabledColor : null)),
+                                                                                    ),
+                                                                                  );
+                                                                                }),
+                                                                          //if submmod list found
+                                                                          if (curMod.submodList.isNotEmpty)
+                                                                            SuperListView.builder(
+                                                                                shrinkWrap: true,
+                                                                                physics: const RangeMaintainingScrollPhysics(),
+                                                                                itemCount: curMod.submodList.length,
+                                                                                itemBuilder: (context, sIndex) {
+                                                                                  var curSubmod = curMod.submodList[sIndex];
+                                                                                  return ExpansionTile(
+                                                                                    initiallyExpanded: false,
+                                                                                    childrenPadding: const EdgeInsets.only(left: 20),
+                                                                                    textColor: MyApp.themeNotifier.value == ThemeMode.light
+                                                                                        ? Theme.of(context).primaryColor
+                                                                                        : Theme.of(context).iconTheme.color,
+                                                                                    iconColor: MyApp.themeNotifier.value == ThemeMode.light
+                                                                                        ? Theme.of(context).primaryColor
+                                                                                        : Theme.of(context).iconTheme.color,
+                                                                                    collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light
+                                                                                        ? Theme.of(context).primaryColor
+                                                                                        : Theme.of(context).iconTheme.color,
+                                                                                    //Edit Sub Name
+                                                                                    title: subImportedFoldersRenameIndex[index][mIndex][sIndex]
+                                                                                        ? Row(
+                                                                                            children: [
+                                                                                              Expanded(
+                                                                                                child: SizedBox(
+                                                                                                  // height: context.watch<StateProvider>().itemAdderSubItemETHeight,
+                                                                                                  child: Form(
+                                                                                                    key: _subItemFormValidate,
+                                                                                                    child: TextFormField(
+                                                                                                      autofocus: true,
+                                                                                                      controller: renameImportTextBoxController,
+                                                                                                      maxLines: 1,
+                                                                                                      maxLength: 50,
+                                                                                                      decoration: InputDecoration(
+                                                                                                        contentPadding: const EdgeInsets.only(left: 10, top: 10),
+                                                                                                        border: const OutlineInputBorder(),
+                                                                                                        hintText: curSubmod.submodName.split(' > ').last,
+                                                                                                        counterText: '',
                                                                                                       ),
-                                                                                                    ),
-                                                                                                  ),
-                                                                                                  const SizedBox(
-                                                                                                    width: 5,
-                                                                                                  ),
-                                                                                                  SizedBox(
-                                                                                                    width: 40,
-                                                                                                    child: MaterialButton(
-                                                                                                      onPressed: renameImportTextBoxController.text == curSubmod.submodName
-                                                                                                          ? null
-                                                                                                          : () async {
-                                                                                                              if (_subItemFormValidate.currentState!.validate()) {
-                                                                                                                if (renameImportTextBoxController.text.isNotEmpty) {
-                                                                                                                  List<String> submodNameParts = curSubmod.submodName.split(' > ');
-                                                                                                                  submodNameParts.removeLast();
-                                                                                                                  submodNameParts.add(renameImportTextBoxController.text);
-                                                                                                                  curSubmod.submodName = submodNameParts.join(' > ');
-                                                                                                                  var newSubmodDir = await Directory(curSubmod.submodDirPath).rename(Uri.file(
-                                                                                                                          '${p.dirname(curSubmod.submodDirPath)}/${renameImportTextBoxController.text}')
-                                                                                                                      .toFilePath());
-                                                                                                                  curSubmod.files = newSubmodDir.listSync(recursive: true).whereType<File>().toList();
-                                                                                                                  curSubmod.submodDirPath = newSubmodDir.path;
-                                                                                                                }
+                                                                                                      inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
+                                                                                                      validator: (value) {
+                                                                                                        if (value == null || value.isEmpty) {
+                                                                                                          // Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
+                                                                                                          return curLangText!.uiNameCannotBeEmpty;
+                                                                                                        }
 
-                                                                                                                //Clear
-                                                                                                                subImportedFoldersRenameIndex[index][mIndex][sIndex] = false;
-                                                                                                                renameImportTextBoxController.clear();
-                                                                                                                _isNameEditing = false;
-                                                                                                                // ignore: use_build_context_synchronously
-                                                                                                                Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
-                                                                                                                setState(
-                                                                                                                  () {},
-                                                                                                                );
-                                                                                                              }
-                                                                                                            },
-                                                                                                      child: const Icon(Icons.check),
-                                                                                                    ),
-                                                                                                  ),
-                                                                                                  const SizedBox(
-                                                                                                    width: 5,
-                                                                                                  ),
-                                                                                                  SizedBox(
-                                                                                                    width: 40,
-                                                                                                    child: MaterialButton(
-                                                                                                      onPressed: () {
-                                                                                                        subImportedFoldersRenameIndex[index][mIndex][sIndex] = false;
-                                                                                                        renameImportTextBoxController.clear();
-                                                                                                        _isNameEditing = false;
-                                                                                                        // ignore: use_build_context_synchronously
-                                                                                                        Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
+                                                                                                        if (Directory(curMod.submodList[sIndex].submodDirPath
+                                                                                                                .replaceFirst(modManModsAdderPath, modManModsDirPath))
+                                                                                                            .parent
+                                                                                                            .listSync()
+                                                                                                            .whereType<Directory>()
+                                                                                                            .where((e) => p.basename(e.path) == renameImportTextBoxController.value.text)
+                                                                                                            .isNotEmpty) {
+                                                                                                          // Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
+                                                                                                          return curLangText!.uiNameAlreadyExisted;
+                                                                                                        }
 
+                                                                                                        if (renameImportTextBoxController.text.characters.last == ' ') {
+                                                                                                          return curLangText!.uiNameCannotHaveSpacesAtTheEnd;
+                                                                                                        }
+
+                                                                                                        return null;
+                                                                                                      },
+                                                                                                      onChanged: (value) {
                                                                                                         setState(
                                                                                                           () {},
                                                                                                         );
                                                                                                       },
-                                                                                                      child: const Icon(Icons.close),
+                                                                                                      onEditingComplete: (() async {
+                                                                                                        if (renameImportTextBoxController.text != curSubmod.submodName.split(' > ').last &&
+                                                                                                            _subItemFormValidate.currentState!.validate()) {
+                                                                                                          if (renameImportTextBoxController.text.isNotEmpty) {
+                                                                                                            List<String> submodNameParts = curSubmod.submodName.split(' > ');
+                                                                                                            submodNameParts.removeLast();
+                                                                                                            submodNameParts.add(renameImportTextBoxController.text);
+                                                                                                            curSubmod.submodName = submodNameParts.join(' > ');
+                                                                                                            var newSubmodDir = await Directory(curSubmod.submodDirPath).rename(
+                                                                                                                Uri.file('${p.dirname(curSubmod.submodDirPath)}/${renameImportTextBoxController.text}')
+                                                                                                                    .toFilePath());
+                                                                                                            curSubmod.files = newSubmodDir.listSync(recursive: true).whereType<File>().toList();
+                                                                                                            curSubmod.submodDirPath = newSubmodDir.path;
+                                                                                                          }
+
+                                                                                                          //Clear
+                                                                                                          // ignore: use_build_context_synchronously
+                                                                                                          // Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
+                                                                                                          subImportedFoldersRenameIndex[index][mIndex][sIndex] = false;
+                                                                                                          renameImportTextBoxController.clear();
+                                                                                                          _isNameEditing = false;
+                                                                                                          setState(
+                                                                                                            () {},
+                                                                                                          );
+                                                                                                        }
+                                                                                                        setState(
+                                                                                                          () {},
+                                                                                                        );
+                                                                                                      }),
                                                                                                     ),
                                                                                                   ),
-                                                                                                ],
-                                                                                              )
-                                                                                            : Row(
-                                                                                                children: [
-                                                                                                  Expanded(
-                                                                                                    child: Text(curSubmod.submodName,
-                                                                                                        style: TextStyle(
-                                                                                                            fontWeight: FontWeight.w400,
-                                                                                                            color: !curSubmod.toBeAdded
-                                                                                                                ? Theme.of(context).disabledColor
-                                                                                                                : Theme.of(context).textTheme.bodyMedium!.color)),
-                                                                                                  ),
-                                                                                                  const SizedBox(
-                                                                                                    width: 5,
-                                                                                                  ),
-                                                                                                  if (curSubmod.isDuplicated)
-                                                                                                    Padding(
-                                                                                                      padding: const EdgeInsets.only(right: 5),
-                                                                                                      child: Container(
-                                                                                                        padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
-                                                                                                        decoration: BoxDecoration(
-                                                                                                          border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                                                          borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                                                                        ),
-                                                                                                        child: Text(
-                                                                                                          curLangText!.uiRenameThis,
-                                                                                                          style: TextStyle(
-                                                                                                              fontSize: 14,
-                                                                                                              fontWeight: FontWeight.normal,
-                                                                                                              color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                                        ),
-                                                                                                      ),
-                                                                                                    ),
-                                                                                                  SizedBox(
-                                                                                                    width: 40,
-                                                                                                    child: Tooltip(
-                                                                                                      message: curLangText!.uiEditName,
-                                                                                                      height: 25,
-                                                                                                      textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                                                                                      waitDuration: const Duration(seconds: 1),
-                                                                                                      child: MaterialButton(
-                                                                                                        onPressed: !_isNameEditing && curSubmod.toBeAdded
-                                                                                                            ? () {
-                                                                                                                renameImportTextBoxController.text = curSubmod.submodName.split(' > ').last;
-                                                                                                                renameImportTextBoxController.selection = TextSelection(
-                                                                                                                  baseOffset: 0,
-                                                                                                                  extentOffset: renameImportTextBoxController.text.length,
-                                                                                                                );
-                                                                                                                subImportedFoldersRenameIndex[index][mIndex][sIndex] = true;
-                                                                                                                _isNameEditing = true;
-                                                                                                                setState(
-                                                                                                                  () {},
-                                                                                                                );
-                                                                                                              }
-                                                                                                            : null,
-                                                                                                        child: const Icon(Icons.edit),
-                                                                                                      ),
-                                                                                                    ),
-                                                                                                  ),
-                                                                                                  const SizedBox(
-                                                                                                    width: 5,
-                                                                                                  ),
-                                                                                                  if (curSubmod.toBeAdded)
-                                                                                                    SizedBox(
-                                                                                                      width: 40,
-                                                                                                      child: Tooltip(
-                                                                                                        message: curLangText!.uiMarkThisNotToBeAdded,
-                                                                                                        height: 25,
-                                                                                                        textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                                                                                        waitDuration: const Duration(seconds: 1),
-                                                                                                        child: MaterialButton(
-                                                                                                          onPressed: () {
-                                                                                                            curSubmod.toBeAdded = false;
-                                                                                                            if (curMod.submodList.where((element) => element.toBeAdded).isEmpty) {
-                                                                                                              curMod.toBeAdded = false;
-                                                                                                            }
-                                                                                                            if (processedImportFileList[index].modList.where((element) => element.toBeAdded).isEmpty) {
-                                                                                                              processedImportFileList[index].toBeAdded = false;
-                                                                                                            }
-                                                                                                            setState(
-                                                                                                              () {},
-                                                                                                            );
-                                                                                                          },
-                                                                                                          child: const Icon(
-                                                                                                            Icons.check_box_outlined,
-                                                                                                            color: Colors.green,
-                                                                                                          ),
-                                                                                                        ),
-                                                                                                      ),
-                                                                                                    ),
-                                                                                                  if (!curSubmod.toBeAdded)
-                                                                                                    SizedBox(
-                                                                                                      width: 40,
-                                                                                                      child: Tooltip(
-                                                                                                        message: curLangText!.uiMarkThisToBeAdded,
-                                                                                                        height: 25,
-                                                                                                        textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                                                                                        waitDuration: const Duration(seconds: 1),
-                                                                                                        child: MaterialButton(
-                                                                                                          onPressed: () {
-                                                                                                            curSubmod.toBeAdded = true;
-                                                                                                            if (curMod.submodList.where((element) => element.toBeAdded).isNotEmpty) {
-                                                                                                              curMod.toBeAdded = true;
-                                                                                                            }
-                                                                                                            if (processedImportFileList[index]
-                                                                                                                .modList
-                                                                                                                .where((element) => element.toBeAdded)
-                                                                                                                .isNotEmpty) {
-                                                                                                              processedImportFileList[index].toBeAdded = true;
-                                                                                                            }
-                                                                                                            setState(
-                                                                                                              () {},
-                                                                                                            );
-                                                                                                          },
-                                                                                                          child: const Icon(
-                                                                                                            Icons.check_box_outline_blank_outlined,
-                                                                                                            color: Colors.red,
-                                                                                                          ),
-                                                                                                        ),
-                                                                                                      ),
-                                                                                                    ),
-                                                                                                ],
+                                                                                                ),
                                                                                               ),
-                                                                                        children: [
-                                                                                          SuperListView.builder(
-                                                                                              shrinkWrap: true,
-                                                                                              physics: const RangeMaintainingScrollPhysics(),
-                                                                                              itemCount: curSubmod.files.length,
-                                                                                              itemBuilder: (context, fIndex) {
-                                                                                                return ListTile(
-                                                                                                  title: Text(
-                                                                                                    p.basename(curSubmod.files[fIndex].path),
-                                                                                                    style: TextStyle(color: !curSubmod.toBeAdded ? Theme.of(context).disabledColor : null),
+                                                                                              const SizedBox(
+                                                                                                width: 5,
+                                                                                              ),
+                                                                                              SizedBox(
+                                                                                                width: 40,
+                                                                                                child: MaterialButton(
+                                                                                                  onPressed: renameImportTextBoxController.text == curSubmod.submodName
+                                                                                                      ? null
+                                                                                                      : () async {
+                                                                                                          if (_subItemFormValidate.currentState!.validate()) {
+                                                                                                            if (renameImportTextBoxController.text.isNotEmpty) {
+                                                                                                              List<String> submodNameParts = curSubmod.submodName.split(' > ');
+                                                                                                              submodNameParts.removeLast();
+                                                                                                              submodNameParts.add(renameImportTextBoxController.text);
+                                                                                                              curSubmod.submodName = submodNameParts.join(' > ');
+                                                                                                              var newSubmodDir = await Directory(curSubmod.submodDirPath).rename(Uri.file(
+                                                                                                                      '${p.dirname(curSubmod.submodDirPath)}/${renameImportTextBoxController.text}')
+                                                                                                                  .toFilePath());
+                                                                                                              curSubmod.files = newSubmodDir.listSync(recursive: true).whereType<File>().toList();
+                                                                                                              curSubmod.submodDirPath = newSubmodDir.path;
+                                                                                                            }
+
+                                                                                                            //Clear
+                                                                                                            subImportedFoldersRenameIndex[index][mIndex][sIndex] = false;
+                                                                                                            renameImportTextBoxController.clear();
+                                                                                                            _isNameEditing = false;
+                                                                                                            // ignore: use_build_context_synchronously
+                                                                                                            // Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
+                                                                                                            setState(
+                                                                                                              () {},
+                                                                                                            );
+                                                                                                          }
+                                                                                                        },
+                                                                                                  child: const Icon(Icons.check),
+                                                                                                ),
+                                                                                              ),
+                                                                                              const SizedBox(
+                                                                                                width: 5,
+                                                                                              ),
+                                                                                              SizedBox(
+                                                                                                width: 40,
+                                                                                                child: MaterialButton(
+                                                                                                  onPressed: () {
+                                                                                                    subImportedFoldersRenameIndex[index][mIndex][sIndex] = false;
+                                                                                                    renameImportTextBoxController.clear();
+                                                                                                    _isNameEditing = false;
+                                                                                                    // ignore: use_build_context_synchronously
+                                                                                                    // Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
+
+                                                                                                    setState(
+                                                                                                      () {},
+                                                                                                    );
+                                                                                                  },
+                                                                                                  child: const Icon(Icons.close),
+                                                                                                ),
+                                                                                              ),
+                                                                                            ],
+                                                                                          )
+                                                                                        : Row(
+                                                                                            children: [
+                                                                                              Expanded(
+                                                                                                child: Text(curSubmod.submodName,
+                                                                                                    style: TextStyle(
+                                                                                                        fontWeight: FontWeight.w400,
+                                                                                                        color: !curSubmod.toBeAdded
+                                                                                                            ? Theme.of(context).disabledColor
+                                                                                                            : Theme.of(context).textTheme.bodyMedium!.color)),
+                                                                                              ),
+                                                                                              const SizedBox(
+                                                                                                width: 5,
+                                                                                              ),
+                                                                                              if (curSubmod.isDuplicated)
+                                                                                                Padding(
+                                                                                                  padding: const EdgeInsets.only(right: 5),
+                                                                                                  child: Container(
+                                                                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                                    decoration: BoxDecoration(
+                                                                                                      border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                                    ),
+                                                                                                    child: Text(
+                                                                                                      curLangText!.uiRenameThis,
+                                                                                                      style: TextStyle(
+                                                                                                          fontSize: 14,
+                                                                                                          fontWeight: FontWeight.normal,
+                                                                                                          color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                                    ),
                                                                                                   ),
-                                                                                                );
-                                                                                              })
-                                                                                        ],
-                                                                                      );
-                                                                                    })
-                                                                            ],
-                                                                          );
-                                                                        }),
-                                                                  ],
+                                                                                                ),
+                                                                                              SizedBox(
+                                                                                                width: 40,
+                                                                                                child: Tooltip(
+                                                                                                  message: curLangText!.uiEditName,
+                                                                                                  height: 25,
+                                                                                                  textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                                                                  waitDuration: const Duration(seconds: 1),
+                                                                                                  child: MaterialButton(
+                                                                                                    onPressed: !_isNameEditing && curSubmod.toBeAdded
+                                                                                                        ? () {
+                                                                                                            renameImportTextBoxController.text = curSubmod.submodName.split(' > ').last;
+                                                                                                            renameImportTextBoxController.selection = TextSelection(
+                                                                                                              baseOffset: 0,
+                                                                                                              extentOffset: renameImportTextBoxController.text.length,
+                                                                                                            );
+                                                                                                            subImportedFoldersRenameIndex[index][mIndex][sIndex] = true;
+                                                                                                            _isNameEditing = true;
+                                                                                                            setState(
+                                                                                                              () {},
+                                                                                                            );
+                                                                                                          }
+                                                                                                        : null,
+                                                                                                    child: const Icon(Icons.edit),
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                              const SizedBox(
+                                                                                                width: 5,
+                                                                                              ),
+                                                                                              if (curSubmod.toBeAdded)
+                                                                                                SizedBox(
+                                                                                                  width: 40,
+                                                                                                  child: Tooltip(
+                                                                                                    message: curLangText!.uiMarkThisNotToBeAdded,
+                                                                                                    height: 25,
+                                                                                                    textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                                                                    waitDuration: const Duration(seconds: 1),
+                                                                                                    child: MaterialButton(
+                                                                                                      onPressed: () {
+                                                                                                        curSubmod.toBeAdded = false;
+                                                                                                        if (curMod.submodList.where((element) => element.toBeAdded).isEmpty) {
+                                                                                                          curMod.toBeAdded = false;
+                                                                                                        }
+                                                                                                        if (processedImportFileList[index].modList.where((element) => element.toBeAdded).isEmpty) {
+                                                                                                          processedImportFileList[index].toBeAdded = false;
+                                                                                                        }
+                                                                                                        setState(
+                                                                                                          () {},
+                                                                                                        );
+                                                                                                      },
+                                                                                                      child: const Icon(
+                                                                                                        Icons.check_box_outlined,
+                                                                                                        color: Colors.green,
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                ),
+                                                                                              if (!curSubmod.toBeAdded)
+                                                                                                SizedBox(
+                                                                                                  width: 40,
+                                                                                                  child: Tooltip(
+                                                                                                    message: curLangText!.uiMarkThisToBeAdded,
+                                                                                                    height: 25,
+                                                                                                    textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                                                                    waitDuration: const Duration(seconds: 1),
+                                                                                                    child: MaterialButton(
+                                                                                                      onPressed: () {
+                                                                                                        curSubmod.toBeAdded = true;
+                                                                                                        if (curMod.submodList.where((element) => element.toBeAdded).isNotEmpty) {
+                                                                                                          curMod.toBeAdded = true;
+                                                                                                        }
+                                                                                                        if (processedImportFileList[index].modList.where((element) => element.toBeAdded).isNotEmpty) {
+                                                                                                          processedImportFileList[index].toBeAdded = true;
+                                                                                                        }
+                                                                                                        setState(
+                                                                                                          () {},
+                                                                                                        );
+                                                                                                      },
+                                                                                                      child: const Icon(
+                                                                                                        Icons.check_box_outline_blank_outlined,
+                                                                                                        color: Colors.red,
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                ),
+                                                                                            ],
+                                                                                          ),
+                                                                                    children: [
+                                                                                      SuperListView.builder(
+                                                                                          shrinkWrap: true,
+                                                                                          physics: const RangeMaintainingScrollPhysics(),
+                                                                                          itemCount: curSubmod.files.length,
+                                                                                          itemBuilder: (context, fIndex) {
+                                                                                            return ListTile(
+                                                                                              title: Text(
+                                                                                                p.basename(curSubmod.files[fIndex].path),
+                                                                                                style: TextStyle(color: !curSubmod.toBeAdded ? Theme.of(context).disabledColor : null),
+                                                                                              ),
+                                                                                            );
+                                                                                          })
+                                                                                    ],
+                                                                                  );
+                                                                                })
+                                                                        ],
+                                                                      );
+                                                                    }),
+                                                              ],
+                                                            ),
+                                                          );
+                                                        } else {
+                                                          Center(
+                                                            child: Column(
+                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                              children: [
+                                                                Text(
+                                                                  _isAddingMods ? curLangText!.uiAddingMods : curLangText!.uiWaitingForData,
+                                                                  style: const TextStyle(fontSize: 20),
                                                                 ),
-                                                              );
-                                                            } else {
-                                                              Center(
-                                                                child: Column(
-                                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                                  children: [
-                                                                    Text(
-                                                                      _isAddingMods ? curLangText!.uiAddingMods : curLangText!.uiWaitingForData,
-                                                                      style: const TextStyle(fontSize: 20),
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      height: 20,
-                                                                    ),
-                                                                    const CircularProgressIndicator(),
-                                                                  ],
+                                                                const SizedBox(
+                                                                  height: 20,
                                                                 ),
-                                                              );
-                                                            }
-                                                            return null;
-                                                          }),
+                                                                const CircularProgressIndicator(),
+                                                              ],
+                                                            ),
+                                                          );
+                                                        }
+                                                        return null;
+                                                      }),
                                                 ),
                                                 if (_isProcessingMoreFiles)
                                                   Center(

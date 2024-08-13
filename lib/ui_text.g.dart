@@ -390,6 +390,8 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiShowNew = json['uiShowNew'] as String
       ..uiShowApplied = json['uiShowApplied'] as String
       ..uiUndo = json['uiUndo'] as String
+      ..uiExpandAllCategories = json['uiExpandAllCategories'] as String
+      ..uiCollapseAllCategories = json['uiCollapseAllCategories'] as String
       ..uiPreparing = json['uiPreparing'] as String
       ..uiDragDropFiles = json['uiDragDropFiles'] as String
       ..uiAchiveCurrentlyNotSupported =
@@ -416,6 +418,8 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiDuplicateModsIn = json['uiDuplicateModsIn'] as String
       ..uiRenameForMe = json['uiRenameForMe'] as String
       ..uiAddingMods = json['uiAddingMods'] as String
+      ..uiNameCannotHaveSpacesAtTheEnd =
+          json['uiNameCannotHaveSpacesAtTheEnd'] as String
       ..uiPickAColor = json['uiPickAColor'] as String
       ..uiDuplicatesInAppliedModsFound =
           json['uiDuplicatesInAppliedModsFound'] as String
@@ -1094,6 +1098,8 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiShowNew': instance.uiShowNew,
       'uiShowApplied': instance.uiShowApplied,
       'uiUndo': instance.uiUndo,
+      'uiExpandAllCategories': instance.uiExpandAllCategories,
+      'uiCollapseAllCategories': instance.uiCollapseAllCategories,
       'uiPreparing': instance.uiPreparing,
       'uiDragDropFiles': instance.uiDragDropFiles,
       'uiAchiveCurrentlyNotSupported': instance.uiAchiveCurrentlyNotSupported,
@@ -1118,6 +1124,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiDuplicateModsIn': instance.uiDuplicateModsIn,
       'uiRenameForMe': instance.uiRenameForMe,
       'uiAddingMods': instance.uiAddingMods,
+      'uiNameCannotHaveSpacesAtTheEnd': instance.uiNameCannotHaveSpacesAtTheEnd,
       'uiPickAColor': instance.uiPickAColor,
       'uiDuplicatesInAppliedModsFound': instance.uiDuplicatesInAppliedModsFound,
       'uiApplyingWouldReplaceModFiles': instance.uiApplyingWouldReplaceModFiles,

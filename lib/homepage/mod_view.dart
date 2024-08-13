@@ -2775,7 +2775,7 @@ class _ModViewState extends State<ModView> {
                         var returnedVar = await modsAdderModFilesAdder(
                             context,
                             await modsAdderFilesProcess(context, [XFile(Uri.file('$swappedPath/${submod.modName.replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath())],
-                                modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName()));
+                                modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName()), false);
                         List<Item> returnedItems = returnedVar.$2;
                         quickItem = returnedItems.first;
                         quickMod = quickItem.mods.firstWhere((e) => e.modName == submod.modName);
@@ -2808,7 +2808,7 @@ class _ModViewState extends State<ModView> {
                         var returnedVar = await modsAdderModFilesAdder(
                             context,
                             await modsAdderFilesProcess(context, [XFile(Uri.file('$swappedPath/${submod.modName.replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath())],
-                                modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName()));
+                                modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName()), false);
                         List<Item> returnedItems = returnedVar.$2;
                         quickItem = returnedItems.first;
                         quickMod = quickItem.mods.firstWhere((e) => e.modName == submod.modName);

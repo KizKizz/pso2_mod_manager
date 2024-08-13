@@ -14,6 +14,16 @@ class Category with ChangeNotifier {
   bool visible;
   List<Item> items;
 
+  bool _isExpanded = false;
+
+  bool getExpansionState() {
+    return _isExpanded;
+  }
+
+  void setExpansionState(bool state) {
+    _isExpanded = state;
+  }
+
   void removeItem(Item? item) {
     if (item != null) {
       items.remove(item);
