@@ -162,9 +162,10 @@ class _AppliedListState extends State<AppliedList> {
                                 Future.delayed(const Duration(milliseconds: applyButtonsDelay), () async {
                                   final reappliedList = await reapplySelectedAppliedMods(context);
                                   // .then((value) {
-                                  modViewModsApplyRemoving.value = false;
+                                  
                                   saveModdedItemListToJson();
                                   ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, reappliedList.first, reappliedList[1], 3000));
+                                  modViewModsApplyRemoving.value = false;
                                   setState(() {});
                                 });
                                 // });
@@ -201,8 +202,12 @@ class _AppliedListState extends State<AppliedList> {
                                 Future.delayed(const Duration(milliseconds: unapplyButtonsDelay), () async {
                                   final unappliedList = await unapplySelectedAppliedMods(context);
                                   // .then((value) {
-                                  modViewModsApplyRemoving.value = false;
+                                  
                                   ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, unappliedList.first, unappliedList[1], 3000));
+                                  if (moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isEmpty) {
+                                    saveApplyButtonState.value = SaveApplyButtonState.none;
+                                  }
+                                  modViewModsApplyRemoving.value = false;
                                   setState(() {});
                                 });
                                 // });

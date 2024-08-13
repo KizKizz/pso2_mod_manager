@@ -2,8 +2,8 @@
 
 import 'dart:io';
 
-import 'package:advance_expansion_tile/advance_expansion_tile.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:expansion_tile_group/expansion_tile_group.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -70,7 +70,7 @@ bool modViewListShowNew = false;
 bool modViewListShowApplied = false;
 // bool modViewListVisible != null;
 final ValueNotifier<Item?> modViewItem = ValueNotifier<Item?>(null);
-List<GlobalKey<AdvanceExpansionTileState>> modViewExpansionTileStates = [];
+List<GlobalKey<ExpansionTileCoreState>> modViewExpansionTileStates = [];
 
 class ModView extends StatefulWidget {
   const ModView({super.key});

@@ -9,15 +9,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "67.0.0"
-  advance_expansion_tile:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: upgrade-material
-      resolved-ref: "19c8f60266be93d94cb09abc070957aaa46dbbc1"
-      url: "https://github.com/seddikmomo/advance_expansion_tile.git"
-    source: git
-    version: "1.0.2"
   analyzer:
     dependency: "direct dev"
     description:
