@@ -788,7 +788,7 @@ class _AppliedListState extends State<AppliedList> {
                                                                   children: [
                                                                     Text(
                                                                       '$totalAppliedModFiles / $totalModFiles ${curLangText!.uiFilesApplied}',
-                                                                      //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
+                                                                      style: TextStyle(color: Theme.of(context).hintColor),
                                                                     ),
                                                                     if (curMods.where((mod) => mod.submods.where((submod) => submod.hasCmx!).isNotEmpty).isNotEmpty)
                                                                       Container(
