@@ -1,13 +1,15 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.8.14",
+    "version": "2.8.15",
     "description": [
+        "v2.8.15 hotfixes",
         "Added expand and collapse all categories to Item List",
         "Added an option to add newly added mods to Mod Sets",
         "Fixed a bug where Applied List would not refresh correctly in Mod Sets",
         "Improved Mod Sets Apply-Unapply function",
         "More code and performance optimization",
         "More bug fixes",
+        "v2.8.15 ホットフィックス",
         "アイテムリストに全カテゴリーの展開と折りたたみを追加",
         "新しく追加されたMODをMODセットに追加するオプションを追加",
         "MODセットで適用済みリストが正しく更新されないバグを修正",

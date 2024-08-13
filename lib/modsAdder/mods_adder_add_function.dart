@@ -24,7 +24,9 @@ Future<(bool, List<Item>)> modsAdderModFilesAdder(context, List<ModsAdderItem> i
   List<Item> returnItems = [];
   //add to set
   String newSetName = '';
-  newSetName = await modAdderNewModSetDialog(context);
+  if (addToModSets) {
+    newSetName = await modAdderNewModSetDialog(context);
+  }
   if (addToModSets && newSetName.isEmpty) {
     return (false, returnItems);
   }
