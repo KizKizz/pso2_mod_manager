@@ -1962,7 +1962,10 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
         if (!ignore) iceFileList.addAll(subDir.listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path).isEmpty && element.lengthSync() > 0));
       }
     } else {
-      iceFileList.addAll(dir.listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path).isEmpty && element.lengthSync() > 0));
+      iceFileList.addAll(dir.listSync(recursive: true).whereType<File>().where((element) =>
+          p.extension(element.path).isEmpty &&
+          RegExp(r'^[a-f0-9]').hasMatch(p.basename(element.path)) &&
+          (p.basenameWithoutExtension(element.path).length == 30 || p.basenameWithoutExtension(element.path).length == 32)));
     }
     //listing mods with no ices in root
     // if (dir.listSync().whereType<File>().where((element) => p.extension(element.path).isEmpty && element.lengthSync() > 0).isEmpty) {

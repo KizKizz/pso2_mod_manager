@@ -17,29 +17,42 @@ Future<void> modExportHomePage(context, List<CategoryType> baseList, List<SubMod
   File exportedZip = File('');
   List<String> exportNames = exportSubmods.map((e) => '${e.itemName} > ${e.modName} > ${e.submodName}').toList();
   Provider.of<StateProvider>(context, listen: false).createModExportProgressStatus(List.generate(exportNames.length, (index) => false));
+  bool exportStart = false;
   return await showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (dialogContext, setState) {
           return AlertDialog(
-              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
-              backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-              content: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: 200, minWidth: 200, maxHeight: double.infinity, maxWidth: double.infinity),
+            shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+            backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+            titlePadding: const EdgeInsets.symmetric(vertical: 5),
+            title: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+              Text(
+                curLangText!.uiModExport,
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              Visibility(
+                visible: context.watch<StateProvider>().modExportProgessZipping && !exportedZip.existsSync(), 
+                child: Center(
+                    child: Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Text(
+                    curLangText!.uiPackingFiles,
+                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
+                )),
+              ),
+            ]),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+            content: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 20, minWidth: 200, maxHeight: double.infinity, maxWidth: double.infinity),
+              child: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 5),
-                      child: Text(
-                        curLangText!.uiModExport,
-                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ),
                     Visibility(
                       visible: exportedZip.path.isEmpty,
                       child: Padding(
@@ -48,27 +61,6 @@ Future<void> modExportHomePage(context, List<CategoryType> baseList, List<SubMod
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Center(
-                                  child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: 10),
-                                child: CircularProgressIndicator(),
-                              )),
-                              Visibility(
-                                visible: !context.watch<StateProvider>().modExportProgessZipping,
-                                child: const Center(
-                                    child: Padding(
-                                  padding: EdgeInsets.only(bottom: 10),
-                                  child: Text('', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
-                                )),
-                              ),
-                              Visibility(
-                                visible: context.watch<StateProvider>().modExportProgessZipping,
-                                child: Center(
-                                    child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 10),
-                                  child: Text(curLangText!.uiPackingFiles, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
-                                )),
-                              ),
                               for (int i = 0; i < exportNames.length; i++)
                                 Text(
                                   exportNames[i],
@@ -79,59 +71,66 @@ Future<void> modExportHomePage(context, List<CategoryType> baseList, List<SubMod
                     ),
                     Visibility(
                       visible: exportedZip.path.isNotEmpty,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 5),
+                      child: Center(
                         child: Text(
                           exportedZip.existsSync() ? curLangText!.uiAllDone : curLangText!.uiFailed,
                           style: const TextStyle(fontSize: 15),
                         ),
                       ),
                     ),
-                    Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ElevatedButton(
-                                onPressed: () {
-                                  Provider.of<StateProvider>(context, listen: false).modExportProgessZippingStateSet(false);
-                                  Navigator.pop(context, true);
-                                },
-                                child: Text(curLangText!.uiClose)),
-                            Visibility(
-                              visible: exportedZip.path.isEmpty,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 5),
-                                child: ElevatedButton(
-                                    onPressed: () async {
-                                      String exportedZipPath = await modExport(context, baseList, exportSubmods, appliedModsExport);
-                                      exportedZip = File(exportedZipPath);
-                                      setState(
-                                        () {},
-                                      );
-                                    },
-                                    child: Text(curLangText!.uiExport)),
-                              ),
-                            ),
-                            Visibility(
-                              visible: exportedZip.existsSync(),
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 5),
-                                child: ElevatedButton(
-                                    onPressed: () async {
-                                      Provider.of<StateProvider>(context, listen: false).modExportProgessZippingStateSet(false);
-                                      await launchUrl(Uri.file(exportedZip.parent.path));
-                                      // ignore: use_build_context_synchronously
-                                      Navigator.pop(context, true);
-                                    },
-                                    child: Text(curLangText!.uiOpenInFileExplorer)),
-                              ),
-                            ),
-                          ],
-                        )),
                   ],
                 ),
-              ));
+              ),
+            ),
+            actionsPadding: const EdgeInsets.all(5),
+            actionsAlignment: MainAxisAlignment.end,
+            actions: [
+              ElevatedButton(
+                  onPressed: () {
+                    Provider.of<StateProvider>(context, listen: false).modExportProgessZippingStateSet(false);
+                    exportStart = false;
+                    Navigator.pop(context, true);
+                  },
+                  child: Text(curLangText!.uiClose)),
+              Visibility(
+                visible: exportedZip.path.isEmpty,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 0),
+                  child: ElevatedButton(
+                      onPressed: !exportStart
+                      ? () async {
+                        exportStart = true;
+                        setState(
+                          () {},
+                        );
+                        String exportedZipPath = await modExport(context, baseList, exportSubmods, appliedModsExport);
+                        exportedZip = File(exportedZipPath);
+                        exportStart = false;
+                        setState(
+                          () {},
+                        );
+                      }
+                      : null,
+                      child: Text(curLangText!.uiExport)),
+                ),
+              ),
+              Visibility(
+                visible: exportedZip.existsSync(),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 0),
+                  child: ElevatedButton(
+                      onPressed: () async {
+                        Provider.of<StateProvider>(context, listen: false).modExportProgessZippingStateSet(false);
+                        exportStart = false;
+                        await launchUrl(Uri.file(exportedZip.parent.path));
+                        // ignore: use_build_context_synchronously
+                        Navigator.pop(context, true);
+                      },
+                      child: Text(curLangText!.uiOpenInFileExplorer)),
+                ),
+              ),
+            ],
+          );
         });
       });
 }
