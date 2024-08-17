@@ -24,7 +24,9 @@ Future<bool> applyModsToTheGame(context, Item curItem, Mod curMod, SubMod curSub
         curSubmod.setApplyState(true);
         curSubmod.isNew = false;
         curMod.setApplyState(true);
-        curMod.isNew = false;
+        if (curMod.submods.where((e) => e.isNew).isEmpty) {
+          curMod.isNew = false;
+        }
         curItem.setApplyState(true);
         if (curItem.mods.where((element) => element.isNew).isEmpty) {
           curItem.isNew = false;

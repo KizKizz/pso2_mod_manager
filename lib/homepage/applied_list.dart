@@ -741,7 +741,9 @@ class _AppliedListState extends State<AppliedList> {
                                                                                                     curItem.mods[curModIndex].submods[curSubModIndex].isNew = false;
                                                                                                     curItem.mods[curModIndex].submods[curSubModIndex].applyDate = DateTime.now();
                                                                                                     curItem.mods[curModIndex].setApplyState(true);
-                                                                                                    curItem.mods[curModIndex].isNew = false;
+                                                                                                    if (curItem.mods[curModIndex].submods.where((e) => e.isNew).isEmpty) {
+                                                                                                      curItem.mods[curModIndex].isNew = false;
+                                                                                                    }
                                                                                                     curItem.mods[curModIndex].applyDate = DateTime.now();
                                                                                                     curItem.setApplyState(true);
                                                                                                     if (curItem.mods.where((element) => element.isNew).isEmpty) {
