@@ -653,19 +653,22 @@ class TranslationText {
 
   //aqm_inject.dart
   String uiCustomAqmInjection = 'Custom aqm Injection',
+      uiCustomAqmInjectionRemoval = 'Custom aqm Injection Removal',
       uiCustomAqmFileOrItemIDNotFound = 'Custom aqm file or item ID not found',
       uiFetchingHQandLQFiles = 'Fetching HQ and LQ files',
       uiGroup2IsNotFoundInextractedIce = 'Group2 is not found in extracted ice',
       uiFetchingItemID = 'Fetching Item ID';
 
   //aqm_injection_homepage.dart
-  String uiInjectCustomAqmIntoThisItem = 'Add custom aqm to this item',
-      uiRemoveCustomAqmFromThisItem = 'Remove custom aqm from this item',
+  String uiInjectCustomAqmIntoThisItem = 'Add custom aqm',
+      uiRemoveCustomAqmFromThisItem = 'Remove custom aqm',
       uiItemsToInjectCustomAqm = 'Items to inject custom aqm',
       uiItemsAlreadyHaveCustomAqm = 'Items with custom aqm injected ',
-      uiNoteMustSelectACustomAqmFileBeforeInject = 'Must select a custom aqm file to enable injection. Backups are online only',
+      uiNoteMustSelectACustomAqmFileBeforeInject = 'Backups are online only',
       uiRemoveAll = 'Remove All',
-      uiReInjectAll = 'Reinject All';
+      uiReInjectAll = 'Reinject All',
+      uiAqmAutoBoundingRadius = 'Auto Bounding Radius',
+      uiAqmRemoveAllBoundings = 'Remove All Boundings';
 
   //aqm_injection_page.dart
   String uiApplyingOverlayToIngameItemIcon = 'Applying overlay to in-game item icon';

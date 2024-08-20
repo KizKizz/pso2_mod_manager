@@ -29,51 +29,52 @@ Future<bool> modAqmInjectionRemovalHomePage(context, SubMod submod) async {
             }
           });
           return AlertDialog(
-              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
-              backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-              contentPadding: const EdgeInsets.all(10),
-              title: Center(
-                child: Text(
-                  curLangText!.uiCustomAqmInjection,
-                ),
+            shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+            backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+            contentPadding: const EdgeInsets.all(10),
+            titlePadding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+            title: Center(
+              child: Text(
+                curLangText!.uiCustomAqmInjectionRemoval,
               ),
-              content: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: 250, minWidth: 250, maxHeight: double.infinity, maxWidth: double.infinity),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (context.watch<StateProvider>().aqmInjectionProgressStatus.split('\n').first != curLangText!.uiError &&
-                        context.watch<StateProvider>().aqmInjectionProgressStatus.split('\n').first != curLangText!.uiSuccess)
-                      const CircularProgressIndicator(),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5),
-                      child: Text(
-                        context.watch<StateProvider>().aqmInjectionProgressStatus,
-                        textAlign: TextAlign.center,
-                      ),
+            ),
+            content: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 50, minWidth: 250, maxHeight: double.infinity, maxWidth: double.infinity),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  if (context.watch<StateProvider>().aqmInjectionProgressStatus.split('\n').first != curLangText!.uiError &&
+                      context.watch<StateProvider>().aqmInjectionProgressStatus.split('\n').first != curLangText!.uiSuccess)
+                    const CircularProgressIndicator(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5),
+                    child: Text(
+                      context.watch<StateProvider>().aqmInjectionProgressStatus,
+                      textAlign: TextAlign.center,
                     ),
-                    
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: ElevatedButton(
-                            onPressed: context.watch<StateProvider>().aqmInjectionProgressStatus.split('\n').first == curLangText!.uiError ||
-                                    context.watch<StateProvider>().aqmInjectionProgressStatus.split('\n').first == curLangText!.uiSuccess
-                                ? () {
-                                    Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                      element.deleteSync(recursive: true);
-                                    });
-                                    isAqmInjectionRemoving = false;
-                                    Navigator.pop(context, true);
-                                  }
-                                : null,
-                            child: Text(curLangText!.uiReturn)),
-                      ),
-                  
-                  ],
-                ),
-              ));
+                  ),
+                ],
+              ),
+            ),
+            actionsPadding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+            actionsAlignment: MainAxisAlignment.center,
+            actions: [
+              ElevatedButton(
+                  onPressed: context.watch<StateProvider>().aqmInjectionProgressStatus.split('\n').first == curLangText!.uiError ||
+                          context.watch<StateProvider>().aqmInjectionProgressStatus.split('\n').first == curLangText!.uiSuccess
+                      ? () {
+                          Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                            element.deleteSync(recursive: true);
+                          });
+                          isAqmInjectionRemoving = false;
+                          Navigator.pop(context, true);
+                        }
+                      : null,
+                  child: Text(curLangText!.uiReturn)),
+            ],
+          );
         });
       });
 }
@@ -139,9 +140,10 @@ Future<void> aqmInjectionRemoval(context, SubMod submod) async {
           Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(curLangText!.uiReplacingModFiles);
           await Future.delayed(const Duration(milliseconds: 100));
           try {
-            File renamedFile = await File(Uri.file('${p.dirname(customAqmFile.parent.path)}.ice').toFilePath()).rename(Uri.file(p.dirname(customAqmFile.parent.path).replaceAll('_ext', '')).toFilePath());
+            File renamedFile =
+                await File(Uri.file('${p.dirname(customAqmFile.parent.path)}.ice').toFilePath()).rename(Uri.file(p.dirname(customAqmFile.parent.path).replaceAll('_ext', '')).toFilePath());
             await renamedFile.copy(modFile.location);
-            aqmInjectedFiles.add('${p.basename(customAqmFile.path)} -> ${modFile.modFileName}');
+            aqmInjectedFiles.add('${modFile.modFileName}: ${p.basename(customAqmFile.path)}  ');
           } catch (e) {
             Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${e.toString()}');
           }
@@ -161,12 +163,10 @@ Future<void> aqmInjectionRemoval(context, SubMod submod) async {
   } else {
     Provider.of<StateProvider>(context, listen: false).setAqmInjectionProgressStatus('${curLangText!.uiError}\n${curLangText!.uiNoMatchingFileFound}');
     await Future.delayed(const Duration(milliseconds: 100));
-    
   }
-  
+
   isAqmInjectionRemoving = true;
 }
-
 
 Future<void> aqmInjectionRemovalSilent(context, SubMod submod) async {
   if (Directory(modManAddModsTempDirPath).existsSync()) {

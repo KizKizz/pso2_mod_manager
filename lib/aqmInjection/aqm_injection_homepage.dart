@@ -298,101 +298,136 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                                                           return Padding(
                                                               padding: const EdgeInsets.symmetric(vertical: 2),
                                                               child: ListTile(
-                                                                shape: RoundedRectangleBorder(
-                                                                    side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                                title: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                                                                  //icon
-                                                                  Padding(
-                                                                    padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
-                                                                    child: Container(
-                                                                        width: 80,
-                                                                        height: 80,
-                                                                        decoration: BoxDecoration(
-                                                                          borderRadius: BorderRadius.circular(3),
-                                                                          border: Border.all(color: Theme.of(context).hintColor, width: 1),
-                                                                        ),
-                                                                        child: Image.network(
-                                                                          '$modManMAIconDatabaseLink${availableItem[i].iconImagePath.replaceAll('\\', '/').replaceAll(' ', '%20')}',
-                                                                          errorBuilder: (context, error, stackTrace) => Image.asset(
-                                                                            'assets/img/placeholdersquare.png',
+                                                                  shape: RoundedRectangleBorder(
+                                                                      side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                                  title: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                                                                    //icon
+                                                                    Padding(
+                                                                      padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
+                                                                      child: Container(
+                                                                          width: 80,
+                                                                          height: 80,
+                                                                          decoration: BoxDecoration(
+                                                                            borderRadius: BorderRadius.circular(3),
+                                                                            border: Border.all(color: Theme.of(context).hintColor, width: 1),
+                                                                          ),
+                                                                          child: Image.network(
+                                                                            '$modManMAIconDatabaseLink${availableItem[i].iconImagePath.replaceAll('\\', '/').replaceAll(' ', '%20')}',
+                                                                            errorBuilder: (context, error, stackTrace) => Image.asset(
+                                                                              'assets/img/placeholdersquare.png',
+                                                                              filterQuality: FilterQuality.none,
+                                                                              fit: BoxFit.fitWidth,
+                                                                            ),
                                                                             filterQuality: FilterQuality.none,
                                                                             fit: BoxFit.fitWidth,
-                                                                          ),
-                                                                          filterQuality: FilterQuality.none,
-                                                                          fit: BoxFit.fitWidth,
+                                                                          )),
+                                                                    ),
+                                                                    //names
+                                                                    Padding(
+                                                                        padding: const EdgeInsets.only(top: 10, bottom: 10),
+                                                                        child: Column(
+                                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            modManCurActiveItemNameLanguage == 'JP'
+                                                                                ? Text(availableItem[i].getJPName().trim())
+                                                                                : Text(availableItem[i].getENName().trim()),
+                                                                            const SizedBox(height: 10),
+                                                                            Text('Id: ${p.basenameWithoutExtension(availableItem[i].infos.entries.firstWhere((e) => e.key == 'Id').value)}',
+                                                                                style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
+                                                                            Text('Id2: ${p.basenameWithoutExtension(availableItem[i].infos.entries.firstWhere((e) => e.key == 'Adjusted Id').value)}',
+                                                                                style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
+                                                                            Text('HQ: ${p.basenameWithoutExtension(availableItem[i].infos.entries.firstWhere((e) => e.key == 'High Quality').value)}',
+                                                                                style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
+                                                                            Text('LQ: ${p.basenameWithoutExtension(availableItem[i].infos.entries.firstWhere((e) => e.key == 'Normal Quality').value)}',
+                                                                                style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
+                                                                          ],
                                                                         )),
-                                                                  ),
-                                                                  //names
-                                                                  Padding(
-                                                                      padding: const EdgeInsets.only(top: 10, bottom: 10),
-                                                                      child: Column(
-                                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                                        children: [
-                                                                          modManCurActiveItemNameLanguage == 'JP'
-                                                                              ? Text(availableItem[i].getJPName().trim())
-                                                                              : Text(availableItem[i].getENName().trim()),
-                                                                          const SizedBox(height: 10),
-                                                                          Text('Id: ${p.basenameWithoutExtension(availableItem[i].infos.entries.firstWhere((e) => e.key == 'Id').value)}',
-                                                                              style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
-                                                                          Text('Id2: ${p.basenameWithoutExtension(availableItem[i].infos.entries.firstWhere((e) => e.key == 'Adjusted Id').value)}',
-                                                                              style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
-                                                                          Text('HQ: ${p.basenameWithoutExtension(availableItem[i].infos.entries.firstWhere((e) => e.key == 'High Quality').value)}',
-                                                                              style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
-                                                                          Text('LQ: ${p.basenameWithoutExtension(availableItem[i].infos.entries.firstWhere((e) => e.key == 'Normal Quality').value)}',
-                                                                              style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
-                                                                        ],
-                                                                      )),
-                                                                ]),
-                                                                subtitle: ElevatedButton(
-                                                                    onPressed: aqmItems
-                                                                                .where((element) =>
-                                                                                    element.itemNameEN == availableItem[i].getENName() || element.itemNameJP == availableItem[i].getJPName())
-                                                                                .isEmpty &&
-                                                                            File(modManCustomAqmFilePath).existsSync() &&
-                                                                            allAppliedModFiles
-                                                                                .where((e) => e.modFileName == availableItem[i].infos.entries.firstWhere((e) => e.key == 'High Quality').value)
-                                                                                .isEmpty &&
-                                                                            allAppliedModFiles
-                                                                                .where((e) => e.modFileName == availableItem[i].infos.entries.firstWhere((e) => e.key == 'Normal Quality').value)
-                                                                                .isEmpty &&
-                                                                            !isAllButtonPressed
-                                                                        ? () async {
-                                                                            final hqIcePaths =
-                                                                                await originalFilePathGet(context, availableItem[i].infos.entries.firstWhere((e) => e.key == 'High Quality').value);
-                                                                            final lqIcePaths =
-                                                                                await originalFilePathGet(context, availableItem[i].infos.entries.firstWhere((e) => e.key == 'Normal Quality').value);
-                                                                            final iconIcePaths =
-                                                                                await originalFilePathGet(context, availableItem[i].infos.entries.firstWhere((e) => e.key == 'Icon').value);
-                                                                            AqmItem newItem = AqmItem(
-                                                                                availableItem[i].category,
-                                                                                availableItem[i].infos.entries.firstWhere((e) => e.key == 'Id').value,
-                                                                                availableItem[i].infos.entries.firstWhere((e) => e.key == 'Adjusted Id').value,
-                                                                                availableItem[i].iconImagePath,
-                                                                                availableItem[i].getENName(),
-                                                                                availableItem[i].getJPName(),
-                                                                                hqIcePaths.isNotEmpty ? hqIcePaths.first : '',
-                                                                                lqIcePaths.isNotEmpty ? lqIcePaths.first : '',
-                                                                                iconIcePaths.isNotEmpty ? iconIcePaths.first : '',
-                                                                                false,
-                                                                                false);
-                                                                            bool value = await itemAqmInjectionHomePage(context, newItem.hqIcePath, newItem.lqIcePath, newItem.iconIcePath);
-                                                                            if (value) {
-                                                                              newItem.isApplied = true;
-                                                                              if (Provider.of<StateProvider>(context, listen: false).markModdedItem) newItem.isIconReplaced = true;
-                                                                              aqmItems.add(newItem);
+                                                                  ]),
+                                                                  subtitle: Row(
+                                                                    children: [
+                                                                      ElevatedButton(
+                                                                          onPressed: aqmItems
+                                                                                      .where((element) =>
+                                                                                          element.itemNameEN == availableItem[i].getENName() || element.itemNameJP == availableItem[i].getJPName())
+                                                                                      .isEmpty &&
+                                                                                  File(modManCustomAqmFilePath).existsSync() &&
+                                                                                  allAppliedModFiles
+                                                                                      .where((e) => e.modFileName == availableItem[i].infos.entries.firstWhere((e) => e.key == 'High Quality').value)
+                                                                                      .isEmpty &&
+                                                                                  allAppliedModFiles
+                                                                                      .where((e) => e.modFileName == availableItem[i].infos.entries.firstWhere((e) => e.key == 'Normal Quality').value)
+                                                                                      .isEmpty &&
+                                                                                  !isAllButtonPressed
+                                                                              ? () async {
+                                                                                  final hqIcePaths = await originalFilePathGet(
+                                                                                      context, availableItem[i].infos.entries.firstWhere((e) => e.key == 'High Quality').value);
+                                                                                  final lqIcePaths = await originalFilePathGet(
+                                                                                      context, availableItem[i].infos.entries.firstWhere((e) => e.key == 'Normal Quality').value);
+                                                                                  await itemAqmInjectionHomePage(
+                                                                                      context, hqIcePaths.isNotEmpty ? hqIcePaths.first : '', lqIcePaths.isNotEmpty ? lqIcePaths.first : '', '', true);
 
-                                                                              //Save to json
-                                                                              aqmItems.map((item) => item.toJson()).toList();
-                                                                              const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-                                                                              File(modManAqmInjectedItemListJsonPath).writeAsStringSync(encoder.convert(aqmItems));
-                                                                            }
+                                                                                  setState(() {});
+                                                                                }
+                                                                              : null,
+                                                                          child: Text(curLangText!.uiRemoveBoundaryRadius)),
+                                                                      const SizedBox(
+                                                                        width: 5,
+                                                                      ),
+                                                                      Expanded(
+                                                                        child: ElevatedButton(
+                                                                            onPressed: aqmItems
+                                                                                        .where((element) =>
+                                                                                            element.itemNameEN == availableItem[i].getENName() || element.itemNameJP == availableItem[i].getJPName())
+                                                                                        .isEmpty &&
+                                                                                    File(modManCustomAqmFilePath).existsSync() &&
+                                                                                    allAppliedModFiles
+                                                                                        .where((e) => e.modFileName == availableItem[i].infos.entries.firstWhere((e) => e.key == 'High Quality').value)
+                                                                                        .isEmpty &&
+                                                                                    allAppliedModFiles
+                                                                                        .where(
+                                                                                            (e) => e.modFileName == availableItem[i].infos.entries.firstWhere((e) => e.key == 'Normal Quality').value)
+                                                                                        .isEmpty &&
+                                                                                    !isAllButtonPressed
+                                                                                ? () async {
+                                                                                    final hqIcePaths = await originalFilePathGet(
+                                                                                        context, availableItem[i].infos.entries.firstWhere((e) => e.key == 'High Quality').value);
+                                                                                    final lqIcePaths = await originalFilePathGet(
+                                                                                        context, availableItem[i].infos.entries.firstWhere((e) => e.key == 'Normal Quality').value);
+                                                                                    final iconIcePaths =
+                                                                                        await originalFilePathGet(context, availableItem[i].infos.entries.firstWhere((e) => e.key == 'Icon').value);
+                                                                                    AqmItem newItem = AqmItem(
+                                                                                        availableItem[i].category,
+                                                                                        availableItem[i].infos.entries.firstWhere((e) => e.key == 'Id').value,
+                                                                                        availableItem[i].infos.entries.firstWhere((e) => e.key == 'Adjusted Id').value,
+                                                                                        availableItem[i].iconImagePath,
+                                                                                        availableItem[i].getENName(),
+                                                                                        availableItem[i].getJPName(),
+                                                                                        hqIcePaths.isNotEmpty ? hqIcePaths.first : '',
+                                                                                        lqIcePaths.isNotEmpty ? lqIcePaths.first : '',
+                                                                                        iconIcePaths.isNotEmpty ? iconIcePaths.first : '',
+                                                                                        false,
+                                                                                        false);
+                                                                                    bool value =
+                                                                                        await itemAqmInjectionHomePage(context, newItem.hqIcePath, newItem.lqIcePath, newItem.iconIcePath, false);
+                                                                                    if (value) {
+                                                                                      newItem.isApplied = true;
+                                                                                      if (Provider.of<StateProvider>(context, listen: false).markModdedItem) newItem.isIconReplaced = true;
+                                                                                      aqmItems.add(newItem);
 
-                                                                            setState(() {});
-                                                                          }
-                                                                        : null,
-                                                                    child: Text(curLangText!.uiInjectCustomAqmIntoThisItem)),
-                                                              ));
+                                                                                      //Save to json
+                                                                                      aqmItems.map((item) => item.toJson()).toList();
+                                                                                      const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+                                                                                      File(modManAqmInjectedItemListJsonPath).writeAsStringSync(encoder.convert(aqmItems));
+                                                                                    }
+
+                                                                                    setState(() {});
+                                                                                  }
+                                                                                : null,
+                                                                            child: Text(curLangText!.uiInjectCustomAqmIntoThisItem)),
+                                                                      ),
+                                                                    ],
+                                                                  )));
                                                         }),
                                                   ),
                                                 ),
@@ -514,100 +549,129 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                                                               return Padding(
                                                                 padding: const EdgeInsets.symmetric(vertical: 2),
                                                                 child: ListTile(
-                                                                  shape: RoundedRectangleBorder(
-                                                                      side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                                  title: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                                                                    //icon
-                                                                    Padding(
-                                                                      padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
-                                                                      child: Container(
-                                                                          width: 80,
-                                                                          height: 80,
-                                                                          decoration: BoxDecoration(
-                                                                            borderRadius: BorderRadius.circular(3),
-                                                                            border: Border.all(color: Theme.of(context).hintColor, width: 1),
-                                                                          ),
-                                                                          child: Image.network(
-                                                                            '$modManMAIconDatabaseLink${injectedItem[i].iconImagePath.replaceAll('\\', '/').replaceAll(' ', '%20')}',
-                                                                            errorBuilder: (context, error, stackTrace) => Image.asset(
-                                                                              'assets/img/placeholdersquare.png',
+                                                                    shape: RoundedRectangleBorder(
+                                                                        side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                                    title: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                                                                      //icon
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
+                                                                        child: Container(
+                                                                            width: 80,
+                                                                            height: 80,
+                                                                            decoration: BoxDecoration(
+                                                                              borderRadius: BorderRadius.circular(3),
+                                                                              border: Border.all(color: Theme.of(context).hintColor, width: 1),
+                                                                            ),
+                                                                            child: Image.network(
+                                                                              '$modManMAIconDatabaseLink${injectedItem[i].iconImagePath.replaceAll('\\', '/').replaceAll(' ', '%20')}',
+                                                                              errorBuilder: (context, error, stackTrace) => Image.asset(
+                                                                                'assets/img/placeholdersquare.png',
+                                                                                filterQuality: FilterQuality.none,
+                                                                                fit: BoxFit.fitWidth,
+                                                                              ),
                                                                               filterQuality: FilterQuality.none,
                                                                               fit: BoxFit.fitWidth,
-                                                                            ),
-                                                                            filterQuality: FilterQuality.none,
-                                                                            fit: BoxFit.fitWidth,
+                                                                            )),
+                                                                      ),
+                                                                      //names
+                                                                      Padding(
+                                                                          padding: const EdgeInsets.only(top: 10, bottom: 10),
+                                                                          child: Column(
+                                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              modManCurActiveItemNameLanguage == 'JP'
+                                                                                  ? Text(injectedItem[i].itemNameJP.trim())
+                                                                                  : Text(injectedItem[i].itemNameEN.trim()),
+                                                                              const SizedBox(height: 10),
+                                                                              Text('Id: ${p.basenameWithoutExtension(injectedItem[i].id)}',
+                                                                                  style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
+                                                                              Text('Id2: ${p.basenameWithoutExtension(injectedItem[i].adjustedId)}',
+                                                                                  style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
+                                                                              Text('HQ: ${p.basenameWithoutExtension(injectedItem[i].hqIcePath)}',
+                                                                                  style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
+                                                                              Text('LQ: ${p.basenameWithoutExtension(injectedItem[i].lqIcePath)}',
+                                                                                  style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
+                                                                            ],
                                                                           )),
-                                                                    ),
-                                                                    //names
-                                                                    Padding(
-                                                                        padding: const EdgeInsets.only(top: 10, bottom: 10),
-                                                                        child: Column(
-                                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                                          children: [
-                                                                            modManCurActiveItemNameLanguage == 'JP' ? Text(injectedItem[i].itemNameJP.trim()) : Text(injectedItem[i].itemNameEN.trim()),
-                                                                            const SizedBox(height: 10),
-                                                                            Text('Id: ${p.basenameWithoutExtension(injectedItem[i].id)}',
-                                                                                style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
-                                                                            Text('Id2: ${p.basenameWithoutExtension(injectedItem[i].adjustedId)}',
-                                                                                style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
-                                                                            Text('HQ: ${p.basenameWithoutExtension(injectedItem[i].hqIcePath)}',
-                                                                                style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
-                                                                            Text('LQ: ${p.basenameWithoutExtension(injectedItem[i].lqIcePath)}',
-                                                                                style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor)),
-                                                                          ],
-                                                                        )),
-                                                                  ]),
-                                                                  subtitle: ElevatedButton(
-                                                                      onPressed: !isAllButtonPressed
-                                                                          ? () async {
-                                                                              setState(() {
-                                                                                isLoading = true;
-                                                                                isAllButtonPressed = true;
-                                                                              });
-                                                                              List<String> restorePaths = [];
-                                                                              if (injectedItem[i].hqIcePath.isNotEmpty) {
-                                                                                restorePaths.add(injectedItem[i].hqIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
-                                                                              }
-                                                                              if (injectedItem[i].lqIcePath.isNotEmpty) {
-                                                                                restorePaths.add(injectedItem[i].hqIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
-                                                                              }
-                                                                              if (injectedItem[i].iconIcePath.isNotEmpty && injectedItem[i].isIconReplaced) {
-                                                                                restorePaths.add(injectedItem[i].iconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
-                                                                              }
-                                                                              if (restorePaths.isNotEmpty) {
-                                                                                await downloadIceFromOfficial(restorePaths);
-                                                                                aqmItems.remove(injectedItem[i]);
-                                                                              }
-                                                                              //Save to json
-                                                                              aqmItems.map((item) => item.toJson()).toList();
-                                                                              const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-                                                                              File(modManAqmInjectedItemListJsonPath).writeAsStringSync(encoder.convert(aqmItems));
+                                                                    ]),
+                                                                    subtitle: Row(
+                                                                      children: [
+                                                                        ElevatedButton(
+                                                                            onPressed: !isAllButtonPressed
+                                                                                ? () async {
+                                                                                    final hqIcePaths = await originalFilePathGet(
+                                                                                        context, availableItem[i].infos.entries.firstWhere((e) => e.key == 'High Quality').value);
+                                                                                    final lqIcePaths = await originalFilePathGet(
+                                                                                        context, availableItem[i].infos.entries.firstWhere((e) => e.key == 'Normal Quality').value);
+                                                                                    await itemAqmInjectionHomePage(context, hqIcePaths.isNotEmpty ? hqIcePaths.first : '',
+                                                                                        lqIcePaths.isNotEmpty ? lqIcePaths.first : '', '', true);
 
-                                                                              setState(() {
-                                                                                isLoading = false;
-                                                                                isAllButtonPressed = false;
-                                                                              });
-                                                                            }
-                                                                          : null,
-                                                                      child: Row(
-                                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                                        children: [
-                                                                          Visibility(
-                                                                              visible: isLoading,
-                                                                              child: Padding(
-                                                                                padding: const EdgeInsets.only(right: 10),
-                                                                                child: SizedBox(
-                                                                                    width: 15,
-                                                                                    height: 15,
-                                                                                    child: CircularProgressIndicator(color: Theme.of(context).buttonTheme.colorScheme!.onSurface)),
+                                                                                    setState(() {});
+                                                                                  }
+                                                                                : null,
+                                                                            child: Text(curLangText!.uiRemoveBoundaryRadius)),
+                                                                        const SizedBox(
+                                                                          width: 5,
+                                                                        ),
+                                                                        Expanded(
+                                                                          child: ElevatedButton(
+                                                                              onPressed: !isAllButtonPressed
+                                                                                  ? () async {
+                                                                                      setState(() {
+                                                                                        isLoading = true;
+                                                                                        isAllButtonPressed = true;
+                                                                                      });
+                                                                                      List<String> restorePaths = [];
+                                                                                      if (injectedItem[i].hqIcePath.isNotEmpty) {
+                                                                                        restorePaths
+                                                                                            .add(injectedItem[i].hqIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
+                                                                                      }
+                                                                                      if (injectedItem[i].lqIcePath.isNotEmpty) {
+                                                                                        restorePaths
+                                                                                            .add(injectedItem[i].hqIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
+                                                                                      }
+                                                                                      if (injectedItem[i].iconIcePath.isNotEmpty && injectedItem[i].isIconReplaced) {
+                                                                                        restorePaths
+                                                                                            .add(injectedItem[i].iconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
+                                                                                      }
+                                                                                      if (aqmAutoBoundingRadius) {
+                                                                                        await itemAqmInjectionHomePage(context, injectedItem[i].hqIcePath, injectedItem[i].lqIcePath, '', true);
+                                                                                      }
+                                                                                      if (restorePaths.isNotEmpty) {
+                                                                                        await downloadIceFromOfficial(restorePaths);
+                                                                                        aqmItems.remove(injectedItem[i]);
+                                                                                      }
+                                                                                      //Save to json
+                                                                                      aqmItems.map((item) => item.toJson()).toList();
+                                                                                      const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+                                                                                      File(modManAqmInjectedItemListJsonPath).writeAsStringSync(encoder.convert(aqmItems));
+                                                                                      setState(() {
+                                                                                        isLoading = false;
+                                                                                        isAllButtonPressed = false;
+                                                                                      });
+                                                                                    }
+                                                                                  : null,
+                                                                              child: Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                children: [
+                                                                                  Visibility(
+                                                                                      visible: isLoading,
+                                                                                      child: Padding(
+                                                                                        padding: const EdgeInsets.only(right: 10),
+                                                                                        child: SizedBox(
+                                                                                            width: 15,
+                                                                                            height: 15,
+                                                                                            child: CircularProgressIndicator(color: Theme.of(context).buttonTheme.colorScheme!.onSurface)),
+                                                                                      )),
+                                                                                  const SizedBox(width: 10),
+                                                                                  Text(curLangText!.uiRemoveCustomAqmFromThisItem)
+                                                                                ],
                                                                               )),
-                                                                          const SizedBox(width: 10),
-                                                                          Text(curLangText!.uiRemoveCustomAqmFromThisItem)
-                                                                        ],
-                                                                      )),
-                                                                ),
+                                                                        ),
+                                                                      ],
+                                                                    )),
                                                               );
                                                             }))),
                                               ),
@@ -622,62 +686,53 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 5),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    Text(curLangText!.uiNoteMustSelectACustomAqmFileBeforeInject),
+                                    // Text(curLangText!.uiNoteMustSelectACustomAqmFileBeforeInject),
                                     Wrap(
                                       runAlignment: WrapAlignment.center,
                                       alignment: WrapAlignment.center,
                                       spacing: 5,
                                       children: [
                                         ElevatedButton(
-                                            onPressed: injectedItem.isNotEmpty && !isAllButtonPressed
+                                            onPressed: !isAllButtonPressed
                                                 ? () async {
-                                                    setState(() {
-                                                      isLoading = true;
-                                                      isAllButtonPressed = true;
-                                                    });
-                                                    for (int i = 0; i < injectedItem.length; i++) {
-                                                      List<String> restorePaths = [];
-                                                      if (injectedItem[i].hqIcePath.isNotEmpty) {
-                                                        restorePaths.add(injectedItem[i].hqIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
-                                                      }
-                                                      if (injectedItem[i].lqIcePath.isNotEmpty) {
-                                                        restorePaths.add(injectedItem[i].hqIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
-                                                      }
-                                                      if (injectedItem[i].iconIcePath.isNotEmpty && injectedItem[i].isIconReplaced) {
-                                                        restorePaths.add(injectedItem[i].iconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
-                                                      }
-                                                      if (restorePaths.isNotEmpty) {
-                                                        await downloadIceFromOfficial(restorePaths);
-                                                        aqmItems.remove(injectedItem[i]);
-                                                      }
-                                                    }
-                                                    //Save to json
-                                                    aqmItems.map((item) => item.toJson()).toList();
-                                                    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-                                                    File(modManAqmInjectedItemListJsonPath).writeAsStringSync(encoder.convert(aqmItems));
+                                                    final prefs = await SharedPreferences.getInstance();
 
-                                                    setState(() {
-                                                      isLoading = false;
-                                                      isAllButtonPressed = false;
-                                                    });
+                                                    if (aqmAutoBoundingRadius) {
+                                                      aqmAutoBoundingRadius = false;
+                                                      prefs.setBool('aqmAutoBoundingRadius', false);
+                                                    } else {
+                                                      aqmAutoBoundingRadius = true;
+                                                      prefs.setBool('aqmAutoBoundingRadius', true);
+                                                    }
+                                                    setState(() {});
                                                   }
                                                 : null,
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                Visibility(
-                                                    visible: isLoading,
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.only(right: 10),
-                                                      child: SizedBox(width: 15, height: 15, child: CircularProgressIndicator(color: Theme.of(context).buttonTheme.colorScheme!.onSurface)),
-                                                    )),
-                                                Visibility(visible: isLoading, child: const SizedBox(width: 10)),
-                                                Text(curLangText!.uiRemoveAll)
-                                              ],
+                                            child: Text(
+                                              aqmAutoBoundingRadius ? '${curLangText!.uiAqmAutoBoundingRadius}: ON' : '${curLangText!.uiAqmAutoBoundingRadius}: OFF',
                                             )),
+                                        ElevatedButton(
+                                            onPressed: !isAllButtonPressed
+                                                ? () async {
+                                                    final prefs = await SharedPreferences.getInstance();
+                                                    const XTypeGroup typeGroup = XTypeGroup(
+                                                      label: '.aqm',
+                                                      extensions: <String>['aqm'],
+                                                    );
+                                                    final XFile? selectedFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+                                                    if (selectedFile != null) {
+                                                      modManCustomAqmFileName = selectedFile.name;
+                                                      prefs.setString('modManCustomAqmFileName', modManCustomAqmFileName);
+                                                      if (Directory(modManCustomAqmDir).existsSync() && modManCustomAqmFileName.isNotEmpty) {
+                                                        modManCustomAqmFilePath = Uri.file('$modManCustomAqmDir/$modManCustomAqmFileName').toFilePath();
+                                                        File(selectedFile.path).copySync(modManCustomAqmFilePath);
+                                                      }
+                                                    }
+                                                    setState(() {});
+                                                  }
+                                                : null,
+                                            child: Text(!File(modManCustomAqmFilePath).existsSync() ? curLangText!.uiSelectAqmFile : curLangText!.uiReSelectAqmFile)),
                                         ElevatedButton(
                                             onPressed: injectedItem.isNotEmpty && !isAllButtonPressed
                                                 ? () async {
@@ -685,11 +740,11 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                                                       isLoading = true;
                                                       isAllButtonPressed = true;
                                                     });
-                                                    for (int i = 0; i < injectedItem.length; i++) {
-                                                      bool value = await itemAqmInjectionHomePage(context, injectedItem[i].hqIcePath, injectedItem[i].lqIcePath, injectedItem[i].iconIcePath);
+                                                    for (var item in injectedItem) {
+                                                      bool value = await itemAqmInject(context, item.hqIcePath, item.lqIcePath, item.iconIcePath);
                                                       if (value) {
-                                                        injectedItem[i].isApplied = true;
-                                                        if (Provider.of<StateProvider>(context, listen: false).markModdedItem) injectedItem[i].isIconReplaced = true;
+                                                        item.isApplied = true;
+                                                        if (Provider.of<StateProvider>(context, listen: false).markModdedItem) item.isIconReplaced = true;
                                                       }
                                                       //Save to json
                                                       aqmItems.map((item) => item.toJson()).toList();
@@ -717,27 +772,90 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                                               ],
                                             )),
                                         ElevatedButton(
-                                            onPressed: !isAllButtonPressed
+                                            onPressed: injectedItem.isNotEmpty && !isAllButtonPressed
                                                 ? () async {
-                                                    final prefs = await SharedPreferences.getInstance();
-                                                    const XTypeGroup typeGroup = XTypeGroup(
-                                                      label: '.aqm',
-                                                      extensions: <String>['aqm'],
-                                                    );
-                                                    final XFile? selectedFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
-                                                    if (selectedFile != null) {
-                                                      modManCustomAqmFileName = selectedFile.name;
-                                                      prefs.setString('modManCustomAqmFileName', modManCustomAqmFileName);
-                                                      if (Directory(modManCustomAqmDir).existsSync() && modManCustomAqmFileName.isNotEmpty) {
-                                                        modManCustomAqmFilePath = Uri.file('$modManCustomAqmDir/$modManCustomAqmFileName').toFilePath();
-                                                        File(selectedFile.path).copySync(modManCustomAqmFilePath);
-                                                      }
+                                                    setState(() {
+                                                      isLoading = true;
+                                                      isAllButtonPressed = true;
+                                                    });
+                                                    for (var item in injectedItem) {
+                                                      await itemBoundaryRemoval(context, item.hqIcePath, item.lqIcePath);
                                                     }
-                                                    setState(() {});
+
+                                                    setState(() {
+                                                      isLoading = false;
+                                                      isAllButtonPressed = false;
+                                                    });
                                                   }
                                                 : null,
-                                            child: Text(!File(modManCustomAqmFilePath).existsSync() ? curLangText!.uiSelectAqmFile : curLangText!.uiReSelectAqmFile,
-                                                style: const TextStyle(fontWeight: FontWeight.w400))),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Visibility(
+                                                    visible: isLoading,
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(right: 10),
+                                                      child: SizedBox(width: 15, height: 15, child: CircularProgressIndicator(color: Theme.of(context).buttonTheme.colorScheme!.onSurface)),
+                                                    )),
+                                                Text(curLangText!.uiAqmRemoveAllBoundings)
+                                              ],
+                                            )),
+                                        ElevatedButton(
+                                            onPressed: injectedItem.isNotEmpty && !isAllButtonPressed ? () {} : null,
+                                            onLongPress: injectedItem.isNotEmpty && !isAllButtonPressed
+                                                ? () async {
+                                                    setState(() {
+                                                      isLoading = true;
+                                                      isAllButtonPressed = true;
+                                                    });
+                                                    for (var item in injectedItem) {
+                                                      List<String> restorePaths = [];
+                                                      if (item.hqIcePath.isNotEmpty) {
+                                                        restorePaths.add(item.hqIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
+                                                      }
+                                                      if (item.lqIcePath.isNotEmpty) {
+                                                        restorePaths.add(item.lqIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
+                                                      }
+                                                      if (item.iconIcePath.isNotEmpty && item.isIconReplaced) {
+                                                        restorePaths.add(item.iconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
+                                                      }
+                                                      if (restorePaths.isNotEmpty) {
+                                                        await downloadIceFromOfficial(restorePaths);
+                                                        if (aqmAutoBoundingRadius) {
+                                                          await itemBoundaryRemoval(context, item.hqIcePath, item.lqIcePath);
+                                                        }
+                                                        item.isApplied = false;
+                                                        item.isIconReplaced = false;
+                                                      }
+                                                    }
+
+                                                    injectedItem.removeWhere((e) => !e.isApplied);
+                                                    //Save to json
+                                                    aqmItems.map((item) => item.toJson()).toList();
+                                                    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+                                                    File(modManAqmInjectedItemListJsonPath).writeAsStringSync(encoder.convert(aqmItems));
+
+                                                    setState(() {
+                                                      isLoading = false;
+                                                      isAllButtonPressed = false;
+                                                    });
+                                                  }
+                                                : null,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Visibility(
+                                                    visible: isLoading,
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(right: 10),
+                                                      child: SizedBox(width: 15, height: 15, child: CircularProgressIndicator(color: Theme.of(context).buttonTheme.colorScheme!.onSurface)),
+                                                    )),
+                                                Visibility(visible: isLoading, child: const SizedBox(width: 10)),
+                                                Text(curLangText!.uiRestoreAll)
+                                              ],
+                                            )),
                                         ElevatedButton(
                                             onPressed: () {
                                               injectedItemsSearchTextController.clear();

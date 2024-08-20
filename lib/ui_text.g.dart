@@ -697,6 +697,8 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiReApplyingAllModsBackToTheGame =
           json['uiReApplyingAllModsBackToTheGame'] as String
       ..uiCustomAqmInjection = json['uiCustomAqmInjection'] as String
+      ..uiCustomAqmInjectionRemoval =
+          json['uiCustomAqmInjectionRemoval'] as String
       ..uiCustomAqmFileOrItemIDNotFound =
           json['uiCustomAqmFileOrItemIDNotFound'] as String
       ..uiFetchingHQandLQFiles = json['uiFetchingHQandLQFiles'] as String
@@ -714,6 +716,8 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiNoteMustSelectACustomAqmFileBeforeInject'] as String
       ..uiRemoveAll = json['uiRemoveAll'] as String
       ..uiReInjectAll = json['uiReInjectAll'] as String
+      ..uiAqmAutoBoundingRadius = json['uiAqmAutoBoundingRadius'] as String
+      ..uiAqmRemoveAllBoundings = json['uiAqmRemoveAllBoundings'] as String
       ..uiApplyingOverlayToIngameItemIcon =
           json['uiApplyingOverlayToIngameItemIcon'] as String
       ..uiCheckingReplacedAqmItems =
@@ -1365,6 +1369,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiReApplyingAllModsBackToTheGame':
           instance.uiReApplyingAllModsBackToTheGame,
       'uiCustomAqmInjection': instance.uiCustomAqmInjection,
+      'uiCustomAqmInjectionRemoval': instance.uiCustomAqmInjectionRemoval,
       'uiCustomAqmFileOrItemIDNotFound':
           instance.uiCustomAqmFileOrItemIDNotFound,
       'uiFetchingHQandLQFiles': instance.uiFetchingHQandLQFiles,
@@ -1379,6 +1384,8 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
           instance.uiNoteMustSelectACustomAqmFileBeforeInject,
       'uiRemoveAll': instance.uiRemoveAll,
       'uiReInjectAll': instance.uiReInjectAll,
+      'uiAqmAutoBoundingRadius': instance.uiAqmAutoBoundingRadius,
+      'uiAqmRemoveAllBoundings': instance.uiAqmRemoveAllBoundings,
       'uiApplyingOverlayToIngameItemIcon':
           instance.uiApplyingOverlayToIngameItemIcon,
       'uiCheckingReplacedAqmItems': instance.uiCheckingReplacedAqmItems,
