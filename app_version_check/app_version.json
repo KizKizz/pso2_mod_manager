@@ -1,12 +1,10 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.8.16",
+    "version": "2.8.17",
     "description": [
-        "Ajusted some filters in Add Mods function",
-        "Fixed Mod Export popup not scrolling on long list",
+        "Added Boundary Removal to aqm Injection",
         "More bug fixes",
-        "MOD追加機能のフィルターを調整した",
-        "長いリストでMOD Exportポップアップがスクロールしなかった問題を修正",
+        "aqmインジェクションに境界除去を追加",
         "その他のバグ修正"
     ],
     "windows_file": "",

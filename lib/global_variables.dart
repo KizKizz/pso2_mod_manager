@@ -199,3 +199,4 @@ bool markModdedItem = false;
 final saveApplyButtonState = signal<SaveApplyButtonState>(SaveApplyButtonState.none);
 bool itemListCateExpansionState = false;
 bool modAdderAddToModSets = false;
+bool aqmAutoBoundingRadius = false;

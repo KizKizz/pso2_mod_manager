@@ -28,52 +28,52 @@ Future<bool> modAqmInjectionHomePage(context, SubMod submod) async {
             }
           });
           return AlertDialog(
-              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
-              backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-              contentPadding: const EdgeInsets.all(10),
-              title: Center(
-                child: Text(
-                  curLangText!.uiCustomAqmInjection,
-                ),
+            shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+            backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+            titlePadding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+            contentPadding: const EdgeInsets.all(10),
+            title: Center(
+              child: Text(
+                curLangText!.uiCustomAqmInjection,
               ),
-              content: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: 250, minWidth: 250, maxHeight: double.infinity, maxWidth: double.infinity),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (context.watch<StateProvider>().aqmInjectionProgressStatus.split('\n').first != curLangText!.uiError &&
-                        context.watch<StateProvider>().aqmInjectionProgressStatus.split('\n').first != curLangText!.uiSuccess)
-                      const CircularProgressIndicator(),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5),
-                      child: Text(
-                        context.watch<StateProvider>().aqmInjectionProgressStatus,
-                        textAlign: TextAlign.center,
-                      ),
+            ),
+            content: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 50, minWidth: 250, maxHeight: double.infinity, maxWidth: double.infinity),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  if (context.watch<StateProvider>().aqmInjectionProgressStatus.split('\n').first != curLangText!.uiError &&
+                      context.watch<StateProvider>().aqmInjectionProgressStatus.split('\n').first != curLangText!.uiSuccess)
+                    const CircularProgressIndicator(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5),
+                    child: Text(
+                      context.watch<StateProvider>().aqmInjectionProgressStatus,
+                      textAlign: TextAlign.center,
                     ),
-                    Visibility(
-                      visible: !isAqmInjectDuringApply,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: ElevatedButton(
-                            onPressed: context.watch<StateProvider>().aqmInjectionProgressStatus.split('\n').first == curLangText!.uiError ||
-                                    context.watch<StateProvider>().aqmInjectionProgressStatus.split('\n').first == curLangText!.uiSuccess
-                                ? () {
-                                    Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                      element.deleteSync(recursive: true);
-                                    });
-                                    isAqmInjecting = false;
-                                    Navigator.pop(context, true);
-                                  }
-                                : null,
-                            child: Text(curLangText!.uiReturn)),
-                      ),
-                    ),
-                  ],
-                ),
-              ));
+                  ),
+                ],
+              ),
+            ),
+            actionsAlignment: MainAxisAlignment.center,
+            actionsPadding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+            actions: [
+              ElevatedButton(
+                  onPressed: context.watch<StateProvider>().aqmInjectionProgressStatus.split('\n').first == curLangText!.uiError ||
+                          context.watch<StateProvider>().aqmInjectionProgressStatus.split('\n').first == curLangText!.uiSuccess
+                      ? () {
+                          Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                            element.deleteSync(recursive: true);
+                          });
+                          isAqmInjecting = false;
+                          Navigator.pop(context, true);
+                        }
+                      : null,
+                  child: Text(curLangText!.uiReturn))
+            ],
+          );
         });
       });
 }
