@@ -2,9 +2,9 @@
     "name": "PSO2NGS Mod Manager",
     "version": "2.8.17",
     "description": [
-        "Added Boundary Removal to aqm Injection",
+        "Added Boundary Radius Removal to Custom aqm Injection menu",
         "More bug fixes",
-        "aqmインジェクションに境界除去を追加",
+        "カスタムaqmインジェクションメニューに境界半径の除去を追加",
         "その他のバグ修正"
     ],
     "windows_file": "",
