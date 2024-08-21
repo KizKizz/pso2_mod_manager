@@ -1,10 +1,10 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.8.17",
+    "version": "2.8.18",
     "description": [
-        "Added Boundary Radius Removal to Custom aqm Injection menu",
+        "Removed Gameguard anticheat option when launching PSO2 with Mod Manager (JP version only)",
         "More bug fixes",
-        "カスタムaqmインジェクションメニューに境界半径の除去を追加",
+        "PSO2をMODマネージャーで起動する際、Gameguardのアンチヒートオプションを削除(JP版のみ)",
         "その他のバグ修正"
     ],
     "windows_file": "",

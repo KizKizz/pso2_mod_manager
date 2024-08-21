@@ -657,7 +657,7 @@ class _AppliedListState extends State<AppliedList> {
                                                                                                       submod.cmxEndPos = -1;
                                                                                                     }
                                                                                                   }
-                                                                                                  if (autoAqmInject) {
+                                                                                                  if (autoAqmInject && (mod.category == defaultCategoryDirs[1] || mod.category == defaultCategoryDirs[16])) {
                                                                                                     await aqmInjectionRemovalSilent(context, submod);
                                                                                                   }
                                                                                                   submod.setApplyState(false);

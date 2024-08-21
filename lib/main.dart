@@ -291,7 +291,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       }
 
       //JP anticheat
-      gameguardAnticheat = (prefs.getBool('gameguardAnticheat') ?? true);
+      // gameguardAnticheat = (prefs.getBool('gameguardAnticheat') ?? true);
 
       //Empty categories hide
       isEmptyCatesHide = (prefs.getBool('isShowHideEmptyCategories') ?? false);

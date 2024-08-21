@@ -2507,7 +2507,7 @@ class _ModViewState extends State<ModView> {
                                                                                                         curSubmod.cmxEndPos = -1;
                                                                                                       }
                                                                                                     }
-                                                                                                    if (autoAqmInject) {
+                                                                                                    if (autoAqmInject && (curSubmod.category == defaultCategoryDirs[1] || curSubmod.category == defaultCategoryDirs[16])) {
                                                                                                       await aqmInjectionRemovalSilent(context, curSubmod);
                                                                                                     }
                                                                                                   }

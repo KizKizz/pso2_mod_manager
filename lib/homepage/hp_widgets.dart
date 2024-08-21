@@ -108,7 +108,7 @@ class _ApplyRemoveModsButtonState extends State<ApplyRemoveModsButton> {
                                 widget.curSubmod.cmxEndPos = -1;
                               }
                             }
-                            if (autoAqmInject) {
+                            if (autoAqmInject && (widget.curSubmod.category == defaultCategoryDirs[1] || widget.curSubmod.category == defaultCategoryDirs[16])) {
                               await aqmInjectionRemovalSilent(context, widget.curSubmod);
                             }
                           }
