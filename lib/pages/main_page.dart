@@ -563,36 +563,36 @@ class _MainPageState extends State<MainPage> {
                           ),
 
                           //JP start anticheat select
-                          Visibility(
-                            visible: context.watch<StateProvider>().gameEdition == 'jp',
-                            child: MaterialButton(
-                              height: 40,
-                              onPressed: (() async {
-                                final prefs = await SharedPreferences.getInstance();
-                                if (gameguardAnticheat) {
-                                  gameguardAnticheat = false;
-                                  prefs.setBool('gameguardAnticheat', false);
-                                } else {
-                                  gameguardAnticheat = true;
-                                  prefs.setBool('gameguardAnticheat', true);
-                                }
-                                setState(() {});
-                              }),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.shield_outlined,
-                                    size: 18,
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    gameguardAnticheat ? '${curLangText!.uiAntiCheatSelect}: ${curLangText!.uiGameguard}' : '${curLangText!.uiAntiCheatSelect}: ${curLangText!.uiWellbia}',
-                                    style: const TextStyle(fontWeight: FontWeight.normal),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                          // Visibility(
+                          //   visible: context.watch<StateProvider>().gameEdition == 'jp',
+                          //   child: MaterialButton(
+                          //     height: 40,
+                          //     onPressed: (() async {
+                          //       final prefs = await SharedPreferences.getInstance();
+                          //       if (gameguardAnticheat) {
+                          //         gameguardAnticheat = false;
+                          //         prefs.setBool('gameguardAnticheat', false);
+                          //       } else {
+                          //         gameguardAnticheat = true;
+                          //         prefs.setBool('gameguardAnticheat', true);
+                          //       }
+                          //       setState(() {});
+                          //     }),
+                          //     child: Row(
+                          //       children: [
+                          //         const Icon(
+                          //           Icons.shield_outlined,
+                          //           size: 18,
+                          //         ),
+                          //         const SizedBox(width: 10),
+                          //         Text(
+                          //           gameguardAnticheat ? '${curLangText!.uiAntiCheatSelect}: ${curLangText!.uiGameguard}' : '${curLangText!.uiAntiCheatSelect}: ${curLangText!.uiWellbia}',
+                          //           style: const TextStyle(fontWeight: FontWeight.normal),
+                          //         ),
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
                           const SizedBox(
                             height: 5,
                           ),
