@@ -550,7 +550,7 @@ class _ItemsSwapperWeaponHomePageState extends State<ItemsSwapperWeaponHomePage>
                                     height: 92,
                                     child: ListTile(
                                       minVerticalPadding: 15,
-                                      title: Text(curLangText!.uiChooseAnItemBellowToSwap),
+                                      title: Text(curLangText!.uiSelectAnItemToBeReplaced),
                                       subtitle: Padding(
                                         padding: const EdgeInsets.only(top: 10),
                                         child: SizedBox(
@@ -1394,11 +1394,12 @@ Future<String> modsSwapperWpSwap(context, SubMod fromSubmod, String fromItemAvai
   Directory(modManSwapperFromItemDirPath).createSync(recursive: true);
   Directory(modManSwapperToItemDirPath).createSync(recursive: true);
   Directory(modManSwapperOutputDirPath).createSync(recursive: true);
+  toItemName = toItemName.replaceAll(RegExp(charToReplace), '_').trim();
   String renamedItemPath = Uri.file('$modManSwapperOutputDirPath/$toItemName').toFilePath();
   for (var modFile in fromSubmod.modFiles) {
     File curFile = File(modFile.location);
     if (fromItemAvailableIce == modFile.modFileName && curFile.existsSync()) {
-      toItemName = toItemName.replaceAll(RegExp(charToReplace), '_').trim();
+      // toItemName = toItemName.replaceAll(RegExp(charToReplace), '_').trim();
       String packDirPath = '';
       if (fromSubmod.modName == fromSubmod.submodName) {
         packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath();
