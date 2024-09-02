@@ -570,7 +570,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                     height: 92,
                                     child: ListTile(
                                       minVerticalPadding: 15,
-                                      title: Text(curLangText!.uiChooseAnItemBellowToSwap),
+                                      title: Text(curLangText!.uiSelectAnItemToBeReplaced),
                                       subtitle: Padding(
                                         padding: const EdgeInsets.only(top: 10),
                                         child: SizedBox(

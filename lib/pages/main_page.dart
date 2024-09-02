@@ -2252,7 +2252,7 @@ class _MainPageState extends State<MainPage> {
                                           } else {
                                             if (File(Uri.file("$modManPso2binPath${p.separator}sub${p.separator}ucldr_PSO2_JP_loader_x64.exe").toFilePath()).existsSync()) {
                                               await startBatch.writeAsString(
-                                                  'cd "$modManPso2binPath${p.separator}sub"\nSET -pso2=+0x33aca2b9\nstart "" "$modManPso2binPath${p.separator}sub${p.separator}ucldr_PSO2_JP_loader_x64.exe" "$modManPso2binPath${p.separator}sub${p.separator}pso2.exe" +0x33aca2b9 -reboot -optimize');
+                                                  'cd "$modManPso2binPath${p.separator}sub"\nSET -pso2=+0x33aca2b9\nstart "" "$modManPso2binPath${p.separator}sub${p.separator}ucldr_PSO2_JP_loader_x64.exe" "$modManPso2binPath${p.separator}sub${p.separator}pso2.exe" +0x33aca2b9 -reboot -optimize"');
                                               await Process.run(startBatch.path, []);
                                               startBatch.deleteSync();
                                             } else {
