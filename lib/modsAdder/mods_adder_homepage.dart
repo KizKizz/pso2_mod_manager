@@ -1420,6 +1420,8 @@ void modsAdderHomePage(context) {
 
                                                                                                         if (Directory(curMod.submodList[sIndex].submodDirPath
                                                                                                                 .replaceFirst(modManModsAdderPath, modManModsDirPath))
+                                                                                                            .existsSync() && Directory(curMod.submodList[sIndex].submodDirPath
+                                                                                                                .replaceFirst(modManModsAdderPath, modManModsDirPath))
                                                                                                             .parent
                                                                                                             .listSync()
                                                                                                             .whereType<Directory>()

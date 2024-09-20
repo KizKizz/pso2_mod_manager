@@ -1179,9 +1179,7 @@ class _ModViewState extends State<ModView> {
                                                             ),
                                                             child: Text(curLangText!.uiRemoveBoundaryRadius),
                                                             onPressed: () {
-                                                              Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                element.deleteSync(recursive: true);
-                                                              });
+                                                              clearAllTempDirs();
                                                               isBoundaryEdited = false;
                                                               modsBoundaryEditHomePage(context, curMod.submods.first);
                                                             },
@@ -1662,9 +1660,7 @@ class _ModViewState extends State<ModView> {
                                                             ),
                                                             child: Text(curLangText!.uiRemoveBoundaryRadius),
                                                             onPressed: () {
-                                                              Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                element.deleteSync(recursive: true);
-                                                              });
+                                                              clearAllTempDirs();
                                                               isBoundaryEdited = false;
                                                               modsBoundaryEditHomePage(context, curMod.submods[modViewModSetSubModIndex]);
                                                             },
@@ -2228,9 +2224,7 @@ class _ModViewState extends State<ModView> {
                                                                             ),
                                                                             child: Text(curLangText!.uiRemoveBoundaryRadius),
                                                                             onPressed: () async {
-                                                                              Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                                element.deleteSync(recursive: true);
-                                                                              });
+                                                                              clearAllTempDirs();
                                                                               isBoundaryEdited = false;
                                                                               await modsBoundaryEditHomePage(context, curSubmod);
                                                                             },
@@ -2507,7 +2501,9 @@ class _ModViewState extends State<ModView> {
                                                                                                         curSubmod.cmxEndPos = -1;
                                                                                                       }
                                                                                                     }
-                                                                                                    if (autoAqmInject && (curSubmod.category == defaultCategoryDirs[1] || curSubmod.category == defaultCategoryDirs[16])) {
+                                                                                                    if (autoAqmInject &&
+                                                                                                        (curSubmod.category == defaultCategoryDirs[1] ||
+                                                                                                            curSubmod.category == defaultCategoryDirs[16])) {
                                                                                                       await aqmInjectionRemovalSilent(context, curSubmod);
                                                                                                     }
                                                                                                   }
@@ -2775,7 +2771,8 @@ class _ModViewState extends State<ModView> {
                         var returnedVar = await modsAdderModFilesAdder(
                             context,
                             await modsAdderFilesProcess(context, [XFile(Uri.file('$swappedPath/${submod.modName.replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath())],
-                                modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName()), false);
+                                modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName()),
+                            false);
                         List<Item> returnedItems = returnedVar.$2;
                         quickItem = returnedItems.first;
                         quickMod = quickItem.mods.firstWhere((e) => e.modName == submod.modName);
@@ -2808,7 +2805,8 @@ class _ModViewState extends State<ModView> {
                         var returnedVar = await modsAdderModFilesAdder(
                             context,
                             await modsAdderFilesProcess(context, [XFile(Uri.file('$swappedPath/${submod.modName.replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath())],
-                                modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName()), false);
+                                modManCurActiveItemNameLanguage == 'JP' ? quickApplyItem.getJPName() : quickApplyItem.getENName()),
+                            false);
                         List<Item> returnedItems = returnedVar.$2;
                         quickItem = returnedItems.first;
                         quickMod = quickItem.mods.firstWhere((e) => e.modName == submod.modName);
