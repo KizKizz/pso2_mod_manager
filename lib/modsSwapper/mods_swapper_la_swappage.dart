@@ -254,9 +254,12 @@ Future<String> modsSwapperLaIceFilesGet(context, bool isVanillaItemSwap, Mod fro
 
           //get new name for bti from aqm
           String rebootHumanHashGroup2PathF = Uri.file('$tempSubmodPathF/${rebootHumanHashIceNameF}_ext/group2').toFilePath();
-          File rebootHumanGroup2Aqm = Directory(rebootHumanHashGroup2PathF).listSync().whereType<File>().firstWhere(
+          File rebootHumanGroup2Aqm = File('');
+          if (Directory(rebootHumanHashGroup2PathF).existsSync()) {
+            Directory(rebootHumanHashGroup2PathF).listSync().whereType<File>().firstWhere(
               (element) => p.extension(element.path) == '.aqm' && (p.basenameWithoutExtension(element.path).contains('_00120_') || (p.basenameWithoutExtension(element.path).contains('pl_hum'))),
               orElse: () => File(''));
+          }
 
           //copy bti from fig to human
           //Directory(rebootHumanHashGroup1PathF).createSync(recursive: true);
@@ -474,7 +477,7 @@ Future<void> swapperLaSwappingDialog(
                                                   mainAxisSize: MainAxisSize.min,
                                                   children: [
                                                     Text(
-                                                      toSelectedItemName,
+                                                      fromSubmod.itemName,
                                                       style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                                                     ),
                                                     Text('${fromSubmod.modName} > ${fromSubmod.submodName}'),
@@ -503,7 +506,7 @@ Future<void> swapperLaSwappingDialog(
                                                   mainAxisSize: MainAxisSize.min,
                                                   children: [
                                                     Text(
-                                                      fromSubmod.itemName,
+                                                      toSelectedItemName,
                                                       style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                                                     ),
                                                     Text('${fromSubmod.modName} > ${fromSubmod.submodName}'),
