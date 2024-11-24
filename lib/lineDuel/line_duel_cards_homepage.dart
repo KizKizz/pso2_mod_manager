@@ -31,6 +31,7 @@ import 'package:pso2_mod_manager/widgets/snackbar.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:window_manager/window_manager.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
@@ -357,7 +358,7 @@ void lineDuelCardsHomePage(context) {
                                                                 message: curLangText!.uiOpenExportedCardFolder,
                                                                 child: ElevatedButton(
                                                                     onPressed: () async {
-                                                                      await launchUrl(Uri.file(modManLineStrikeExportedCardDirPath));
+                                                                      await launchUrlString(modManLineStrikeExportedCardDirPath);
                                                                     },
                                                                     child: const Icon(Icons.folder_open)),
                                                               ),
@@ -367,7 +368,7 @@ void lineDuelCardsHomePage(context) {
                                                               Expanded(
                                                                 child: ElevatedButton(
                                                                     onPressed: () async {
-                                                                      await launchUrl(Uri.file(modManLineStrikeCardDirPath));
+                                                                      await launchUrlString(modManLineStrikeCardDirPath);
                                                                     },
                                                                     child: Text(curLangText!.uiOpenInFileExplorer)),
                                                               ),
@@ -1530,7 +1531,7 @@ Future<void> lineDuelCardExportPopup(context, LineStrikeCard card) async {
                   if (exported && exportedImage!.existsSync())
                     ElevatedButton(
                         onPressed: () async {
-                          await launchUrl(Uri.file(modManLineStrikeExportedCardDirPath));
+                          await launchUrlString(modManLineStrikeExportedCardDirPath);
                         },
                         child: Text(curLangText!.uiOpenInFileExplorer)),
                   if (!exported || exportedImage == null)

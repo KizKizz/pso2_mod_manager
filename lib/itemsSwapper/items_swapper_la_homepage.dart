@@ -20,7 +20,7 @@ import 'package:pso2_mod_manager/state_provider.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import 'package:super_sliver_list/super_sliver_list.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 TextEditingController swapperSearchTextController = TextEditingController();
 TextEditingController swapperFromItemsSearchTextController = TextEditingController();
@@ -1101,9 +1101,9 @@ Future<void> swapperLaQueueConfirmDialog(
                           ? null
                           : () async {
                               if (queueSwappedLaPaths.length == 1) {
-                                await launchUrl(Uri.file(queueSwappedLaPaths.first));
+                                await launchUrlString(queueSwappedLaPaths.first);
                               } else {
-                                await launchUrl(Uri.file(p.dirname(queueSwappedLaPaths.first)));
+                                await launchUrlString(p.dirname(queueSwappedLaPaths.first));
                               }
                             },
                       child: Text('${curLangText!.uiOpen} ${curLangText!.uiInFileExplorer}')),

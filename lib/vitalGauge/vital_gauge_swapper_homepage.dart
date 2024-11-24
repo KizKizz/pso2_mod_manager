@@ -23,7 +23,7 @@ import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/widgets/snackbar.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:window_manager/window_manager.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
@@ -348,7 +348,7 @@ void vitalGaugeHomePage(context) {
                                                               Expanded(
                                                                 child: ElevatedButton(
                                                                     onPressed: () async {
-                                                                      await launchUrl(Uri.file(modManVitalGaugeDirPath));
+                                                                      await launchUrlString(modManVitalGaugeDirPath);
                                                                     },
                                                                     child: Text(curLangText!.uiOpenInFileExplorer)),
                                                               ),

@@ -54,6 +54,7 @@ import 'package:signals/signals_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
+import 'package:url_launcher/url_launcher_string.dart';
 
 final GlobalKey<ScaffoldState> mainPageScaffoldKey = GlobalKey();
 
@@ -692,7 +693,7 @@ class _MainPageState extends State<MainPage> {
                           MaterialButton(
                             height: 40,
                             onPressed: (() async {
-                              await launchUrl(Uri.file(modManDirPath));
+                              await launchUrlString(modManDirPath);
                             }),
                             child: Row(
                               children: [
@@ -716,7 +717,7 @@ class _MainPageState extends State<MainPage> {
                           MaterialButton(
                             height: 40,
                             onPressed: (() async {
-                              await launchUrl(Uri.file(modManModsDirPath));
+                              await launchUrlString(modManModsDirPath);
                             }),
                             child: Row(
                               children: [
@@ -741,7 +742,7 @@ class _MainPageState extends State<MainPage> {
                           MaterialButton(
                             height: 40,
                             onPressed: (() async {
-                              await launchUrl(Uri.file(modManBackupsDirPath));
+                              await launchUrlString(modManBackupsDirPath);
                             }),
                             child: Row(
                               children: [
@@ -765,7 +766,7 @@ class _MainPageState extends State<MainPage> {
                           MaterialButton(
                             height: 40,
                             onPressed: (() async {
-                              await launchUrl(Uri.file(Directory(modManJsonAutoSaveDir).parent.path));
+                              await launchUrlString(Directory(modManJsonAutoSaveDir).parent.path);
                             }),
                             child: Row(
                               children: [
@@ -789,7 +790,7 @@ class _MainPageState extends State<MainPage> {
                           MaterialButton(
                             height: 40,
                             onPressed: (() async {
-                              await launchUrl(Uri.file(modManExportedDirPath));
+                              await launchUrlString(modManExportedDirPath);
                             }),
                             child: Row(
                               children: [
@@ -813,7 +814,7 @@ class _MainPageState extends State<MainPage> {
                           MaterialButton(
                             height: 40,
                             onPressed: (() async {
-                              await launchUrl(Uri.file(modManDeletedItemsDirPath));
+                              await launchUrlString(modManDeletedItemsDirPath);
                             }),
                             child: Row(
                               children: [
@@ -838,7 +839,7 @@ class _MainPageState extends State<MainPage> {
                           MaterialButton(
                             height: 40,
                             onPressed: (() async {
-                              await launchUrl(Uri.file(modManOverlayedItemIconsDirPath));
+                              await launchUrlString(modManOverlayedItemIconsDirPath);
                             }),
                             child: Row(
                               children: [
@@ -2062,7 +2063,7 @@ class _MainPageState extends State<MainPage> {
                                       setState(() {});
                                     }
                                   } else {
-                                    await launchUrl(Uri.parse('file:$modManChecksumDirPath'));
+                                    await launchUrlString(modManChecksumDirPath);
                                   }
                                 },
                                 onPressed: (() async {
@@ -2077,7 +2078,7 @@ class _MainPageState extends State<MainPage> {
                                       setState(() {});
                                     });
                                   } else {
-                                    await launchUrl(Uri.parse('file:$modManChecksumDirPath'));
+                                    await launchUrlString(modManChecksumDirPath);
                                   }
                                 }),
                                 child: modManChecksumFilePath.isNotEmpty && Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match

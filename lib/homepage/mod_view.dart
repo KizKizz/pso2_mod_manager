@@ -62,7 +62,7 @@ import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 bool hoveringOnSubmod = false;
 bool hoveringOnModFile = false;
@@ -761,7 +761,7 @@ class _ModViewState extends State<ModView> {
                                                     child: Text(curLangText!.uiOpenInFileExplorer),
                                                     onPressed: () async {
                                                       if (Directory(Uri.file(curMod.location).toFilePath()).existsSync()) {
-                                                        await launchUrl(Uri.file(curMod.location));
+                                                        await launchUrlString(curMod.location);
                                                       } else {
                                                         ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', curLangText!.uiDirNotFound, 2000));
                                                       }
@@ -1158,7 +1158,7 @@ class _ModViewState extends State<ModView> {
                                                           child: Text(curLangText!.uiOpenInFileExplorer),
                                                           onPressed: () async {
                                                             if (Directory(Uri.file(curMod.submods.first.location).toFilePath()).existsSync()) {
-                                                              await launchUrl(Uri.file(curMod.submods.first.location));
+                                                              await launchUrlString(curMod.submods.first.location);
                                                             } else {
                                                               ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', curLangText!.uiDirNotFound, 2000));
                                                             }
@@ -1639,7 +1639,7 @@ class _ModViewState extends State<ModView> {
                                                           child: Text(curLangText!.uiOpenInFileExplorer),
                                                           onPressed: () async {
                                                             if (Directory(Uri.file(curMod.submods[modViewModSetSubModIndex].location).toFilePath()).existsSync()) {
-                                                              await launchUrl(Uri.file(curMod.submods[modViewModSetSubModIndex].location));
+                                                              await launchUrlString(curMod.submods[modViewModSetSubModIndex].location);
                                                             } else {
                                                               ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', curLangText!.uiDirNotFound, 2000));
                                                             }
@@ -2202,7 +2202,7 @@ class _ModViewState extends State<ModView> {
                                                                           child: Text(curLangText!.uiOpenInFileExplorer),
                                                                           onPressed: () async {
                                                                             if (Directory(Uri.file(curSubmod.location).toFilePath()).existsSync()) {
-                                                                              await launchUrl(Uri.file(curSubmod.location));
+                                                                              await launchUrlString(curSubmod.location);
                                                                             } else {
                                                                               ScaffoldMessenger.of(context)
                                                                                   .showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', curLangText!.uiDirNotFound, 2000));

@@ -9,9 +9,9 @@ import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
+import 'package:url_launcher/url_launcher_string.dart';
 
 Future<void> modExportHomePage(context, List<CategoryType> baseList, List<SubMod> exportSubmods, appliedModsExport) async {
   File exportedZip = File('');
@@ -122,7 +122,7 @@ Future<void> modExportHomePage(context, List<CategoryType> baseList, List<SubMod
                       onPressed: () async {
                         Provider.of<StateProvider>(context, listen: false).modExportProgessZippingStateSet(false);
                         exportStart = false;
-                        await launchUrl(Uri.file(exportedZip.parent.path));
+                        await launchUrlString(exportedZip.parent.path);
                         // ignore: use_build_context_synchronously
                         Navigator.pop(context, true);
                       },

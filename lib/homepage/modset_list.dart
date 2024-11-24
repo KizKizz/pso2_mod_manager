@@ -40,9 +40,9 @@ import 'package:pso2_mod_manager/widgets/snackbar.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
-import 'package:url_launcher/url_launcher.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
+import 'package:url_launcher/url_launcher_string.dart';
 
 class ModSetList extends StatefulWidget {
   const ModSetList({super.key});
@@ -593,7 +593,7 @@ class _ModSetListState extends State<ModSetList> {
                                                                                   : curItem.itemName.replaceAll('_', '/')),
                                                                           child: InkWell(
                                                                             child: const Icon(Icons.folder_open),
-                                                                            onTap: () async => await launchUrl(Uri.file(curItem.location)),
+                                                                            onTap: () async => await launchUrlString(curItem.location),
                                                                           )),
                                                                       //remove from set
                                                                       ModManTooltip(

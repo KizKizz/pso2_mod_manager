@@ -16,7 +16,7 @@ import 'package:pso2_mod_manager/modsSwapper/mods_swapper_functions.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/state_provider.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 Future<String> modsSwapperAccIceFilesGet(context, bool isVanillaItemSwap, Mod fromMod, SubMod fromSubmod, List<String> fromAccItemAvailableIces, List<String> toAccItemAvailableIces, String toItemName) async {
   //clean
@@ -589,7 +589,7 @@ Future<void> swapperAccSwappingDialog(context, bool isVanillaItemSwap, Mod fromM
                                             onPressed: !swappedModPath.contains(modManSwapperOutputDirPath)
                                                 ? null
                                                 : () async {
-                                                    await launchUrl(Uri.file(swappedModPath));
+                                                    await launchUrlString(swappedModPath);
                                                   },
                                             child: Text('${curLangText!.uiOpen} ${curLangText!.uiInFileExplorer}')),
                                         ElevatedButton(

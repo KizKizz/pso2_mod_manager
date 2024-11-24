@@ -27,7 +27,7 @@ import 'package:pso2_mod_manager/widgets/snackbar.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 bool isFavListVisible = false;
 List<List<GlobalKey<ExpansionTileCoreState>>> itemViewCateExpansionTileStates = [];
@@ -1295,7 +1295,7 @@ class _ItemListState extends State<ItemList> {
                                                                                                     : curItem.itemName.replaceAll('_', '/')),
                                                                                             child: InkWell(
                                                                                               child: const Icon(Icons.folder_open),
-                                                                                              onTap: () async => await launchUrl(Uri.file(curItem.location)),
+                                                                                              onTap: () async => await launchUrlString(curItem.location),
                                                                                             )),
                                                                                         //Delete
                                                                                         Padding(
