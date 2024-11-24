@@ -42,7 +42,7 @@ import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class AppliedList extends StatefulWidget {
   const AppliedList({super.key});
@@ -541,7 +541,7 @@ class _AppliedListState extends State<AppliedList> {
                                                                                   : curItem.itemName.replaceAll('_', '/')),
                                                                           child: InkWell(
                                                                             child: const Icon(Icons.folder_open),
-                                                                            onTap: () async => await launchUrl(Uri.file(curItem.location)),
+                                                                            onTap: () async => await launchUrlString(curItem.location),
                                                                           )),
                                                                     ],
                                                                   ),

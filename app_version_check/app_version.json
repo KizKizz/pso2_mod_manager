@@ -1,11 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.8.21",
+    "version": "2.8.22",
     "description": [
-        "Mod manager now ignores a certain missing files when swapping emotes",
-        "More bug fixes",
-        "エモートを交換する際、MODマネージャが特定の不足ファイルを無視するようになった",
-        "その他のバグ修正"
+        "Fixed a bug where 'Open in File Explorer' wont open if path contains special characters",
+        "パスに特殊文字が含まれている場合、「ファイルエクスプローラーで開く」が開かないバグを修正"
     ],
     "windows_file": "",
     "linux_file": ""
