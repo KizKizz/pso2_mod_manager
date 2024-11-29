@@ -6,10 +6,28 @@
     "selected": false
   },
   {
+    "langInitial": "CN",
+    "revision": 1,
+    "langFilePath": "E:\\Flutter project\\pso2_mod_manager\\Language\\CN.json",
+    "selected": false
+  },
+  {
     "langInitial": "EN",
     "revision": 1,
     "langFilePath": "E:\\Flutter project\\pso2_mod_manager\\Language\\EN.json",
     "selected": true
+  },
+  {
+    "langInitial": "EN",
+    "revision": 1,
+    "langFilePath": "E:\\Flutter project\\pso2_mod_manager\\Language\\EN.json",
+    "selected": true
+  },
+  {
+    "langInitial": "JP",
+    "revision": 1,
+    "langFilePath": "E:\\Flutter project\\pso2_mod_manager\\Language\\JP.json",
+    "selected": false
   },
   {
     "langInitial": "JP",

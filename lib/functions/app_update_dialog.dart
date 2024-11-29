@@ -190,16 +190,18 @@ void updatedVersionCheck(context) {
   int newMajor = int.parse(appVersionValues[0]);
   int newMinor = int.parse(appVersionValues[1]);
   int newPatch = int.parse(appVersionValues[2]);
-  List<String> savedVersionValues = savedAppVersion.split('.');
-  int savedMajor = int.parse(savedVersionValues[0]);
-  int savedMinor = int.parse(savedVersionValues[1]);
-  int savedPatch = int.parse(savedVersionValues[2]);
-  if (newPatch > savedPatch && newMinor >= savedMinor && newMajor >= savedMajor) {
-    appUpdateSuccessDialog(context);
-  } else if (newPatch <= savedPatch && newMinor > savedMinor && newMajor >= savedMajor) {
-    appUpdateSuccessDialog(context);
-  } else if (newPatch <= savedPatch && newMinor <= savedMinor && newMajor > savedMajor) {
-    appUpdateSuccessDialog(context);
+  if (savedAppVersion.isNotEmpty) {
+    List<String> savedVersionValues = savedAppVersion.split('.');
+    int savedMajor = int.parse(savedVersionValues[0]);
+    int savedMinor = int.parse(savedVersionValues[1]);
+    int savedPatch = int.parse(savedVersionValues[2]);
+    if (newPatch > savedPatch && newMinor >= savedMinor && newMajor >= savedMajor) {
+      appUpdateSuccessDialog(context);
+    } else if (newPatch <= savedPatch && newMinor > savedMinor && newMajor >= savedMajor) {
+      appUpdateSuccessDialog(context);
+    } else if (newPatch <= savedPatch && newMinor <= savedMinor && newMajor > savedMajor) {
+      appUpdateSuccessDialog(context);
+    }
   }
 }
 

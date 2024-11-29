@@ -816,6 +816,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.1"
+  preact_signals:
+    dependency: transitive
+    description:
+      name: preact_signals
+      sha256: a5b445796a02244b85fa43d79a7030fbfbbb08f7c48277ee93c636140a8fb2e0
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.8.3"
   provider:
     dependency: "direct main"
     description:
@@ -988,26 +996,26 @@ packages:
     dependency: "direct main"
     description:
       name: signals
-      sha256: ee9f01220aecf63fb90576a158e1785c54a8279335560bc6548419dd66aef87c
+      sha256: bcbff8fc34ddefa57efac16a4b374369eecbc1a5c5396d602d9bf7c71a1a276c
       url: "https://pub.dev"
     source: hosted
-    version: "5.3.0"
+    version: "6.0.0"
   signals_core:
     dependency: transitive
     description:
       name: signals_core
-      sha256: "2122bdf258af0b90d13d0b4bd6ce673158b3beace85bf02693804ab7f8b00c72"
+      sha256: f9440ff5d0a3a570de802dec8003652e18e9d0f1cc5e73aefc39d68d7149749c
       url: "https://pub.dev"
     source: hosted
-    version: "5.3.0"
+    version: "6.0.0"
   signals_flutter:
     dependency: transitive
     description:
       name: signals_flutter
-      sha256: "1f1c2026794091e5a07464d5c891006a70033936776d4d07e71f940ffbed3fd7"
+      sha256: f1887fbdc896ad72f65c5a354a4ec6429b18e782eae0d13155ddd808c017670b
       url: "https://pub.dev"
     source: hosted
-    version: "5.3.0"
+    version: "6.0.0"
   sky_engine:
     dependency: transitive
     description: flutter
