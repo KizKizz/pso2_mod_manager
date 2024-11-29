@@ -1322,7 +1322,9 @@ class _ItemListState extends State<ItemList> {
                                                                                                           modViewItem.value = null;
                                                                                                         }
                                                                                                         curCategory.items.remove(curItem);
+                                                                                                        // ignore: use_build_context_synchronously
                                                                                                         ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                                                            // ignore: use_build_context_synchronously
                                                                                                             context,
                                                                                                             '${curLangText!.uiSuccess}!',
                                                                                                             uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName),

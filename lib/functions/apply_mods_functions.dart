@@ -39,7 +39,9 @@ Future<bool> applyModsToTheGame(context, Item curItem, Mod curMod, SubMod curSub
           }
           fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
         }
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(mainPageScaffoldKey.currentState!.context)
+            // ignore: use_build_context_synchronously
             .showSnackBar(snackBarMessage(mainPageScaffoldKey.currentState!.context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
       }
 

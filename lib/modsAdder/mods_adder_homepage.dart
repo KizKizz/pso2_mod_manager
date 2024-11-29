@@ -15,6 +15,7 @@ import 'package:file_selector/file_selector.dart';
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/csv_item_class.dart';
+import 'package:pso2_mod_manager/classes/enum_classes.dart';
 import 'package:pso2_mod_manager/classes/mods_adder_file_class.dart';
 import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
@@ -28,6 +29,7 @@ import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:io/io.dart' as io;
+import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 bool dropZoneMax = true;
@@ -46,7 +48,7 @@ final _subItemFormValidate = GlobalKey<FormState>();
 bool _isAddingMods = false;
 // bool _isProcessingMoreFiles = false;
 int _pathLengthInNameEdit = 0;
-
+Signal _modAdderState = Signal<ModAdderProcessingState>(ModAdderProcessingState.idle);
 String _errorMessage = '';
 
 void modsAdderHomePage(context) {
@@ -579,6 +581,7 @@ void modsAdderHomePage(context) {
                                             }
 
                                             pathCharLengthList = List.generate(processedFileList.length, (index) => []);
+                                            processedFileList.isNotEmpty ? _modAdderState.value = ModAdderProcessingState.readyToAdd : _modAdderState.value = ModAdderProcessingState.idle;
 
                                             return Stack(
                                               children: [
@@ -1419,14 +1422,15 @@ void modsAdderHomePage(context) {
                                                                                                         }
 
                                                                                                         if (Directory(curMod.submodList[sIndex].submodDirPath
-                                                                                                                .replaceFirst(modManModsAdderPath, modManModsDirPath))
-                                                                                                            .existsSync() && Directory(curMod.submodList[sIndex].submodDirPath
-                                                                                                                .replaceFirst(modManModsAdderPath, modManModsDirPath))
-                                                                                                            .parent
-                                                                                                            .listSync()
-                                                                                                            .whereType<Directory>()
-                                                                                                            .where((e) => p.basename(e.path) == renameTextBoxController.value.text)
-                                                                                                            .isNotEmpty) {
+                                                                                                                    .replaceFirst(modManModsAdderPath, modManModsDirPath))
+                                                                                                                .existsSync() &&
+                                                                                                            Directory(curMod.submodList[sIndex].submodDirPath
+                                                                                                                    .replaceFirst(modManModsAdderPath, modManModsDirPath))
+                                                                                                                .parent
+                                                                                                                .listSync()
+                                                                                                                .whereType<Directory>()
+                                                                                                                .where((e) => p.basename(e.path) == renameTextBoxController.value.text)
+                                                                                                                .isNotEmpty) {
                                                                                                           // Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
                                                                                                           return curLangText!.uiNameAlreadyExisted;
                                                                                                         }
@@ -1750,6 +1754,8 @@ void modsAdderHomePage(context) {
                                                   clearModAdderDirs();
                                                   dropZoneMax = true;
                                                   Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
+                                                  Provider.of<StateProvider>(context, listen: false).setModAdderProgressStatus('');
+                                                  _modAdderState.value = ModAdderProcessingState.idle;
                                                   Navigator.of(context).pop();
                                                   //}
                                                 }),
@@ -1760,7 +1766,7 @@ void modsAdderHomePage(context) {
                                       child: Padding(
                                         padding: const EdgeInsets.only(left: 5),
                                         child: ElevatedButton(
-                                            onPressed: processedFileList.isEmpty || !context.watch<StateProvider>().modAdderReload
+                                            onPressed: _modAdderState.watch(context) != ModAdderProcessingState.readyToAdd || !context.watch<StateProvider>().modAdderReload
                                                 ? null
                                                 : (() {
                                                     processedFileListLoad = null;
@@ -1774,6 +1780,7 @@ void modsAdderHomePage(context) {
                                                     clearModAdderDirs();
                                                     Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
                                                     _isNameEditing = false;
+                                                    _modAdderState.value = ModAdderProcessingState.idle;
                                                     dropZoneMax = true;
                                                     setState(
                                                       () {},
@@ -1787,7 +1794,7 @@ void modsAdderHomePage(context) {
                                       child: Padding(
                                         padding: const EdgeInsets.only(left: 5),
                                         child: ElevatedButton(
-                                            onPressed: processedFileList.isEmpty || !context.watch<StateProvider>().modAdderReload
+                                            onPressed: _modAdderState.watch(context) != ModAdderProcessingState.readyToAdd || !context.watch<StateProvider>().modAdderReload
                                                 ? null
                                                 : (() async {
                                                     final prefs = await SharedPreferences.getInstance();
@@ -1812,11 +1819,10 @@ void modsAdderHomePage(context) {
                                           padding: const EdgeInsets.only(left: 5),
                                           child: ElevatedButton(
                                               style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary.withBlue(100)),
-                                              onPressed: processedFileList.isEmpty ||
-                                                      _isNameEditing ||
+                                              onPressed: _isNameEditing ||
                                                       !context.watch<StateProvider>().modAdderReload ||
                                                       pathCharLengthList.where((mod) => mod.where((element) => element > 259).isNotEmpty).isNotEmpty ||
-                                                      Provider.of<StateProvider>(context, listen: false).modAdderProgressStatus.isNotEmpty
+                                                      _modAdderState.watch(context) != ModAdderProcessingState.readyToAdd
                                                   ? null
                                                   : (() async {
                                                       if (_duplicateCounter > 0) {
@@ -1847,6 +1853,7 @@ void modsAdderHomePage(context) {
                                                               toAddList.clear();
                                                               pathCharLengthList.clear();
                                                               _isAddingMods = false;
+                                                              _modAdderState.value = ModAdderProcessingState.idle;
                                                               //_exitConfirmDialog = false;
                                                               // ignore: use_build_context_synchronously
                                                               Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
@@ -1923,7 +1930,12 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
     } else if (p.extension(xFile.path) == '.rar') {
       Provider.of<StateProvider>(context, listen: false).setModAdderProgressStatus('${curLangText!.uiExtracting}:\n${p.basename(xFile.path)}');
       await Future.delayed(const Duration(milliseconds: 5));
-      await Process.run(modMan7zipExePath, ['x', xFile.path, '-o${Uri.file('$modManAddModsTempDirPath/$tempModDirName').toFilePath()}', '-r']);
+      if (Platform.isLinux) {
+        Directory(Uri.file('$modManAddModsTempDirPath/$tempModDirName').toFilePath()).createSync(recursive: true);
+        await Process.run('unrar', ['e', xFile.path, (Uri.file('$modManAddModsTempDirPath/$tempModDirName').toFilePath())]);
+      } else {
+        await Process.run(modMan7zipExePath, ['x', xFile.path, '-o${Uri.file('$modManAddModsTempDirPath/$tempModDirName').toFilePath()}', '-r']);
+      }
     } else if (p.extension(xFile.path) == '.7z') {
       Provider.of<StateProvider>(context, listen: false).setModAdderProgressStatus('${curLangText!.uiExtracting}:\n${p.basename(xFile.path)}');
       await Future.delayed(const Duration(milliseconds: 5));
@@ -2250,6 +2262,7 @@ Future<String> removeRebootPath(context, String filePath) async {
       newPathSplit.remove(name);
     }
     newPath = p.joinAll(newPathSplit);
+    if (Platform.isLinux) newPath = p.separator + newPath;
   }
 
   return newPath;

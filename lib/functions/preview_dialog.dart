@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
+import 'package:flutter_carousel_widget/flutter_carousel_widget.dart' as cw;
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 
-CarouselController previewDialogCarouselController = CarouselController();
+cw.CarouselController previewDialogCarouselController = cw.CarouselController();
 bool isAutoPlay = false;
 int currentImageIndex = 0;
 
@@ -32,8 +32,8 @@ void previewDialog(context) async {
               ],
             ),
             contentPadding: const EdgeInsets.symmetric(vertical: 10),
-            content: FlutterCarousel(
-              options: CarouselOptions(
+            content: cw.FlutterCarousel(
+              options: cw.CarouselOptions(
                   controller: previewDialogCarouselController,
                   autoPlay: isAutoPlay,
                   autoPlayInterval: previewDialogImages.length > 1 && previewDialogImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewDialogImages.length
@@ -52,7 +52,7 @@ void previewDialog(context) async {
                     });
                   },
                   indicatorMargin: 4,
-                  slideIndicator: CircularWaveSlideIndicator(slideIndicatorOptions: SlideIndicatorOptions(itemSpacing: 10, indicatorRadius: 4, currentIndicatorColor: Theme.of(context).colorScheme.primary, indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3)))),
+                  slideIndicator: cw.CircularWaveSlideIndicator(slideIndicatorOptions: cw.SlideIndicatorOptions(itemSpacing: 10, indicatorRadius: 4, currentIndicatorColor: Theme.of(context).colorScheme.primary, indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3)))),
               items: previewDialogImages,
             ),
            
