@@ -180,6 +180,7 @@
   "uiSortItemsByRecentlyAddedMods": "最近追加されたMODでアイテムを並べ替える",
   "uiPutNewModsOnTopOfTheList": "MODビューリストのMODとそのバリエーションを最近追加された順に並べ替える",
   "uiSortModsByRecentlyAdded": "最近追加されたMODでソート",
+  "uiBoundingRadiusValue": "境界半径の値",
   "uiItemList": "アイテムリスト",
   "uiLoadingUILanguage": "UI言語の読み込み",
   "uiReloadingMods": "リローディングモッズ",

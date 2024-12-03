@@ -241,6 +241,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   Future<void> miscCheck() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
+      //bounding radius value
+      selectedBoundingValue = (prefs.getInt('selectedBoundingValue') ?? -10);
       //aqm Auto bounding radius
       aqmAutoBoundingRadius = (prefs.getBool('aqmAutoBoundingRadius') ?? false);
        //mod adder add to mod sets

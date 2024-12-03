@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/aqmInjection/aqm_injection_homepage.dart';
 import 'package:pso2_mod_manager/aqmInjection/aqm_injection_popup.dart';
+import 'package:pso2_mod_manager/boundary/mods_boundary_edit.dart';
 import 'package:pso2_mod_manager/classes/enum_classes.dart';
 import 'package:pso2_mod_manager/cmx/cmx_functions.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
@@ -1127,6 +1128,56 @@ class _MainPageState extends State<MainPage> {
                                 ],
                               ),
                             ),
+                          ),
+
+                          // Bounding Radius Value
+                          Row(
+                            children: [
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              const Icon(
+                                Icons.radio_button_checked,
+                                size: 18,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Text('${curLangText!.uiBoundingRadiusValue}: '),
+                              ),
+                              DropdownButtonHideUnderline(
+                                child: DropdownButton2<int>(
+                                  isExpanded: false,
+                                  items: boundingSelectValues
+                                      .map((int item) => DropdownMenuItem<int>(
+                                            value: item,
+                                            child: Text(
+                                              item.toString(),
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ))
+                                      .toList(),
+                                  value: selectedBoundingValue,
+                                  onChanged: (int? value) async {
+                                    if (value != null) {
+                                      final prefs = await SharedPreferences.getInstance();
+                                      selectedBoundingValue = value;
+                                      prefs.setInt('selectedBoundingValue', selectedBoundingValue);
+                                    }
+                                    setState(() {});
+                                  },
+                                  buttonStyleData: const ButtonStyleData(
+                                    padding: EdgeInsets.symmetric(horizontal: 5),
+                                    height: 40,
+                                    width: 60,
+                                  ),
+                                  menuItemStyleData: const MenuItemStyleData(
+                                    height: 30,
+                                  ),
+                                ),
+                              )
+                            ],
                           ),
 
                           //autoAqmInject
@@ -2507,7 +2558,9 @@ class _MainPageState extends State<MainPage> {
                                 File(modManAppliedModsJsonPath).existsSync() ? curLangText!.uiReapplyAllRemovedModsBackToTheGame : curLangText!.uiRemoveAllModsFromTheGameAndSaveThemToReApplyLater,
                             child: MaterialButton(
                               color: Theme.of(context).colorScheme.primary.withBlue(180).withOpacity(0.6),
-                              onPressed: File(modManAppliedModsJsonPath).existsSync() || moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isNotEmpty || saveApplyButtonState.watch(context) != SaveApplyButtonState.none
+                              onPressed: File(modManAppliedModsJsonPath).existsSync() ||
+                                      moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isNotEmpty ||
+                                      saveApplyButtonState.watch(context) != SaveApplyButtonState.none
                                   ? () async {
                                       if (File(modManAppliedModsJsonPath).existsSync()) {
                                         await quickModsReapply(context);
