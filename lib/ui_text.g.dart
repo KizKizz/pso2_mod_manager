@@ -238,6 +238,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiPutNewModsOnTopOfTheList =
           json['uiPutNewModsOnTopOfTheList'] as String
       ..uiSortModsByRecentlyAdded = json['uiSortModsByRecentlyAdded'] as String
+      ..uiBoundingRadiusValue = json['uiBoundingRadiusValue'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -964,6 +965,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiSortItemsByRecentlyAddedMods': instance.uiSortItemsByRecentlyAddedMods,
       'uiPutNewModsOnTopOfTheList': instance.uiPutNewModsOnTopOfTheList,
       'uiSortModsByRecentlyAdded': instance.uiSortModsByRecentlyAdded,
+      'uiBoundingRadiusValue': instance.uiBoundingRadiusValue,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,

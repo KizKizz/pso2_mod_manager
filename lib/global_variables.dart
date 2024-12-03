@@ -200,3 +200,4 @@ final saveApplyButtonState = signal<SaveApplyButtonState>(SaveApplyButtonState.n
 bool itemListCateExpansionState = false;
 bool modAdderAddToModSets = false;
 bool aqmAutoBoundingRadius = false;
+int selectedBoundingValue = -10;

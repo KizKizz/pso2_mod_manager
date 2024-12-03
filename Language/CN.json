@@ -180,6 +180,7 @@
   "uiSortItemsByRecentlyAddedMods": "按MOD添加时间排序物品列表",
   "uiPutNewModsOnTopOfTheList": "将新MOD排在前面",
   "uiSortModsByRecentlyAdded": "按最近添加排列MOD",
+  "uiBoundingRadiusValue": "Bounding Radius Value",
   "uiItemList": "物品列表",
   "uiLoadingUILanguage": "加载UI语言",
   "uiReloadingMods": "重新加载MOD",

@@ -203,7 +203,8 @@ class TranslationText {
       uiPutItemsWithNewModsOnTopOfTheList = 'Sort items in Item List by items with the most recently added mods at the top',
       uiSortItemsByRecentlyAddedMods = 'Sort Items By Recently Added Mods',
       uiPutNewModsOnTopOfTheList = 'Sort mods and their variants in Mod View List by recently added',
-      uiSortModsByRecentlyAdded = 'Sort Mods By Recently Added';
+      uiSortModsByRecentlyAdded = 'Sort Mods By Recently Added',
+      uiBoundingRadiusValue = 'Bounding Radius Value';
 
   //homepage
   String uiItemList = 'Item List',

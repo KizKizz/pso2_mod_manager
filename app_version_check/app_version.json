@@ -1,9 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.8.22",
+    "version": "2.8.23",
     "description": [
-        "Fixed a bug where 'Open in File Explorer' wont open if path contains special characters",
-        "パスに特殊文字が含まれている場合、「ファイルエクスプローラーで開く」が開かないバグを修正"
+        "Added Bounding Radius value selection in Settings. Range from -10 to -60",
+        "設定でバウンディング半径の値を選択できるようにしました。範囲は-10~-60"
     ],
     "windows_file": "",
     "linux_file": ""
