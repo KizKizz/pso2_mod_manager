@@ -1185,12 +1185,14 @@ void modsAdderHomePage(context) {
                                                                                                   curMod.setNewParentPathToChildren(newModDir.path.trim());
                                                                                                   curMod.modDirPath = newModDir.path;
                                                                                                 }
+                                                                                                pathCharLengthList[index][mIndex] = curMod.modDirPath.length;
 
                                                                                                 mainFolderRenameIndex[index][mIndex] = false;
                                                                                                 renameTextBoxController.clear();
                                                                                                 _isNameEditing = false;
                                                                                                 _pathLengthInNameEdit = 0;
                                                                                                 _duplicateCounter--;
+                                                                                                
 
                                                                                                 setState(
                                                                                                   () {},
