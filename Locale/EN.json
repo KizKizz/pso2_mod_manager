@@ -1,0 +1,7 @@
+{
+  "loadingFeature": "Loading %p%",
+  "selectUILanguage": "Select UI language",
+  "selectItemNameLanguage": "Select item name language",
+  "failedToFetchRemoteLocaleData": "Failed to fetch remote locale data",
+  "unableToUpdateFile": "Unable to update %p%"
+}

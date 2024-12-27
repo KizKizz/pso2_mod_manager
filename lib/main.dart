@@ -4,12 +4,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_localization/flutter_localization.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:pso2_mod_manager/app_locale.dart';
+import 'package:pso2_mod_manager/app_colorscheme.dart';
+import 'package:pso2_mod_manager/app_pages_index.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
-import 'package:pso2_mod_manager/system_loads/language_select.dart';
+import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/system_loads/app_locale_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:signals/signals_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
 
@@ -18,12 +20,13 @@ Future<void> main(List<String> args) async {
   await WindowsSingleInstance.ensureSingleInstance(args, "PSO2NGS Mod Manager", onSecondWindow: (args) {
     debugPrint(args.toString());
   });
-  await FlutterLocalization.instance.ensureInitialized();
   await windowManager.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
 
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   curAppVersion = packageInfo.version;
+
+  prefsLoad();
 
   WindowOptions windowOptions = WindowOptions(
       size: Size(prefs.getDouble('windowWidth') ?? 1280, prefs.getDouble('windowHeight') ?? 720),
@@ -55,7 +58,8 @@ class MyApp extends StatelessWidget {
         builder: (_, ThemeMode currentMode, __) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            theme: ThemeData.from(colorScheme: ColorScheme.fromSeed(seedColor: Colors.red)),
+            theme: ThemeData.from(colorScheme: lightColorScheme),
+            darkTheme: ThemeData.from(colorScheme: darkColorScheme),
             themeMode: currentMode,
             home: const MyHomePage(
               title: 'PSO2NGS Mod Manager',
@@ -78,15 +82,6 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   @override
   void initState() {
     windowManager.addListener(this);
-
-    localization.init(
-      mapLocales: [
-        const MapLocale('en', AppLocale.en),
-        const MapLocale('jp', AppLocale.jp),
-      ],
-      initLanguageCode: 'en',
-    );
-    localization.onTranslatedLanguage = _onTranslatedLanguage;
     super.initState();
   }
 
@@ -104,10 +99,6 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     final prefs = await SharedPreferences.getInstance();
     prefs.setDouble('windowXPosition', curWindowPosition.dx);
     prefs.setDouble('windowYPosition', curWindowPosition.dy);
-  }
-
-  void _onTranslatedLanguage(Locale? locale) {
-    setState(() {});
   }
 
   @override
@@ -171,6 +162,16 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
             ],
           ),
         ),
-        body: const LanguageSelect());
+        body: Stack(
+          children: [
+            Image.file(
+              File('D:\\Download\\2022-07-21_20-24-59-457_Talim_-_Gentle_Maya.png'),
+              width: double.infinity,
+              height: double.infinity,
+              fit: BoxFit.cover,
+            ),
+            curPage.watch(context)
+          ],
+        ));
   }
 }

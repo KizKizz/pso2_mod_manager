@@ -83,8 +83,7 @@ Future<void> appDownloadDialog(context) async {
                   if (_downloadPercent >= 100) {
                     await Future.delayed(const Duration(milliseconds: 100));
                     await extractFileToDisk(Uri.file('${Directory.current.path}/appUpdate/PSO2NGSModManager_v$newVersion.zip').toFilePath(),
-                        Uri.file('${Directory.current.path}/appUpdate/PSO2NGSModManager_v$newVersion').toFilePath(),
-                        asyncWrite: false);
+                        Uri.file('${Directory.current.path}/appUpdate/PSO2NGSModManager_v$newVersion').toFilePath());
                     //create launcher bat
                     File patchLauncher = await patchFileLauncherGenerate();
                     if (patchLauncher.existsSync()) {
@@ -92,19 +91,6 @@ Future<void> appDownloadDialog(context) async {
                     } else {
                       _downloadErrorMsg = curLangText!.uiDownloadingUpdateError;
                     }
-
-                    // if (File(Uri.file('${Directory.current.path}/appUpdate/updater.exe').toFilePath()).existsSync()) {
-                    //   Process.run(Uri.file('${Directory.current.path}/appUpdate/updater.exe').toFilePath(), ['PSO2NGSModManager', newVersion, '"${Directory.current.path}"'], runInShell: true);
-                    // } else {
-                    //   _downloadErrorMsg = curLangText!.uiDownloadingUpdateError;
-                    // }
-                    //Process.run(Uri.file('${Directory.current.path}/appUpdate/PSO2NGSMMUpdater.exe').toFilePath(), []);
-
-                    // await patchFileGenerate();
-                    // File patchLauncher = await patchFileLauncherGenerate();
-                    // Process.run(patchLauncher.path, []);
-                    //windowManager.destroy();
-                    // ignore: use_build_context_synchronously
                     Navigator.of(context).pop();
                   }
                   setState(
@@ -173,7 +159,7 @@ Future<File> patchFileLauncherGenerate() async {
   return patchFile;
 }
 
-Future<File> patchFileGenerate() async {
+Future<File> patchFileGenerateg() async {
   File patchFile = File(Uri.file('${Directory.current.path}/appUpdate/filesPatcher.bat').toFilePath());
   if (!patchFile.existsSync()) {
     patchFile.createSync(recursive: true);

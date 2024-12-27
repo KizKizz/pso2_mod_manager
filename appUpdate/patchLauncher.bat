@@ -1,0 +1,1 @@
+start /B /D "E:\Flutter project\pso2_mod_manager\appUpdate\" updater.exe PSO2NGSModManager 2.8.23 "E:\Flutter project\pso2_mod_manager"
