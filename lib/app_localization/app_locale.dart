@@ -50,7 +50,19 @@ class AppLocale {
   }
 
   void localeInit() {
-    if (!localeSettingsFile.existsSync() || localeSettingsFile.readAsStringSync().isEmpty) {
+    List<AppLocale> localLocales = [];
+    if (localeSettingsFile.existsSync()) {
+      var jsonData = jsonDecode(localeSettingsFile.readAsStringSync());
+      for (var data in jsonData) {
+        localLocales.add(AppLocale.fromJson(data));
+        if (localLocales.last.language == 'EN') {
+          const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+          File(localLocales.last.translationFilePath).writeAsStringSync(encoder.convert(AppText()));
+        }
+      }
+    }
+
+    if (localLocales.isEmpty || localLocales.indexWhere((e) => e.language == 'EN') == -1) {
       AppLocale newLocale = AppLocale().createLocale('EN', 1, true);
       const JsonEncoder encoder = JsonEncoder.withIndent('  ');
       File(newLocale.translationFilePath).writeAsStringSync(encoder.convert(AppText()));

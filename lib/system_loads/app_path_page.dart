@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -93,7 +94,7 @@ class _AppPathPageState extends State<AppPathPage> {
 
                 // Main dir
                 Visibility(
-                  visible: !pso2bin,
+                  visible: !mainDir,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 15),
                     child: Row(
@@ -131,19 +132,26 @@ class _AppPathPageState extends State<AppPathPage> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 150, child: Divider(height: 30, thickness: 2)),
+                const SizedBox(height: 30),
                 Wrap(
                   spacing: 10,
                   runSpacing: 10,
                   children: [
                     ElevatedButton(
-                        onPressed: pso2binPathSelected.watch(context) && mainDirPathSelected.watch(context)
+                        onPressed: (pso2binPathSelected.watch(context) && mainDirPathSelected.watch(context)) ||
+                                (!pso2bin && mainDir && pso2binPathSelected.watch(context)) ||
+                                (pso2bin && !mainDir && mainDirPathSelected.watch(context))
                             ? () async {
-                                pso2binDirPath = pso2binPathText.text;
-                                mainDataDirPath = mainDirPathText.text;
                                 final prefs = await SharedPreferences.getInstance();
-                                modManCurActiveProfile == 1 ? prefs.setString('pso2binDirPath', pso2binDirPath) : prefs.setString('pso2binDirPath_profile2', pso2binDirPath);
-                                prefs.setString('mainDataDirPath', mainDataDirPath);
+                                if (pso2binPathText.text.isNotEmpty) {
+                                  pso2binDirPath = pso2binPathText.text;
+                                  modManCurActiveProfile == 1 ? prefs.setString('pso2binDirPath', pso2binDirPath) : prefs.setString('pso2binDirPath_profile2', pso2binDirPath);
+                                }
+                                if (mainDirPathText.text.isNotEmpty) {
+                                  mainDataDirPath = mainDirPathText.text;
+                                  prefs.setString('mainDataDirPath', mainDataDirPath);
+                                }
+                                
                                 createMainDirs();
                                 pageIndex++;
                                 curPage.value = appPages[pageIndex];

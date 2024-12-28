@@ -8,6 +8,7 @@ String mainModDirPath = '$mainDataDirPath${p.separator}Mods';
 String backupDirPath = '';
 String mainModListJsonPath = '';
 String mainModSetListJsonPath = '';
+String backgroundDirPath = '$mainDataDirPath${p.separator}BackgroundImages';
 
 Future<(bool, bool)> appMainPathsCheck() async {
   bool pso2bin = true;
@@ -24,6 +25,9 @@ void createMainDirs() {
   for (var dirName in defaultCategoryDirs) {
     Directory(mainModDirPath + p.separator + dirName).createSync(recursive: true);
   }
+
+  // Create background folder
+  Directory(backgroundDirPath).createSync(recursive: true);
 
   // Profile 1
   if (modManCurActiveProfile == 1) {
@@ -54,8 +58,8 @@ void createMainDirs() {
   }
 
   // Main mod list
-    mainModListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManModsList_profile2.json';
+  mainModListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManModsList_profile2.json';
 
-    // Main mod set list
-    mainModSetListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManSetsList_profile2.json';
+  // Main mod set list
+  mainModSetListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManSetsList_profile2.json';
 }

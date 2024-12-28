@@ -23,7 +23,8 @@ class AppText {
       browse = 'Browse',
       save = 'Save',
       exit = 'Exit',
-      settings = 'Settings';
+      settings = 'Settings',
+      search = 'Search';
 
   // Short Strings
   String patchNotes = 'Patch Notes',

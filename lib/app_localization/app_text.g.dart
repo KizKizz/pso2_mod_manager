@@ -21,10 +21,18 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..browse = json['browse'] as String
   ..save = json['save'] as String
   ..exit = json['exit'] as String
+  ..settings = json['settings'] as String
   ..patchNotes = json['patchNotes'] as String
   ..appUpdate = json['appUpdate'] as String
   ..tryAgain = json['tryAgain'] as String
   ..tryAgainLater = json['tryAgainLater'] as String
+  ..modList = json['modList'] as String
+  ..modSets = json['modSets'] as String
+  ..numMod = json['numMod'] as String
+  ..numMods = json['numMods'] as String
+  ..numModsCurrentlyApplied = json['numModsCurrentlyApplied'] as String
+  ..viewMods = json['viewMods'] as String
+  ..profileNum = json['profileNum'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -67,10 +75,18 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'browse': instance.browse,
       'save': instance.save,
       'exit': instance.exit,
+      'settings': instance.settings,
       'patchNotes': instance.patchNotes,
       'appUpdate': instance.appUpdate,
       'tryAgain': instance.tryAgain,
       'tryAgainLater': instance.tryAgainLater,
+      'modList': instance.modList,
+      'modSets': instance.modSets,
+      'numMod': instance.numMod,
+      'numMods': instance.numMods,
+      'numModsCurrentlyApplied': instance.numModsCurrentlyApplied,
+      'viewMods': instance.viewMods,
+      'profileNum': instance.profileNum,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,

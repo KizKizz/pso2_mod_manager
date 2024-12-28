@@ -22,17 +22,15 @@ class _CateItemGridLayoutState extends State<CateItemGridLayout> {
   @override
   Widget build(BuildContext context) {
     return SliverStickyHeader.builder(
-        builder: (context, state) => widget.itemCate.items.where((e) => e.getDistinctNames().where((e) => e.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty).isEmpty
-            ? const SizedBox()
-            : Card(
-                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
-                color: state.isPinned ? Theme.of(context).colorScheme.secondaryContainer.withAlpha(200) : Theme.of(context).scaffoldBackgroundColor.withAlpha(200),
-                margin: EdgeInsets.zero,
-                elevation: 5,
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Text('${widget.itemCate.group} - ${widget.itemCate.categoryName}', style: Theme.of(context).textTheme.labelLarge),
-                )),
+        builder: (context, state) => Card(
+            shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
+            color: state.isPinned ? Theme.of(context).colorScheme.secondaryContainer.withAlpha(200) : Theme.of(context).scaffoldBackgroundColor.withAlpha(200),
+            margin: EdgeInsets.zero,
+            elevation: 5,
+            child: Padding(
+              padding: const EdgeInsets.all(15),
+              child: Text('${widget.itemCate.group} - ${widget.itemCate.categoryName}', style: Theme.of(context).textTheme.labelLarge),
+            )),
         sliver: ResponsiveSliverGridList(
             minItemWidth: 150,
             verticalGridMargin: 5,

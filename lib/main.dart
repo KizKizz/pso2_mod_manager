@@ -7,13 +7,16 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pso2_mod_manager/app_colorscheme.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
+import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/system_loads/app_locale_page.dart';
+import 'package:pso2_mod_manager/v3_widgets/background_slideshow.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
+import 'package:path/path.dart' as p;
 
 Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -164,12 +167,10 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         ),
         body: Stack(
           children: [
-            Image.file(
-              File('D:\\Download\\2022-07-21_20-24-59-457_Talim_-_Gentle_Maya.png'),
-              width: double.infinity,
-              height: double.infinity,
-              fit: BoxFit.cover,
-            ),
+            Visibility(
+                visible: Directory(backgroundDirPath).existsSync() &&
+                    Directory(backgroundDirPath).listSync(recursive: true).whereType<File>().where((e) => p.extension(e.path) == '.png' || p.extension(e.path) == '.jpg').isNotEmpty,
+                child: BackgroundSlideshow(dirPath: backgroundDirPath)),
             curPage.watch(context)
           ],
         ));
