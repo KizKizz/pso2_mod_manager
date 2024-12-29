@@ -50,7 +50,7 @@ class _HomepageState extends State<Homepage> {
               ),
               headerBuilder: (context, extended) {
                 return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  padding: const EdgeInsets.only(top: 10),
                   child: extended
                       ? Center(
                         child: Column(

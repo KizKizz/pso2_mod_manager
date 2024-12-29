@@ -5,7 +5,11 @@ import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
+import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/item_icons_carousel.dart';
+import 'package:pso2_mod_manager/v3_widgets/mod_view_popup.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 
 class CateItemGridLayout extends StatefulWidget {
@@ -59,7 +63,7 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
   Widget build(BuildContext context) {
     return Card(
         shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
-        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(150),
+        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha),
         margin: EdgeInsets.zero,
         elevation: 5,
         child: Padding(
@@ -74,7 +78,7 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
                 height: 140,
                 child: Card(
                     shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(0))),
-                    color: Theme.of(context).scaffoldBackgroundColor.withAlpha(150),
+                    color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha),
                     margin: EdgeInsets.zero,
                     elevation: 5,
                     child: widget.item.icons.length > 1
@@ -95,7 +99,15 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
                   InfoBox(info: appText.dText(appText.numModsCurrentlyApplied, widget.item.getNumOfAppliedMods().toString())),
                   SizedBox(
                     width: double.infinity,
-                    child: OutlinedButton(onPressed: () {}, child: Text(appText.viewMods)),
+                    child: OutlinedButton(
+                        onPressed: () {
+                          QuickAlert.show(
+                              context: context,
+                              type: QuickAlertType.custom,
+                              backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha),
+                              widget: ModViewPopup(item: widget.item));
+                        },
+                        child: Text(appText.viewMods)),
                   )
                 ],
               )
@@ -114,7 +126,7 @@ class InfoBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
         shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
-        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(150),
+        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha),
         margin: EdgeInsets.zero,
         elevation: 5,
         child: Padding(

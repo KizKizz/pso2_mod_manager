@@ -8,6 +8,7 @@ String appVersionUpdateSkip = '';
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
 String mainDataDirPath = '';
+int uiBackgroundColorAlpha = 150;
 
 Future<void> prefsLoad() async {
   final prefs = await SharedPreferences.getInstance();
@@ -30,4 +31,6 @@ Future<void> prefsLoad() async {
   // Main dir path
   mainDataDirPath = prefs.getString('mainDataDirPath') ?? '';
   
+  // Main dir path
+  uiBackgroundColorAlpha = prefs.getInt('uiBackgroundColorAlpha') ?? 150;
 }
