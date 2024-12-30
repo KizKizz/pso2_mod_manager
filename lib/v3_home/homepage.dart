@@ -40,7 +40,7 @@ class _HomepageState extends State<Homepage> {
                   decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.surfaceContainer.withAlpha(200),
                       boxShadow: [BoxShadow(color: Theme.of(context).shadowColor.withAlpha(50), spreadRadius: 2, blurRadius: 3, offset: const Offset(2, 2))],
-                      border: Border.all(width: 1.5, color: Theme.of(context).colorScheme.primary),
+                      border: Border.all(width: 1.5, color: Theme.of(context).colorScheme.outline),
                       borderRadius: const BorderRadius.all(Radius.circular(10)))),
               extendedTheme: const SidebarXTheme(
                 width: 140,
@@ -68,7 +68,7 @@ class _HomepageState extends State<Homepage> {
                 thickness: 1,
                 indent: 3,
                 endIndent: 3,
-                color: Theme.of(context).colorScheme.primary,
+                color: Theme.of(context).colorScheme.outline,
               ),
               items: [
                 SidebarXItem(
@@ -83,7 +83,7 @@ class _HomepageState extends State<Homepage> {
               //   thickness: 2,
               //   indent: 3,
               //   endIndent: 3,
-              //   color: Theme.of(context).colorScheme.primary,
+              //   color: Theme.of(context).colorScheme.outline,
               // ),
               footerItems: [
                 SidebarXItem(icon: Icons.settings, label: appText.settings),

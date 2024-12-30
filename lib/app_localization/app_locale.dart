@@ -49,15 +49,25 @@ class AppLocale {
     return localeList;
   }
 
-  void localeInit() {
+  Future<void> localeInit() async {
     List<AppLocale> localLocales = [];
     if (localeSettingsFile.existsSync()) {
       var jsonData = jsonDecode(localeSettingsFile.readAsStringSync());
       for (var data in jsonData) {
-        localLocales.add(AppLocale.fromJson(data));
+        AppLocale appLocale = AppLocale.fromJson(data);
+        if (File(appLocale.translationFilePath).existsSync()) {
+          localLocales.add(appLocale);
+        } else {
+          File translationFile = File('${Directory.current.path}${p.separator}Locale${p.separator}${appLocale.language}.json');
+          if (!translationFile.existsSync()) {
+            translationFile.createSync();
+          }
+          appLocale.translationFilePath = translationFile.path;
+          localLocales.add(appLocale);
+        }
         if (localLocales.last.language == 'EN') {
           const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-          File(localLocales.last.translationFilePath).writeAsStringSync(encoder.convert(AppText()));
+          await File(localLocales.last.translationFilePath).writeAsString(encoder.convert(AppText()));
         }
       }
     }
@@ -65,10 +75,12 @@ class AppLocale {
     if (localLocales.isEmpty || localLocales.indexWhere((e) => e.language == 'EN') == -1) {
       AppLocale newLocale = AppLocale().createLocale('EN', 1, true);
       const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-      File(newLocale.translationFilePath).writeAsStringSync(encoder.convert(AppText()));
-      saveSettings([newLocale]);
+      await File(newLocale.translationFilePath).writeAsString(encoder.convert(AppText()));
+      localLocales.add(newLocale);
       appText = AppText.fromJson(jsonDecode(File(newLocale.translationFilePath).readAsStringSync()));
     }
+
+    saveSettings(localLocales);
   }
 
   Future<void> localeGet() async {
@@ -118,7 +130,7 @@ class AppLocale {
       } else {
         AppLocale newLocale = AppLocale().createLocale('EN', 1, true);
         const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-        File(newLocale.translationFilePath).writeAsStringSync(encoder.convert(AppText()));
+        await File(newLocale.translationFilePath).writeAsString(encoder.convert(AppText()));
         locales.add(newLocale);
         appText = AppText.fromJson(jsonDecode(File(newLocale.translationFilePath).readAsStringSync()));
       }

@@ -279,10 +279,8 @@ Future<List<Item>> itemsFetcher(context, String catePath, bool reload) async {
     //CLear temp dir
     // clearModAdderDirs();
 
-    if (cateToIgnoreScan.contains(p.basename(catePath))) {
-      itemIcons.add('assets/img/placeholdersquare.png');
-    } else {
-      final iconFilesInDir = dir.listSync().whereType<File>().where((element) => p.extension(element.path) == '.png');
+    if (!cateToIgnoreScan.contains(p.basename(catePath))) {
+      final iconFilesInDir = dir.listSync().whereType<File>().where((element) => p.extension(element.path) == '.png' || p.extension(element.path) == '.jpg');
       // if (isAutoFetchingIconsOnStartup == 'off') {
       //   if (iconFilesInDir.where((element) => p.basenameWithoutExtension(element.path) == p.basename(dir.path)).isNotEmpty) {
       //     itemIcons.addAll(iconFilesInDir.map((e) => e.path));
@@ -309,7 +307,7 @@ Future<List<Item>> itemsFetcher(context, String catePath, bool reload) async {
         itemIcons.addAll(iconFilesInDir.map((e) => e.path));
       }
       if (itemIcons.isEmpty) {
-        itemIcons.add('assets/img/placeholdersquare.png');
+        // itemIcons.add('assets/img/placeholdersquare.png');
       }
     }
 

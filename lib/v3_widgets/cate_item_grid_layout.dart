@@ -1,15 +1,12 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
-import 'package:pso2_mod_manager/v3_widgets/item_icons_carousel.dart';
+import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/mod_view_popup.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 
 class CateItemGridLayout extends StatefulWidget {
@@ -62,7 +59,7 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
   @override
   Widget build(BuildContext context) {
     return Card(
-        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
+        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
         color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha),
         margin: EdgeInsets.zero,
         elevation: 5,
@@ -73,39 +70,18 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
             mainAxisSize: MainAxisSize.min,
             spacing: 5,
             children: [
-              SizedBox(
-                width: 140,
-                height: 140,
-                child: Card(
-                    shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(0))),
-                    color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha),
-                    margin: EdgeInsets.zero,
-                    elevation: 5,
-                    child: widget.item.icons.length > 1
-                        ? ItemIconsCarousel(iconPaths: widget.item.icons)
-                        : Image.file(
-                            File(widget.item.icons.first),
-                            filterQuality: FilterQuality.none,
-                            fit: BoxFit.cover,
-                          )),
-              ),
+              ItemIconBox(item: widget.item),
               Text(widget.item.itemName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
-              Wrap(
+              Column(
                 spacing: 5,
-                runSpacing: 5,
-                alignment: WrapAlignment.center,
                 children: [
-                  InfoBox(info: widget.item.mods.length > 1 ? appText.dText(appText.numMods, widget.item.mods.length.toString()) : appText.dText(appText.numMod, widget.item.mods.length.toString())),
+                  InfoBox(info: appText.dText(widget.item.mods.length > 1 ? appText.numMods : appText.numMod, widget.item.mods.length.toString())),
                   InfoBox(info: appText.dText(appText.numModsCurrentlyApplied, widget.item.getNumOfAppliedMods().toString())),
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
                         onPressed: () {
-                          QuickAlert.show(
-                              context: context,
-                              type: QuickAlertType.custom,
-                              backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha),
-                              widget: ModViewPopup(item: widget.item));
+                          modViewPopup(context, widget.item);
                         },
                         child: Text(appText.viewMods)),
                   )
@@ -113,25 +89,6 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
               )
             ],
           ),
-        ));
-  }
-}
-
-class InfoBox extends StatelessWidget {
-  const InfoBox({super.key, required this.info});
-
-  final String info;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
-        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha),
-        margin: EdgeInsets.zero,
-        elevation: 5,
-        child: Padding(
-          padding: const EdgeInsets.all(2),
-          child: Center(child: Text(info)),
         ));
   }
 }

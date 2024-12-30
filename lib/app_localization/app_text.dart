@@ -24,7 +24,8 @@ class AppText {
       save = 'Save',
       exit = 'Exit',
       settings = 'Settings',
-      search = 'Search';
+      search = 'Search',
+      returns = 'Return';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -37,7 +38,12 @@ class AppText {
       numMods = '%p% Mods',
       numModsCurrentlyApplied = '%p% Currently Applied',
       viewMods = 'View Mods',
-      profileNum = 'Profile %p%';
+      profileNum = 'Profile %p%',
+      apply = 'Apply',
+      restore = 'Restore',
+      moreOptions = 'More Options',
+      numVariant = '%p% Variant',
+      numVariants = '%p% Variants';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -54,7 +60,8 @@ class AppText {
       missingPathsFound = 'Missing Path(s) Found',
       pso2binDirPath = 'pso2_bin directory path',
       mainDirPath = 'Main directory path',
-      loadingModFiles = 'Loading Mod Files';
+      loadingModFiles = 'Loading Mod Files',
+      selectAMod = 'Select a mod';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',

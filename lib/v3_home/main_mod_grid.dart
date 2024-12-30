@@ -14,8 +14,6 @@ class MainModGrid extends StatefulWidget {
 }
 
 class _MainModGridState extends State<MainModGrid> {
-  TextEditingController searchTextController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     // Suggestions
@@ -78,6 +76,7 @@ class _MainModGridState extends State<MainModGrid> {
               },
               onSearchTextChanged: (p0) {
                 setState(() {});
+                return null;
               },
             ),
             Visibility(

@@ -27,7 +27,7 @@ class _CardOverlayState extends State<CardOverlay> {
         opacity: fadeInOpacity,
         duration: const Duration(milliseconds: 500),
         child: Card(
-          shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
+          shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
           color: Theme.of(context).scaffoldBackgroundColor.withAlpha(150),
           margin: EdgeInsets.zero,
           elevation: 5,

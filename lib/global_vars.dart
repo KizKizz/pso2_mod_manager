@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/mod_data/category_type_class.dart';
 
 String curAppVersion = '';
@@ -22,3 +23,5 @@ List<String> defaultCategoryDirs = [
   'Setwears', //16
   'Weapons' //17
 ];
+
+TextEditingController searchTextController = TextEditingController();
