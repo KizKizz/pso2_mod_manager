@@ -66,6 +66,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
                       e.isActive = false;
                     }
                     locales[i].isActive = true;
+                    setState(() {});
                   },
                   child: Text(
                     locales[i].language,

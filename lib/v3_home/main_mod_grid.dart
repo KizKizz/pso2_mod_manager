@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
+import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/cate_item_grid_layout.dart';
 import 'package:searchfield/searchfield.dart';
+import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 class MainModGrid extends StatefulWidget {
@@ -14,6 +16,17 @@ class MainModGrid extends StatefulWidget {
 }
 
 class _MainModGridState extends State<MainModGrid> {
+  double fadeInOpacity = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 100), () {
+      fadeInOpacity = 1;
+      if (mounted) setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // Suggestions
@@ -44,72 +57,76 @@ class _MainModGridState extends State<MainModGrid> {
       }
     }
 
-    return Column(
-      spacing: 5,
-      children: [
-        SizedBox(
-          height: 40,
-          child: Stack(alignment: AlignmentDirectional.centerEnd, children: [
-            SearchField<String>(
-              searchInputDecoration: SearchInputDecoration(
-                  filled: true,
-                  fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(200),
-                  isDense: true,
-                  contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 30),
-                  cursorHeight: 15,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
-                  cursorColor: Theme.of(context).colorScheme.inverseSurface),
-              suggestions: filteredStrings
-                  .map(
-                    (e) => SearchFieldListItem<String>(
-                      e,
-                      item: e,
-                      child: Padding(padding: const EdgeInsets.all(8.0), child: Text(e)),
-                    ),
-                  )
-                  .toList(),
-              hint: appText.search,
-              controller: searchTextController,
-              onSuggestionTap: (p0) {
-                searchTextController.text = p0.searchKey;
-                setState(() {});
-              },
-              onSearchTextChanged: (p0) {
-                setState(() {});
-                return null;
-              },
-            ),
-            Visibility(
-              visible: searchTextController.value.text.isNotEmpty,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 4),
-                child: ElevatedButton(
-                    onPressed: searchTextController.value.text.isNotEmpty
-                        ? () {
-                            searchTextController.clear();
-                            setState(() {});
-                          }
-                        : null,
-                    child: const Icon(Icons.close)),
+    return AnimatedOpacity(
+      opacity: fadeInOpacity,
+      duration: const Duration(milliseconds: 500),
+      child: Column(
+        spacing: 5,
+        children: [
+          SizedBox(
+            height: 40,
+            child: Stack(alignment: AlignmentDirectional.centerEnd, children: [
+              SearchField<String>(
+                searchInputDecoration: SearchInputDecoration(
+                    filled: true,
+                    fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                    isDense: true,
+                    contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 30),
+                    cursorHeight: 15,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
+                    cursorColor: Theme.of(context).colorScheme.inverseSurface),
+                suggestions: filteredStrings
+                    .map(
+                      (e) => SearchFieldListItem<String>(
+                        e,
+                        item: e,
+                        child: Padding(padding: const EdgeInsets.all(8.0), child: Text(e)),
+                      ),
+                    )
+                    .toList(),
+                hint: appText.search,
+                controller: searchTextController,
+                onSuggestionTap: (p0) {
+                  searchTextController.text = p0.searchKey;
+                  setState(() {});
+                },
+                onSearchTextChanged: (p0) {
+                  setState(() {});
+                  return null;
+                },
               ),
-            )
-          ]),
-        ),
-        Expanded(
-          child: CustomScrollView(
-            primary: true,
-            cacheExtent: 10000,
-            physics: const SuperRangeMaintainingScrollPhysics(),
-            slivers: [
-              for (int i = 0; i < categories.length; i++)
-                CateItemGridLayout(
-                  itemCate: categories[i],
-                  searchString: searchTextController.value.text,
-                )
-            ],
+              Visibility(
+                visible: searchTextController.value.text.isNotEmpty,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 4),
+                  child: ElevatedButton(
+                      onPressed: searchTextController.value.text.isNotEmpty
+                          ? () {
+                              searchTextController.clear();
+                              setState(() {});
+                            }
+                          : null,
+                      child: const Icon(Icons.close)),
+                ),
+              )
+            ]),
           ),
-        )
-      ],
+          Expanded(
+            child: CustomScrollView(
+              primary: true,
+              cacheExtent: 10000,
+              physics: const SuperRangeMaintainingScrollPhysics(),
+              slivers: [
+                for (int i = 0; i < categories.length; i++)
+                  CateItemGridLayout(
+                    itemCate: categories[i],
+                    searchString: searchTextController.value.text,
+                  )
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }

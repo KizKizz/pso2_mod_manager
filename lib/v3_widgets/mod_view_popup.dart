@@ -4,9 +4,12 @@ import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_grid_layout.dart';
+import 'package:pso2_mod_manager/v3_widgets/vertical_divider.dart';
+import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 void modViewPopup(context, Item item) {
@@ -18,7 +21,7 @@ void modViewPopup(context, Item item) {
         return StatefulBuilder(builder: (dialogContext, setState) {
           return AlertDialog(
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: const BorderRadius.all(Radius.circular(5))),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha + 50),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
             insetPadding: const EdgeInsets.all(5),
             contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
             content: SizedBox(
@@ -34,15 +37,15 @@ void modViewPopup(context, Item item) {
                         ItemIconBox(item: item),
                         Text(
                           item.category,
-                          style: Theme.of(context).textTheme.titleLarge,
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                         Text(
                           item.itemName,
-                          style: Theme.of(context).textTheme.titleMedium,
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
                         InfoBox(info: appText.dText(item.mods.length > 1 ? appText.numMods : appText.numMod, item.mods.length.toString())),
                         InfoBox(info: appText.dText(appText.numModsCurrentlyApplied, item.getNumOfAppliedMods().toString())),
-                        const Divider(height: 15, thickness: 2),
+                        const HoriDivider(),
                         Expanded(
                             child: CustomScrollView(physics: const SuperRangeMaintainingScrollPhysics(), slivers: [
                           SuperSliverList.builder(
@@ -66,7 +69,7 @@ void modViewPopup(context, Item item) {
                       ],
                     ),
                   ),
-                  const VerticalDivider(width: 20, thickness: 2),
+                  const VertDivider(),
                   Expanded(
                     flex: 3,
                     child: selectedMod == null
@@ -86,7 +89,7 @@ void modViewPopup(context, Item item) {
             ),
             actionsPadding: const EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),
             actions: [
-              const Divider(height: 20, thickness: 2),
+              const HoriDivider(),
               OutlinedButton(
                   onPressed: () {
                     Navigator.of(context).pop();

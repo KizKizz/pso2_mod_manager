@@ -4,6 +4,7 @@ import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
+import 'package:signals/signals_flutter.dart';
 
 class SubmodGridLayout extends StatefulWidget {
   const SubmodGridLayout({super.key, required this.submods, required this.searchString});
@@ -25,7 +26,7 @@ class _SubmodGridLayoutState extends State<SubmodGridLayout> {
         verticalGridSpacing: 5,
         children: widget.searchString.isEmpty
             ? widget.submods.map((e) => SubmodCardLayout(submod: e)).toList()
-            : widget.submods.where((e) => e.getModFileNames().where((e) => e.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty).map((e) => SubmodCardLayout(submod: e)).toList());
+            : widget.submods.where((e) => e.getModFileNames().where((e) => e.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty || e.submodName.toLowerCase().contains(widget.searchString.toLowerCase())).map((e) => SubmodCardLayout(submod: e)).toList());
   }
 }
 
@@ -43,7 +44,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
   Widget build(BuildContext context) {
     return Card(
         shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
-        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha),
+        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
         margin: EdgeInsets.zero,
         elevation: 5,
         child: Padding(

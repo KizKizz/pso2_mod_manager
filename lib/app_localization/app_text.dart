@@ -25,7 +25,10 @@ class AppText {
       exit = 'Exit',
       settings = 'Settings',
       search = 'Search',
-      returns = 'Return';
+      returns = 'Return',
+      close = 'Close',
+      reset = 'Reset',
+      defaults = 'Default';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -33,6 +36,7 @@ class AppText {
       tryAgain = 'Try Again',
       tryAgainLater = 'Try Again Later',
       modList = 'Mod List',
+      itemList = 'Item List',
       modSets = 'Mod Sets',
       numMod = '%p% Mod',
       numMods = '%p% Mods',
@@ -61,7 +65,11 @@ class AppText {
       pso2binDirPath = 'pso2_bin directory path',
       mainDirPath = 'Main directory path',
       loadingModFiles = 'Loading Mod Files',
-      selectAMod = 'Select a mod';
+      selectAMod = 'Select a mod',
+      resetToStartingColor = 'Reset to Starting Color',
+      saveSelectedColorAndReturn = 'Save Selected Color & Return',
+      returnWithoutSaving = 'Return Without Saving',
+      resetToDefaultColor = 'Reset To Default Theme Color';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',
@@ -72,6 +80,19 @@ class AppText {
   // Infos
   String pso2binDirPathInfo = 'PSO2 game data folder, this folder located inside the game installation directory',
       mainDirPathInfo = 'This folder stores your mods and other Mod Manager related stuff\nPreferably outside of pso2 installation directory and nested folders';
+
+  // Settings Text
+  String appSettings = 'App Settings',
+      uiLanguage = 'UI Language',
+      itemNameLanguage = 'Item Name Language',
+      modSettings = 'Mod Settings',
+      others = 'Others',
+      themeMode = 'Theme Mode',
+      light = 'Light',
+      dark = 'Dark',
+      uiOpacity = 'UI Opacity',
+      themeColorSchemes = 'Theme Color Schemes',
+      backgroundSlideshow = 'Background Slideshow';
 
   factory AppText.fromJson(Map<String, dynamic> json) => _$AppTextFromJson(json);
   Map<String, dynamic> toJson() => _$AppTextToJson(this);

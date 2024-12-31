@@ -1,14 +1,22 @@
+import 'dart:ui';
+
+import 'package:pso2_mod_manager/app_colorscheme.dart';
 import 'package:pso2_mod_manager/app_localization/item_locale.dart';
+import 'package:pso2_mod_manager/settings/other_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:signals/signals_flutter.dart';
 
 bool firstBootUp = true;
 ItemNameLanguage itemNameLanguage = ItemNameLanguage.en;
 String appVersionUpdateSkip = '';
+AppThemeMode appThemeMode = AppThemeMode.dark;
+Signal<int> uiBackgroundColorAlpha = Signal<int>(150);
+Color lightModeSeedColor = lightColorScheme.primary;
+Color darkModeSeedColor = darkColorScheme.primary;
 
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
 String mainDataDirPath = '';
-int uiBackgroundColorAlpha = 150;
 
 Future<void> prefsLoad() async {
   final prefs = await SharedPreferences.getInstance();
@@ -30,7 +38,18 @@ Future<void> prefsLoad() async {
 
   // Main dir path
   mainDataDirPath = prefs.getString('mainDataDirPath') ?? '';
-  
+
   // Main dir path
-  uiBackgroundColorAlpha = prefs.getInt('uiBackgroundColorAlpha') ?? 150;
+  uiBackgroundColorAlpha.value = prefs.getInt('uiBackgroundColorAlpha') ?? 150;
+
+  // App Theme Mode
+  appThemeMode = AppThemeMode.values.firstWhere((e) => e.value == prefs.getString('appThemeMode'), orElse: () => AppThemeMode.dark);
+
+  // Color schemes
+  final lightModeSeedColorValue = prefs.getStringList('lightModeSeedColorValue') ??
+      [lightColorScheme.primary.r.toString(), lightColorScheme.primary.g.toString(), lightColorScheme.primary.b.toString(), lightColorScheme.primary.a.toString()];
+  lightModeSeedColor = Color.from(red: double.parse(lightModeSeedColorValue[0]), green: double.parse(lightModeSeedColorValue[1]), blue: double.parse(lightModeSeedColorValue[2]), alpha: double.parse(lightModeSeedColorValue[3]));
+  final darkModeSeedColorValue = prefs.getStringList('darkModeSeedColorValue') ??
+      [darkColorScheme.primary.r.toString(), darkColorScheme.primary.g.toString(), darkColorScheme.primary.b.toString(), darkColorScheme.primary.a.toString()];
+  darkModeSeedColor = Color.from(red: double.parse(darkModeSeedColorValue[0]), green: double.parse(darkModeSeedColorValue[1]), blue: double.parse(darkModeSeedColorValue[2]), alpha: double.parse(darkModeSeedColorValue[3]));
 }

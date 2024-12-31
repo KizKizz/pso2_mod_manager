@@ -10,6 +10,7 @@ import 'package:pso2_mod_manager/app_localization/app_locale.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/settings/other_settings.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/system_loads/app_locale_page.dart';
 import 'package:pso2_mod_manager/v3_widgets/background_slideshow.dart';
@@ -53,7 +54,7 @@ Future<void> main(List<String> args) async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  static final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.dark);
+  static final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(appThemeMode == AppThemeMode.dark ? ThemeMode.dark : ThemeMode.light);
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +63,8 @@ class MyApp extends StatelessWidget {
         builder: (_, ThemeMode currentMode, __) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            theme: ThemeData.from(colorScheme: lightColorScheme),
-            darkTheme: ThemeData.from(colorScheme: darkColorScheme),
+            theme: lightModeSeedColor == lightColorScheme.primary ? ThemeData.from(colorScheme: lightColorScheme) : ThemeData.from(colorScheme: ColorScheme.fromSeed(seedColor: lightModeSeedColor)),
+            darkTheme: darkModeSeedColor == darkColorScheme.primary ? ThemeData.from(colorScheme: darkColorScheme) : ThemeData.from(colorScheme: ColorScheme.fromSeed(seedColor: darkModeSeedColor, brightness: Brightness.dark)) ,
             themeMode: currentMode,
             home: const MyHomePage(
               title: 'PSO2NGS Mod Manager',

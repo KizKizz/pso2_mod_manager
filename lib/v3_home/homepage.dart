@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/main_mod_grid.dart';
+import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:sidebarx/sidebarx.dart';
+import 'package:signals/signals_flutter.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -13,7 +15,7 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   SidebarXController sidebarXController = SidebarXController(selectedIndex: 0, extended: false);
-  List<Widget> homepageWidgets = [const MainModGrid()];
+  List<Widget> homepageWidgets = [const MainModGrid(), const Settings()];
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,7 @@ class _HomepageState extends State<Homepage> {
                   hoverIconTheme: IconThemeData(color: Theme.of(context).colorScheme.tertiary),
                   hoverTextStyle: TextStyle(color: Theme.of(context).colorScheme.tertiary),
                   decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceContainer.withAlpha(200),
+                      color: Theme.of(context).colorScheme.surfaceContainer.withAlpha(uiBackgroundColorAlpha.watch(context)),
                       boxShadow: [BoxShadow(color: Theme.of(context).shadowColor.withAlpha(50), spreadRadius: 2, blurRadius: 3, offset: const Offset(2, 2))],
                       border: Border.all(width: 1.5, color: Theme.of(context).colorScheme.outline),
                       borderRadius: const BorderRadius.all(Radius.circular(10)))),
@@ -53,13 +55,13 @@ class _HomepageState extends State<Homepage> {
                   padding: const EdgeInsets.only(top: 10),
                   child: extended
                       ? Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             spacing: 5,
                             children: [Icon(modManCurActiveProfile == 1 ? Icons.filter_1 : Icons.filter_2), Text(appText.dText(appText.profileNum, modManCurActiveProfile.toString()))],
                           ),
-                      )
+                        )
                       : Icon(modManCurActiveProfile == 1 ? Icons.filter_1 : Icons.filter_2),
                 );
               },
@@ -73,10 +75,12 @@ class _HomepageState extends State<Homepage> {
               items: [
                 SidebarXItem(
                   icon: Icons.grid_view,
-                  label: appText.modList,
-                  onTap: () => sidebarXController.selectIndex(0),
+                  label: appText.itemList,
+                  onTap: () {
+                    sidebarXController.selectIndex(0);
+                    setState(() {});
+                  },
                 ),
-                SidebarXItem(icon: Icons.search, label: appText.modSets),
               ],
               // footerDivider: Divider(
               //   height: 15,
@@ -86,10 +90,16 @@ class _HomepageState extends State<Homepage> {
               //   color: Theme.of(context).colorScheme.outline,
               // ),
               footerItems: [
-                SidebarXItem(icon: Icons.settings, label: appText.settings),
+                SidebarXItem(
+                    icon: Icons.settings,
+                    label: appText.settings,
+                    onTap: () {
+                      sidebarXController.selectIndex(1);
+                      setState(() {});
+                    }),
               ],
             ),
-            Expanded(child: Padding(padding: const EdgeInsets.only(top: 5, bottom: 5, right: 5), child: homepageWidgets[sidebarXController.selectedIndex]))
+            Expanded(child: Padding(padding: const EdgeInsets.only(top: 5.5, bottom: 5, right: 5), child: homepageWidgets[sidebarXController.selectedIndex]))
           ],
         ),
       ),

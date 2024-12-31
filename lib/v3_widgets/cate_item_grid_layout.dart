@@ -8,6 +8,7 @@ import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/mod_view_popup.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
+import 'package:signals/signals_flutter.dart';
 
 class CateItemGridLayout extends StatefulWidget {
   const CateItemGridLayout({super.key, required this.itemCate, required this.searchString});
@@ -60,7 +61,7 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
   Widget build(BuildContext context) {
     return Card(
         shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
-        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha),
+        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
         margin: EdgeInsets.zero,
         elevation: 5,
         child: Padding(

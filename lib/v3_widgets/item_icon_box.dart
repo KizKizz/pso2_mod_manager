@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:signals/signals_flutter.dart';
 
 class ItemIconBox extends StatefulWidget {
   const ItemIconBox({super.key, required this.item});
@@ -22,7 +23,7 @@ class _ItemIconBoxState extends State<ItemIconBox> {
       height: 140,
       child: Card(
           shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(0))),
-          color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha),
+          color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
           margin: EdgeInsets.zero,
           elevation: 5,
           child: widget.item.icons.isNotEmpty
