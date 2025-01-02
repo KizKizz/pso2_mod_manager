@@ -16,7 +16,7 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
 
   List<CategoryType> structureFromJson = [];
   List<CategoryType> cateTypes = [];
-  bool isEmptyCatesHide = false;
+  // bool isEmptyCatesHide = false;
 
   //Load list from json
   String modSettingsFromJson = await File(mainModListJsonPath).readAsString();
@@ -89,7 +89,7 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
     if (typeIndex != -1) {
       type.position = typeIndex;
       type.expanded = structureFromJson[typeIndex].expanded;
-      type.visible = isEmptyCatesHide && type.categories.where((element) => element.items.isNotEmpty).isNotEmpty ? true : structureFromJson[typeIndex].visible;
+      // type.visible = isEmptyCatesHide && type.categories.where((element) => element.items.isNotEmpty).isNotEmpty ? true : structureFromJson[typeIndex].visible;
       //Settings for categories
       for (var cate in type.categories) {
         int cateIndex = structureFromJson[typeIndex].categories.indexWhere((element) => element.categoryName == cate.categoryName);
@@ -97,7 +97,7 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
           cate.group = structureFromJson[typeIndex].categories[cateIndex].group;
           cate.position = cateIndex;
           //cate.location = structureFromJson[typeIndex].categories[cateIndex].location;
-          cate.visible = isEmptyCatesHide && cate.items.isNotEmpty ? true : structureFromJson[typeIndex].categories[cateIndex].visible;
+          // cate.visible = isEmptyCatesHide && cate.items.isNotEmpty ? true : structureFromJson[typeIndex].categories[cateIndex].visible;
           //Settings for items
           final curJsonItemsList = structureFromJson[typeIndex].categories[cateIndex].items;
           for (var item in cate.items) {

@@ -55,11 +55,11 @@ void createMainDirs() {
     for (var name in dataFolders) {
       Directory('$backupDirPath${p.separator}$name').createSync(recursive: true);
     }
+
+    // Main mod list
+    mainModListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManModsList_profile2.json';
+
+    // Main mod set list
+    mainModSetListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManSetsList_profile2.json';
   }
-
-  // Main mod list
-  mainModListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManModsList_profile2.json';
-
-  // Main mod set list
-  mainModSetListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManSetsList_profile2.json';
 }
