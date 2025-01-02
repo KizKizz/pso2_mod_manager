@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/mod_data/category_type_class.dart';
+import 'package:signals/signals_flutter.dart';
 
 String curAppVersion = '';
 List<CategoryType> masterModList = [];
+List<String> defaultCategoryTypes = ['Cast Parts', 'Layering Wears', 'Others'];
 List<String> defaultCategoryDirs = [
   'Accessories', //0
   'Basewears', //1
@@ -25,3 +29,4 @@ List<String> defaultCategoryDirs = [
 ];
 
 TextEditingController searchTextController = TextEditingController();
+Signal<List<File>> backgroundImageFiles = Signal([]);

@@ -2,14 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
-import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:signals/signals_flutter.dart';
 
 class SubmodImageBox extends StatefulWidget {
-  const SubmodImageBox({super.key, required this.submod});
+  const SubmodImageBox({super.key, required this.filePaths, });
 
-  final SubMod submod;
+  final List<String> filePaths;
 
   @override
   State<SubmodImageBox> createState() => _SubmodImageBoxState();
@@ -30,21 +29,21 @@ class _SubmodImageBoxState extends State<SubmodImageBox> {
             children: [
               FlutterCarousel(
                 options: FlutterCarouselOptions(
-                    autoPlay: widget.submod.previewImages.length > 1 ? true : false,
+                    autoPlay: widget.filePaths.length > 1 ? true : false,
                     autoPlayInterval: const Duration(seconds: 2),
                     disableCenter: true,
                     viewportFraction: 1.0,
                     height: double.infinity,
                     floatingIndicator: true,
-                    enableInfiniteScroll: widget.submod.previewImages.length > 1 ? true : false,
+                    enableInfiniteScroll: widget.filePaths.length > 1 ? true : false,
                     indicatorMargin: 2,
                     slideIndicator: CircularWaveSlideIndicator(
                         slideIndicatorOptions: SlideIndicatorOptions(
                             itemSpacing: 10, indicatorRadius: 4, currentIndicatorColor: Theme.of(context).colorScheme.primary, indicatorBackgroundColor: Theme.of(context).hintColor.withAlpha(200)))),
-                items: widget.submod.previewImages.map((e) => Image.file(File(e))).toList(),
+                items: widget.filePaths.map((e) => Image.file(File(e))).toList(),
               ),
               Visibility(
-                visible: widget.submod.previewImages.isNotEmpty,
+                visible: widget.filePaths.isNotEmpty,
                 child: Padding(
                   padding: const EdgeInsets.all(3),
                   child: IconButton(onPressed: () {}, icon: const Icon(Icons.zoom_in)),

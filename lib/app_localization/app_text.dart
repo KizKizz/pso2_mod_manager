@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 
 part 'app_text.g.dart';
 
@@ -7,6 +8,29 @@ AppText appText = AppText();
 @JsonSerializable()
 class AppText {
   AppText();
+
+  //Default category types
+  String dfCastParts = 'Cast Parts', dfLayeringWears = 'Layering Wears', dfOthers = 'Others';
+
+  //Default category names
+  String dfAccessories = 'Accessories', //0
+      dfBasewears = 'Basewears', //1
+      dfBodyPaints = 'Body Paints', //2
+      dfCastArmParts = 'Cast Arm Parts', //3
+      dfCastBodyParts = 'Cast Body Parts', //4
+      dfCastLegParts = 'Cast Leg Parts', //5
+      dfCostumes = 'Costumes', //6
+      dfEmotes = 'Emotes', //7
+      dfEyes = 'Eyes', //8
+      dfFacePaints = 'Face Paints', //9
+      dfHairs = 'Hairs', //10
+      dfInnerwears = 'Innerwears', //11
+      dfMags = 'Mags', //12
+      dfMisc = 'Misc', //13
+      dfMotions = 'Motions', //14
+      dfOuterwears = 'Outerwears', //15
+      dfSetwears = 'Setwears', //16
+      dfWeapons = 'Weapons'; //17
 
   // One word Strings
   String ok = 'OK',
@@ -28,7 +52,14 @@ class AppText {
       returns = 'Return',
       close = 'Close',
       reset = 'Reset',
-      defaults = 'Default';
+      defaults = 'Default',
+      refresh = 'Refresh',
+      hide = 'Hide',
+      show = 'Show',
+      remove = 'Remove',
+      on = 'On',
+      off = 'Off',
+      view = 'View';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -40,14 +71,17 @@ class AppText {
       modSets = 'Mod Sets',
       numMod = '%p% Mod',
       numMods = '%p% Mods',
-      numModsCurrentlyApplied = '%p% Currently Applied',
+      numCurrentlyApplied = '%p% Currently Applied',
       viewMods = 'View Mods',
       profileNum = 'Profile %p%',
       apply = 'Apply',
       restore = 'Restore',
       moreOptions = 'More Options',
       numVariant = '%p% Variant',
-      numVariants = '%p% Variants';
+      numVariants = '%p% Variants',
+      intervalNumSecond = 'Interval: %p%s',
+      loading = 'Loading...',
+      viewVariants = 'View Variants';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -91,8 +125,10 @@ class AppText {
       light = 'Light',
       dark = 'Dark',
       uiOpacity = 'UI Opacity',
-      themeColorSchemes = 'Theme Color Schemes',
-      backgroundSlideshow = 'Background Slideshow';
+      themeColorScheme = 'Theme Color Scheme',
+      backgroundSlideshow = 'Background Slideshow',
+      addImages = 'Add Images',
+      itemIconSlides = 'Item Icon Slides';
 
   factory AppText.fromJson(Map<String, dynamic> json) => _$AppTextFromJson(json);
   Map<String, dynamic> toJson() => _$AppTextToJson(this);
@@ -107,5 +143,65 @@ class AppText {
       newText = newText.replaceFirst('%p%', param);
     }
     return newText;
+  }
+
+  String categoryTypeName(String name) {
+    int index = defaultCategoryTypes.indexOf(name);
+
+    switch (index) {
+      case 0:
+        return dfCastParts;
+      case 1:
+        return dfLayeringWears;
+      case 2:
+        return dfOthers;
+      default:
+        return name;
+    }
+  }
+
+  String categoryName(String name) {
+    int index = defaultCategoryDirs.indexOf(name);
+
+    switch (index) {
+      case 0:
+        return dfAccessories;
+      case 1:
+        return dfBasewears;
+      case 2:
+        return dfBodyPaints;
+      case 3:
+        return dfCastArmParts;
+      case 4:
+        return dfCastBodyParts;
+      case 5:
+        return dfCastLegParts;
+      case 6:
+        return dfCostumes;
+      case 7:
+        return dfEmotes;
+      case 8:
+        return dfEyes;
+      case 9:
+        return dfFacePaints;
+      case 10:
+        return dfHairs;
+      case 11:
+        return dfInnerwears;
+      case 12:
+        return dfMags;
+      case 13:
+        return dfMisc;
+      case 14:
+        return dfMotions;
+      case 15:
+        return dfOuterwears;
+      case 16:
+        return dfSetwears;
+      case 17:
+        return dfWeapons;
+      default:
+        return name;
+    }
   }
 }

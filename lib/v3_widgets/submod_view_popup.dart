@@ -12,12 +12,12 @@ import 'package:pso2_mod_manager/v3_widgets/vertical_divider.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
-void modViewPopup(context, Item item) {
+void submodViewPopup(context, Item item, Mod mod) {
   showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        Mod? selectedMod = item.mods.first;
+        Mod? selectedMod = mod;
         return StatefulBuilder(builder: (dialogContext, setState) {
           return AlertDialog(
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: const BorderRadius.all(Radius.circular(5))),
@@ -44,14 +44,13 @@ void modViewPopup(context, Item item) {
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                         InfoBox(info: appText.dText(item.mods.length > 1 ? appText.numMods : appText.numMod, item.mods.length.toString())),
-                        InfoBox(info: appText.dText(appText.numCurrentlyApplied, item.getNumOfAppliedMods().toString())),
+                        InfoBox(info: appText.dText(appText.numCurrentlyApplied, mod.getNumOfAppliedSubmods().toString())),
                         const HoriDivider(),
                         Expanded(
                             child: CustomScrollView(physics: const SuperRangeMaintainingScrollPhysics(), slivers: [
                           SuperSliverList.builder(
-                              itemCount: item.mods.length,
+                              itemCount: 1,
                               itemBuilder: (context, modIndex) {
-                                Mod mod = item.mods[modIndex];
                                 return ListTile(
                                   contentPadding: EdgeInsets.zero,
                                   selected: selectedMod == mod ? true : false,

@@ -7,6 +7,7 @@ import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 class AppSettingsLayout extends StatefulWidget {
@@ -94,6 +95,21 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                         )
                       ],
                     ),
+
+                    // Item icon slides
+                    SettingsHeader(icon: Icons.slideshow, text: appText.itemIconSlides),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                          onPressed: () async {
+                            final prefs = await SharedPreferences.getInstance();
+                            itemIconSlides.value ? itemIconSlides.value = false : itemIconSlides.value = true;
+                            prefs.setBool('itemIconSlides', itemIconSlides.value);
+                            setState(() {});
+                          },
+                          child: Text(itemIconSlides.watch(context) ? appText.on : appText.off,
+                              style: TextStyle(color: itemIconSlides.watch(context) ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.labelMedium!.color))),
+                    )
                   ],
                 )))
       ],

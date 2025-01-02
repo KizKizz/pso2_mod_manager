@@ -13,6 +13,10 @@ AppThemeMode appThemeMode = AppThemeMode.dark;
 Signal<int> uiBackgroundColorAlpha = Signal<int>(150);
 Color lightModeSeedColor = lightColorScheme.primary;
 Color darkModeSeedColor = darkColorScheme.primary;
+Signal<bool> hideAppBackgroundSlides = Signal<bool>(false);
+Signal<int> backgroundImageSlideInterval = Signal<int>(10);
+Signal<bool> itemIconSlides = Signal<bool>(false);
+Signal<String> selectedDisplayCategory = Signal<String>('All');
 
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
@@ -45,11 +49,25 @@ Future<void> prefsLoad() async {
   // App Theme Mode
   appThemeMode = AppThemeMode.values.firstWhere((e) => e.value == prefs.getString('appThemeMode'), orElse: () => AppThemeMode.dark);
 
+  // Hide App background slides
+  hideAppBackgroundSlides.value = prefs.getBool('hideAppBackgroundSlides') ?? false;
+
+  // Background image slide interval
+  backgroundImageSlideInterval.value = prefs.getInt('backgroundImageSlideInterval') ?? 10;
+
+  // Item icon slides
+  itemIconSlides.value = prefs.getBool('itemIconSlides') ?? false;
+
+  // Main list filter
+  selectedDisplayCategory.value = prefs.getString('selectedDisplayCategory') ?? 'All';
+
   // Color schemes
   final lightModeSeedColorValue = prefs.getStringList('lightModeSeedColorValue') ??
       [lightColorScheme.primary.r.toString(), lightColorScheme.primary.g.toString(), lightColorScheme.primary.b.toString(), lightColorScheme.primary.a.toString()];
-  lightModeSeedColor = Color.from(red: double.parse(lightModeSeedColorValue[0]), green: double.parse(lightModeSeedColorValue[1]), blue: double.parse(lightModeSeedColorValue[2]), alpha: double.parse(lightModeSeedColorValue[3]));
+  lightModeSeedColor = Color.from(
+      red: double.parse(lightModeSeedColorValue[0]), green: double.parse(lightModeSeedColorValue[1]), blue: double.parse(lightModeSeedColorValue[2]), alpha: double.parse(lightModeSeedColorValue[3]));
   final darkModeSeedColorValue = prefs.getStringList('darkModeSeedColorValue') ??
       [darkColorScheme.primary.r.toString(), darkColorScheme.primary.g.toString(), darkColorScheme.primary.b.toString(), darkColorScheme.primary.a.toString()];
-  darkModeSeedColor = Color.from(red: double.parse(darkModeSeedColorValue[0]), green: double.parse(darkModeSeedColorValue[1]), blue: double.parse(darkModeSeedColorValue[2]), alpha: double.parse(darkModeSeedColorValue[3]));
+  darkModeSeedColor = Color.from(
+      red: double.parse(darkModeSeedColorValue[0]), green: double.parse(darkModeSeedColorValue[1]), blue: double.parse(darkModeSeedColorValue[2]), alpha: double.parse(darkModeSeedColorValue[3]));
 }

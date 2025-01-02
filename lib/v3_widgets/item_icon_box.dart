@@ -29,13 +29,13 @@ class _ItemIconBoxState extends State<ItemIconBox> {
           child: widget.item.icons.isNotEmpty
               ? FlutterCarousel(
                   options: FlutterCarouselOptions(
-                      autoPlay: widget.item.icons.length > 1 ? true : false,
+                      autoPlay: widget.item.icons.length > 1 && itemIconSlides.watch(context) ? true : false,
                       autoPlayInterval: const Duration(seconds: 2),
                       disableCenter: true,
                       viewportFraction: 1.0,
                       height: double.infinity,
                       floatingIndicator: true,
-                      enableInfiniteScroll: widget.item.icons.length > 1 ? true : false,
+                      enableInfiniteScroll: widget.item.icons.length > 1 && itemIconSlides.watch(context) ? true : false,
                       indicatorMargin: 2,
                       slideIndicator: CircularWaveSlideIndicator(
                           slideIndicatorOptions: SlideIndicatorOptions(

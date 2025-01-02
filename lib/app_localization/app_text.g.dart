@@ -7,6 +7,27 @@ part of 'app_text.dart';
 // **************************************************************************
 
 AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
+  ..dfCastParts = json['dfCastParts'] as String
+  ..dfLayeringWears = json['dfLayeringWears'] as String
+  ..dfOthers = json['dfOthers'] as String
+  ..dfAccessories = json['dfAccessories'] as String
+  ..dfBasewears = json['dfBasewears'] as String
+  ..dfBodyPaints = json['dfBodyPaints'] as String
+  ..dfCastArmParts = json['dfCastArmParts'] as String
+  ..dfCastBodyParts = json['dfCastBodyParts'] as String
+  ..dfCastLegParts = json['dfCastLegParts'] as String
+  ..dfCostumes = json['dfCostumes'] as String
+  ..dfEmotes = json['dfEmotes'] as String
+  ..dfEyes = json['dfEyes'] as String
+  ..dfFacePaints = json['dfFacePaints'] as String
+  ..dfHairs = json['dfHairs'] as String
+  ..dfInnerwears = json['dfInnerwears'] as String
+  ..dfMags = json['dfMags'] as String
+  ..dfMisc = json['dfMisc'] as String
+  ..dfMotions = json['dfMotions'] as String
+  ..dfOuterwears = json['dfOuterwears'] as String
+  ..dfSetwears = json['dfSetwears'] as String
+  ..dfWeapons = json['dfWeapons'] as String
   ..ok = json['ok'] as String
   ..cancel = json['cancel'] as String
   ..cont = json['cont'] as String
@@ -22,17 +43,37 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..save = json['save'] as String
   ..exit = json['exit'] as String
   ..settings = json['settings'] as String
+  ..search = json['search'] as String
+  ..returns = json['returns'] as String
+  ..close = json['close'] as String
+  ..reset = json['reset'] as String
+  ..defaults = json['defaults'] as String
+  ..refresh = json['refresh'] as String
+  ..hide = json['hide'] as String
+  ..show = json['show'] as String
+  ..remove = json['remove'] as String
+  ..on = json['on'] as String
+  ..off = json['off'] as String
   ..patchNotes = json['patchNotes'] as String
   ..appUpdate = json['appUpdate'] as String
   ..tryAgain = json['tryAgain'] as String
   ..tryAgainLater = json['tryAgainLater'] as String
   ..modList = json['modList'] as String
+  ..itemList = json['itemList'] as String
   ..modSets = json['modSets'] as String
   ..numMod = json['numMod'] as String
   ..numMods = json['numMods'] as String
-  ..numModsCurrentlyApplied = json['numModsCurrentlyApplied'] as String
+  ..numCurrentlyApplied = json['numCurrentlyApplied'] as String
   ..viewMods = json['viewMods'] as String
   ..profileNum = json['profileNum'] as String
+  ..apply = json['apply'] as String
+  ..restore = json['restore'] as String
+  ..moreOptions = json['moreOptions'] as String
+  ..numVariant = json['numVariant'] as String
+  ..numVariants = json['numVariants'] as String
+  ..intervalNumSecond = json['intervalNumSecond'] as String
+  ..loading = json['loading'] as String
+  ..viewVariants = json['viewVariants'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -50,6 +91,11 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..pso2binDirPath = json['pso2binDirPath'] as String
   ..mainDirPath = json['mainDirPath'] as String
   ..loadingModFiles = json['loadingModFiles'] as String
+  ..selectAMod = json['selectAMod'] as String
+  ..resetToStartingColor = json['resetToStartingColor'] as String
+  ..saveSelectedColorAndReturn = json['saveSelectedColorAndReturn'] as String
+  ..returnWithoutSaving = json['returnWithoutSaving'] as String
+  ..resetToDefaultColor = json['resetToDefaultColor'] as String
   ..failedToFetchRemoteLocaleData =
       json['failedToFetchRemoteLocaleData'] as String
   ..unableToUpdateFile = json['unableToUpdateFile'] as String
@@ -58,9 +104,43 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..unableToGetItemDataVersionDataFromGitHub =
       json['unableToGetItemDataVersionDataFromGitHub'] as String
   ..pso2binDirPathInfo = json['pso2binDirPathInfo'] as String
-  ..mainDirPathInfo = json['mainDirPathInfo'] as String;
+  ..mainDirPathInfo = json['mainDirPathInfo'] as String
+  ..appSettings = json['appSettings'] as String
+  ..uiLanguage = json['uiLanguage'] as String
+  ..itemNameLanguage = json['itemNameLanguage'] as String
+  ..modSettings = json['modSettings'] as String
+  ..others = json['others'] as String
+  ..themeMode = json['themeMode'] as String
+  ..light = json['light'] as String
+  ..dark = json['dark'] as String
+  ..uiOpacity = json['uiOpacity'] as String
+  ..themeColorScheme = json['themeColorScheme'] as String
+  ..backgroundSlideshow = json['backgroundSlideshow'] as String
+  ..addImages = json['addImages'] as String
+  ..itemIconSlides = json['itemIconSlides'] as String;
 
 Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
+      'dfCastParts': instance.dfCastParts,
+      'dfLayeringWears': instance.dfLayeringWears,
+      'dfOthers': instance.dfOthers,
+      'dfAccessories': instance.dfAccessories,
+      'dfBasewears': instance.dfBasewears,
+      'dfBodyPaints': instance.dfBodyPaints,
+      'dfCastArmParts': instance.dfCastArmParts,
+      'dfCastBodyParts': instance.dfCastBodyParts,
+      'dfCastLegParts': instance.dfCastLegParts,
+      'dfCostumes': instance.dfCostumes,
+      'dfEmotes': instance.dfEmotes,
+      'dfEyes': instance.dfEyes,
+      'dfFacePaints': instance.dfFacePaints,
+      'dfHairs': instance.dfHairs,
+      'dfInnerwears': instance.dfInnerwears,
+      'dfMags': instance.dfMags,
+      'dfMisc': instance.dfMisc,
+      'dfMotions': instance.dfMotions,
+      'dfOuterwears': instance.dfOuterwears,
+      'dfSetwears': instance.dfSetwears,
+      'dfWeapons': instance.dfWeapons,
       'ok': instance.ok,
       'cancel': instance.cancel,
       'cont': instance.cont,
@@ -76,17 +156,37 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'save': instance.save,
       'exit': instance.exit,
       'settings': instance.settings,
+      'search': instance.search,
+      'returns': instance.returns,
+      'close': instance.close,
+      'reset': instance.reset,
+      'defaults': instance.defaults,
+      'refresh': instance.refresh,
+      'hide': instance.hide,
+      'show': instance.show,
+      'remove': instance.remove,
+      'on': instance.on,
+      'off': instance.off,
       'patchNotes': instance.patchNotes,
       'appUpdate': instance.appUpdate,
       'tryAgain': instance.tryAgain,
       'tryAgainLater': instance.tryAgainLater,
       'modList': instance.modList,
+      'itemList': instance.itemList,
       'modSets': instance.modSets,
       'numMod': instance.numMod,
       'numMods': instance.numMods,
-      'numModsCurrentlyApplied': instance.numModsCurrentlyApplied,
+      'numCurrentlyApplied': instance.numCurrentlyApplied,
       'viewMods': instance.viewMods,
       'profileNum': instance.profileNum,
+      'apply': instance.apply,
+      'restore': instance.restore,
+      'moreOptions': instance.moreOptions,
+      'numVariant': instance.numVariant,
+      'numVariants': instance.numVariants,
+      'intervalNumSecond': instance.intervalNumSecond,
+      'loading': instance.loading,
+      'viewVariants': instance.viewVariants,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,
@@ -103,6 +203,11 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'pso2binDirPath': instance.pso2binDirPath,
       'mainDirPath': instance.mainDirPath,
       'loadingModFiles': instance.loadingModFiles,
+      'selectAMod': instance.selectAMod,
+      'resetToStartingColor': instance.resetToStartingColor,
+      'saveSelectedColorAndReturn': instance.saveSelectedColorAndReturn,
+      'returnWithoutSaving': instance.returnWithoutSaving,
+      'resetToDefaultColor': instance.resetToDefaultColor,
       'failedToFetchRemoteLocaleData': instance.failedToFetchRemoteLocaleData,
       'unableToUpdateFile': instance.unableToUpdateFile,
       'unableToGetAppVersionDataFromGitHub':
@@ -111,4 +216,17 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
           instance.unableToGetItemDataVersionDataFromGitHub,
       'pso2binDirPathInfo': instance.pso2binDirPathInfo,
       'mainDirPathInfo': instance.mainDirPathInfo,
+      'appSettings': instance.appSettings,
+      'uiLanguage': instance.uiLanguage,
+      'itemNameLanguage': instance.itemNameLanguage,
+      'modSettings': instance.modSettings,
+      'others': instance.others,
+      'themeMode': instance.themeMode,
+      'light': instance.light,
+      'dark': instance.dark,
+      'uiOpacity': instance.uiOpacity,
+      'themeColorScheme': instance.themeColorScheme,
+      'backgroundSlideshow': instance.backgroundSlideshow,
+      'addImages': instance.addImages,
+      'itemIconSlides': instance.itemIconSlides,
     };

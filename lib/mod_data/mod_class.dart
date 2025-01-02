@@ -96,6 +96,10 @@ class Mod with ChangeNotifier {
     }
   }
 
+  int getNumOfAppliedSubmods() {
+    return submods.where((e) => e.applyStatus).length;
+  }
+
   factory Mod.fromJson(Map<String, dynamic> json) => _$ModFromJson(json);
   Map<String, dynamic> toJson() => _$ModToJson(this);
 }

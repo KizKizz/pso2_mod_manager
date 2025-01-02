@@ -3,7 +3,7 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
-import 'package:pso2_mod_manager/v3_widgets/cate_item_grid_layout.dart';
+import 'package:pso2_mod_manager/v3_widgets/cate_mod_grid_layout.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
@@ -118,7 +118,7 @@ class _MainModGridState extends State<MainModGrid> {
               physics: const SuperRangeMaintainingScrollPhysics(),
               slivers: [
                 for (int i = 0; i < categories.length; i++)
-                  CateItemGridLayout(
+                  CateModGridLayout(
                     itemCate: categories[i],
                     searchString: searchTextController.value.text,
                   )

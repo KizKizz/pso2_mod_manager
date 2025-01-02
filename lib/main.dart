@@ -86,6 +86,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with WindowListener {
   @override
   void initState() {
+    backgroundImageFiles.value = backgroundImageFetch();
     windowManager.addListener(this);
     super.initState();
   }
@@ -170,9 +171,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         body: Stack(
           children: [
             Visibility(
-                visible: Directory(backgroundDirPath).existsSync() &&
-                    Directory(backgroundDirPath).listSync(recursive: true).whereType<File>().where((e) => p.extension(e.path) == '.png' || p.extension(e.path) == '.jpg').isNotEmpty,
-                child: BackgroundSlideshow(dirPath: backgroundDirPath)),
+                visible: backgroundImageFiles.watch(context).isNotEmpty && !hideAppBackgroundSlides.watch(context),
+                child: const BackgroundSlideshow(isMini: false,)),
             curPage.watch(context)
           ],
         ));
