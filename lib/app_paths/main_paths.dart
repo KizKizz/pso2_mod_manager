@@ -9,6 +9,7 @@ String backupDirPath = '';
 String mainModListJsonPath = '';
 String mainModSetListJsonPath = '';
 String backgroundDirPath = '$mainDataDirPath${p.separator}BackgroundImages';
+String addModsTempDirPath = '$mainDataDirPath${p.separator}AddModsTemp';
 
 Future<(bool, bool)> appMainPathsCheck() async {
   bool pso2bin = true;

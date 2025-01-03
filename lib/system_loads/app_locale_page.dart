@@ -20,7 +20,7 @@ class _LocalePageState extends State<LocalePage> {
   Widget build(BuildContext context) {
     AppLocale().localeInit();
     if (firstBootUp || !localeSettingsFile.existsSync()) {
-      return const Center(child: CardOverlay(child: LanguageSelector()));
+      return const Center(child: CardOverlay(paddingValue: 15, child: LanguageSelector()));
     } else {
       return LoadingFutureBuilder(loadingText: appText.loadingUILanguage, future: AppLocale().localeGet());
     }

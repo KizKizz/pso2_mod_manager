@@ -54,7 +54,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
             mainAxisSize: MainAxisSize.min,
             spacing: 5,
             children: [
-              SubmodImageBox(filePaths: widget.submod.previewImages),
+              SubmodImageBox(filePaths: widget.submod.previewImages, isNew: widget.submod.isNew),
               Text(widget.submod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
               Column(
                 spacing: 5,

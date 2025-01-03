@@ -41,6 +41,7 @@ class _DataUpdatePageState extends State<DataUpdatePage> {
           if (remoteVersion.isNotEmpty && int.parse(remoteVersion) > int.parse(curItemDataVersion.entries.firstWhere((e) => e.key == 'version', orElse: () => const MapEntry('version', '0')).value)) {
             return Center(
                 child: CardOverlay(
+                  paddingValue: 15,
                     child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

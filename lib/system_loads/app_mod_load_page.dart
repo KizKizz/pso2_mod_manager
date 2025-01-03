@@ -28,6 +28,7 @@ class _AppModLoadPageState extends State<AppModLoadPage> {
               child: ConstrainedBox(
             constraints: const BoxConstraints(minWidth: 350),
             child: CardOverlay(
+              paddingValue: 15,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,

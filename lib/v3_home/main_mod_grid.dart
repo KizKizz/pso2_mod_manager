@@ -4,6 +4,7 @@ import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/cate_mod_grid_layout.dart';
+import 'package:pso2_mod_manager/v3_widgets/category_select_buttons.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
@@ -17,6 +18,7 @@ class MainModGrid extends StatefulWidget {
 
 class _MainModGridState extends State<MainModGrid> {
   double fadeInOpacity = 0;
+  ScrollController controller = ScrollController();
 
   @override
   void initState() {
@@ -57,13 +59,26 @@ class _MainModGridState extends State<MainModGrid> {
       }
     }
 
+    List<Category> displayingCategories = [];
+    if (selectedDisplayCategory.watch(context) == 'All') {
+      displayingCategories = categories;
+    } else {
+      displayingCategories = categories.where((e) => e.categoryName == selectedDisplayCategory.watch(context)).toList();
+    }
+
     return AnimatedOpacity(
       opacity: fadeInOpacity,
       duration: const Duration(milliseconds: 500),
       child: Column(
         spacing: 5,
         children: [
-          SizedBox(
+          Row(
+            spacing: 5,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 4,
+                child: SizedBox(
             height: 40,
             child: Stack(alignment: AlignmentDirectional.centerEnd, children: [
               SearchField<String>(
@@ -111,15 +126,24 @@ class _MainModGridState extends State<MainModGrid> {
               )
             ]),
           ),
+              ),
+              Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 1),
+                    child: CategorySelectButtons(categoryNames: categories.map((e) => e.categoryName).toList(), scrollController: controller),
+                  )),
+            ],
+          ),
           Expanded(
             child: CustomScrollView(
-              primary: true,
+              controller: controller,
               cacheExtent: 10000,
               physics: const SuperRangeMaintainingScrollPhysics(),
               slivers: [
-                for (int i = 0; i < categories.length; i++)
+                for (int i = 0; i < displayingCategories.length; i++)
                   CateModGridLayout(
-                    itemCate: categories[i],
+                    itemCate: displayingCategories[i],
                     searchString: searchTextController.value.text,
                   )
               ],

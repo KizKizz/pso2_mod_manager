@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
-import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/settings/color_picker.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
@@ -8,7 +7,6 @@ import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:pso2_mod_manager/v3_widgets/background_slideshow.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 class OtherSettingsLayout extends StatefulWidget {

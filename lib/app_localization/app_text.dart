@@ -59,7 +59,11 @@ class AppText {
       remove = 'Remove',
       on = 'On',
       off = 'Off',
-      view = 'View';
+      view = 'View',
+      xnew = 'New',
+      file = 'File',
+      folder = 'Folder',
+      clear = 'Clear';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -81,7 +85,12 @@ class AppText {
       numVariants = '%p% Variants',
       intervalNumSecond = 'Interval: %p%s',
       loading = 'Loading...',
-      viewVariants = 'View Variants';
+      viewVariants = 'View Variants',
+      addMods = 'Add Mods',
+      addFolders = 'Add Folders',
+      addFiles = 'Add Files',
+      processFiles = 'Process Files',
+      ignoreList = 'Ignore List';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -103,13 +112,17 @@ class AppText {
       resetToStartingColor = 'Reset to Starting Color',
       saveSelectedColorAndReturn = 'Save Selected Color & Return',
       returnWithoutSaving = 'Return Without Saving',
-      resetToDefaultColor = 'Reset To Default Theme Color';
+      resetToDefaultColor = 'Reset To Default Theme Color',
+      dragdropBoxMessage = 'Drag and drop files or folders here',
+      dragdropBoxMessage2 = 'Only .zip, .rar, .7z, and ice files are supported';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',
       unableToUpdateFile = 'Unable to update %p%',
       unableToGetAppVersionDataFromGitHub = 'Unable to get app version data from GitHub',
-      unableToGetItemDataVersionDataFromGitHub = 'Unable to get item data version data from GitHub';
+      unableToGetItemDataVersionDataFromGitHub = 'Unable to get item data version data from GitHub',
+      fileIsNotSupported = '"%p%" is not supported',
+      fileAlreadyOnTheList = '"%p%" already on the list';
 
   // Infos
   String pso2binDirPathInfo = 'PSO2 game data folder, this folder located inside the game installation directory',

@@ -72,68 +72,68 @@ class _MainItemGridState extends State<MainItemGrid> {
       child: Column(
         spacing: 5,
         children: [
-          SizedBox(
-            child: Row(
-              spacing: 5,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  flex: 4,
-                  child: SizedBox(
-                    height: 40,
-                    child: Stack(alignment: AlignmentDirectional.centerEnd, children: [
-                      SearchField<String>(
-                        searchInputDecoration: SearchInputDecoration(
-                            filled: true,
-                            fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-                            isDense: true,
-                            contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 30),
-                            cursorHeight: 15,
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
-                            cursorColor: Theme.of(context).colorScheme.inverseSurface),
-                        suggestions: filteredStrings
-                            .map(
-                              (e) => SearchFieldListItem<String>(
-                                e,
-                                item: e,
-                                child: Padding(padding: const EdgeInsets.all(8.0), child: Text(e)),
-                              ),
-                            )
-                            .toList(),
-                        hint: appText.search,
-                        controller: searchTextController,
-                        onSuggestionTap: (p0) {
-                          searchTextController.text = p0.searchKey;
-                          setState(() {});
-                        },
-                        onSearchTextChanged: (p0) {
-                          setState(() {});
-                          return null;
-                        },
+          Row(
+            spacing: 5,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 4,
+                child: SizedBox(
+                  height: 40,
+                  child: Stack(alignment: AlignmentDirectional.centerEnd, children: [
+                    SearchField<String>(
+                      searchInputDecoration: SearchInputDecoration(
+                          filled: true,
+                          fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                          isDense: true,
+                          contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 30),
+                          cursorHeight: 15,
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
+                          cursorColor: Theme.of(context).colorScheme.inverseSurface),
+                      suggestions: filteredStrings
+                          .map(
+                            (e) => SearchFieldListItem<String>(
+                              e,
+                              item: e,
+                              child: Padding(padding: const EdgeInsets.all(8.0), child: Text(e)),
+                            ),
+                          )
+                          .toList(),
+                      hint: appText.search,
+                      controller: searchTextController,
+                      onSuggestionTap: (p0) {
+                        searchTextController.text = p0.searchKey;
+                        setState(() {});
+                      },
+                      onSearchTextChanged: (p0) {
+                        setState(() {});
+                        return null;
+                      },
+                    ),
+                    Visibility(
+                      visible: searchTextController.value.text.isNotEmpty,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 4),
+                        child: ElevatedButton(
+                            onPressed: searchTextController.value.text.isNotEmpty
+                                ? () {
+                                    searchTextController.clear();
+                                    setState(() {});
+                                  }
+                                : null,
+                            child: const Icon(Icons.close)),
                       ),
-                      Visibility(
-                        visible: searchTextController.value.text.isNotEmpty,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 4),
-                          child: ElevatedButton(
-                              onPressed: searchTextController.value.text.isNotEmpty
-                                  ? () {
-                                      searchTextController.clear();
-                                      setState(() {});
-                                    }
-                                  : null,
-                              child: const Icon(Icons.close)),
-                        ),
-                      )
-                    ]),
-                  ),
+                    )
+                  ]),
                 ),
-                Expanded(flex: 1, child: Padding(
-                  padding: const EdgeInsets.only(top: 1),
-                  child: CategorySelectButtons(categoryNames: categories.map((e) => e.categoryName).toList(), scrollController: controller),
-                )),
-              ],
-            ),
+              ),
+              Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 1),
+                    child: CategorySelectButtons(categoryNames: categories.map((e) => e.categoryName).toList(), scrollController: controller),
+                  )),
+            ],
           ),
           Expanded(
             child: CustomScrollView(

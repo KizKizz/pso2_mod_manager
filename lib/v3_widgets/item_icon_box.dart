@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
+import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:rotated_corner_decoration/rotated_corner_decoration.dart';
 import 'package:signals/signals_flutter.dart';
 
 class ItemIconBox extends StatefulWidget {
@@ -18,7 +20,16 @@ class ItemIconBox extends StatefulWidget {
 class _ItemIconBoxState extends State<ItemIconBox> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
+      foregroundDecoration: widget.item.isNew
+          ? RotatedCornerDecoration.withColor(
+              color: Colors.redAccent.withAlpha(220),
+              badgeSize: const Size(40, 55),
+              textSpan: TextSpan(
+                text: appText.xnew,
+                style: Theme.of(context).textTheme.labelLarge,
+              ))
+          : null,
       width: 140,
       height: 140,
       child: Card(
@@ -53,7 +64,7 @@ class _ItemIconBoxState extends State<ItemIconBox> {
                 )
               : Image.asset(
                   'assets/img/placeholdersquare.png',
-                  filterQuality: FilterQuality.none,
+                  filterQuality: FilterQuality.high,
                   fit: BoxFit.cover,
                 )),
     );

@@ -12,6 +12,7 @@ class FutureBuilderLoading extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: CardOverlay(
+        paddingValue: 15,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -45,6 +46,7 @@ class FutureBuilderError extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: CardOverlay(
+        paddingValue: 15,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

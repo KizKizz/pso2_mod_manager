@@ -43,6 +43,7 @@ class _AppUpdatePageState extends State<AppUpdatePage> {
           if (remoteVersion.isNotEmpty && remoteVersion != curAppVersion && newAppVersionCheck(remoteVersion)) {
             return Center(
                 child: CardOverlay(
+                  paddingValue: 15,
                     child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

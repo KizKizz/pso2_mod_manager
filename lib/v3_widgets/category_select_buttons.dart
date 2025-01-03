@@ -20,6 +20,7 @@ class _CategorySelectButtonsState extends State<CategorySelectButtons> {
   Widget build(BuildContext context) {
     if (!widget.categoryNames.contains('All')) widget.categoryNames.insert(0, 'All');
     return SizedBox(
+      height: 40,
       child: PromptedChoice<String>.single(
         title: appText.view,
         value: selectedDisplayCategory.value,
@@ -46,21 +47,33 @@ class _CategorySelectButtonsState extends State<CategorySelectButtons> {
           );
         },
         promptDelegate: ChoicePrompt.delegateBottomSheet(),
-        anchorBuilder: (state, openModal) => ListTileTheme(
+        anchorBuilder: (state, openModal) => ChoiceAnchorLayout(state: state, openModal: openModal)
+      ),
+    );
+  }
+}
+
+class ChoiceAnchorLayout extends StatelessWidget {
+  const ChoiceAnchorLayout({super.key, required this.state, required this.openModal});
+
+  final ChoiceController<String> state;
+  final Function() openModal;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTileTheme(
           data: ListTileThemeData(
-            shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(50))),
-            tileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-            contentPadding: const EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 2),
-            titleTextStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-            minVerticalPadding: 0,
-            leadingAndTrailingTextStyle: const TextStyle(fontSize: 15)
-          ),
+              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(50))),
+              tileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+              contentPadding: const EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 2),
+              titleTextStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              minTileHeight: 35,
+              minVerticalPadding: 0,
+              leadingAndTrailingTextStyle: const TextStyle(fontSize: 15)),
           child: ChoiceAnchor.create(
             valueTruncate: 2,
             inline: true,
           )(state, openModal),
-        ),
-      ),
-    );
+        );
   }
 }

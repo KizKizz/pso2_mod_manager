@@ -230,6 +230,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.10"
+  desktop_drop:
+    dependency: "direct main"
+    description:
+      name: desktop_drop
+      sha256: "03abf1c0443afdd1d65cf8fa589a2f01c67a11da56bbb06f6ea1de79d5628e94"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.0"
+  elegant_notification:
+    dependency: "direct main"
+    description:
+      name: elegant_notification
+      sha256: "4439f045ba21c931316bc1dce731f59d59e0ec4167971639e040ad7e5d96ba9f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.1"
   fake_async:
     dependency: transitive
     description:
@@ -805,6 +821,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.0"
+  rotated_corner_decoration:
+    dependency: "direct main"
+    description:
+      name: rotated_corner_decoration
+      sha256: "4ad15b18e0c2dacbfb1061370ab48c2baec62b02ec8ecdf6cdf20fbcc6de7ad6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0+1"
   safe_local_storage:
     dependency: transitive
     description:

@@ -3,9 +3,10 @@ import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:signals/signals_flutter.dart';
 
 class CardOverlay extends StatefulWidget {
-  const CardOverlay({super.key, required this.child});
+  const CardOverlay({super.key, required this.paddingValue, required this.child});
 
   final Widget child;
+  final double paddingValue;
 
   @override
   State<CardOverlay> createState() => _CardOverlayState();
@@ -34,7 +35,7 @@ class _CardOverlayState extends State<CardOverlay> {
           margin: EdgeInsets.zero,
           elevation: 5,
           child: Padding(
-            padding: const EdgeInsets.all(15),
+            padding: EdgeInsets.all(widget.paddingValue),
             child: widget.child,
           ),
         ));

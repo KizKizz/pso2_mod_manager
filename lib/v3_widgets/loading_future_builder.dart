@@ -23,6 +23,7 @@ class _LoadingFutureBuilderState extends State<LoadingFutureBuilder> {
         if (snapshot.connectionState != ConnectionState.done) {
           return Center(
             child: CardOverlay(
+              paddingValue: 15,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -46,6 +47,7 @@ class _LoadingFutureBuilderState extends State<LoadingFutureBuilder> {
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
           return Center(
             child: CardOverlay(
+              paddingValue: 15,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,

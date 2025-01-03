@@ -84,7 +84,7 @@ class _ModCardLayoutState extends State<ModCardLayout> {
             mainAxisSize: MainAxisSize.min,
             spacing: 5,
             children: [
-              SubmodImageBox(filePaths: widget.mod.previewImages),
+              SubmodImageBox(filePaths: widget.mod.previewImages, isNew: widget.mod.isNew),
               Text(widget.mod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
               Column(
                 spacing: 5,

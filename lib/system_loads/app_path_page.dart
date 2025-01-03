@@ -50,6 +50,7 @@ class _AppPathPageState extends State<AppPathPage> {
           if (!pso2bin || !mainDir) {
             return Center(
                 child: CardOverlay(
+                  paddingValue: 15,
                     child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
