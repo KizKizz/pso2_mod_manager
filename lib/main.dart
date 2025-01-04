@@ -32,6 +32,7 @@ Future<void> main(List<String> args) async {
   curAppVersion = packageInfo.version;
 
   await prefsLoad();
+  await AppLocale().localeInit();
 
   WindowOptions windowOptions = WindowOptions(
       size: Size(prefs.getDouble('windowWidth') ?? 1280, prefs.getDouble('windowHeight') ?? 720),

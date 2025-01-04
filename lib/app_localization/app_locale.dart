@@ -41,7 +41,8 @@ class AppLocale {
   List<AppLocale> loadLocales() {
     List<AppLocale> localeList = [];
     if (localeSettingsFile.existsSync()) {
-      for (var locale in jsonDecode(localeSettingsFile.readAsStringSync())) {
+      var data = jsonDecode(localeSettingsFile.readAsStringSync());
+      for (var locale in data) {
         final appLocale = AppLocale.fromJson(locale);
         if (File(appLocale.translationFilePath).existsSync()) localeList.add(appLocale);
       }
@@ -53,7 +54,7 @@ class AppLocale {
   Future<void> localeInit() async {
     List<AppLocale> localLocales = [];
     if (localeSettingsFile.existsSync()) {
-      var jsonData = jsonDecode(localeSettingsFile.readAsStringSync());
+      var jsonData = jsonDecode(await localeSettingsFile.readAsString());
       for (var data in jsonData) {
         AppLocale appLocale = AppLocale.fromJson(data);
         if (File(appLocale.translationFilePath).existsSync()) {
@@ -71,14 +72,14 @@ class AppLocale {
           await File(localLocales.last.translationFilePath).writeAsString(encoder.convert(AppText()));
         }
       }
-    }
 
-    if (localLocales.isEmpty || localLocales.indexWhere((e) => e.language == 'EN') == -1) {
-      AppLocale newLocale = AppLocale().createLocale('EN', 1, true);
-      const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-      await File(newLocale.translationFilePath).writeAsString(encoder.convert(AppText()));
-      localLocales.add(newLocale);
-      appText = AppText.fromJson(jsonDecode(File(newLocale.translationFilePath).readAsStringSync()));
+      if (localLocales.isEmpty || localLocales.indexWhere((e) => e.language == 'EN') == -1) {
+        AppLocale newLocale = AppLocale().createLocale('EN', 1, true);
+        const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+        await File(newLocale.translationFilePath).writeAsString(encoder.convert(AppText()));
+        localLocales.add(newLocale);
+        appText = AppText.fromJson(jsonDecode(File(newLocale.translationFilePath).readAsStringSync()));
+      }
     }
 
     saveSettings(localLocales);
@@ -93,6 +94,8 @@ class AppLocale {
       for (var locale in jsonDecode(response.body)) {
         remoteLocales.add(AppLocale.fromJson(locale));
       }
+      // Refresh translation file paths
+
       // Update local from remote
       for (var locale in locales) {
         int remoteLocaleIndex = remoteLocales.indexWhere((e) => e.language == locale.language);
@@ -120,6 +123,27 @@ class AppLocale {
     } else {
       throw Exception(appText.failedToFetchRemoteLocaleData);
     }
+
+    // Switch to default if none active
+    if (locales.indexWhere((e) => e.isActive) == -1) {
+      int defaultLocaleIndex = locales.indexWhere((e) => e.language == 'EN');
+      if (defaultLocaleIndex != -1) {
+        locales[defaultLocaleIndex].isActive = true;
+        appText = AppText.fromJson(jsonDecode(File(locales[defaultLocaleIndex].translationFilePath).readAsStringSync()));
+      } else {
+        AppLocale newLocale = AppLocale().createLocale('EN', 1, true);
+        const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+        await File(newLocale.translationFilePath).writeAsString(encoder.convert(AppText()));
+        locales.add(newLocale);
+        appText = AppText.fromJson(jsonDecode(File(newLocale.translationFilePath).readAsStringSync()));
+      }
+    }
+
+    saveSettings(locales);
+  }
+
+  Future<void> offlineLocaleGet() async {
+    List<AppLocale> locales = loadLocales();
 
     // Switch to default if none active
     if (locales.indexWhere((e) => e.isActive) == -1) {

@@ -25,37 +25,42 @@ class _AppModLoadPageState extends State<AppModLoadPage> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return Center(
-              child: ConstrainedBox(
-            constraints: const BoxConstraints(minWidth: 350),
-            child: CardOverlay(
-              paddingValue: 15,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  LoadingAnimationWidget.staggeredDotsWave(
-                    color: Theme.of(context).colorScheme.primary,
-                    size: 100,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Text(
-                      appText.loadingModFiles,
-                      style: Theme.of(context).textTheme.bodyLarge,
+            spacing: 5,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CardOverlay(
+                paddingValue: 15,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    LoadingAnimationWidget.staggeredDotsWave(
+                      color: Theme.of(context).colorScheme.primary,
+                      size: 100,
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Text(
+                        appText.loadingModFiles,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              ConstrainedBox(
+                  constraints: const BoxConstraints(minWidth: 350),
+                  child: CardOverlay(
+                    paddingValue: 15,
                     child: Text(
                       modLoadingStatus.watch(context),
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
-                  )
-                ],
-              ),
-            ),
+                  ))
+            ],
           ));
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
           return FutureBuilderError(loadingText: appText.loadingModFiles, snapshotError: snapshot.error.toString());

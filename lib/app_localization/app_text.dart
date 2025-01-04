@@ -94,7 +94,9 @@ class AppText {
       processFiles = 'Process Files',
       ignoreList = 'Ignore List',
       archives = 'Archives',
-      iceFiles = 'Ice Files';
+      iceFiles = 'Ice Files',
+      step1 = 'Step 1',
+      step2 = 'Step 2';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -118,7 +120,12 @@ class AppText {
       returnWithoutSaving = 'Return Without Saving',
       resetToDefaultColor = 'Reset To Default Theme Color',
       dragdropBoxMessage = 'Drag and drop files or folders here',
-      dragdropBoxMessage2 = 'Only .zip, .rar, .7z, and ice files are supported';
+      dragdropBoxMessage2 = 'Only .zip, .rar, .7z, and ice files are supported',
+      checkingGitHubAccess = 'Checking GitHub Access',
+      accessToGitHubIsLimited = 'Access to GitHub is limited',
+      itemDataManualDownloadMessage = 'Please download Item Data directly from the provided link, then browse its location\nSkip if you already have the latest Item Data',
+      downloadItemData = 'Download Item Data',
+      browseDownloadedItemDataLocation = 'Browse Downloaded Item Data Location';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',

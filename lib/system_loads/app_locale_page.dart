@@ -3,6 +3,7 @@ import 'package:pso2_mod_manager/app_localization/app_locale.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_localization/item_locale.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/loading_future_builder.dart';
@@ -18,11 +19,10 @@ class LocalePage extends StatefulWidget {
 class _LocalePageState extends State<LocalePage> {
   @override
   Widget build(BuildContext context) {
-    AppLocale().localeInit();
     if (firstBootUp || !localeSettingsFile.existsSync()) {
       return const Center(child: CardOverlay(paddingValue: 15, child: LanguageSelector()));
     } else {
-      return LoadingFutureBuilder(loadingText: appText.loadingUILanguage, future: AppLocale().localeGet());
+      return LoadingFutureBuilder(loadingText: appText.loadingUILanguage, future: offlineMode ? AppLocale().offlineLocaleGet() : AppLocale().localeGet());
     }
   }
 }
