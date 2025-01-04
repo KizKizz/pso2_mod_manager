@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/mod_add/drag_drop_box_layout.dart';
 import 'package:pso2_mod_manager/mod_add/mod_add_buttons.dart';
 
-class AddMods extends StatefulWidget {
-  const AddMods({super.key});
+class ModAdd extends StatefulWidget {
+  const ModAdd({super.key});
 
   @override
-  State<AddMods> createState() => _AddModsState();
+  State<ModAdd> createState() => _ModAddState();
 }
 
-class _AddModsState extends State<AddMods> {
+class _ModAddState extends State<ModAdd> {
   double fadeInOpacity = 0;
   List<String> dragDropSupportedExts = ['.7z', '.zip', '.rar'];
 

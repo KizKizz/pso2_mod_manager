@@ -11,6 +11,9 @@ String mainModSetListJsonPath = '';
 String backgroundDirPath = '$mainDataDirPath${p.separator}BackgroundImages';
 String modAddTempDirPath = '$mainDataDirPath${p.separator}AddTemp';
 
+// External programs
+String sevenZipExePath = '${Directory.current.path}${p.separator}7zip-x64${p.separator}7z.exe';
+
 Future<(bool, bool)> appMainPathsCheck() async {
   bool pso2bin = true;
   bool mainDir = true;

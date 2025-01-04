@@ -125,7 +125,8 @@ class AppText {
       accessToGitHubIsLimited = 'Access to GitHub is limited',
       itemDataManualDownloadMessage = 'Please download Item Data directly from the provided link, then browse its location\nSkip if you already have the latest Item Data',
       downloadItemData = 'Download Item Data',
-      browseDownloadedItemDataLocation = 'Browse Downloaded Item Data Location';
+      browseDownloadedItemDataLocation = 'Browse Downloaded Item Data Location',
+      loadingItemData = 'Loading Item Data';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',

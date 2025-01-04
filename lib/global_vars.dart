@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_data/category_type_class.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -32,3 +33,4 @@ List<String> defaultCategoryDirs = [
 TextEditingController searchTextController = TextEditingController();
 Signal<List<File>> backgroundImageFiles = Signal([]);
 Signal<List<String>> modAddDragDropPaths = Signal([]);
+List<ItemData> pItemData = [];

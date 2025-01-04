@@ -4,10 +4,11 @@ import 'package:pso2_mod_manager/system_loads/app_locale_page.dart';
 import 'package:pso2_mod_manager/system_loads/app_mod_load_page.dart';
 import 'package:pso2_mod_manager/system_loads/app_path_page.dart';
 import 'package:pso2_mod_manager/system_loads/app_update_page.dart';
-import 'package:pso2_mod_manager/system_loads/data_update_page.dart';
+import 'package:pso2_mod_manager/system_loads/player_data_load_page.dart';
+import 'package:pso2_mod_manager/system_loads/player_data_update_page.dart';
 import 'package:pso2_mod_manager/v3_home/homepage.dart';
 import 'package:signals/signals_flutter.dart';
 
 Signal<Widget> curPage = Signal(appPages[pageIndex]);
 int pageIndex = 0;
-final List<Widget> appPages = [const AppGitHubAccessPage(), const LocalePage(), const AppUpdatePage(), const DataUpdatePage(), const AppPathPage(), const AppModLoadPage(), const Homepage()];
+final List<Widget> appPages = [const AppGitHubAccessPage(), const LocalePage(), const AppUpdatePage(), const DataUpdatePage(), const PlayerDataLoadPage(), const AppPathPage(), const AppModLoadPage(), const Homepage()];

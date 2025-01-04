@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 
 const String itemDataGitHubVersionLink = 'https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/ref_sheets_version.json';
 
@@ -38,4 +39,16 @@ void itemDataInit() {
   }
 }
 
+Future<List<ItemData>> loadItemData() async {
+  List<ItemData> itemDataList = [];
+  File playerItemDataFile = File('${Directory.current.path}${p.separator}itemData${p.separator}playerItemData.json');
 
+  if (playerItemDataFile.existsSync()) {
+    var data = jsonDecode(await playerItemDataFile.readAsString());
+    for (var locale in data) {
+      itemDataList.add(ItemData.fromJson(locale));
+    }
+  }
+
+  return itemDataList;
+}

@@ -18,6 +18,9 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
   List<CategoryType> cateTypes = [];
   // bool isEmptyCatesHide = false;
 
+  // Load item data
+  // gItemData = await loadItemData();
+
   //Load list from json
   String modSettingsFromJson = await File(mainModListJsonPath).readAsString();
   if (modSettingsFromJson.isNotEmpty) {

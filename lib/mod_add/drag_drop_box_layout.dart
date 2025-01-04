@@ -10,6 +10,8 @@ import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:path/path.dart' as p;
 
+Signal<bool> isModDragDropListEmpty = Signal(true);
+
 class DragDropBoxLayout extends StatefulWidget {
   const DragDropBoxLayout({super.key, required this.dragDropFileTypes});
 
@@ -22,6 +24,8 @@ class DragDropBoxLayout extends StatefulWidget {
 class _DragDropBoxLayoutState extends State<DragDropBoxLayout> {
   @override
   Widget build(BuildContext context) {
+    modAddDragDropPaths.value.isEmpty ? isModDragDropListEmpty.value = true : isModDragDropListEmpty.value = false;
+    
     return DropTarget(
         onDragDone: (detail) {
           setState(() {

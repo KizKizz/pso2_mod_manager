@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
-import 'package:pso2_mod_manager/v3_home/add_mods.dart';
+import 'package:pso2_mod_manager/v3_home/mod_add.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_grid.dart';
 import 'package:pso2_mod_manager/v3_home/main_mod_grid.dart';
 import 'package:pso2_mod_manager/v3_home/settings.dart';
@@ -17,7 +17,7 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   SidebarXController sidebarXController = SidebarXController(selectedIndex: 0, extended: false);
-  List<Widget> homepageWidgets = [const MainItemGrid(), const MainModGrid(), const AddMods(), const Settings()];
+  List<Widget> homepageWidgets = [const MainItemGrid(), const MainModGrid(), const ModAdd(), const Settings()];
 
   @override
   Widget build(BuildContext context) {

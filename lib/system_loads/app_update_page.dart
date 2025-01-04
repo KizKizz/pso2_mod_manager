@@ -8,7 +8,7 @@ import 'package:pso2_mod_manager/app_pages_index.dart';
 import 'package:pso2_mod_manager/app_version/app_version_check.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
-import 'package:pso2_mod_manager/system_loads/data_update_page.dart';
+import 'package:pso2_mod_manager/system_loads/player_data_update_page.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
 import 'package:shared_preferences/shared_preferences.dart';
