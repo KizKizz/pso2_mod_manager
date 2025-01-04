@@ -5,6 +5,7 @@ import 'package:pso2_mod_manager/mod_data/category_type_class.dart';
 import 'package:signals/signals_flutter.dart';
 
 String curAppVersion = '';
+bool offlineMode = false;
 List<CategoryType> masterModList = [];
 List<String> defaultCategoryTypes = ['Cast Parts', 'Layering Wears', 'Others'];
 List<String> defaultCategoryDirs = [

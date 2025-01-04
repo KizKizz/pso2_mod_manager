@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 
 part 'app_locale.g.dart';
 
@@ -85,7 +86,6 @@ class AppLocale {
 
   Future<void> localeGet() async {
     List<AppLocale> locales = loadLocales();
-
     // Sync with remote
     final response = await http.get(Uri.parse(localeSettingsGitHubLink));
     if (response.statusCode == 200) {

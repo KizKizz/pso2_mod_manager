@@ -63,7 +63,9 @@ class AppText {
       xnew = 'New',
       file = 'File',
       folder = 'Folder',
-      clear = 'Clear';
+      clear = 'Clear',
+      process = 'Process',
+      add = 'Add';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -90,7 +92,9 @@ class AppText {
       addFolders = 'Add Folders',
       addFiles = 'Add Files',
       processFiles = 'Process Files',
-      ignoreList = 'Ignore List';
+      ignoreList = 'Ignore List',
+      archives = 'Archives',
+      iceFiles = 'Ice Files';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',

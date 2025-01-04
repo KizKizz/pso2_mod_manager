@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'csv_item_class.dart';
+part of 'item_data_class.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

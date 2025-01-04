@@ -54,6 +54,13 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..remove = json['remove'] as String
   ..on = json['on'] as String
   ..off = json['off'] as String
+  ..view = json['view'] as String
+  ..xnew = json['xnew'] as String
+  ..file = json['file'] as String
+  ..folder = json['folder'] as String
+  ..clear = json['clear'] as String
+  ..process = json['process'] as String
+  ..add = json['add'] as String
   ..patchNotes = json['patchNotes'] as String
   ..appUpdate = json['appUpdate'] as String
   ..tryAgain = json['tryAgain'] as String
@@ -74,6 +81,13 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..intervalNumSecond = json['intervalNumSecond'] as String
   ..loading = json['loading'] as String
   ..viewVariants = json['viewVariants'] as String
+  ..addMods = json['addMods'] as String
+  ..addFolders = json['addFolders'] as String
+  ..addFiles = json['addFiles'] as String
+  ..processFiles = json['processFiles'] as String
+  ..ignoreList = json['ignoreList'] as String
+  ..archives = json['archives'] as String
+  ..iceFiles = json['iceFiles'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -96,6 +110,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..saveSelectedColorAndReturn = json['saveSelectedColorAndReturn'] as String
   ..returnWithoutSaving = json['returnWithoutSaving'] as String
   ..resetToDefaultColor = json['resetToDefaultColor'] as String
+  ..dragdropBoxMessage = json['dragdropBoxMessage'] as String
+  ..dragdropBoxMessage2 = json['dragdropBoxMessage2'] as String
   ..failedToFetchRemoteLocaleData =
       json['failedToFetchRemoteLocaleData'] as String
   ..unableToUpdateFile = json['unableToUpdateFile'] as String
@@ -103,6 +119,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
       json['unableToGetAppVersionDataFromGitHub'] as String
   ..unableToGetItemDataVersionDataFromGitHub =
       json['unableToGetItemDataVersionDataFromGitHub'] as String
+  ..fileIsNotSupported = json['fileIsNotSupported'] as String
+  ..fileAlreadyOnTheList = json['fileAlreadyOnTheList'] as String
   ..pso2binDirPathInfo = json['pso2binDirPathInfo'] as String
   ..mainDirPathInfo = json['mainDirPathInfo'] as String
   ..appSettings = json['appSettings'] as String
@@ -167,6 +185,13 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'remove': instance.remove,
       'on': instance.on,
       'off': instance.off,
+      'view': instance.view,
+      'xnew': instance.xnew,
+      'file': instance.file,
+      'folder': instance.folder,
+      'clear': instance.clear,
+      'process': instance.process,
+      'add': instance.add,
       'patchNotes': instance.patchNotes,
       'appUpdate': instance.appUpdate,
       'tryAgain': instance.tryAgain,
@@ -187,6 +212,13 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'intervalNumSecond': instance.intervalNumSecond,
       'loading': instance.loading,
       'viewVariants': instance.viewVariants,
+      'addMods': instance.addMods,
+      'addFolders': instance.addFolders,
+      'addFiles': instance.addFiles,
+      'processFiles': instance.processFiles,
+      'ignoreList': instance.ignoreList,
+      'archives': instance.archives,
+      'iceFiles': instance.iceFiles,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,
@@ -208,12 +240,16 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'saveSelectedColorAndReturn': instance.saveSelectedColorAndReturn,
       'returnWithoutSaving': instance.returnWithoutSaving,
       'resetToDefaultColor': instance.resetToDefaultColor,
+      'dragdropBoxMessage': instance.dragdropBoxMessage,
+      'dragdropBoxMessage2': instance.dragdropBoxMessage2,
       'failedToFetchRemoteLocaleData': instance.failedToFetchRemoteLocaleData,
       'unableToUpdateFile': instance.unableToUpdateFile,
       'unableToGetAppVersionDataFromGitHub':
           instance.unableToGetAppVersionDataFromGitHub,
       'unableToGetItemDataVersionDataFromGitHub':
           instance.unableToGetItemDataVersionDataFromGitHub,
+      'fileIsNotSupported': instance.fileIsNotSupported,
+      'fileAlreadyOnTheList': instance.fileAlreadyOnTheList,
       'pso2binDirPathInfo': instance.pso2binDirPathInfo,
       'mainDirPathInfo': instance.mainDirPathInfo,
       'appSettings': instance.appSettings,
