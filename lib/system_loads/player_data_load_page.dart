@@ -25,11 +25,7 @@ class _PlayerDataLoadPageState extends State<PlayerDataLoadPage> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return Center(
-              child: Column(
-            spacing: 5,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CardOverlay(
+              child: CardOverlay(
                 paddingValue: 15,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -50,18 +46,7 @@ class _PlayerDataLoadPageState extends State<PlayerDataLoadPage> {
                   ],
                 ),
               ),
-              ConstrainedBox(
-                  constraints: const BoxConstraints(minWidth: 350),
-                  child: CardOverlay(
-                    paddingValue: 15,
-                    child: Text(
-                      modLoadingStatus.watch(context),
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ))
-            ],
-          ));
+            );
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
           return FutureBuilderError(loadingText: appText.loadingItemData, snapshotError: snapshot.error.toString());
         } else {

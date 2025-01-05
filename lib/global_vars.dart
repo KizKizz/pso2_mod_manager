@@ -32,5 +32,5 @@ List<String> defaultCategoryDirs = [
 
 TextEditingController searchTextController = TextEditingController();
 Signal<List<File>> backgroundImageFiles = Signal([]);
-Signal<List<String>> modAddDragDropPaths = Signal([]);
+List<String> modAddDragDropPaths = [];
 List<ItemData> pItemData = [];

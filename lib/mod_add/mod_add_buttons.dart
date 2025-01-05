@@ -2,9 +2,9 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
-import 'package:pso2_mod_manager/mod_add/drag_drop_box_layout.dart';
 import 'package:pso2_mod_manager/mod_add/mod_add_function.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_home/mod_add.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -40,7 +40,7 @@ class _ModAddButtonsState extends State<ModAddButtons> {
               );
               final List<XFile> selectedFiles = await openFiles(acceptedTypeGroups: <XTypeGroup>[archiveTypeGroup, iceTypeGroup]);
               if (selectedFiles.isNotEmpty) {
-                modAddDragDropPaths.value.addAll(selectedFiles.map((e) => e.path));
+                modAddDragDropPaths.addAll(selectedFiles.map((e) => e.path));
               }
             },
             child: Text(
@@ -57,7 +57,7 @@ class _ModAddButtonsState extends State<ModAddButtons> {
               final List<String?> selectedDirPaths = await getDirectoryPaths();
               if (selectedDirPaths.isNotEmpty) {
                 for (var path in selectedDirPaths) {
-                  modAddDragDropPaths.value.add(path!);
+                  modAddDragDropPaths.add(path!);
                 }
               }
             },
@@ -84,7 +84,8 @@ class _ModAddButtonsState extends State<ModAddButtons> {
             backgroundColor: Colors.blueAccent.withAlpha(uiBackgroundColorAlpha.watch(context)),
             onPressed: !isModDragDropListEmpty.watch(context)
                 ? () async {
-                    await modAddUnpack(modAddDragDropPaths.value);
+                    await modAddUnpack(modAddDragDropPaths);
+                    final test = modAddSort();
                   }
                 : null,
             child: Text(

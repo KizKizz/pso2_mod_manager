@@ -169,13 +169,14 @@ class ItemData {
   }
 
   bool containsIceFiles(List<String> iceNameList) {
-    String hqIce = infos.entries.firstWhere((element) => element.key == 'High Quality', orElse: () => const MapEntry('null', 'null')).value;
-    String nqIce = infos.entries.firstWhere((element) => element.key == 'Normal Quality', orElse: () => const MapEntry('null', 'null')).value;
     for (var iceName in iceNameList) {
-      if (hqIce == iceName || nqIce == iceName) {
-        return true;
+      for (int i = 0; i < infos.entries.length; i++) {
+        if (infos.entries.elementAt(i).value.contains(iceName)) {
+          return true;
+        }
       }
     }
+
     return false;
   }
 

@@ -40,13 +40,14 @@ void itemDataInit() {
 }
 
 Future<List<ItemData>> loadItemData() async {
+  itemDataInit();
   List<ItemData> itemDataList = [];
   File playerItemDataFile = File('${Directory.current.path}${p.separator}itemData${p.separator}playerItemData.json');
-
   if (playerItemDataFile.existsSync()) {
     var data = jsonDecode(await playerItemDataFile.readAsString());
     for (var locale in data) {
       itemDataList.add(ItemData.fromJson(locale));
+      await Future.delayed(const Duration(microseconds: 10));
     }
   }
 
