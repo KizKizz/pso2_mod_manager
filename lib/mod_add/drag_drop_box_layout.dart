@@ -4,9 +4,11 @@ import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/mod_add/mod_add_function.dart';
 import 'package:pso2_mod_manager/v3_home/mod_add.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/notifications.dart';
+import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:path/path.dart' as p;
 
@@ -22,15 +24,15 @@ class DragDropBoxLayout extends StatefulWidget {
 class _DragDropBoxLayoutState extends State<DragDropBoxLayout> {
   @override
   Widget build(BuildContext context) {
-    modAddDragDropPaths.isEmpty ? isModDragDropListEmpty.value = true : isModDragDropListEmpty.value = false;
-    
     return DropTarget(
+        enable: curModAddDragDropStatus.watch(context) != ModAddDragDropState.unpackingFiles,
         onDragDone: (detail) {
           setState(() {
             for (var file in detail.files) {
               if (p.extension(file.path) == '' || widget.dragDropFileTypes.contains(p.extension(file.path))) {
                 if (!modAddDragDropPaths.contains(file.path)) {
                   modAddDragDropPaths.add(file.path);
+                  if (curModAddDragDropStatus.value != ModAddDragDropState.unpackingFiles) curModAddDragDropStatus.value = ModAddDragDropState.fileInList;
                 } else {
                   errorNotification(context, appText.dText(appText.fileAlreadyOnTheList, file.name));
                 }
@@ -96,6 +98,7 @@ class _DragDropBoxLayoutState extends State<DragDropBoxLayout> {
                             onPressed: modAddDragDropPaths.isNotEmpty
                                 ? () => setState(() {
                                       modAddDragDropPaths.clear();
+                                      if (curModAddDragDropStatus.value != ModAddDragDropState.unpackingFiles) curModAddDragDropStatus.value = ModAddDragDropState.waitingForFiles;
                                     })
                                 : null,
                             child: Text(appText.clear))))

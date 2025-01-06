@@ -96,7 +96,12 @@ class AppText {
       archives = 'Archives',
       iceFiles = 'Ice Files',
       step1 = 'Step 1',
-      step2 = 'Step 2';
+      step2 = 'Step 2',
+      processingItems = 'Processing Items',
+      numMatchedItem = '%p% Matched Item',
+      numMatchedItems = '%p% Matched Items',
+      editItems = 'Edit Items',
+      editVariants = 'Edit Variants';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -126,7 +131,8 @@ class AppText {
       itemDataManualDownloadMessage = 'Please download Item Data directly from the provided link, then browse its location\nSkip if you already have the latest Item Data',
       downloadItemData = 'Download Item Data',
       browseDownloadedItemDataLocation = 'Browse Downloaded Item Data Location',
-      loadingItemData = 'Loading Item Data';
+      loadingItemData = 'Loading Item Data',
+      waitingForItems = 'Waiting For Items';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',

@@ -12,6 +12,23 @@ import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 String modAddTempUnpackedDirPath = '$modAddTempDirPath${p.separator}unpacked';
 String modAddTempSortedDirPath = '$modAddTempDirPath${p.separator}sorted';
 
+enum ModAddDragDropState {
+  waitingForFiles('waitingForFiles'),
+  fileInList('fileInList'),
+  unpackingFiles('unpackingFiles');
+
+  final String value;
+  const ModAddDragDropState(this.value);
+}
+
+enum ModAddProcessedState {
+  waiting('waiting'),
+  dataInList('dataInList'),
+  loadingData('loadingData');
+
+  final String value;
+  const ModAddProcessedState(this.value);
+}
 
 Future<void> modAddUnpack(List<String> addedPaths) async {
   for (var path in addedPaths) {
@@ -50,20 +67,23 @@ Future<void> modAddUnpack(List<String> addedPaths) async {
   }
 }
 
-List<AddingMod> modAddSort() {
+Future<List<AddingMod>> modAddSort() async {
+  await io.copyPath(modAddTempUnpackedDirPath, modAddTempSortedDirPath);
+  await Directory(modAddTempUnpackedDirPath).delete(recursive: true);
   List<AddingMod> addingModList = [];
-  List<Directory> modDirs = Directory(modAddTempUnpackedDirPath).listSync().whereType<Directory>().toList();
-  List<File> previewImages = [];
-  List<File> previewVideos = [];
+  List<Directory> modDirs = Directory(modAddTempSortedDirPath).listSync().whereType<Directory>().toList();
+
   // Get files tree
   for (var modDir in modDirs) {
     Map<Directory, List<File>> submods = {};
     List<ItemData> associatedItems = [];
+    List<File> previewImages = [];
+    List<File> previewVideos = [];
     // mod dir
     List<File> modDirFiles = modDir.listSync().whereType<File>().toList();
     if (modDirFiles.isNotEmpty) {
       submods.addEntries({modDir: modDirFiles}.entries);
-      associatedItems.addAll(pItemData.where((e) => !associatedItems.contains(e) && e.containsIceFiles(modDirFiles.where((f) => p.extension(f.path) == '').map((f) => p.basename(f.path)).toList())));
+      associatedItems.addAll(pItemData.where((e) => e.getName().isNotEmpty && associatedItems.indexWhere((i) => i.getName() == e.getName()) == -1 && e.containsIceFiles(modDirFiles.where((f) => p.extension(f.path) == '').map((f) => p.basename(f.path)).toList())));
       previewImages.addAll(modDirFiles.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png'));
       previewVideos.addAll(modDirFiles.where((e) => p.extension(e.path) == '.webm' || p.extension(e.path) == '.mp4'));
     }
@@ -72,13 +92,15 @@ List<AddingMod> modAddSort() {
       List<File> files = subdir.listSync(recursive: true).whereType<File>().toList();
       if (files.isNotEmpty) {
         submods.addEntries({subdir: files}.entries);
-        associatedItems.addAll(pItemData.where((e) => !associatedItems.contains(e) && e.containsIceFiles(files.where((f) => p.extension(f.path) == '').map((f) => p.basename(f.path)).toList())));
+        associatedItems.addAll(pItemData.where((e) => e.getName().isNotEmpty && associatedItems.indexWhere((i) => i.getName() == e.getName()) == -1 && e.containsIceFiles(files.where((f) => p.extension(f.path) == '').map((f) => p.basename(f.path)).toList())));
         previewImages.addAll(files.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png'));
         previewVideos.addAll(files.where((e) => p.extension(e.path) == '.webm' || p.extension(e.path) == '.mp4'));
       }
+      await Future.delayed(const Duration(microseconds: 10));
     }
 
     addingModList.add(AddingMod(modDir, submods, associatedItems, previewImages, previewVideos));
+    await Future.delayed(const Duration(microseconds: 10));
   }
 
   return addingModList;

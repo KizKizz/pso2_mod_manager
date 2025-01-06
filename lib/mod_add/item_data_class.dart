@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:pso2_mod_manager/app_localization/item_locale.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/shared_prefs.dart';
 part 'item_data_class.g.dart';
 
 @JsonSerializable()
@@ -22,6 +24,14 @@ class ItemData {
 
   String getENName() {
     return infos.entries.firstWhere((element) => element.key.contains('EN Name') || element.key.contains('English Name')).value;
+  }
+
+  String getName() {
+    if (itemNameLanguage == ItemNameLanguage.jp) {
+      return infos.entries.firstWhere((element) => element.key.contains('JP Name') || element.key.contains('Japanese Name')).value;
+    } else {
+      return infos.entries.firstWhere((element) => element.key.contains('EN Name') || element.key.contains('English Name')).value;
+    }
   }
 
   String getIconImagePath() {

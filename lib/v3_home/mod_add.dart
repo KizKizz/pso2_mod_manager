@@ -1,10 +1,14 @@
-
 import 'package:flutter/material.dart';
+import 'package:pso2_mod_manager/mod_add/adding_mod_class.dart';
 import 'package:pso2_mod_manager/mod_add/drag_drop_box_layout.dart';
 import 'package:pso2_mod_manager/mod_add/mod_add_buttons.dart';
+import 'package:pso2_mod_manager/mod_add/mod_add_function.dart';
+import 'package:pso2_mod_manager/mod_add/mod_add_grid.dart';
 import 'package:signals/signals_flutter.dart';
 
-Signal<bool> isModDragDropListEmpty = Signal(true);
+Signal<ModAddDragDropState> curModAddDragDropStatus = Signal<ModAddDragDropState>(ModAddDragDropState.waitingForFiles);
+Signal<ModAddProcessedState> curModAddProcessedStatus = Signal<ModAddProcessedState>(ModAddProcessedState.waiting);
+List<AddingMod> modAddingList = [];
 
 class ModAdd extends StatefulWidget {
   const ModAdd({super.key});
@@ -31,9 +35,26 @@ class _ModAddState extends State<ModAdd> {
     return Row(
       spacing: 5,
       children: [
-        Expanded(flex: 1, child: DragDropBoxLayout(dragDropFileTypes: dragDropSupportedExts)),
-        ModAddButtons(dragDropFileTypes: dragDropSupportedExts),
-        Expanded(flex: 2, child: Container())
+        Expanded(
+          flex: 1,
+          child: Column(
+            spacing: 5,
+            children: [
+              Expanded(child: DragDropBoxLayout(dragDropFileTypes: dragDropSupportedExts)),
+              ModAddDragDropButtons(dragDropFileTypes: dragDropSupportedExts),
+            ],
+          ),
+        ),
+        const Expanded(
+          flex: 2,
+          child: Column(
+            spacing: 5,
+            children: [
+              Expanded(child: ModAddGrid()),
+              ModAddProcessedButtons(),
+            ],
+          ),
+        )
       ],
     );
   }
