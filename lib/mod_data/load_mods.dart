@@ -481,7 +481,7 @@ Future<List<SubMod>> subModFetcher(String modPath, String cateName, String itemN
       submods.add(SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), 0, false, false, false, hasCmx, false, -1, -1, cmxFile, [], [], modPreviewImages,
           modPreviewVideos, [], modFiles));
       modLoadingStatus.value = '$cateName\n$itemName\n${p.basename(modPath)}\n${p.basename(modPath)}';
-      await Future.delayed(const Duration(milliseconds: 10));
+      await Future.delayed(const Duration(microseconds: 1000));
     }
   }
 
@@ -560,7 +560,7 @@ Future<List<SubMod>> subModFetcher(String modPath, String cateName, String itemN
       submods.add(SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), 0, false, false, false, hasCmx, false, -1, -1, cmxFile, [], [],
           modPreviewImages, modPreviewVideos, [], modFiles));
       modLoadingStatus.value = '$cateName\n$itemName\n${p.basename(modPath)}\n${parentPaths.join(' > ')}';
-      await Future.delayed(const Duration(milliseconds: 10));
+      await Future.delayed(const Duration(microseconds: 1000));
     }
   }
 

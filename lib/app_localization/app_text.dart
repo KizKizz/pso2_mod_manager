@@ -65,7 +65,8 @@ class AppText {
       folder = 'Folder',
       clear = 'Clear',
       process = 'Process',
-      add = 'Add';
+      add = 'Add',
+      rename = 'Rename';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -100,8 +101,12 @@ class AppText {
       processingItems = 'Processing Items',
       numMatchedItem = '%p% Matched Item',
       numMatchedItems = '%p% Matched Items',
-      editItems = 'Edit Items',
-      editVariants = 'Edit Variants';
+      editItemsAndVariants = 'Edit Items & Variants',
+      saveAndReturn = 'Save & Return',
+      numFile = '%p% File',
+      numFiles = '%p% Files',
+      matchedItems = 'Matched Items',
+      changeTextTo = 'Change "%p%" to';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -132,7 +137,9 @@ class AppText {
       downloadItemData = 'Download Item Data',
       browseDownloadedItemDataLocation = 'Browse Downloaded Item Data Location',
       loadingItemData = 'Loading Item Data',
-      waitingForItems = 'Waiting For Items';
+      waitingForItems = 'Waiting For Items',
+      fetchingDataFromSegaServers = 'Fetching Data From Sega Servers',
+      enterNewNameHere = 'Enter new name here';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',
@@ -140,7 +147,8 @@ class AppText {
       unableToGetAppVersionDataFromGitHub = 'Unable to get app version data from GitHub',
       unableToGetItemDataVersionDataFromGitHub = 'Unable to get item data version data from GitHub',
       fileIsNotSupported = '"%p%" is not supported',
-      fileAlreadyOnTheList = '"%p%" already on the list';
+      fileAlreadyOnTheList = '"%p%" already on the list',
+      nameAlreadyExists = 'Name already exists';
 
   // Infos
   String pso2binDirPathInfo = 'PSO2 game data folder, this folder located inside the game installation directory',

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:pso2_mod_manager/app_paths/sega_file_paths.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_data/category_type_class.dart';
 import 'package:signals/signals_flutter.dart';
@@ -34,3 +35,4 @@ TextEditingController searchTextController = TextEditingController();
 Signal<List<File>> backgroundImageFiles = Signal([]);
 List<String> modAddDragDropPaths = [];
 List<ItemData> pItemData = [];
+List<OfficialIceFile> oItemData = [];

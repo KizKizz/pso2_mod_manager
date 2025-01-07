@@ -2,6 +2,7 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/mod_add/adding_mod_class.dart';
 import 'package:pso2_mod_manager/mod_add/mod_add_function.dart';
 import 'package:pso2_mod_manager/v3_home/mod_add.dart';
 import 'package:signals/signals_flutter.dart';
@@ -38,7 +39,9 @@ class _ModAddDragDropButtonsState extends State<ModAddDragDropButtons> {
                 );
                 final List<XFile> selectedFiles = await openFiles(acceptedTypeGroups: <XTypeGroup>[archiveTypeGroup, iceTypeGroup]);
                 if (selectedFiles.isNotEmpty) {
+                  curModAddDragDropStatus.value = ModAddDragDropState.waitingForFiles;
                   modAddDragDropPaths.addAll(selectedFiles.map((e) => e.path));
+                  curModAddDragDropStatus.value = ModAddDragDropState.fileInList;
                 }
               },
               child: Text(
@@ -52,7 +55,9 @@ class _ModAddDragDropButtonsState extends State<ModAddDragDropButtons> {
                 final List<String?> selectedDirPaths = await getDirectoryPaths();
                 if (selectedDirPaths.isNotEmpty) {
                   for (var path in selectedDirPaths) {
+                    curModAddDragDropStatus.value = ModAddDragDropState.waitingForFiles;
                     modAddDragDropPaths.add(path!);
+                    curModAddDragDropStatus.value = ModAddDragDropState.fileInList;
                   }
                 }
               },
