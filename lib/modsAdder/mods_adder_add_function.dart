@@ -190,7 +190,6 @@ Future<(bool, List<Item>)> modsAdderModFilesAdder(context, List<ModsAdderItem> i
       }
     }
   }
-  Provider.of<StateProvider>(context, listen: false).setModAdderProgressStatus('');
 
   //Save to json
   saveModdedItemListToJson();

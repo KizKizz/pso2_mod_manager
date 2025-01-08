@@ -10,6 +10,7 @@ String mainModListJsonPath = '';
 String mainModSetListJsonPath = '';
 String backgroundDirPath = '$mainDataDirPath${p.separator}BackgroundImages';
 String modAddTempDirPath = '$mainDataDirPath${p.separator}AddTemp';
+String pso2DataDirPath = '$pso2binDirPath${p.separator}data';
 
 // External programs
 String sevenZipExePath = '${Directory.current.path}${p.separator}7zip-x64${p.separator}7z.exe';

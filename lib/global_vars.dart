@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_paths/sega_file_paths.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_data/category_type_class.dart';
+import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
 import 'package:signals/signals_flutter.dart';
 
 String curAppVersion = '';
 bool offlineMode = false;
 List<CategoryType> masterModList = [];
+List<ModSet> masterModSetList = [];
 List<String> defaultCategoryTypes = ['Cast Parts', 'Layering Wears', 'Others'];
 List<String> defaultCategoryDirs = [
   'Accessories', //0

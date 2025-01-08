@@ -106,7 +106,8 @@ class AppText {
       numFile = '%p% File',
       numFiles = '%p% Files',
       matchedItems = 'Matched Items',
-      changeTextTo = 'Change "%p%" to';
+      changeTextTo = 'Change "%p%" to',
+      itemSwap = 'Item Swap';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -139,7 +140,9 @@ class AppText {
       loadingItemData = 'Loading Item Data',
       waitingForItems = 'Waiting For Items',
       fetchingDataFromSegaServers = 'Fetching Data From Sega Servers',
-      enterNewNameHere = 'Enter new name here';
+      enterNewNameHere = 'Enter new name here',
+      loadingModSets = 'Loading Mod Sets',
+      addNewSet = 'Add New Set';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',

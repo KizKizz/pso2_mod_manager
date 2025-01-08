@@ -28,9 +28,21 @@ enum ModAddDragDropState {
 enum ModAddProcessedState {
   waiting('waiting'),
   dataInList('dataInList'),
-  loadingData('loadingData');
+  loadingData('loadingData'),
+  addingToMasterList('addingToMasterList');
 
   final String value;
   const ModAddProcessedState(this.value);
 }
 
+extension RenameDuplicate on String {
+  String renameDuplicate() {
+    var affix = split('_').last;
+    if (affix.isNotEmpty && int.tryParse(affix) != null) {
+      int i = int.parse(affix);
+      return '${this}_${i++}';
+    } else {
+      return '${this}_1';
+    }
+  }
+}

@@ -6,6 +6,7 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:rotated_corner_decoration/rotated_corner_decoration.dart';
 import 'package:signals/signals_flutter.dart';
+import 'package:path/path.dart' as p;
 
 class SubmodImageBox extends StatefulWidget {
   const SubmodImageBox({
@@ -22,6 +23,16 @@ class SubmodImageBox extends StatefulWidget {
 }
 
 class _SubmodImageBoxState extends State<SubmodImageBox> {
+  List<String> paths = [];
+
+  @override
+  void initState() {
+    for (var path in widget.filePaths) {
+      if (paths.indexWhere((e) => p.basename(e) == p.basename(path)) == -1) paths.add(path);
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -45,21 +56,21 @@ class _SubmodImageBoxState extends State<SubmodImageBox> {
             children: [
               FlutterCarousel(
                 options: FlutterCarouselOptions(
-                    autoPlay: widget.filePaths.length > 1 ? true : false,
+                    autoPlay: paths.length > 1 ? true : false,
                     autoPlayInterval: const Duration(seconds: 2),
                     disableCenter: true,
                     viewportFraction: 1.0,
                     height: double.infinity,
                     floatingIndicator: true,
-                    enableInfiniteScroll: widget.filePaths.length > 1 ? true : false,
+                    enableInfiniteScroll: paths.length > 1 ? true : false,
                     indicatorMargin: 2,
                     slideIndicator: CircularWaveSlideIndicator(
                         slideIndicatorOptions: SlideIndicatorOptions(
                             itemSpacing: 10, indicatorRadius: 4, currentIndicatorColor: Theme.of(context).colorScheme.primary, indicatorBackgroundColor: Theme.of(context).hintColor.withAlpha(200)))),
-                items: widget.filePaths.map((e) => Image.file(File(e))).toList(),
+                items: paths.map((e) => Image.file(File(e))).toList(),
               ),
               Visibility(
-                  visible: widget.filePaths.isNotEmpty,
+                  visible: paths.isNotEmpty,
                   child: Padding(
                     padding: const EdgeInsets.all(3),
                     child: IconButton(onPressed: () {}, icon: const Icon(Icons.zoom_in)),

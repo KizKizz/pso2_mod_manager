@@ -6,7 +6,7 @@ part of 'csv_item_class.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ItemData _$ItemDataFromJson(Map<String, dynamic> json) => ItemData(
+CsvItem _$CsvItemFromJson(Map<String, dynamic> json) => CsvItem(
       json['csvFileName'] as String,
       json['csvFilePath'] as String,
       json['itemType'] as String,
@@ -20,7 +20,7 @@ ItemData _$ItemDataFromJson(Map<String, dynamic> json) => ItemData(
       Map<String, String>.from(json['infos'] as Map),
     );
 
-Map<String, dynamic> _$ItemDataToJson(ItemData instance) => <String, dynamic>{
+Map<String, dynamic> _$CsvItemToJson(CsvItem instance) => <String, dynamic>{
       'csvFileName': instance.csvFileName,
       'csvFilePath': instance.csvFilePath,
       'itemType': instance.itemType,

@@ -12,6 +12,7 @@ import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/mod_add_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/rename_popup.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:pso2_mod_manager/v3_widgets/vertical_divider.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:signals/signals_flutter.dart';
@@ -81,7 +82,7 @@ Future<AddingMod?> variantsEditPopup(context, AddingMod addingMod, int curIndex)
                       child: ResponsiveGridList(minItemWidth: 300, verticalGridMargin: 0, horizontalGridSpacing: 5, verticalGridSpacing: 5, children: [
                         for (int i = 0; i < addingMod.submods.length; i++)
                           CardOverlay(
-                            paddingValue: 5,
+                            paddingValue: 10,
                             child: Column(
                               spacing: 5,
                               mainAxisSize: MainAxisSize.min,
@@ -95,21 +96,23 @@ Future<AddingMod?> variantsEditPopup(context, AddingMod addingMod, int curIndex)
                                         .toList(),
                                     isNew: false),
                                 Text(addingMod.submodNames[i], textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
-                                
                                 Row(
                                   spacing: 5,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Expanded(
-                                      child: InfoBox(
-                                      info: appText.dText(
-                                          addingMod.submods[i].listSync().whereType<File>().where((e) => p.extension(e.path) == '').length > 1 ? appText.numFiles : appText.numFile,
-                                          addingMod.submods[i]
-                                              .listSync(recursive: addingMod.submods[i] != addingMod.modDir)
-                                              .whereType<File>()
-                                              .where((e) => p.extension(e.path) == '')
-                                              .length
-                                              .toString())),
+                                      child: ModManTooltip(
+                                        message: addingMod.submods[i].listSync().whereType<File>().where((e) => p.extension(e.path) == '').map((e) => p.basename(e.path)).join('\n'),
+                                        child: InfoBox(
+                                        info: appText.dText(
+                                            addingMod.submods[i].listSync().whereType<File>().where((e) => p.extension(e.path) == '').length > 1 ? appText.numFiles : appText.numFile,
+                                            addingMod.submods[i]
+                                                .listSync(recursive: addingMod.submods.indexWhere((e) => e.parent == addingMod.submods[i]) != -1)
+                                                .whereType<File>()
+                                                .where((e) => p.extension(e.path) == '')
+                                                .length
+                                                .toString())),
+                                      ),
                                     ),
                                     IconButton(
                                         onPressed: addingMod.submods[i] != addingMod.modDir ? () async {

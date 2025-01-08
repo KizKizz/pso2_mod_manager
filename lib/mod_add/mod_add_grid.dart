@@ -41,7 +41,7 @@ class _ModAddGridState extends State<ModAddGrid> {
                 children: [
                   for (int i = 0; i < modAddingList.length; i++)
                   CardOverlay(
-                          paddingValue: 5,
+                          paddingValue: 10,
                           child: Column(
                             spacing: 5,
                             mainAxisSize: MainAxisSize.min,

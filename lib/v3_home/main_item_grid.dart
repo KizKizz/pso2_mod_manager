@@ -77,7 +77,7 @@ class _MainItemGridState extends State<MainItemGrid> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                flex: 4,
+                flex: 3,
                 child: SizedBox(
                   height: 40,
                   child: Stack(alignment: AlignmentDirectional.centerEnd, children: [

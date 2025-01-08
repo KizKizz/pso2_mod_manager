@@ -23,7 +23,7 @@ class _CategorySelectButtonsState extends State<CategorySelectButtons> {
       height: 40,
       child: PromptedChoice<String>.single(
         title: appText.view,
-        value: selectedDisplayCategory.value,
+        value: appText.categoryName(selectedDisplayCategory.value),
         modalFit: FlexFit.tight,
         onChanged: (value) async {
           final prefs = await SharedPreferences.getInstance();

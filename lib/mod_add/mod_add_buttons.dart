@@ -4,6 +4,7 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_add/adding_mod_class.dart';
 import 'package:pso2_mod_manager/mod_add/mod_add_function.dart';
+import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
 import 'package:pso2_mod_manager/v3_home/mod_add.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -112,7 +113,13 @@ class _ModAddProcessedButtonsState extends State<ModAddProcessedButtons> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-          onPressed: curModAddProcessedStatus.watch(context) == ModAddProcessedState.dataInList ? () {} : null,
+          onPressed: curModAddProcessedStatus.watch(context) == ModAddProcessedState.dataInList
+              ? () async {
+                  curModAddProcessedStatus.value = ModAddProcessedState.addingToMasterList;
+                  await modAddToMasterList(false, ModSet('', 0, false, false, DateTime(0), []));
+                  modAddingList.isNotEmpty ? curModAddProcessedStatus.value = ModAddProcessedState.dataInList : curModAddProcessedStatus.value = ModAddProcessedState.waiting;
+                }
+              : null,
           child: Text(
             appText.add,
             textAlign: TextAlign.center,

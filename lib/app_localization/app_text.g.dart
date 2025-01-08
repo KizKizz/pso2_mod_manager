@@ -61,6 +61,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..clear = json['clear'] as String
   ..process = json['process'] as String
   ..add = json['add'] as String
+  ..rename = json['rename'] as String
   ..patchNotes = json['patchNotes'] as String
   ..appUpdate = json['appUpdate'] as String
   ..tryAgain = json['tryAgain'] as String
@@ -88,6 +89,18 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..ignoreList = json['ignoreList'] as String
   ..archives = json['archives'] as String
   ..iceFiles = json['iceFiles'] as String
+  ..step1 = json['step1'] as String
+  ..step2 = json['step2'] as String
+  ..processingItems = json['processingItems'] as String
+  ..numMatchedItem = json['numMatchedItem'] as String
+  ..numMatchedItems = json['numMatchedItems'] as String
+  ..editItemsAndVariants = json['editItemsAndVariants'] as String
+  ..saveAndReturn = json['saveAndReturn'] as String
+  ..numFile = json['numFile'] as String
+  ..numFiles = json['numFiles'] as String
+  ..matchedItems = json['matchedItems'] as String
+  ..changeTextTo = json['changeTextTo'] as String
+  ..itemSwap = json['itemSwap'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -112,6 +125,19 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..resetToDefaultColor = json['resetToDefaultColor'] as String
   ..dragdropBoxMessage = json['dragdropBoxMessage'] as String
   ..dragdropBoxMessage2 = json['dragdropBoxMessage2'] as String
+  ..checkingGitHubAccess = json['checkingGitHubAccess'] as String
+  ..accessToGitHubIsLimited = json['accessToGitHubIsLimited'] as String
+  ..itemDataManualDownloadMessage =
+      json['itemDataManualDownloadMessage'] as String
+  ..downloadItemData = json['downloadItemData'] as String
+  ..browseDownloadedItemDataLocation =
+      json['browseDownloadedItemDataLocation'] as String
+  ..loadingItemData = json['loadingItemData'] as String
+  ..waitingForItems = json['waitingForItems'] as String
+  ..fetchingDataFromSegaServers = json['fetchingDataFromSegaServers'] as String
+  ..enterNewNameHere = json['enterNewNameHere'] as String
+  ..loadingModSets = json['loadingModSets'] as String
+  ..addNewSet = json['addNewSet'] as String
   ..failedToFetchRemoteLocaleData =
       json['failedToFetchRemoteLocaleData'] as String
   ..unableToUpdateFile = json['unableToUpdateFile'] as String
@@ -121,6 +147,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
       json['unableToGetItemDataVersionDataFromGitHub'] as String
   ..fileIsNotSupported = json['fileIsNotSupported'] as String
   ..fileAlreadyOnTheList = json['fileAlreadyOnTheList'] as String
+  ..nameAlreadyExists = json['nameAlreadyExists'] as String
   ..pso2binDirPathInfo = json['pso2binDirPathInfo'] as String
   ..mainDirPathInfo = json['mainDirPathInfo'] as String
   ..appSettings = json['appSettings'] as String
@@ -192,6 +219,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'clear': instance.clear,
       'process': instance.process,
       'add': instance.add,
+      'rename': instance.rename,
       'patchNotes': instance.patchNotes,
       'appUpdate': instance.appUpdate,
       'tryAgain': instance.tryAgain,
@@ -219,6 +247,18 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'ignoreList': instance.ignoreList,
       'archives': instance.archives,
       'iceFiles': instance.iceFiles,
+      'step1': instance.step1,
+      'step2': instance.step2,
+      'processingItems': instance.processingItems,
+      'numMatchedItem': instance.numMatchedItem,
+      'numMatchedItems': instance.numMatchedItems,
+      'editItemsAndVariants': instance.editItemsAndVariants,
+      'saveAndReturn': instance.saveAndReturn,
+      'numFile': instance.numFile,
+      'numFiles': instance.numFiles,
+      'matchedItems': instance.matchedItems,
+      'changeTextTo': instance.changeTextTo,
+      'itemSwap': instance.itemSwap,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,
@@ -242,6 +282,18 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'resetToDefaultColor': instance.resetToDefaultColor,
       'dragdropBoxMessage': instance.dragdropBoxMessage,
       'dragdropBoxMessage2': instance.dragdropBoxMessage2,
+      'checkingGitHubAccess': instance.checkingGitHubAccess,
+      'accessToGitHubIsLimited': instance.accessToGitHubIsLimited,
+      'itemDataManualDownloadMessage': instance.itemDataManualDownloadMessage,
+      'downloadItemData': instance.downloadItemData,
+      'browseDownloadedItemDataLocation':
+          instance.browseDownloadedItemDataLocation,
+      'loadingItemData': instance.loadingItemData,
+      'waitingForItems': instance.waitingForItems,
+      'fetchingDataFromSegaServers': instance.fetchingDataFromSegaServers,
+      'enterNewNameHere': instance.enterNewNameHere,
+      'loadingModSets': instance.loadingModSets,
+      'addNewSet': instance.addNewSet,
       'failedToFetchRemoteLocaleData': instance.failedToFetchRemoteLocaleData,
       'unableToUpdateFile': instance.unableToUpdateFile,
       'unableToGetAppVersionDataFromGitHub':
@@ -250,6 +302,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
           instance.unableToGetItemDataVersionDataFromGitHub,
       'fileIsNotSupported': instance.fileIsNotSupported,
       'fileAlreadyOnTheList': instance.fileAlreadyOnTheList,
+      'nameAlreadyExists': instance.nameAlreadyExists,
       'pso2binDirPathInfo': instance.pso2binDirPathInfo,
       'mainDirPathInfo': instance.mainDirPathInfo,
       'appSettings': instance.appSettings,
