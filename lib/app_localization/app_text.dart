@@ -32,6 +32,15 @@ class AppText {
       dfSetwears = 'Setwears', //16
       dfWeapons = 'Weapons'; //17
 
+  // Motion Type Names
+  String dfGlideMotion = 'Glide Motion',
+      dfJumpMotion = 'Jump Motion',
+      dfLandingMotion = 'Landing Motion',
+      dfDashMotion = 'Dash Motion',
+      dfRunMotion = 'Run Motion',
+      dfStandbyMotion = 'Standby Motion',
+      dfSwimMotion = 'Swim Motion';
+
   // One word Strings
   String ok = 'OK',
       cancel = 'Cancel',
@@ -66,7 +75,13 @@ class AppText {
       clear = 'Clear',
       process = 'Process',
       add = 'Add',
-      rename = 'Rename';
+      rename = 'Rename',
+      both = 'Both',
+      swap = 'Swap',
+      types = 'Types',
+      all = 'All',
+      motions = 'Motions',
+      next = 'Next';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -142,7 +157,15 @@ class AppText {
       fetchingDataFromSegaServers = 'Fetching Data From Sega Servers',
       enterNewNameHere = 'Enter new name here',
       loadingModSets = 'Loading Mod Sets',
-      addNewSet = 'Add New Set';
+      addNewSet = 'Add New Set',
+      showNoNameItems = 'Show No Name Items',
+      hideNoNameItems = 'Hide No Name Items',
+      swapToIdleMotions = 'Swap To Idle Motions',
+      swapToEmotes = 'Swap To Emotes',
+      swapToBasewears = 'Swap To Basewears',
+      swapToSetwears = 'Swap To Setwears',
+      swapToBodyPaints = 'Swap To Body Paints',
+      swapToInnerwears = 'Swap To Innerwears';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',
@@ -185,6 +208,29 @@ class AppText {
       newText = newText.replaceFirst('%p%', param);
     }
     return newText;
+  }
+
+  String motionTypeName(String name) {
+    int index = defaultMotionTypes.indexOf(name);
+
+    switch (index) {
+      case 0:
+        return dfGlideMotion;
+      case 1:
+        return dfJumpMotion;
+      case 2:
+        return dfLandingMotion;
+      case 3:
+        return dfDashMotion;
+      case 4:
+        return dfRunMotion;
+      case 5:
+        return dfStandbyMotion;
+      case 6:
+        return dfSwimMotion;
+      default:
+        return name;
+    }
   }
 
   String categoryTypeName(String name) {

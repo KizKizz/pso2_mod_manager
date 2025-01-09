@@ -79,7 +79,6 @@ dependencies:
   json_annotation: ^4.9.0
   http: ^1.2.2
   quickalert: ^1.1.0
-  # auto_animated: ^3.2.0
   background_downloader: ^8.8.1
   archive: ^4.0.2
   file_selector: ^1.0.3

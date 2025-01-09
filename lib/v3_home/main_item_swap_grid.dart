@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
-import 'package:pso2_mod_manager/item_swap/item_swap_cate_select_buttons.dart';
-import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
-import 'package:pso2_mod_manager/mod_sets/modset_grid_layout.dart';
+import 'package:pso2_mod_manager/item_swap/item_swap_cate_select_button.dart';
+import 'package:pso2_mod_manager/item_swap/item_swap_grid_layout.dart';
+import 'package:pso2_mod_manager/item_swap/item_swap_motions_select_button.dart';
+import 'package:pso2_mod_manager/item_swap/item_swap_type_select_button.dart';
+import 'package:pso2_mod_manager/item_swap/item_swap_working_popup.dart';
+import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:signals/signals_flutter.dart';
-import 'package:super_sliver_list/super_sliver_list.dart';
-
-Signal<String> selectedDisplayItemSwapCategory = Signal('Accessories');
 
 class MainItemSwapGrid extends StatefulWidget {
   const MainItemSwapGrid({super.key});
@@ -19,7 +19,14 @@ class MainItemSwapGrid extends StatefulWidget {
 
 class _MainItemSwapGridState extends State<MainItemSwapGrid> {
   double fadeInOpacity = 0;
-  ScrollController controller = ScrollController();
+  ScrollController lScrollController = ScrollController();
+  ScrollController rScrollController = ScrollController();
+  Signal<ItemData?> lSelectedItemData = Signal<ItemData?>(null);
+  Signal<ItemData?> rSelectedItemData = Signal<ItemData?>(null);
+  Signal<bool> showNoNameItems = Signal(false);
+  List<ItemData> rDisplayingItemsExtra = [];
+  String extraCategory = '';
+  List<ItemData> displayingItems = [];
 
   @override
   void initState() {
@@ -32,11 +39,40 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
 
   @override
   Widget build(BuildContext context) {
-    List<ModSet> displayingModSets = [];
-    if (selectedDisplayItemSwapCategory.watch(context) == 'Accessories') {
-      displayingModSets = masterModSetList;
+    displayingItems = pItemData
+        .where((e) => showNoNameItems.watch(context) || (!showNoNameItems.watch(context) && e.getName().isNotEmpty))
+        .where((e) => selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[1]
+            ? e.subCategory == 'Basewear'
+            : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[16]
+                ? e.subCategory == 'Setwear'
+                : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[14]
+                    ? e.subCategory == selectedItemSwapMotionType.watch(context) || selectedItemSwapMotionType.watch(context) == appText.all
+                    : e.category == selectedDisplayItemSwapCategory.watch(context))
+        .where((e) => selectedItemSwapTypeCategory.watch(context) == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.watch(context).toLowerCase())
+        .toList();
+    displayingItems.sort((a, b) => a.getName().compareTo(b.getName()));
+
+    // Extra item data
+    if (extraCategory.isNotEmpty && extraCategory == selectedDisplayItemSwapCategory.watch(context)) {
+      rDisplayingItemsExtra = pItemData
+          .where((e) => showNoNameItems.watch(context) || (!showNoNameItems.watch(context) && e.getName().isNotEmpty))
+          .where((e) => extraCategory == defaultCategoryDirs[7]
+              ? (e.category == defaultCategoryDirs[14] && e.subCategory == 'Standby Motion')
+              : extraCategory == defaultCategoryDirs[1]
+                  ? e.subCategory == 'Setwear'
+                  : extraCategory == defaultCategoryDirs[16]
+                      ? e.subCategory == 'Basewear'
+                      : extraCategory == defaultCategoryDirs[2]
+                          ? e.category == defaultCategoryDirs[11]
+                          : extraCategory == defaultCategoryDirs[11]
+                              ? e.category == defaultCategoryDirs[2]
+                              : true)
+          .where((e) => selectedItemSwapTypeCategory.watch(context) == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.watch(context).toLowerCase())
+          .toList();
+      rDisplayingItemsExtra.sort((a, b) => a.getName().compareTo(b.getName()));
     } else {
-      displayingModSets = masterModSetList.where((e) => e.setName == selectedDisplayItemSwapCategory.watch(context)).toList();
+      extraCategory = '';
+      rDisplayingItemsExtra = [];
     }
 
     return AnimatedOpacity(
@@ -50,30 +86,93 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                flex: 3,
                   child: SizedBox(
-                    height: 40,
-                    child: OutlinedButton(
-                        style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                height: 40,
+                child: OutlinedButton(
+                    style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
                         side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                        onPressed: () {},
-                        child: Text(appText.addNewSet)),
-                  )),
+                    onPressed: () {
+                      showNoNameItems.watch(context) ? showNoNameItems.value = false : showNoNameItems.value = true;
+                    },
+                    child: Text(showNoNameItems.watch(context) ? appText.hideNoNameItems : appText.showNoNameItems)),
+              )),
+              Visibility(
+                  visible: selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[14],
+                  child: Expanded(child: ItemSwapMotionTypeSelectButtons(lScrollController: lScrollController, rScrollController: rScrollController))),
+              Expanded(child: Padding(padding: const EdgeInsets.only(top: 1), child: ItemSwapTypeSelectButtons(lScrollController: lScrollController, rScrollController: rScrollController))),
               Expanded(
-                  flex: 1,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 1),
-                    child: ItemSwapCateSelectButtons(categoryNames: defaultCategoryDirs, scrollController: controller),
-                  )),
+                padding: const EdgeInsets.only(top: 1),
+                child: ItemSwapCateSelectButtons(
+                    categoryNames: defaultCategoryDirs,
+                    lSelectedItemData: lSelectedItemData,
+                    rSelectedItemData: rSelectedItemData,
+                    lScrollController: lScrollController,
+                    rScrollController: rScrollController),
+              )),
             ],
           ),
           Expanded(
-            child: CustomScrollView(
-              controller: controller,
-              cacheExtent: 10000,
-              physics: const SuperRangeMaintainingScrollPhysics(),
-              slivers: [for (int i = 0; i < displayingModSets.length; i++) ModSetGridLayout(modSet: displayingModSets[i])],
-            ),
+              child: Row(
+            spacing: 5,
+            children: [
+              Expanded(
+                  child: ItemSwapGridLayout(
+                itemDataList: displayingItems,
+                scrollController: lScrollController,
+                selectedItemData: lSelectedItemData,
+              )),
+              Expanded(
+                  child: ItemSwapGridLayout(
+                itemDataList: extraCategory == defaultCategoryDirs[1] ||
+                        extraCategory == defaultCategoryDirs[2] ||
+                        extraCategory == defaultCategoryDirs[7] ||
+                        extraCategory == defaultCategoryDirs[11] ||
+                        extraCategory == defaultCategoryDirs[16]
+                    ? rDisplayingItemsExtra
+                    : displayingItems,
+                scrollController: rScrollController,
+                selectedItemData: rSelectedItemData,
+              )),
+            ],
+          )),
+          Row(
+            spacing: 5,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Visibility(
+                  visible: selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[1] ||
+                      selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[2] ||
+                      selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7] ||
+                      selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[11] ||
+                      selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[16],
+                  child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          extraCategory.isEmpty ? extraCategory = selectedDisplayItemSwapCategory.watch(context) : extraCategory = '';
+                          rScrollController.jumpTo(0);
+                        });
+                      },
+                      child: selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[1]
+                          ? Text(extraCategory == defaultCategoryDirs[1] ? appText.swapToBasewears : appText.swapToSetwears)
+                          : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[2]
+                              ? Text(extraCategory == defaultCategoryDirs[2] ? appText.swapToBodyPaints : appText.swapToInnerwears)
+                              : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7]
+                                  ? Text(extraCategory == defaultCategoryDirs[7] ? appText.swapToEmotes : appText.swapToIdleMotions)
+                                  : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[11]
+                                      ? Text(extraCategory == defaultCategoryDirs[11] ? appText.swapToInnerwears : appText.swapToBodyPaints)
+                                      : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[16]
+                                          ? Text(extraCategory == defaultCategoryDirs[16] ? appText.swapToSetwears : appText.swapToBasewears)
+                                          : null)),
+              ElevatedButton(
+                  onPressed: lSelectedItemData.watch(context) != null && rSelectedItemData.watch(context) != null
+                      ? () {
+                          itemSwapWorkingPopup(context, lSelectedItemData.value!, rSelectedItemData.value!);
+                        }
+                      : null,
+                  child: Text(appText.next))
+            ],
           )
         ],
       ),

@@ -32,6 +32,7 @@ List<String> defaultCategoryDirs = [
   'Setwears', //16
   'Weapons' //17
 ];
+final defaultMotionTypes = ['Glide Motion', 'Jump Motion', 'Landing Motion', 'Dash Motion', 'Run Motion', 'Standby Motion', 'Swim Motion'];
 
 TextEditingController searchTextController = TextEditingController();
 Signal<List<File>> backgroundImageFiles = Signal([]);

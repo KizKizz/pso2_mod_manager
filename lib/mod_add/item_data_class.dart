@@ -18,13 +18,13 @@ class ItemData {
   String iconImagePath;
   Map<String, String> infos = {};
 
-  String getJPName() {
-    return infos.entries.firstWhere((element) => element.key.contains('JP Name') || element.key.contains('Japanese Name')).value;
-  }
+  // String getJPName() {
+  //   return infos.entries.firstWhere((element) => element.key.contains('JP Name') || element.key.contains('Japanese Name')).value;
+  // }
 
-  String getENName() {
-    return infos.entries.firstWhere((element) => element.key.contains('EN Name') || element.key.contains('English Name')).value;
-  }
+  // String getENName() {
+  //   return infos.entries.firstWhere((element) => element.key.contains('EN Name') || element.key.contains('English Name')).value;
+  // }
 
   String getName() {
     if (itemNameLanguage == ItemNameLanguage.jp) {
@@ -58,25 +58,24 @@ class ItemData {
     return returnInfos;
   }
 
-  String getBaseItemENName() {
+  String getItemNameWithoutAffix() {
     List<String> toRemove = ['[Ba]', '[Se]', '[Ou]', '[In]', '[Fu]'];
-    String name = getENName();
-    // name = name.split('/').first;
+    String name = getName();
     for (var affix in toRemove) {
       name = name.replaceFirst(affix, '');
     }
     return name.trim();
   }
 
-  String getBaseItemJPName() {
-    List<String> toRemove = ['[Ba]', '[Se]', '[Ou]', '[In]', '[Fu]'];
-    String name = getJPName();
-    // name = name.split('/').first;
-    for (var affix in toRemove) {
-      name = name.replaceFirst(affix, '');
-    }
-    return name.trim();
-  }
+  // String getBaseItemJPName() {
+  //   List<String> toRemove = ['[Ba]', '[Se]', '[Ou]', '[In]', '[Fu]'];
+  //   String name = getJPName();
+  //   // name = name.split('/').first;
+  //   for (var affix in toRemove) {
+  //     name = name.replaceFirst(affix, '');
+  //   }
+  //   return name.trim();
+  // }
 
   String getIconIceName() {
     return infos.entries.firstWhere((element) => element.key.contains('Icon')).value;
@@ -188,6 +187,13 @@ class ItemData {
     }
 
     return false;
+  }
+
+  List<String> getDetails() {
+    return infos.entries
+        .where((e) => e.value.isNotEmpty && e.key != 'Japanese Name' && e.key != 'English Name' && !e.key.contains('Bone') && e.key != 'JP Name' && e.key != 'EN Name')
+        .map((e) => '${e.key}: ${e.value}'.trim())
+        .toList();
   }
 
   ItemData.fromMap(

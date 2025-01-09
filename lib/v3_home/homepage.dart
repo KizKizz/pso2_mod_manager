@@ -98,7 +98,7 @@ class _HomepageState extends State<Homepage> {
                 },
               ),
               SidebarXItem(
-                icon: Icons.library_books_outlined,
+                icon: Icons.swap_horizontal_circle_outlined,
                 label: appText.itemSwap,
                 onTap: () {
                   setState(() {});

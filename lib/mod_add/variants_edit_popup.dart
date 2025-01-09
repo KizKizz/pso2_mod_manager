@@ -7,9 +7,9 @@ import 'package:pso2_mod_manager/mod_add/mod_add_function.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/mod_add.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
+import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
-import 'package:pso2_mod_manager/v3_widgets/mod_add_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/rename_popup.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
@@ -58,7 +58,7 @@ Future<AddingMod?> variantsEditPopup(context, AddingMod addingMod, int curIndex)
                                 spacing: 5,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  ModAddItemIconBox(itemIcon: addingMod.associatedItems[i].iconImagePath),
+                                  GenericItemIconBox(iconImagePaths: [addingMod.associatedItems[i].iconImagePath], boxSize: const Size(140, 140), isNetwork: true),
                                   Text(p.basename(addingMod.associatedItems[i].getName()), textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
                                   IconButton(
                                       onPressed: addingMod.associatedItems.length > 1
