@@ -46,7 +46,8 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
             : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[16]
                 ? e.subCategory == 'Setwear'
                 : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[14]
-                    ? e.subCategory == selectedItemSwapMotionType.watch(context) || selectedItemSwapMotionType.watch(context) == appText.all
+                    ? e.category == selectedDisplayItemSwapCategory.watch(context) &&
+                        (e.subCategory == selectedItemSwapMotionType.watch(context) || selectedItemSwapMotionType.watch(context) == appText.all)
                     : e.category == selectedDisplayItemSwapCategory.watch(context))
         .where((e) => selectedItemSwapTypeCategory.watch(context) == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.watch(context).toLowerCase())
         .toList();
