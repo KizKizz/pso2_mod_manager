@@ -10,10 +10,16 @@ String mainModListJsonPath = '';
 String mainModSetListJsonPath = '';
 String backgroundDirPath = '$mainDataDirPath${p.separator}BackgroundImages';
 String modAddTempDirPath = '$mainDataDirPath${p.separator}AddTemp';
+String modSwapTempDirPath = '$mainDataDirPath${p.separator}SwapTemp';
+String modSwapTempLItemDirPath = '$mainDataDirPath${p.separator}SwapTemp${p.separator}lItem';
+String modSwapTempRItemDirPath = '$mainDataDirPath${p.separator}SwapTemp${p.separator}rItem';
+String modSwapTempOutputDirPath = '$mainDataDirPath${p.separator}SwapTemp${p.separator}output';
 String pso2DataDirPath = '$pso2binDirPath${p.separator}data';
 
 // External programs
 String sevenZipExePath = '${Directory.current.path}${p.separator}7zip-x64${p.separator}7z.exe';
+String zamboniExePath = '${Directory.current.path}${p.separator}Zamboni${p.separator}Zamboni.exe';
+String pngDdsConvExePath = '${Directory.current.path}${p.separator}png_dds_converter${p.separator}png_dds_converter.exe';
 
 Future<(bool, bool)> appMainPathsCheck() async {
   bool pso2bin = true;

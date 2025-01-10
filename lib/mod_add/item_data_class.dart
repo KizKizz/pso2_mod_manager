@@ -34,6 +34,17 @@ class ItemData {
     }
   }
 
+  String getItemID() {
+    return infos.entries.firstWhere((e) => e.key.toLowerCase() == 'id', orElse: () => const MapEntry('', '')).value;
+  }
+
+  List<String> getItemIDs() {
+    List<String> ids = [];
+    ids.add(infos.entries.firstWhere((e) => e.key.toLowerCase() == 'id', orElse: () => const MapEntry('', '')).value);
+    ids.add(infos.entries.firstWhere((e) => e.key == 'Adjusted Id', orElse: () => const MapEntry('', '')).value);
+    return ids;
+  }
+
   String getIconImagePath() {
     return infos.entries.firstWhere((element) => element.key.contains('iconImagePath')).value;
   }
@@ -191,7 +202,39 @@ class ItemData {
 
   List<String> getDetails() {
     return infos.entries
-        .where((e) => e.value.isNotEmpty && e.key != 'Japanese Name' && e.key != 'English Name' && !e.key.contains('Bone') && e.key != 'JP Name' && e.key != 'EN Name')
+        .where((e) =>
+            e.value.isNotEmpty &&
+            e.key != 'Japanese Name' &&
+            e.key != 'English Name' &&
+            !e.key.contains('Bone') &&
+            e.key != 'JP Name' &&
+            e.key != 'EN Name' &&
+            e.key != 'Reboot Human' &&
+            e.key != 'Reboot Cast Male' &&
+            e.key != 'Reboot Cast Female' &&
+            e.key != 'Reboot Fig' &&
+            e.key != 'Reboot VFX')
+        .map((e) => '${e.key}: ${e.value}'.trim())
+        .toList();
+  }
+
+  List<String> getIceDetails() {
+    return infos.entries
+        .where((e) =>
+            e.value.isNotEmpty &&
+            e.key != 'Japanese Name' &&
+            e.key.toLowerCase() != 'id' &&
+            e.key != 'Icon' &&
+            e.key != 'Adjusted Id' &&
+            e.key != 'English Name' &&
+            !e.key.contains('Bone') &&
+            e.key != 'JP Name' &&
+            e.key != 'EN Name' &&
+            e.key != 'Reboot Human' &&
+            e.key != 'Reboot Cast Male' &&
+            e.key != 'Reboot Cast Female' &&
+            e.key != 'Reboot Fig' &&
+            e.key != 'Reboot VFX')
         .map((e) => '${e.key}: ${e.value}'.trim())
         .toList();
   }

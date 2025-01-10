@@ -81,7 +81,9 @@ class AppText {
       types = 'Types',
       all = 'All',
       motions = 'Motions',
-      next = 'Next';
+      next = 'Next',
+      normal = 'Normal',
+      open = 'Open';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -122,7 +124,8 @@ class AppText {
       numFiles = '%p% Files',
       matchedItems = 'Matched Items',
       changeTextTo = 'Change "%p%" to',
-      itemSwap = 'Item Swap';
+      itemSwap = 'Item Swap',
+      openInFileExplorer = 'Open In File Explorer';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -165,7 +168,10 @@ class AppText {
       swapToBasewears = 'Swap To Basewears',
       swapToSetwears = 'Swap To Setwears',
       swapToBodyPaints = 'Swap To Body Paints',
-      swapToInnerwears = 'Swap To Innerwears';
+      swapToInnerwears = 'Swap To Innerwears',
+      replaceLQTexturesWithHQ = 'Replace LQ Textures With HQ',
+      sortingFileData = 'Sorting file data',
+      itemSwapFinished = 'Item Swap Finished';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',
@@ -174,7 +180,8 @@ class AppText {
       unableToGetItemDataVersionDataFromGitHub = 'Unable to get item data version data from GitHub',
       fileIsNotSupported = '"%p%" is not supported',
       fileAlreadyOnTheList = '"%p%" already on the list',
-      nameAlreadyExists = 'Name already exists';
+      nameAlreadyExists = 'Name already exists',
+      noMatchingFilesBetweenItemsToSwap = 'No matching files between items to swap';
 
   // Infos
   String pso2binDirPathInfo = 'PSO2 game data folder, this folder located inside the game installation directory',

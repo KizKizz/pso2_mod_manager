@@ -1,6 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/item_swap/item_swap_cate_select_button.dart';
+import 'package:pso2_mod_manager/item_swap/mod_swap_acc_functions.dart';
+import 'package:pso2_mod_manager/item_swap/mod_swap_helper_functions.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
@@ -9,11 +15,15 @@ import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
+Signal<String> itemSwapWorkingStatus = Signal('');
+
 void itemSwapWorkingPopup(
   context,
   ItemData lItemData,
   ItemData rItemData,
 ) {
+  Directory swapOutputDir = Directory('');
+
   showDialog(
       barrierDismissible: false,
       context: context,
@@ -81,20 +91,34 @@ void itemSwapWorkingPopup(
             actionsPadding: const EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),
             actions: [
               const HoriDivider(),
-              OverflowBar(
+              Row(
                 spacing: 5,
-                overflowSpacing: 5,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  OutlinedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(appText.swap)),
-                  OutlinedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(appText.returns))
+                  Text(itemSwapWorkingStatus.watch(context)),
+                  OverflowBar(
+                    spacing: 5,
+                    overflowSpacing: 5,
+                    children: [
+                      Visibility(
+                        visible: swapOutputDir.existsSync(),
+                        child: OutlinedButton(onPressed: () async {}, child: Text(appText.openInFileExplorer)),
+                      ),
+                      OutlinedButton(
+                          onPressed: () async {
+                            if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[0]) {
+                              swapOutputDir =
+                                  await modSwapAccessories(context, true, lItemModGet(), lItemSubmodGet(lItemData), lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), rItemData.getItemID());
+                            }
+                          },
+                          child: Text(appText.swap)),
+                      OutlinedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(appText.returns))
+                    ],
+                  )
                 ],
               )
             ],

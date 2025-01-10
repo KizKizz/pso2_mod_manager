@@ -7,10 +7,6 @@ import 'package:pso2_mod_manager/mod_data/category_type_class.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
 import 'package:signals/signals_flutter.dart';
 
-String curAppVersion = '';
-bool offlineMode = false;
-List<CategoryType> masterModList = [];
-List<ModSet> masterModSetList = [];
 List<String> defaultCategoryTypes = ['Cast Parts', 'Layering Wears', 'Others'];
 List<String> defaultCategoryDirs = [
   'Accessories', //0
@@ -33,9 +29,19 @@ List<String> defaultCategoryDirs = [
   'Weapons' //17
 ];
 final defaultMotionTypes = ['Glide Motion', 'Jump Motion', 'Landing Motion', 'Dash Motion', 'Run Motion', 'Standby Motion', 'Swim Motion'];
+String charToReplace = '[\\/:*?"<>|]';
+String charToReplaceWithoutSeparators = '[:*?"<>|]';
 
+String curAppVersion = '';
+bool offlineMode = false;
+List<CategoryType> masterModList = [];
+List<ModSet> masterModSetList = [];
 TextEditingController searchTextController = TextEditingController();
 Signal<List<File>> backgroundImageFiles = Signal([]);
 List<String> modAddDragDropPaths = [];
 List<ItemData> pItemData = [];
 List<OfficialIceFile> oItemData = [];
+String segaMasterServerURL = '';
+String segaMasterServerBackupURL = '';
+String segaPatchServerURL = '';
+String segaPatchServerBackupURL = '';

@@ -10,6 +10,8 @@ import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:signals/signals_flutter.dart';
 
+bool replaceLQTexturesWithHQ = false;
+
 class MainItemSwapGrid extends StatefulWidget {
   const MainItemSwapGrid({super.key});
 
@@ -142,33 +144,50 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
             spacing: 5,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Visibility(
-                  visible: selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[1] ||
-                      selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[2] ||
-                      selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7] ||
-                      selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[11] ||
-                      selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[16],
-                  child: ElevatedButton(
+              Row(
+                spacing: 5,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ElevatedButton(
+                      style: ButtonStyle(
+                          side:
+                              WidgetStatePropertyAll(BorderSide(color: replaceLQTexturesWithHQ ? Theme.of(context).colorScheme.primary : Colors.transparent, width: replaceLQTexturesWithHQ ? 2 : 0))),
                       onPressed: () {
                         setState(() {
-                          extraCategory.isEmpty ? extraCategory = selectedDisplayItemSwapCategory.watch(context) : extraCategory = '';
-                          rScrollController.jumpTo(0);
+                          replaceLQTexturesWithHQ ? replaceLQTexturesWithHQ = false : replaceLQTexturesWithHQ = true;
                         });
                       },
-                      child: selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[1]
-                          ? Text(extraCategory == defaultCategoryDirs[1] ? appText.swapToBasewears : appText.swapToSetwears)
-                          : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[2]
-                              ? Text(extraCategory == defaultCategoryDirs[2] ? appText.swapToBodyPaints : appText.swapToInnerwears)
-                              : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7]
-                                  ? Text(extraCategory == defaultCategoryDirs[7] ? appText.swapToEmotes : appText.swapToIdleMotions)
-                                  : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[11]
-                                      ? Text(extraCategory == defaultCategoryDirs[11] ? appText.swapToInnerwears : appText.swapToBodyPaints)
-                                      : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[16]
-                                          ? Text(extraCategory == defaultCategoryDirs[16] ? appText.swapToSetwears : appText.swapToBasewears)
-                                          : null)),
+                      child: Text(appText.replaceLQTexturesWithHQ)),
+                  Visibility(
+                      visible: selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[1] ||
+                          selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[2] ||
+                          selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7] ||
+                          selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[11] ||
+                          selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[16],
+                      child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              extraCategory.isEmpty ? extraCategory = selectedDisplayItemSwapCategory.watch(context) : extraCategory = '';
+                              rScrollController.jumpTo(0);
+                            });
+                          },
+                          child: selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[1]
+                              ? Text(extraCategory == defaultCategoryDirs[1] ? appText.swapToBasewears : appText.swapToSetwears)
+                              : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[2]
+                                  ? Text(extraCategory == defaultCategoryDirs[2] ? appText.swapToBodyPaints : appText.swapToInnerwears)
+                                  : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7]
+                                      ? Text(extraCategory == defaultCategoryDirs[7] ? appText.swapToEmotes : appText.swapToIdleMotions)
+                                      : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[11]
+                                          ? Text(extraCategory == defaultCategoryDirs[11] ? appText.swapToInnerwears : appText.swapToBodyPaints)
+                                          : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[16]
+                                              ? Text(extraCategory == defaultCategoryDirs[16] ? appText.swapToSetwears : appText.swapToBasewears)
+                                              : null)),
+                ],
+              ),
               ElevatedButton(
                   onPressed: lSelectedItemData.watch(context) != null && rSelectedItemData.watch(context) != null
                       ? () {
+                          itemSwapWorkingStatus.value = '';
                           itemSwapWorkingPopup(context, lSelectedItemData.value!, rSelectedItemData.value!);
                         }
                       : null,

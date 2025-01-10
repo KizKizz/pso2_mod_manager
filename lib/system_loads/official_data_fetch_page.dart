@@ -25,32 +25,36 @@ class _OfficialDataFetchPageState extends State<OfficialDataFetchPage> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return Center(
-              child: CardOverlay(
-                paddingValue: 15,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    LoadingAnimationWidget.staggeredDotsWave(
-                      color: Theme.of(context).colorScheme.primary,
-                      size: 100,
+            child: CardOverlay(
+              paddingValue: 15,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  LoadingAnimationWidget.staggeredDotsWave(
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 100,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Text(
+                      appText.fetchingDataFromSegaServers,
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Text(
-                        appText.fetchingDataFromSegaServers,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            );
+            ),
+          );
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
           return FutureBuilderError(loadingText: appText.fetchingDataFromSegaServers, snapshotError: snapshot.error.toString());
         } else {
-          oItemData = snapshot.data;
+          oItemData = snapshot.data.$1;
+          segaMasterServerURL = snapshot.data.$2 as String;
+          segaMasterServerBackupURL = snapshot.data.$3;
+          segaPatchServerURL = snapshot.data.$4;
+          segaPatchServerBackupURL = snapshot.data.$5;
           pageIndex++;
           curPage.value = appPages[pageIndex];
           return const SizedBox();
