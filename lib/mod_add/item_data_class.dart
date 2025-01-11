@@ -213,7 +213,9 @@ class ItemData {
             e.key != 'Reboot Cast Male' &&
             e.key != 'Reboot Cast Female' &&
             e.key != 'Reboot Fig' &&
-            e.key != 'Reboot VFX')
+            e.key != 'Reboot VFX' &&
+            e.key != 'PSO2 VFX' &&
+            e.key != 'PSO2 File')
         .map((e) => '${e.key}: ${e.value}'.trim())
         .toList();
   }
@@ -234,7 +236,13 @@ class ItemData {
             e.key != 'Reboot Cast Male' &&
             e.key != 'Reboot Cast Female' &&
             e.key != 'Reboot Fig' &&
-            e.key != 'Reboot VFX')
+            e.key != 'Reboot VFX' &&
+            e.key != 'PSO2 VFX' &&
+            e.key != 'PSO2 File' &&
+            e.key != 'Gender' &&
+            e.key != 'Gender (Blank usually follows previous)' &&
+            e.key != 'Chat Command' &&
+            e.key != 'Sounds')
         .map((e) => '${e.key}: ${e.value}'.trim())
         .toList();
   }

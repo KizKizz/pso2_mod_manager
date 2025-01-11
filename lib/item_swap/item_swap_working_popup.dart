@@ -6,6 +6,8 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_cate_select_button.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_acc_functions.dart';
+import 'package:pso2_mod_manager/item_swap/mod_swap_emote_functions.dart';
+import 'package:pso2_mod_manager/item_swap/mod_swap_general_functions.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_helper_functions.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
@@ -14,6 +16,7 @@ import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 Signal<String> itemSwapWorkingStatus = Signal('');
 
@@ -102,16 +105,30 @@ void itemSwapWorkingPopup(
                     children: [
                       Visibility(
                         visible: swapOutputDir.existsSync(),
-                        child: OutlinedButton(onPressed: () async {}, child: Text(appText.openInFileExplorer)),
+                        child: OutlinedButton(
+                            onPressed: () async {
+                              launchUrl(Uri.directory(swapOutputDir.parent.path));
+                            },
+                            child: Text(appText.openInFileExplorer)),
                       ),
-                      OutlinedButton(
-                          onPressed: () async {
-                            if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[0]) {
-                              swapOutputDir =
-                                  await modSwapAccessories(context, true, lItemModGet(), lItemSubmodGet(lItemData), lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), rItemData.getItemID());
-                            }
-                          },
-                          child: Text(appText.swap)),
+                      Visibility(
+                        visible: !swapOutputDir.existsSync(),
+                        child: OutlinedButton(
+                            onPressed: () async {
+                              swapOutputDir = Directory('');
+                              if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[0]) {
+                                swapOutputDir = await modSwapAccessories(
+                                    context, true, lItemModGet(), lItemSubmodGet(lItemData), lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), rItemData.getItemID());
+                              } else if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[14] || selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7]) {
+                                swapOutputDir =
+                                    await modSwapEmotes(context, true, lItemModGet(), lItemSubmodGet(lItemData), rItemData.getName(), lItemData.getIceDetails(), rItemData.getIceDetails(), []);
+                              } else {
+                                swapOutputDir = await modSwapGeneral(context, true, lItemModGet(), lItemSubmodGet(lItemData), lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(),
+                                    lItemData.getItemID(), rItemData.getItemID());
+                              }
+                            },
+                            child: Text(appText.swap)),
+                      ),
                       OutlinedButton(
                           onPressed: () {
                             Navigator.of(context).pop();

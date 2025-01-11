@@ -5,12 +5,12 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/app_paths/sega_file_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/item_swap/item_swap_working_popup.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:path/path.dart' as p;
-import 'package:http/http.dart' as http;
 
 Future<List<File>> modSwapRename(List<File> lItemFiles, List<File> rItemFiles, List<String> rItemIds, String rItemAccItemId, bool isBodyPaintToInnerwear, bool isInnerwearToBodyPaint) async {
   List<File> renamedFiles = [];
@@ -251,42 +251,27 @@ Future<void> modSwapTempDirsRemove() async {
 
 Future<File> modSwapOriginalFileDownload(String networkFilePath, String server, String saveLocation) async {
   String fileServerURL = server == 'm' ? segaMasterServerURL : segaPatchServerURL;
+  if (networkFilePath.isNotEmpty) {
+    final task = DownloadTask(
+        url: '$fileServerURL$networkFilePath',
+        filename: p.basenameWithoutExtension(networkFilePath),
+        headers: {"User-Agent": "AQUA_HTTP"},
+        directory: saveLocation,
+        updates: Updates.statusAndProgress,
+        retries: 1,
+        allowPause: false);
 
-  final task = DownloadTask(
-      url: '$fileServerURL$networkFilePath',
-      filename: p.basenameWithoutExtension(networkFilePath),
-      headers: {"User-Agent": "AQUA_HTTP"},
-      directory: saveLocation,
-      updates: Updates.statusAndProgress, 
-      retries: 1,
-      allowPause: false);
-      
-  final result = await FileDownloader().download(task, onProgress: (progress) => print('Progress: ${progress * 100}%'), onStatus: (status) => print('Status: $status'));
+    final result = await FileDownloader().download(task,
+        onProgress: (progress) => itemSwapWorkingStatus.value = '${appText.dText(appText.downloadingFileName, p.basenameWithoutExtension(networkFilePath))} [ ${(progress * 100).round()}% ]');
 
-  switch (result.status) {
-    case TaskStatus.complete:
-      print('Success!');
-      return File(saveLocation + p.separator + p.basenameWithoutExtension(networkFilePath));
-    default:
-      print('Download not successful');
+    switch (result.status) {
+      case TaskStatus.complete:
+        itemSwapWorkingStatus.value = appText.fileDownloadSuccessful;
+        return File(saveLocation + p.separator + p.basenameWithoutExtension(networkFilePath));
+      default:
+        itemSwapWorkingStatus.value = appText.fileDownloadFailed;
+    }
   }
-
-  // final pResponse = await http.get(Uri.parse(segaPatchServerURL + networkFilePath), headers: {"User-Agent": "AQUA_HTTP"});
-  // if (pResponse.statusCode == 200) {
-  //   return await File(saveLocation + p.separator + p.basenameWithoutExtension(networkFilePath)).writeAsBytes(pResponse.bodyBytes);
-  // }
-  // final pbResponse = await http.get(Uri.parse(segaPatchServerBackupURL + networkFilePath), headers: {"User-Agent": "AQUA_HTTP"});
-  // if (pbResponse.statusCode == 200) {
-  //   return await File(saveLocation + p.separator + p.basenameWithoutExtension(networkFilePath)).writeAsBytes(pbResponse.bodyBytes);
-  // }
-  // final mResponse = await http.get(Uri.parse(segaMasterServerURL + networkFilePath), headers: {"User-Agent": "AQUA_HTTP"});
-  // if (mResponse.statusCode == 200) {
-  //   return await File(saveLocation + p.separator + p.basenameWithoutExtension(networkFilePath)).writeAsBytes(mResponse.bodyBytes);
-  // }
-  // final mbResponse = await http.get(Uri.parse(segaMasterServerBackupURL + networkFilePath), headers: {"User-Agent": "AQUA_HTTP"});
-  // if (mbResponse.statusCode == 200) {
-  //   return await File(saveLocation + p.separator + p.basenameWithoutExtension(networkFilePath)).writeAsBytes(mbResponse.bodyBytes);
-  // }
   return File('');
 }
 
@@ -294,7 +279,7 @@ SubMod lItemSubmodGet(ItemData lItemData) {
   List<ModFile> modFileList = [];
   String fromItemNameSwap = '${lItemData.getName().replaceAll('/', '_')}_${appText.swap}';
   for (var iceNameWithType in lItemData.getIceDetails()) {
-    String iceName = iceNameWithType.split(': ').last;
+    String iceName = p.basenameWithoutExtension(iceNameWithType.split(': ').last);
 
     //look in backupDir first
     // final iceFileInBackupDir =
@@ -305,11 +290,11 @@ SubMod lItemSubmodGet(ItemData lItemData) {
     // } else {
     final icePathFromOgData = oItemData
         .firstWhere(
-          (element) => p.basename(element.path) == iceName,
+          (element) => p.basenameWithoutExtension(element.path) == iceName,
           orElse: () => OfficialIceFile('', '', 0, ''),
         )
         .path;
-    if (p.basename(icePathFromOgData) == iceName) {
+    if (p.basenameWithoutExtension(icePathFromOgData) == iceName) {
       modFileList.add(ModFile(iceName, fromItemNameSwap, fromItemNameSwap, fromItemNameSwap, lItemData.category, '', [], pso2DataDirPath + p.separator + p.fromUri(Uri.parse(icePathFromOgData)), false,
           DateTime(0), 0, false, false, false, [], [], [], [], [], []));
     }

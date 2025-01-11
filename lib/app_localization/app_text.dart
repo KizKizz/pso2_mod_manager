@@ -125,7 +125,8 @@ class AppText {
       matchedItems = 'Matched Items',
       changeTextTo = 'Change "%p%" to',
       itemSwap = 'Item Swap',
-      openInFileExplorer = 'Open In File Explorer';
+      openInFileExplorer = 'Open In File Explorer',
+      downloadingFileName = 'Downloading %p%';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -171,7 +172,9 @@ class AppText {
       swapToInnerwears = 'Swap To Innerwears',
       replaceLQTexturesWithHQ = 'Replace LQ Textures With HQ',
       sortingFileData = 'Sorting file data',
-      itemSwapFinished = 'Item Swap Finished';
+      itemSwapFinished = 'Item Swap Finished',
+      fileDownloadSuccessful = 'File download successful',
+      fileDownloadFailed = 'File download failed';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',

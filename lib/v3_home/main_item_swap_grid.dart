@@ -11,6 +11,7 @@ import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:signals/signals_flutter.dart';
 
 bool replaceLQTexturesWithHQ = false;
+bool emoteToIdleMotion = false;
 
 class MainItemSwapGrid extends StatefulWidget {
   const MainItemSwapGrid({super.key});
@@ -168,6 +169,7 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                           onPressed: () {
                             setState(() {
                               extraCategory.isEmpty ? extraCategory = selectedDisplayItemSwapCategory.watch(context) : extraCategory = '';
+                              selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[11] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
                               rScrollController.jumpTo(0);
                             });
                           },
