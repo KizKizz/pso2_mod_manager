@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
 
 class OfficialIceFile {
@@ -61,25 +63,26 @@ Future<(List<OfficialIceFile>, String, String, String, String)> officialFileDeta
         .replaceFirst('%0D', '')
         .trim();
 
-    List<String> patchListFiles = ['patchlist_region1st.txt', 'patchlist_classic.txt', 'patchlist_avatar.txt'];
-    for (var patchListFile in patchListFiles) {
-      List<String> patchListInfos = [];
-      final response = await http.get(Uri.parse(patchURL + patchListFile), headers: {"User-Agent": "AQUA_HTTP"});
-      if (response.statusCode == 200) {
-        patchListInfos = response.body.trim().split('\n');
-      } else {
-        final bResponse = await http.get(Uri.parse(patchBackupURL + patchListFile), headers: {"User-Agent": "AQUA_HTTP"});
-        if (bResponse.statusCode == 200) {
-          patchListInfos = bResponse.body.trim().split('\n');
+    // List<String> patchListFiles = ['patchlist_region1st.txt', 'patchlist_classic.txt', 'patchlist_avatar.txt', 'patchlist.txt', 'patchlist_all.txt', 'patchlist_prologue.txt', 'patchlist_reboot.txt'];
+    const patchListFile = 'patchlist_all.txt';
+    final serverURLs = [patchURL, masterURL, patchBackupURL, masterBackupURL];
+    for (var url in serverURLs) {
+      // for (var patchListFile in patchListFiles) {
+        List<String> patchListInfos = [];
+        final response = await http.get(Uri.parse(url + patchListFile), headers: {"User-Agent": "AQUA_HTTP"});
+        if (response.statusCode == 200) {
+          patchListInfos = response.body.trim().split('\n');
+          if (patchListInfos.isNotEmpty) {
+            for (var info in patchListInfos) {
+              final infoDetails = info.split('	');
+              officialList.add(OfficialIceFile(infoDetails[0].trim(), infoDetails[1].trim(), int.parse(infoDetails[2]), infoDetails[3].trim()));
+            }
+            File('${Directory.current.path}/$patchListFile').createSync();
+            File('${Directory.current.path}/$patchListFile').writeAsStringSync(officialList.map((e) => e.path).join('\n'));
+            return (officialList, masterURL.toString(), masterBackupURL, patchURL, patchBackupURL);
+          }
         }
-      }
-
-      if (patchListInfos.isNotEmpty) {
-        for (var info in patchListInfos) {
-          final infoDetails = info.split('	');
-          officialList.add(OfficialIceFile(infoDetails[0].trim(), infoDetails[1].trim(), int.parse(infoDetails[2]), infoDetails[3].trim()));
-        }
-      }
+      // }
     }
   }
 

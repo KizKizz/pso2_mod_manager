@@ -9,8 +9,12 @@ import 'package:pso2_mod_manager/item_swap/mod_swap_acc_functions.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_emote_functions.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_general_functions.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_helper_functions.dart';
+import 'package:pso2_mod_manager/mod_add/adding_mod_class.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
+import 'package:pso2_mod_manager/mod_add/mod_add_grid.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_home/homepage.dart';
+import 'package:pso2_mod_manager/v3_home/mod_add.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
@@ -112,25 +116,41 @@ void itemSwapWorkingPopup(
                             child: Text(appText.openInFileExplorer)),
                       ),
                       Visibility(
-                        visible: !swapOutputDir.existsSync(),
+                        visible: swapOutputDir.existsSync(),
                         child: OutlinedButton(
                             onPressed: () async {
-                              swapOutputDir = Directory('');
-                              if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[0]) {
-                                swapOutputDir = await modSwapAccessories(
-                                    context, true, lItemModGet(), lItemSubmodGet(lItemData), lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), rItemData.getItemID());
-                              } else if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[14] || selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7]) {
-                                swapOutputDir =
-                                    await modSwapEmotes(context, true, lItemModGet(), lItemSubmodGet(lItemData), rItemData.getName(), lItemData.getIceDetails(), rItemData.getIceDetails(), []);
-                              } else {
-                                swapOutputDir = await modSwapGeneral(context, true, lItemModGet(), lItemSubmodGet(lItemData), lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(),
-                                    lItemData.getItemID(), rItemData.getItemID());
-                              }
+                              modAddDragDropPaths.add(swapOutputDir.path);
+                              sidebarXController.selectIndex(homepageWidgets.length - 2);
+                              homepageCurrentWidget.value = const ModAdd();
+                              itemSwapWorkingStatus.value = '';
+                              curModAddDragDropStatus.value = ModAddDragDropState.fileInList;
+                              Navigator.of(context).pop();
                             },
+                            child: Text(appText.addToModManager)),
+                      ),
+                      Visibility(
+                        visible: !swapOutputDir.existsSync(),
+                        child: OutlinedButton(
+                            onPressed: itemSwapWorkingStatus.watch(context).isEmpty
+                                ? () async {
+                                    swapOutputDir = Directory('');
+                                    if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[0]) {
+                                      swapOutputDir = await modSwapAccessories(
+                                          context, true, lItemModGet(), lItemSubmodGet(lItemData), lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), rItemData.getItemID());
+                                    } else if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[14] || selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7]) {
+                                      swapOutputDir =
+                                          await modSwapEmotes(context, true, lItemModGet(), lItemSubmodGet(lItemData), rItemData.getName(), lItemData.getIceDetails(), rItemData.getIceDetails(), []);
+                                    } else {
+                                      swapOutputDir = await modSwapGeneral(context, true, lItemModGet(), lItemSubmodGet(lItemData), lItemData.getIceDetails(), rItemData.getIceDetails(),
+                                          rItemData.getName(), lItemData.getItemID(), rItemData.getItemID());
+                                    }
+                                  }
+                                : null,
                             child: Text(appText.swap)),
                       ),
                       OutlinedButton(
                           onPressed: () {
+                            itemSwapWorkingStatus.value = '';
                             Navigator.of(context).pop();
                           },
                           child: Text(appText.returns))

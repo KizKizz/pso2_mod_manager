@@ -68,7 +68,7 @@ Future<List<AddingMod>> modAddSort() async {
     }
   }
   // Check for duplicates
-  for (var dir in Directory(modAddTempUnpackedDirPath).listSync().whereType<Directory>()) {
+  for (var dir in Directory(modAddTempUnpackedDirPath).listSync().whereType<Directory>().where((e) => e.listSync(recursive: true).whereType<File>().isNotEmpty)) {
     String sortedPath = dir.path.replaceFirst(modAddTempUnpackedDirPath, modAddTempSortedDirPath);
     if (Directory(sortedPath).existsSync()) {
       await io.copyPath(dir.path, sortedPath.renameDuplicate());
@@ -82,8 +82,10 @@ Future<List<AddingMod>> modAddSort() async {
   for (var modDir in Directory(modAddTempSortedDirPath).listSync(recursive: true).whereType<Directory>().toSet()) {
     if (modDir.listSync().whereType<Directory>().isEmpty) {
       String newPath = await removeRebootPath(modDir.path);
-      await io.copyPath(modDir.path, newPath.replaceFirst(modAddTempUnpackedDirPath, modAddTempSortedDirPath));
-      await modDir.delete(recursive: true);
+      if (modDir.path != newPath) {
+        await io.copyPath(modDir.path, newPath);
+        await modDir.delete(recursive: true);
+      }
     }
   }
   // Remove empty dirs

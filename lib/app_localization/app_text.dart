@@ -126,7 +126,8 @@ class AppText {
       changeTextTo = 'Change "%p%" to',
       itemSwap = 'Item Swap',
       openInFileExplorer = 'Open In File Explorer',
-      downloadingFileName = 'Downloading %p%';
+      downloadingFileName = 'Downloading %p%',
+      addToModManager = 'Add To Mod Manager';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',

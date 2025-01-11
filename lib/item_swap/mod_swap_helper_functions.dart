@@ -250,28 +250,30 @@ Future<void> modSwapTempDirsRemove() async {
 }
 
 Future<File> modSwapOriginalFileDownload(String networkFilePath, String server, String saveLocation) async {
-  String fileServerURL = server == 'm' ? segaMasterServerURL : segaPatchServerURL;
   if (networkFilePath.isNotEmpty) {
-    final task = DownloadTask(
-        url: '$fileServerURL$networkFilePath',
-        filename: p.basenameWithoutExtension(networkFilePath),
-        headers: {"User-Agent": "AQUA_HTTP"},
-        directory: saveLocation,
-        updates: Updates.statusAndProgress,
-        retries: 1,
-        allowPause: false);
+    final serverURLs = [segaMasterServerURL, segaPatchServerURL, segaMasterServerBackupURL, segaPatchServerBackupURL];
+    for (var url in serverURLs) {
+      final task = DownloadTask(
+          url: '$url$networkFilePath',
+          filename: p.basenameWithoutExtension(networkFilePath),
+          headers: {"User-Agent": "AQUA_HTTP"},
+          directory: saveLocation,
+          updates: Updates.statusAndProgress,
+          allowPause: false);
 
-    final result = await FileDownloader().download(task,
-        onProgress: (progress) => itemSwapWorkingStatus.value = '${appText.dText(appText.downloadingFileName, p.basenameWithoutExtension(networkFilePath))} [ ${(progress * 100).round()}% ]');
+      final result = await FileDownloader().download(task,
+          onProgress: (progress) => itemSwapWorkingStatus.value = '${appText.dText(appText.downloadingFileName, p.basenameWithoutExtension(networkFilePath))} [ ${(progress * 100).round()}% ]');
 
-    switch (result.status) {
-      case TaskStatus.complete:
-        itemSwapWorkingStatus.value = appText.fileDownloadSuccessful;
-        return File(saveLocation + p.separator + p.basenameWithoutExtension(networkFilePath));
-      default:
-        itemSwapWorkingStatus.value = appText.fileDownloadFailed;
+      switch (result.status) {
+        case TaskStatus.complete:
+          itemSwapWorkingStatus.value = appText.fileDownloadSuccessful;
+          return File(saveLocation + p.separator + p.basenameWithoutExtension(networkFilePath));
+        default:
+          itemSwapWorkingStatus.value = appText.fileDownloadFailed;
+      }
     }
   }
+
   return File('');
 }
 
@@ -281,24 +283,16 @@ SubMod lItemSubmodGet(ItemData lItemData) {
   for (var iceNameWithType in lItemData.getIceDetails()) {
     String iceName = p.basenameWithoutExtension(iceNameWithType.split(': ').last);
 
-    //look in backupDir first
-    // final iceFileInBackupDir =
-    //     Directory(Uri.file(modManBackupsDirPath).toFilePath()).listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '', orElse: () => File(''));
-    // if (p.basename(iceFileInBackupDir.path) == iceName) {
-    //   modFileList
-    //       .add(ModFile(iceName, fromItemNameSwap, fromItemNameSwap, fromItemNameSwap, selectedCategoryF!, '', [], iceFileInBackupDir.path, false, DateTime(0), 0, false, false, false, [], [], []));
-    // } else {
     final icePathFromOgData = oItemData
         .firstWhere(
           (element) => p.basenameWithoutExtension(element.path) == iceName,
           orElse: () => OfficialIceFile('', '', 0, ''),
         )
         .path;
-    if (p.basenameWithoutExtension(icePathFromOgData) == iceName) {
+    if (icePathFromOgData.isNotEmpty) {
       modFileList.add(ModFile(iceName, fromItemNameSwap, fromItemNameSwap, fromItemNameSwap, lItemData.category, '', [], pso2DataDirPath + p.separator + p.fromUri(Uri.parse(icePathFromOgData)), false,
           DateTime(0), 0, false, false, false, [], [], [], [], [], []));
     }
-    //}
   }
 
   return SubMod(fromItemNameSwap, fromItemNameSwap, lItemData.getName(), lItemData.category, '', false, DateTime(0), 0, false, false, false, false, false, -1, -1, '', [], [], [], [], [], modFileList);

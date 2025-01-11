@@ -10,6 +10,10 @@ import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:signals/signals_flutter.dart';
 
+Signal<Widget> homepageCurrentWidget = Signal(const MainItemGrid());
+SidebarXController sidebarXController = SidebarXController(selectedIndex: 0, extended: false);
+List<Widget> homepageWidgets = [const MainItemGrid(), const MainModGrid(), const MainModSetGrid(), const MainItemSwapGrid(), const ModAdd(), const Settings()];
+
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
 
@@ -18,9 +22,6 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  SidebarXController sidebarXController = SidebarXController(selectedIndex: 0, extended: false);
-  List<Widget> homepageWidgets = [const MainItemGrid(), const MainModGrid(), const MainModSetGrid(), const MainItemSwapGrid(), const ModAdd(), const Settings()];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,28 +81,28 @@ class _HomepageState extends State<Homepage> {
                 icon: Icons.list_alt,
                 label: appText.itemList,
                 onTap: () {
-                  setState(() {});
+                  homepageCurrentWidget.value = const MainItemGrid();
                 },
               ),
               SidebarXItem(
                 icon: Icons.grid_view,
                 label: appText.modList,
                 onTap: () {
-                  setState(() {});
+                  homepageCurrentWidget.value = const MainModGrid();
                 },
               ),
               SidebarXItem(
                 icon: Icons.library_books_outlined,
                 label: appText.modSets,
                 onTap: () {
-                  setState(() {});
+                  homepageCurrentWidget.value = const MainModSetGrid();
                 },
               ),
               SidebarXItem(
                 icon: Icons.swap_horizontal_circle_outlined,
                 label: appText.itemSwap,
                 onTap: () {
-                  setState(() {});
+                  homepageCurrentWidget.value = const MainItemSwapGrid();
                 },
               ),
             ],
@@ -117,17 +118,17 @@ class _HomepageState extends State<Homepage> {
                   icon: Icons.add_circle_outline,
                   label: appText.addMods,
                   onTap: () {
-                    setState(() {});
+                    homepageCurrentWidget.value = const ModAdd();
                   }),
               SidebarXItem(
                   icon: Icons.settings,
                   label: appText.settings,
                   onTap: () {
-                    setState(() {});
+                    homepageCurrentWidget.value = const Settings();
                   }),
             ],
           ),
-          Expanded(child: Padding(padding: const EdgeInsets.only(top: 5.5, bottom: 5, right: 5), child: homepageWidgets[sidebarXController.selectedIndex]))
+          Expanded(child: Padding(padding: const EdgeInsets.only(top: 5.5, bottom: 5, right: 5), child: homepageCurrentWidget.watch(context)))
         ],
       ),
     );
