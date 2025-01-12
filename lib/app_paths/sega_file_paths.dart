@@ -9,6 +9,8 @@ class OfficialIceFile {
   String md5;
   int size;
   String server;
+
+  OfficialIceFile.empty() : this('', '', 0, '');
 }
 
 Future<(List<OfficialIceFile>, String, String, String, String)> officialFileDetailsFetch() async {
@@ -68,20 +70,20 @@ Future<(List<OfficialIceFile>, String, String, String, String)> officialFileDeta
     final serverURLs = [patchURL, masterURL, patchBackupURL, masterBackupURL];
     for (var url in serverURLs) {
       // for (var patchListFile in patchListFiles) {
-        List<String> patchListInfos = [];
-        final response = await http.get(Uri.parse(url + patchListFile), headers: {"User-Agent": "AQUA_HTTP"});
-        if (response.statusCode == 200) {
-          patchListInfos = response.body.trim().split('\n');
-          if (patchListInfos.isNotEmpty) {
-            for (var info in patchListInfos) {
-              final infoDetails = info.split('	');
-              officialList.add(OfficialIceFile(infoDetails[0].trim(), infoDetails[1].trim(), int.parse(infoDetails[2]), infoDetails[3].trim()));
-            }
-            File('${Directory.current.path}/$patchListFile').createSync();
-            File('${Directory.current.path}/$patchListFile').writeAsStringSync(officialList.map((e) => e.path).join('\n'));
-            return (officialList, masterURL.toString(), masterBackupURL, patchURL, patchBackupURL);
+      List<String> patchListInfos = [];
+      final response = await http.get(Uri.parse(url + patchListFile), headers: {"User-Agent": "AQUA_HTTP"});
+      if (response.statusCode == 200) {
+        patchListInfos = response.body.trim().split('\n');
+        if (patchListInfos.isNotEmpty) {
+          for (var info in patchListInfos) {
+            final infoDetails = info.split('	');
+            officialList.add(OfficialIceFile(infoDetails[0].trim(), infoDetails[1].trim(), int.parse(infoDetails[2]), infoDetails[3].trim()));
           }
+          File('${Directory.current.path}/$patchListFile').createSync();
+          File('${Directory.current.path}/$patchListFile').writeAsStringSync(officialList.map((e) => e.path).join('\n'));
+          return (officialList, masterURL.toString(), masterBackupURL, patchURL, patchBackupURL);
         }
+      }
       // }
     }
   }

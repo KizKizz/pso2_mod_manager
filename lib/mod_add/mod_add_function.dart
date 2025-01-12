@@ -21,6 +21,7 @@ import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/mod_add.dart';
 import 'package:signals/signals_flutter.dart';
+import 'package:http/http.dart' as http;
 
 String modAddTempUnpackedDirPath = '$modAddTempDirPath${p.separator}unpacked';
 String modAddTempSortedDirPath = '$modAddTempDirPath${p.separator}sorted';
@@ -141,10 +142,10 @@ Future<List<AddingMod>> modAddSort() async {
 
     // Rename duplicates
     for (var aItem in associatedItems) {
-      String newModDirDestPath = mainModDirPath + p.separator + aItem.category + p.separator + aItem.getName();
+      String newItemDirDestPath = mainModDirPath + p.separator + aItem.category + p.separator + aItem.getName();
       bool renamed = false;
       for (var submod in newAddingModItem.submods.reversed) {
-        if (submod != modDir && Directory(submod.path.replaceFirst(modAddTempSortedDirPath, newModDirDestPath)).existsSync()) {
+        if (submod != modDir && Directory(submod.path.replaceFirst(modAddTempSortedDirPath, newItemDirDestPath)).existsSync()) {
           await io.copyPath(submod.path, submod.path.renameDuplicate());
           await submod.delete(recursive: true);
           renamed = true;
@@ -167,7 +168,7 @@ Future<void> modAddToMasterList(bool addingToSet, ModSet modSet) async {
 
         String category = item.category;
         String itemName = item.getName();
-        String newModDirDestPath = mainModDirPath + p.separator + category + p.separator + itemName;
+        String newItemDirDestPath = mainModDirPath + p.separator + category + p.separator + itemName;
 
         for (int j = 0; j < modAddingItem.submods.length; j++) {
           if (!modAddingItem.submodAddingStates[j]) {
@@ -175,7 +176,11 @@ Future<void> modAddToMasterList(bool addingToSet, ModSet modSet) async {
           }
         }
 
-        await io.copyPath(modAddingItem.modDir.path, modAddingItem.modDir.path.replaceFirst(modAddTempSortedDirPath, newModDirDestPath));
+        await io.copyPath(modAddingItem.modDir.path, modAddingItem.modDir.path.replaceFirst(modAddTempSortedDirPath, newItemDirDestPath));
+        if (Directory(newItemDirDestPath).existsSync() && Directory(newItemDirDestPath).listSync().whereType<File>().toList().indexWhere((e) => p.basename(e.path) == '$itemName.png') == -1) {
+          final response = await http.get(Uri.parse(item.iconImagePath));
+          if (response.statusCode == 200) File(newItemDirDestPath + p.separator + p.basename(item.iconImagePath)).writeAsBytesSync(response.bodyBytes);
+        }
 
         //Add to current moddedItemList
         for (var cateType in masterModList) {
@@ -184,7 +189,7 @@ Future<void> modAddToMasterList(bool addingToSet, ModSet modSet) async {
             Category cateInList = cateType.categories[cateIndex];
             int itemInListIndex = cateInList.items.indexWhere((element) => element.itemName.toLowerCase() == itemName.toLowerCase());
             if (itemInListIndex == -1) {
-              Item newItem = await newItemsFetcher('$mainModDirPath${p.separator}$category', newModDirDestPath, addingToSet, modSet.setName);
+              Item newItem = await newItemsFetcher('$mainModDirPath${p.separator}$category', newItemDirDestPath, addingToSet, modSet.setName);
               if (addingToSet) modSet.addItem(newItem);
               cateInList.items.add(newItem);
             } else {
@@ -200,7 +205,7 @@ Future<void> modAddToMasterList(bool addingToSet, ModSet modSet) async {
                 modInList.isNew = true;
               } else {
                 itemInList.mods.addAll(
-                    newModsFetcher(itemInList.location, cateInList.categoryName, [Directory(newModDirDestPath + p.separator + p.basename(modAddingItem.modDir.path))], addingToSet, modSet.setName));
+                    newModsFetcher(itemInList.location, cateInList.categoryName, [Directory(newItemDirDestPath + p.separator + p.basename(modAddingItem.modDir.path))], addingToSet, modSet.setName));
               }
               itemInList.isNew = true;
               if (addingToSet) modSet.addItem(itemInList);
@@ -222,7 +227,7 @@ Future<void> modAddToMasterList(bool addingToSet, ModSet modSet) async {
             Category newCate = Category(category, cateType.groupName, Uri.file('$mainModDirPath/$category').toFilePath(), cateType.categories.length, true, []);
             int itemInListIndex = newCate.items.indexWhere((element) => element.itemName.toLowerCase() == itemName.toLowerCase());
             if (itemInListIndex == -1) {
-              Item newItem = await newItemsFetcher(Uri.file('$mainModDirPath/$category').toFilePath(), newModDirDestPath, addingToSet, modSet.setName);
+              Item newItem = await newItemsFetcher(Uri.file('$mainModDirPath/$category').toFilePath(), newItemDirDestPath, addingToSet, modSet.setName);
               if (addingToSet) modSet.addItem(newItem);
               newCate.items.add(newItem);
             } else {
@@ -238,7 +243,7 @@ Future<void> modAddToMasterList(bool addingToSet, ModSet modSet) async {
                 modInList.isNew = true;
               } else {
                 itemInList.mods.addAll(
-                    newModsFetcher(itemInList.location, newCate.categoryName, [Directory(newModDirDestPath + p.separator + p.basename(modAddingItem.modDir.path))], addingToSet, modSet.setName));
+                    newModsFetcher(itemInList.location, newCate.categoryName, [Directory(newItemDirDestPath + p.separator + p.basename(modAddingItem.modDir.path))], addingToSet, modSet.setName));
               }
               itemInList.isNew = true;
               if (addingToSet) modSet.addItem(itemInList);
