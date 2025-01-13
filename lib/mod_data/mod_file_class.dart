@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pso2_mod_manager/widgets/preview_image_stack.dart';
 import 'package:pso2_mod_manager/widgets/preview_video_stack.dart';
 import 'package:path/path.dart' as p;
+import 'package:crypto/crypto.dart';
 
 part 'mod_file_class.g.dart';
 
@@ -49,4 +52,19 @@ class ModFile with ChangeNotifier {
 
   factory ModFile.fromJson(Map<String, dynamic> json) => _$ModFileFromJson(json);
   Map<String, dynamic> toJson() => _$ModFileToJson(this);
+}
+
+extension GetMd5Hash on ModFile {
+  Future<String> getMd5Hash() async {
+    final file = File(location);
+    if (!file.existsSync()) return '';
+    try {
+      final stream = file.openRead();
+      final hashsum = await md5.bind(stream).first;
+
+      return hashsum.toString();
+    } catch (exception) {
+      return '';
+    }
+  }
 }

@@ -79,6 +79,19 @@ class AppLocale {
         localLocales.add(newLocale);
         appText = AppText.fromJson(jsonDecode(File(newLocale.translationFilePath).readAsStringSync()));
       }
+
+      // Update other locale files
+      final enLocale = localLocales[localLocales.indexWhere((e) => e.language == 'EN')];
+      for (var locale in localLocales.where((e) => e.language != 'EN')) {
+        List<String> enLocaleContent = File(enLocale.translationFilePath).readAsLinesSync();
+        List<String> curLocaleContent = File(locale.translationFilePath).readAsLinesSync();
+        enLocaleContent.removeWhere((e) => curLocaleContent.indexWhere((f) => f.contains(e.split('": "').first)) != -1);
+        if (enLocaleContent.isNotEmpty) {
+          if (!enLocaleContent.last.endsWith(',')) '${enLocaleContent.last},';
+          curLocaleContent.insertAll(1, enLocaleContent);
+          await File(locale.translationFilePath).writeAsString(curLocaleContent.join('\n'));
+        }
+      }
     }
 
     saveSettings(localLocales);

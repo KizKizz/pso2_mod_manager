@@ -79,8 +79,8 @@ Future<(List<OfficialIceFile>, String, String, String, String)> officialFileDeta
             final infoDetails = info.split('	');
             officialList.add(OfficialIceFile(infoDetails[0].trim(), infoDetails[1].trim(), int.parse(infoDetails[2]), infoDetails[3].trim()));
           }
-          File('${Directory.current.path}/$patchListFile').createSync();
-          File('${Directory.current.path}/$patchListFile').writeAsStringSync(officialList.map((e) => e.path).join('\n'));
+          // File('${Directory.current.path}/$patchListFile').createSync();
+          // File('${Directory.current.path}/$patchListFile').writeAsStringSync(officialList.map((e) => e.path).join('\n'));
           return (officialList, masterURL.toString(), masterBackupURL, patchURL, patchBackupURL);
         }
       }

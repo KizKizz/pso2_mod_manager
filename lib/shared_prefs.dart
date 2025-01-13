@@ -17,6 +17,7 @@ Signal<bool> hideAppBackgroundSlides = Signal<bool>(false);
 Signal<int> backgroundImageSlideInterval = Signal<int>(10);
 Signal<bool> itemIconSlides = Signal<bool>(false);
 Signal<String> selectedDisplayCategory = Signal<String>('All');
+bool originalFilesBackupsFromSega = true;
 
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
@@ -70,4 +71,7 @@ Future<void> prefsLoad() async {
       [darkColorScheme.primary.r.toString(), darkColorScheme.primary.g.toString(), darkColorScheme.primary.b.toString(), darkColorScheme.primary.a.toString()];
   darkModeSeedColor = Color.from(
       red: double.parse(darkModeSeedColorValue[0]), green: double.parse(darkModeSeedColorValue[1]), blue: double.parse(darkModeSeedColorValue[2]), alpha: double.parse(darkModeSeedColorValue[3]));
+
+  // Backup priority
+  originalFilesBackupsFromSega = prefs.getBool('originalFilesBackupsFromSega') ?? true;
 }

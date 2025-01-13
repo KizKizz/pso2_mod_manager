@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_locale.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_localization/item_locale.dart';
-import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/settings.dart';
+import 'package:pso2_mod_manager/v3_widgets/animated_hori_toggle_layout.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
@@ -19,6 +19,7 @@ class AppSettingsLayout extends StatefulWidget {
 
 class _AppSettingsLayoutState extends State<AppSettingsLayout> {
   late List<AppLocale> appLocales;
+  final onOffLabels = [appText.on, appText.off];
 
   @override
   void initState() {
@@ -29,90 +30,68 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          appText.appSettings,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        const HoriDivider(),
-        Expanded(
-            child: SingleChildScrollView(
-                physics: const SuperRangeMaintainingScrollPhysics(),
-                child: Column(
-                  spacing: 5,
-                  children: [
-                    // Language
-                    SettingsHeader(icon: Icons.language, text: appText.uiLanguage),
-                    Wrap(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              appText.appSettings,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const HoriDivider(),
+            Expanded(
+                child: SingleChildScrollView(
+                    physics: const SuperRangeMaintainingScrollPhysics(),
+                    child: Column(
                       spacing: 5,
-                      runSpacing: 5,
                       children: [
-                        for (int i = 0; i < appLocales.length; i++)
-                          SizedBox(
-                            width: double.infinity,
-                            child: OutlinedButton(
-                                onPressed: () {
-                                  for (var e in appLocales) {
-                                    e.isActive = false;
-                                  }
-                                  appLocales[i].isActive = true;
-                                  setState(() {});
-                                },
-                                child: Text(appLocales[i].language,
-                                    style: TextStyle(color: appLocales[i].isActive ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.labelMedium!.color))),
-                          )
-                      ],
-                    ),
-
-                    // Item name language
-                    SettingsHeader(icon: Icons.language, text: appText.itemNameLanguage),
-                    Wrap(
-                      spacing: 5,
-                      runSpacing: 5,
-                      children: [
-                        SizedBox(
-                          width: double.infinity,
-                          child: OutlinedButton(
-                              onPressed: () {
-                                itemNameLanguage = ItemNameLanguage.en;
-                                setState(() {});
-                              },
-                              child: Text(ItemNameLanguage.en.name.toUpperCase(),
-                                  style: TextStyle(color: itemNameLanguage == ItemNameLanguage.en ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.labelMedium!.color))),
+                        // Language
+                        SettingsHeader(icon: Icons.language, text: appText.uiLanguage),
+                        AnimatedHorizontalToggleLayout(
+                          taps: appLocales.map((e) => e.language).toList(),
+                          initialIndex: appLocales.indexWhere((e) => e.isActive),
+                          width: constraints.maxWidth,
+                          onChange: (currentIndex, targetIndex) {
+                            for (var e in appLocales) {
+                              e.isActive = false;
+                            }
+                            appLocales[targetIndex].isActive = true;
+                            appLocales[targetIndex].saveSettings(appLocales);
+                          },
                         ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: OutlinedButton(
-                              onPressed: () {
-                                itemNameLanguage = ItemNameLanguage.jp;
-                                setState(() {});
-                              },
-                              child: Text(ItemNameLanguage.jp.name.toUpperCase(),
-                                  style: TextStyle(color: itemNameLanguage == ItemNameLanguage.jp ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.labelMedium!.color))),
+
+                        // Item name language
+                        SettingsHeader(icon: Icons.language, text: appText.itemNameLanguage),
+                        AnimatedHorizontalToggleLayout(
+                          taps: const ['EN', 'JP'],
+                          initialIndex: itemNameLanguage == ItemNameLanguage.en ? 0 : 1,
+                          width: constraints.maxWidth,
+                          onChange: (currentIndex, targetIndex) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            targetIndex == 0 ? itemNameLanguage = ItemNameLanguage.en : itemNameLanguage = ItemNameLanguage.jp;
+                            prefs.setString('itemNameLanguage', itemNameLanguage.value);
+                          },
+                        ),
+
+                        // Item icon slides
+                        SettingsHeader(icon: Icons.slideshow, text: appText.itemIconSlides),
+                        AnimatedHorizontalToggleLayout(
+                          taps: onOffLabels,
+                          initialIndex: itemIconSlides.watch(context) ? 0 : 1,
+                          width: constraints.maxWidth,
+                          onChange: (currentIndex, targetIndex) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            targetIndex == 0 ? itemIconSlides.value = true : itemIconSlides.value = false;
+                            prefs.setBool('itemIconSlides', itemIconSlides.value);
+                          },
                         )
                       ],
-                    ),
-
-                    // Item icon slides
-                    SettingsHeader(icon: Icons.slideshow, text: appText.itemIconSlides),
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton(
-                          onPressed: () async {
-                            final prefs = await SharedPreferences.getInstance();
-                            itemIconSlides.value ? itemIconSlides.value = false : itemIconSlides.value = true;
-                            prefs.setBool('itemIconSlides', itemIconSlides.value);
-                            setState(() {});
-                          },
-                          child: Text(itemIconSlides.watch(context) ? appText.on : appText.off,
-                              style: TextStyle(color: itemIconSlides.watch(context) ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.labelMedium!.color))),
-                    )
-                  ],
-                )))
-      ],
+                    )))
+          ],
+        );
+      },
     );
   }
 }

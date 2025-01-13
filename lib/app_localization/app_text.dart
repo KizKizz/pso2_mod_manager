@@ -127,7 +127,10 @@ class AppText {
       itemSwap = 'Item Swap',
       openInFileExplorer = 'Open In File Explorer',
       downloadingFileName = 'Downloading %p%',
-      addToModManager = 'Add To Mod Manager';
+      addToModManager = 'Add To Mod Manager',
+      originalFilesBackupPriority = 'Original Files Backup Priority',
+      segaServers = 'Sega Servers',
+      localBackups = 'Local Backups';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
