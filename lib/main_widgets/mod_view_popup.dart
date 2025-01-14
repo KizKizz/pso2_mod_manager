@@ -61,27 +61,26 @@ Future<void> modViewPopup(context, Item item) async {
                               itemCount: item.mods.length,
                               itemBuilder: (context, modIndex) {
                                 Mod mod = item.mods[modIndex];
-                                return ListTile(
-                                  contentPadding: EdgeInsets.zero,
-                                  selected: selectedMod == mod ? true : false,
-                                  title: Text(mod.modName),
-                                  subtitle: Row(
-                                    spacing: 5,
-                                    children: [
-                                      Text(appText.dText(mod.submods.length > 1 ? appText.numVariants : appText.numVariant, mod.submods.length.toString())),
-                                      // 
-                                    ],
-                                  ),
-                                  trailing: Visibility(
-                                    visible: mod.applyStatus,
-                                    child: Icon(Icons.turned_in, color: Theme.of(context).colorScheme.primary)),
-                                  onTap: () {
-                                    selectedMod = mod;
-                                    setState(
-                                      () {},
-                                    );
-                                  },
-                                );
+                                return ListTileTheme(
+                                    data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                                    child: ListTile(
+                                      contentPadding: EdgeInsets.zero,
+                                      selected: selectedMod == mod ? true : false,
+                                      title: Text(mod.modName),
+                                      subtitle: Row(
+                                        spacing: 5,
+                                        children: [
+                                          Text(appText.dText(mod.submods.length > 1 ? appText.numVariants : appText.numVariant, mod.submods.length.toString())),
+                                        ],
+                                      ),
+                                      trailing: Visibility(visible: mod.applyStatus, child: Icon(Icons.turned_in, color: Theme.of(context).colorScheme.primary)),
+                                      onTap: () {
+                                        selectedMod = mod;
+                                        setState(
+                                          () {},
+                                        );
+                                      },
+                                    ));
                               })
                         ]))
                       ],

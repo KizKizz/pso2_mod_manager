@@ -63,25 +63,27 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
                           SuperSliverList.builder(
                               itemCount: 1,
                               itemBuilder: (context, modIndex) {
-                                return ListTile(
-                                  contentPadding: EdgeInsets.zero,
-                                  selected: selectedMod == mod ? true : false,
-                                  title: Text(mod.modName),
-                                  subtitle: Row(
-                                    spacing: 5,
-                                    children: [
-                                      Text(appText.dText(mod.submods.length > 1 ? appText.numVariants : appText.numVariant, mod.submods.length.toString())),
-                                      // InfoBox(info: appText.dText(appText.numCurrentlyApplied, mod.getNumOfAppliedSubmods().toString()), borderHighlight: mod.applyStatus)
-                                    ],
-                                  ),
-                                  trailing: Visibility(visible: mod.applyStatus, child: Icon(Icons.turned_in, color: Theme.of(context).colorScheme.primary)),
-                                  onTap: () {
-                                    selectedMod = mod;
-                                    setState(
-                                      () {},
-                                    );
-                                  },
-                                );
+                                return ListTileTheme(
+                                    data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                                    child: ListTile(
+                                      contentPadding: EdgeInsets.zero,
+                                      selected: selectedMod == mod ? true : false,
+                                      title: Text(mod.modName),
+                                      subtitle: Row(
+                                        spacing: 5,
+                                        children: [
+                                          Text(appText.dText(mod.submods.length > 1 ? appText.numVariants : appText.numVariant, mod.submods.length.toString())),
+                                          // InfoBox(info: appText.dText(appText.numCurrentlyApplied, mod.getNumOfAppliedSubmods().toString()), borderHighlight: mod.applyStatus)
+                                        ],
+                                      ),
+                                      trailing: Visibility(visible: mod.applyStatus, child: Icon(Icons.turned_in, color: Theme.of(context).colorScheme.primary)),
+                                      onTap: () {
+                                        selectedMod = mod;
+                                        setState(
+                                          () {},
+                                        );
+                                      },
+                                    ));
                               })
                         ]))
                       ],

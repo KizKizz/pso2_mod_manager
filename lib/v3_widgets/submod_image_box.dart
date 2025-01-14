@@ -23,18 +23,13 @@ class SubmodImageBox extends StatefulWidget {
 }
 
 class _SubmodImageBoxState extends State<SubmodImageBox> {
-  List<String> paths = [];
-
   @override
-  void initState() {
+  Widget build(BuildContext context) {
+    List<String> paths = [];
     for (var path in widget.filePaths) {
       if (paths.indexWhere((e) => p.basename(e) == p.basename(path)) == -1) paths.add(path);
     }
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+    
     return Container(
       foregroundDecoration: widget.isNew
           ? RotatedCornerDecoration.withColor(
