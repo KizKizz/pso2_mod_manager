@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:pso2_mod_manager/app_paths/main_paths.dart';
+import 'package:path/path.dart' as p;
 
 class OfficialIceFile {
   OfficialIceFile(this.path, this.md5, this.size, this.server);
@@ -13,9 +15,10 @@ class OfficialIceFile {
   OfficialIceFile.empty() : this('', '', 0, '');
 }
 
-Future<(List<OfficialIceFile>, String, String, String, String)> officialFileDetailsFetch() async {
+Future<(List<OfficialIceFile>, List<OfficialIceFile>, String, String, String, String)> officialFileDetailsFetch() async {
   String serverManagementLink = 'http://patch01.pso2gs.net/patch_prod/patches/management_beta.txt';
   List<OfficialIceFile> officialList = [];
+  List<OfficialIceFile> officialListNA = [];
   String masterURL = '';
   String patchURL = '';
   String masterBackupURL = '';
@@ -69,7 +72,6 @@ Future<(List<OfficialIceFile>, String, String, String, String)> officialFileDeta
     const patchListFile = 'patchlist_all.txt';
     final serverURLs = [patchURL, masterURL, patchBackupURL, masterBackupURL];
     for (var url in serverURLs) {
-      // for (var patchListFile in patchListFiles) {
       List<String> patchListInfos = [];
       final response = await http.get(Uri.parse(url + patchListFile), headers: {"User-Agent": "AQUA_HTTP"});
       if (response.statusCode == 200) {
@@ -81,12 +83,19 @@ Future<(List<OfficialIceFile>, String, String, String, String)> officialFileDeta
           }
           // File('${Directory.current.path}/$patchListFile').createSync();
           // File('${Directory.current.path}/$patchListFile').writeAsStringSync(officialList.map((e) => e.path).join('\n'));
-          return (officialList, masterURL.toString(), masterBackupURL, patchURL, patchBackupURL);
+          // _na bundle
+          for (var path in Directory('$pso2DataDirPath${p.separator}win32_na').listSync(recursive: true).whereType<File>().map((e) => e.path).toList()) {
+            officialListNA.add(OfficialIceFile(path, '', 0, 'm'));
+          }
+          for (var path in Directory('$pso2DataDirPath${p.separator}win32reboot_na').listSync(recursive: true).whereType<File>().map((e) => e.path).toList()) {
+            officialListNA.add(OfficialIceFile(path, '', 0, 'm'));
+          }
+
+          return (officialList, officialListNA, masterURL.toString(), masterBackupURL, patchURL, patchBackupURL);
         }
       }
-      // }
     }
   }
 
-  return (officialList, masterURL.toString(), masterBackupURL, patchURL, patchBackupURL);
+  return (officialList, officialListNA, masterURL, masterBackupURL, patchURL, patchBackupURL);
 }

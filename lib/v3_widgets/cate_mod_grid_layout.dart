@@ -27,7 +27,9 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
     return SliverStickyHeader.builder(
         builder: (context, state) => Card(
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
-            color: state.isPinned ? Theme.of(context).colorScheme.secondaryContainer.withAlpha(uiBackgroundColorAlpha.watch(context)) : Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+            color: state.isPinned
+                ? Theme.of(context).colorScheme.secondaryContainer.withAlpha(uiBackgroundColorAlpha.watch(context))
+                : Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
             margin: EdgeInsets.zero,
             elevation: 5,
             child: Padding(
@@ -89,13 +91,20 @@ class _ModCardLayoutState extends State<ModCardLayout> {
               Column(
                 spacing: 5,
                 children: [
-                  InfoBox(info: appText.dText(widget.mod.submods.length > 1 ? appText.numVariants : appText.numVariant, widget.mod.submods.length.toString())),
-                  InfoBox(info: appText.dText(appText.numCurrentlyApplied, widget.mod.getNumOfAppliedSubmods().toString())),
+                  InfoBox(
+                    info: appText.dText(widget.mod.submods.length > 1 ? appText.numVariants : appText.numVariant, widget.mod.submods.length.toString()),
+                    borderHighlight: false,
+                  ),
+                  InfoBox(
+                    info: appText.dText(appText.numCurrentlyApplied, widget.mod.getNumOfAppliedSubmods().toString()),
+                    borderHighlight: false,
+                  ),
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
-                        onPressed: () {
-                          submodViewPopup(context, widget.item, widget.mod);
+                        onPressed: () async {
+                          await submodViewPopup(context, widget.item, widget.mod);
+                          setState(() {});
                         },
                         child: Text(appText.viewVariants)),
                   )

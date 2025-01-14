@@ -52,9 +52,9 @@ class _ModAddGridState extends State<ModAddGrid> {
                                 spacing: 5,
                                 children: [
                                   Expanded(
-                                    child: InfoBox(info: appText.dText(modAddingList[i].associatedItems.length > 1 ? appText.numMatchedItems : appText.numMatchedItem, modAddingList[i].associatedItems.length.toString())),
+                                    child: InfoBox(info: appText.dText(modAddingList[i].associatedItems.length > 1 ? appText.numMatchedItems : appText.numMatchedItem, modAddingList[i].associatedItems.length.toString()), borderHighlight: false,),
                                   ),
-                                  Expanded(child: InfoBox(info: appText.dText(modAddingList[i].submods.length > 1 ? appText.numVariants : appText.numVariant, modAddingList[i].submods.length.toString())))
+                                  Expanded(child: InfoBox(info: appText.dText(modAddingList[i].submods.length > 1 ? appText.numVariants : appText.numVariant, modAddingList[i].submods.length.toString()), borderHighlight: false,))
                                 ],
                               ),
                               Row(

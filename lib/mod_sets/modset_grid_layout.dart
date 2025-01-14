@@ -103,8 +103,8 @@ class _ModCardLayoutState extends State<ModCardLayout> {
               Expanded(
                   child: InfoBox(
                       info: appText.dText(widget.mod.submods.where((e) => e.setNames.contains(widget.setName)).length > 1 ? appText.numVariants : appText.numVariant,
-                          widget.mod.submods.where((e) => e.setNames.contains(widget.setName)).length.toString()))),
-              Expanded(child: InfoBox(info: appText.dText(appText.numCurrentlyApplied, widget.mod.getNumOfAppliedSubmods().toString()))),
+                          widget.mod.submods.where((e) => e.setNames.contains(widget.setName)).length.toString()), borderHighlight: false,)),
+              Expanded(child: InfoBox(info: appText.dText(appText.numCurrentlyApplied, widget.mod.getNumOfAppliedSubmods().toString()), borderHighlight: false,)),
             ],
           ),
           Row(

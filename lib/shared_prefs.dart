@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:pso2_mod_manager/app_colorscheme.dart';
+import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_localization/item_locale.dart';
 import 'package:pso2_mod_manager/settings/other_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,7 +17,7 @@ Color darkModeSeedColor = darkColorScheme.primary;
 Signal<bool> hideAppBackgroundSlides = Signal<bool>(false);
 Signal<int> backgroundImageSlideInterval = Signal<int>(10);
 Signal<bool> itemIconSlides = Signal<bool>(false);
-Signal<String> selectedDisplayCategory = Signal<String>('All');
+Signal<String> selectedDisplayCategory = Signal<String>(appText.all);
 bool originalFilesBackupsFromSega = true;
 
 int modManCurActiveProfile = 1;

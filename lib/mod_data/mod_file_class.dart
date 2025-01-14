@@ -68,3 +68,17 @@ extension GetMd5Hash on ModFile {
     }
   }
 }
+
+extension GetMd5HashFile on File {
+  Future<String> getMd5Hash() async {
+    if (!existsSync()) return '';
+    try {
+      final stream = openRead();
+      final hashsum = await md5.bind(stream).first;
+
+      return hashsum.toString();
+    } catch (exception) {
+      return '';
+    }
+  }
+}

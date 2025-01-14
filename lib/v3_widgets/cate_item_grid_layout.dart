@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
@@ -26,7 +27,9 @@ class _CateItemGridLayoutState extends State<CateItemGridLayout> {
     return SliverStickyHeader.builder(
         builder: (context, state) => Card(
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
-            color: state.isPinned ? Theme.of(context).colorScheme.secondaryContainer.withAlpha(uiBackgroundColorAlpha.watch(context)) : Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+            color: state.isPinned
+                ? Theme.of(context).colorScheme.secondaryContainer.withAlpha(uiBackgroundColorAlpha.watch(context))
+                : Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
             margin: EdgeInsets.zero,
             elevation: 5,
             child: Padding(
@@ -76,13 +79,14 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
               Column(
                 spacing: 5,
                 children: [
-                  InfoBox(info: appText.dText(widget.item.mods.length > 1 ? appText.numMods : appText.numMod, widget.item.mods.length.toString())),
-                  InfoBox(info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedMods().toString())),
+                  InfoBox(info: appText.dText(widget.item.mods.length > 1 ? appText.numMods : appText.numMod, widget.item.mods.length.toString()), borderHighlight: false,),
+                  InfoBox(info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedMods().toString()), borderHighlight: widget.item.applyStatus,),
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
-                        onPressed: () {
-                          modViewPopup(context, widget.item);
+                        onPressed: () async {
+                          await modViewPopup(context, widget.item);
+                          setState(() {});
                         },
                         child: Text(appText.viewMods)),
                   )

@@ -51,10 +51,11 @@ class _OfficialDataFetchPageState extends State<OfficialDataFetchPage> {
           return FutureBuilderError(loadingText: appText.fetchingDataFromSegaServers, snapshotError: snapshot.error.toString());
         } else {
           oItemData = snapshot.data.$1;
-          segaMasterServerURL = snapshot.data.$2 as String;
-          segaMasterServerBackupURL = snapshot.data.$3;
-          segaPatchServerURL = snapshot.data.$4;
-          segaPatchServerBackupURL = snapshot.data.$5;
+          oItemDataNA = snapshot.data.$2;
+          segaMasterServerURL = snapshot.data.$3;
+          segaMasterServerBackupURL = snapshot.data.$4;
+          segaPatchServerURL = snapshot.data.$5;
+          segaPatchServerBackupURL = snapshot.data.$6;
           pageIndex++;
           curPage.value = appPages[pageIndex];
           return const SizedBox();

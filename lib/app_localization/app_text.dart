@@ -83,7 +83,9 @@ class AppText {
       motions = 'Motions',
       next = 'Next',
       normal = 'Normal',
-      open = 'Open';
+      open = 'Open',
+      successful = 'Successful',
+      failed = 'Failed';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -130,7 +132,13 @@ class AppText {
       addToModManager = 'Add To Mod Manager',
       originalFilesBackupPriority = 'Original Files Backup Priority',
       segaServers = 'Sega Servers',
-      localBackups = 'Local Backups';
+      localBackups = 'Local Backups',
+      creatingBackupForModFile = 'Creating backup for %p%',
+      copyingModFileToGameData = 'Copying %p% to game data',
+      localBackupFoundForModFile = 'Local backup found for %p%',
+      restoringBackupFileToGameData = 'Restoring %p% to game data',
+      applyingMod = 'Applying %p%',
+      restoringBackups = 'Restoring Backups';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -178,7 +186,11 @@ class AppText {
       sortingFileData = 'Sorting file data',
       itemSwapFinished = 'Item Swap Finished',
       fileDownloadSuccessful = 'File download successful',
-      fileDownloadFailed = 'File download failed';
+      fileDownloadFailed = 'File download failed',
+      checkingAppliedMods = 'Checking Applied Mods',
+      restoredMods = 'Restored Mods',
+      reApplyAll = 'Re-Apply All',
+      removeAll = 'Remove All';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',
@@ -192,7 +204,8 @@ class AppText {
 
   // Infos
   String pso2binDirPathInfo = 'PSO2 game data folder, this folder located inside the game installation directory',
-      mainDirPathInfo = 'This folder stores your mods and other Mod Manager related stuff\nPreferably outside of pso2 installation directory and nested folders';
+      mainDirPathInfo = 'This folder stores your mods and other Mod Manager related stuff\nPreferably outside of pso2 installation directory and nested folders',
+      restoredModInfo = 'These mods had been restored by game update or file check';
 
   // Settings Text
   String appSettings = 'App Settings',

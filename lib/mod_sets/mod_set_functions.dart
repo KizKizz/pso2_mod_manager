@@ -1,15 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
-import 'package:pso2_mod_manager/global_vars.dart';
-import 'package:pso2_mod_manager/mod_data/category_type_class.dart';
-import 'package:pso2_mod_manager/mod_data/item_class.dart';
-import 'package:pso2_mod_manager/mod_data/mod_class.dart';
-import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
-import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
 import 'package:pso2_mod_manager/system_loads/app_modset_load_page.dart';
 

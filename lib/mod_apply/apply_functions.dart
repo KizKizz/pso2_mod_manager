@@ -1,43 +1,60 @@
 import 'dart:io';
 
+import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/app_paths/sega_file_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
+import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/shared_prefs.dart';
 
-void modApplySequence(Item item, Mod mod, SubMod submod, ModFile modFile) {
-  final oData = oItemData.firstWhere((e) => p.basenameWithoutExtension(e.path) == modFile.modFileName, orElse: () => OfficialIceFile.empty());
+Future<void> modApplySequence(Item item, Mod mod, SubMod submod) async {
+  modApplyStatus.value = '';
+  for (var modFile in submod.modFiles) {
+    List<OfficialIceFile> oDataList = oItemData.where((e) => p.basenameWithoutExtension(e.path) == modFile.modFileName).toList();
+    oDataList.addAll(oItemDataNA.where((e) => p.basenameWithoutExtension(e.path) == modFile.modFileName).toList());
 
-  // Backup
-  modFileLocalBackup(modFile, oData);
-  // Apply
-  modApply(item, mod, submod, modFile, oData);
+    for (var oData in oDataList) {
+      // Backup
+      await modFileLocalBackup(modFile, oData);
+      // Apply
+      await modApply(item, mod, submod, modFile, oData);
+
+      await Future.delayed(const Duration(microseconds: 10));
+    }
+  }
+
+  saveMasterModListToJson();
 }
 
 Future<void> modFileLocalBackup(ModFile modFile, OfficialIceFile oData) async {
-  // Look for path in oFileData
-  // final oData = oItemData.firstWhere((e) => p.basenameWithoutExtension(e.path) == modFile.modFileName, orElse: () => OfficialIceFile.empty());
-  if (oData.path.isNotEmpty) {
-    final oFile = File(pso2binDirPath + p.separator + p.withoutExtension(oData.path));
+  if (oData.path.replaceAll('/', p.separator).isNotEmpty) {
+    modApplyStatus.value = appText.dText(appText.creatingBackupForModFile, modFile.modFileName);
+    final oFile = File(pso2binDirPath + p.separator + p.withoutExtension(oData.path.replaceAll('/', p.separator)));
     if (await oFile.exists()) {
       final backupFilePath = oFile.path.replaceFirst(pso2DataDirPath, backupDirPath);
-      await Directory(p.dirname(backupFilePath)).create(recursive: true);
-      final backedFile = await oFile.copy(backupFilePath);
-      if (backedFile.existsSync()) modFile.bkLocations.add(backedFile.path);
+      if (!File(backupFilePath).existsSync()) {
+        await Directory(p.dirname(backupFilePath)).create(recursive: true);
+        final backedFile = await oFile.copy(backupFilePath);
+        if (backedFile.existsSync()) modFile.bkLocations.add(backedFile.path);
+        modApplyStatus.value = appText.successful;
+      }
     }
+  } else {
+    modApplyStatus.value = appText.failed;
   }
 }
 
 Future<void> modApply(Item item, Mod mod, SubMod submod, ModFile modFile, OfficialIceFile oData) async {
   File file = File(modFile.location);
   if (file.existsSync()) {
-    if (oData.path.isNotEmpty) {
-      final copiedFile = await file.copy(pso2binDirPath + p.separator + p.withoutExtension(oData.path));
+    if (oData.path.replaceAll('/', p.separator).isNotEmpty) {
+      modApplyStatus.value = appText.dText(appText.copyingModFileToGameData, modFile.modFileName);
+      final copiedFile = await file.copy(pso2binDirPath + p.separator + p.withoutExtension(oData.path.replaceAll('/', p.separator)));
       modFile.ogLocations.add(copiedFile.path);
     } else {
       final oFilePath = Directory(pso2DataDirPath)
@@ -49,24 +66,30 @@ Future<void> modApply(Item item, Mod mod, SubMod submod, ModFile modFile, Offici
           )
           .path;
       if (oFilePath.isNotEmpty) {
-        final copiedFile = await file.copy(pso2binDirPath + p.separator + p.withoutExtension(oData.path));
+        modApplyStatus.value = appText.dText(appText.copyingModFileToGameData, modFile.modFileName);
+        final copiedFile = await file.copy(pso2binDirPath + p.separator + p.withoutExtension(oData.path.replaceAll('/', p.separator)));
         modFile.ogLocations.add(copiedFile.path);
       }
     }
     if (modFile.ogLocations.isNotEmpty) {
+      modApplyStatus.value = appText.successful;
       final appliedDate = DateTime.now();
       modFile.applyStatus = true;
       modFile.md5 = await modFile.getMd5Hash();
       modFile.applyDate = appliedDate;
+      modFile.isNew = false;
 
       submod.applyStatus = true;
       submod.applyDate = appliedDate;
+      submod.isNew = false;
 
       mod.applyStatus = true;
       mod.applyDate = appliedDate;
+      mod.isNew = false;
 
       item.applyStatus = true;
       item.applyDate = appliedDate;
+      item.isNew = false;
     }
   }
 }

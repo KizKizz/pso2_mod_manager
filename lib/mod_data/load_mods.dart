@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/category_type_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
@@ -615,3 +616,10 @@ Future<List<SubMod>> subModFetcher(String modPath, String cateName, String itemN
 //     //     .toList();
 //   }
 // }
+
+void saveMasterModListToJson() {
+  //Save to json
+  masterModList.map((cateType) => cateType.toJson()).toList();
+  const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+  File(mainModListJsonPath).writeAsStringSync(encoder.convert(masterModList));
+}

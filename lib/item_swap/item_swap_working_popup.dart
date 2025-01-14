@@ -11,7 +11,6 @@ import 'package:pso2_mod_manager/item_swap/mod_swap_general_functions.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_helper_functions.dart';
 import 'package:pso2_mod_manager/mod_add/adding_mod_class.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
-import 'package:pso2_mod_manager/mod_add/mod_add_grid.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/homepage.dart';
 import 'package:pso2_mod_manager/v3_home/mod_add.dart';

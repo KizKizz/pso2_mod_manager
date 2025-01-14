@@ -111,7 +111,7 @@ Future<AddingMod?> variantsEditPopup(context, AddingMod addingMod, int curIndex)
                                                 .whereType<File>()
                                                 .where((e) => p.extension(e.path) == '')
                                                 .length
-                                                .toString())),
+                                                .toString()), borderHighlight: false,),
                                       ),
                                     ),
                                     IconButton(

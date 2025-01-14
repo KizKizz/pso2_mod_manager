@@ -12,13 +12,19 @@ import 'package:pso2_mod_manager/v3_widgets/vertical_divider.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
-void modViewPopup(context, Item item) {
-  showDialog(
+Future<void> modViewPopup(context, Item item) async {
+  Mod? selectedMod = item.mods.first;
+  await showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        Mod? selectedMod = item.mods.first;
         return StatefulBuilder(builder: (dialogContext, setState) {
+          // Refresh
+          if (modApplyStatus.watch(context) != modApplyStatus.peek()) {
+            setState(
+              () {},
+            );
+          }
           return AlertDialog(
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: const BorderRadius.all(Radius.circular(5))),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
@@ -43,8 +49,11 @@ void modViewPopup(context, Item item) {
                           item.itemName,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        InfoBox(info: appText.dText(item.mods.length > 1 ? appText.numMods : appText.numMod, item.mods.length.toString())),
-                        InfoBox(info: appText.dText(appText.numCurrentlyApplied, item.getNumOfAppliedMods().toString())),
+                        InfoBox(
+                          info: appText.dText(item.mods.length > 1 ? appText.numMods : appText.numMod, item.mods.length.toString()),
+                          borderHighlight: false,
+                        ),
+                        InfoBox(info: appText.dText(appText.numCurrentlyApplied, item.getNumOfAppliedMods().toString()), borderHighlight: item.applyStatus),
                         const HoriDivider(),
                         Expanded(
                             child: CustomScrollView(physics: const SuperRangeMaintainingScrollPhysics(), slivers: [
@@ -56,7 +65,16 @@ void modViewPopup(context, Item item) {
                                   contentPadding: EdgeInsets.zero,
                                   selected: selectedMod == mod ? true : false,
                                   title: Text(mod.modName),
-                                  subtitle: Text(appText.dText(mod.submods.length > 1 ? appText.numVariants : appText.numVariant, mod.submods.length.toString())),
+                                  subtitle: Row(
+                                    spacing: 5,
+                                    children: [
+                                      Text(appText.dText(mod.submods.length > 1 ? appText.numVariants : appText.numVariant, mod.submods.length.toString())),
+                                      // 
+                                    ],
+                                  ),
+                                  trailing: Visibility(
+                                    visible: mod.applyStatus,
+                                    child: Icon(Icons.turned_in, color: Theme.of(context).colorScheme.primary)),
                                   onTap: () {
                                     selectedMod = mod;
                                     setState(
@@ -81,7 +99,7 @@ void modViewPopup(context, Item item) {
                           )
                         : CustomScrollView(
                             physics: const SuperRangeMaintainingScrollPhysics(),
-                            slivers: [SubmodGridLayout(submods: selectedMod!.submods, searchString: searchTextController.value.text)],
+                            slivers: [SubmodGridLayout(item: item, mod: selectedMod!, submods: selectedMod!.submods, searchString: searchTextController.value.text)],
                           ),
                   ),
                 ],
