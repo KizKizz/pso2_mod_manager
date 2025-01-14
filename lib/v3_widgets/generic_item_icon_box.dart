@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:signals/signals_flutter.dart';
-import 'package:http/http.dart' as http;
 
 class GenericItemIconBox extends StatefulWidget {
   const GenericItemIconBox({super.key, required this.iconImagePaths, required this.boxSize, required this.isNetwork});

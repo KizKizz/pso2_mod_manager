@@ -190,7 +190,8 @@ class AppText {
       checkingAppliedMods = 'Checking Applied Mods',
       restoredMods = 'Restored Mods',
       reApplyAll = 'Re-Apply All',
-      removeAll = 'Remove All';
+      removeAll = 'Remove All',
+      appliedList = 'Applied List';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',

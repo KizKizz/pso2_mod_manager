@@ -3,25 +3,24 @@ import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
-import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
-import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
-import 'package:pso2_mod_manager/v3_widgets/submod_view_popup.dart';
+import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/mod_view_popup.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:signals/signals_flutter.dart';
 
-class CateModGridLayout extends StatefulWidget {
-  const CateModGridLayout({super.key, required this.itemCate, required this.searchString});
+class CateItemGridLayout extends StatefulWidget {
+  const CateItemGridLayout({super.key, required this.itemCate, required this.searchString});
 
   final Category itemCate;
   final String searchString;
 
   @override
-  State<CateModGridLayout> createState() => _CateModGridLayoutState();
+  State<CateItemGridLayout> createState() => _CateItemGridLayoutState();
 }
 
-class _CateModGridLayoutState extends State<CateModGridLayout> {
+class _CateItemGridLayoutState extends State<CateItemGridLayout> {
   @override
   Widget build(BuildContext context) {
     return SliverStickyHeader.builder(
@@ -36,42 +35,30 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
               padding: const EdgeInsets.all(8),
               child: Text('${appText.categoryTypeName(widget.itemCate.group)} - ${appText.categoryName(widget.itemCate.categoryName)}', style: Theme.of(context).textTheme.titleMedium),
             )),
-        sliver: ResponsiveSliverGridList(minItemWidth: 260, verticalGridMargin: 5, horizontalGridSpacing: 5, verticalGridSpacing: 5, children: modCardFetch()));
-  }
-
-  List<ModCardLayout> modCardFetch() {
-    List<ModCardLayout> modCardList = [];
-    if (widget.searchString.isEmpty) {
-      for (var item in widget.itemCate.items) {
-        modCardList.addAll(item.mods.map((m) => ModCardLayout(item: item, mod: m)));
-      }
-    } else {
-      for (var item in widget.itemCate.items) {
-        for (var mod in item.mods) {
-          if (mod.itemName.toLowerCase().contains(widget.searchString.toLowerCase()) ||
-              mod.modName.toLowerCase().contains(widget.searchString.toLowerCase()) ||
-              mod.getDistinctNames().where((e) => e.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty) {
-            modCardList.add(ModCardLayout(item: item, mod: mod));
-          }
-        }
-      }
-    }
-
-    return modCardList;
+        sliver: ResponsiveSliverGridList(
+            minItemWidth: 150,
+            verticalGridMargin: 5,
+            horizontalGridSpacing: 5,
+            verticalGridSpacing: 5,
+            children: widget.searchString.isEmpty
+                ? widget.itemCate.items.map((e) => ItemCardLayout(item: e)).toList()
+                : widget.itemCate.items
+                    .where((e) => e.getDistinctNames().where((e) => e.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty)
+                    .map((e) => ItemCardLayout(item: e))
+                    .toList()));
   }
 }
 
-class ModCardLayout extends StatefulWidget {
-  const ModCardLayout({super.key, required this.item, required this.mod});
+class ItemCardLayout extends StatefulWidget {
+  const ItemCardLayout({super.key, required this.item});
 
   final Item item;
-  final Mod mod;
 
   @override
-  State<ModCardLayout> createState() => _ModCardLayoutState();
+  State<ItemCardLayout> createState() => _ItemCardLayoutState();
 }
 
-class _ModCardLayoutState extends State<ModCardLayout> {
+class _ItemCardLayoutState extends State<ItemCardLayout> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -86,27 +73,21 @@ class _ModCardLayoutState extends State<ModCardLayout> {
             mainAxisSize: MainAxisSize.min,
             spacing: 5,
             children: [
-              SubmodImageBox(filePaths: widget.mod.previewImages, isNew: widget.mod.isNew),
-              Text(widget.mod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+              ItemIconBox(item: widget.item),
+              Text(widget.item.itemName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
               Column(
                 spacing: 5,
                 children: [
-                  InfoBox(
-                    info: appText.dText(widget.mod.submods.length > 1 ? appText.numVariants : appText.numVariant, widget.mod.submods.length.toString()),
-                    borderHighlight: false,
-                  ),
-                  InfoBox(
-                    info: appText.dText(appText.numCurrentlyApplied, widget.mod.getNumOfAppliedSubmods().toString()),
-                    borderHighlight: false,
-                  ),
+                  InfoBox(info: appText.dText(widget.item.mods.length > 1 ? appText.numMods : appText.numMod, widget.item.mods.length.toString()), borderHighlight: false,),
+                  InfoBox(info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedMods().toString()), borderHighlight: widget.item.applyStatus,),
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
                         onPressed: () async {
-                          await submodViewPopup(context, widget.item, widget.mod);
+                          await modViewPopup(context, widget.item);
                           setState(() {});
                         },
-                        child: Text(appText.viewVariants)),
+                        child: Text(appText.viewMods)),
                   )
                 ],
               )

@@ -3,20 +3,20 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
-import 'package:pso2_mod_manager/main_widgets/cate_item_grid_layout.dart';
+import 'package:pso2_mod_manager/main_widgets/applied_mod_grid_layout.dart';
 import 'package:pso2_mod_manager/main_widgets/category_select_buttons.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
-class MainItemGrid extends StatefulWidget {
-  const MainItemGrid({super.key});
+class MainAppliedModGrid extends StatefulWidget {
+  const MainAppliedModGrid({super.key});
 
   @override
-  State<MainItemGrid> createState() => _MainItemGridState();
+  State<MainAppliedModGrid> createState() => _MainAppliedModGridState();
 }
 
-class _MainItemGridState extends State<MainItemGrid> {
+class _MainAppliedModGridState extends State<MainAppliedModGrid> {
   double fadeInOpacity = 0;
   ScrollController controller = ScrollController();
 
@@ -34,10 +34,28 @@ class _MainItemGridState extends State<MainItemGrid> {
     // Suggestions
     List<String> filteredStrings = [];
     for (var type in masterModList) {
-      if (searchTextController.value.text.isEmpty) {
-        filteredStrings.addAll(type.getDistinctNames());
-      } else {
-        filteredStrings.addAll(type.getDistinctNames().where((e) => e.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
+      for (var cate in type.categories.where((e) => e.getNumOfAppliedItems() > 0)) {
+        for (var item in cate.items.where((e) => e.applyStatus)) {
+          for (var mod in item.mods.where((e) => e.applyStatus)) {
+            for (var submod in mod.submods.where((e) => e.applyStatus)) {
+              if (searchTextController.value.text.isEmpty) {
+                filteredStrings.addAll(submod.getModFileNames());
+              } else {
+                filteredStrings.addAll(submod.getModFileNames().where((e) => e.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
+              }
+            }
+            if (searchTextController.value.text.isEmpty) {
+              filteredStrings.add(mod.modName);
+            } else if (mod.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase())) {
+              filteredStrings.add(mod.modName);
+            }
+          }
+          if (searchTextController.value.text.isEmpty) {
+              filteredStrings.add(item.itemName);
+            } else if (item.itemName.toLowerCase().contains(searchTextController.value.text.toLowerCase())) {
+              filteredStrings.add(item.itemName);
+            }
+        }
       }
     }
     filteredStrings = filteredStrings.toSet().toList();
@@ -142,8 +160,8 @@ class _MainItemGridState extends State<MainItemGrid> {
               physics: const SuperRangeMaintainingScrollPhysics(),
               slivers: [
                 for (int i = 0; i < displayingCategories.length; i++)
-                  CateItemGridLayout(
-                    itemCate: displayingCategories[i],
+                  AppliedModGridLayout(
+                    category: displayingCategories[i],
                     searchString: searchTextController.value.text,
                   )
               ],
