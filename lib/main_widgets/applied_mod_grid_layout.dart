@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/mod_apply/applying_popup.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
@@ -8,8 +9,8 @@ import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
-import 'package:pso2_mod_manager/main_widgets/submod_view_popup.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -26,6 +27,14 @@ class AppliedModGridLayout extends StatefulWidget {
 class _AppliedModGridLayoutState extends State<AppliedModGridLayout> {
   @override
   Widget build(BuildContext context) {
+    // Current applying submod count
+    int applyingSubmodCount = 0;
+    for (var item in widget.category.items.where((e) => e.applyStatus)) {
+      for (var mod in item.mods.where((e) => e.applyStatus)) {
+        applyingSubmodCount = mod.submods.where((e) => e.applyStatus).length;
+      }
+    }
+
     return SliverStickyHeader.builder(
         builder: (context, state) => Card(
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
@@ -35,9 +44,19 @@ class _AppliedModGridLayoutState extends State<AppliedModGridLayout> {
             margin: EdgeInsets.zero,
             elevation: 5,
             child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text(widget.category.categoryName, style: Theme.of(context).textTheme.titleMedium),
-            )),
+                padding: const EdgeInsets.all(8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  spacing: 5,
+                  children: [
+                    Text(widget.category.categoryName, style: Theme.of(context).textTheme.titleMedium),
+                    Row(
+                      spacing: 5,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [InfoBox(info: appText.dText(applyingSubmodCount > 1 ? appText.numMods : appText.numMod, applyingSubmodCount.toString()) , borderHighlight: false)],
+                    )
+                  ],
+                ))),
         sliver: ResponsiveSliverGridList(minItemWidth: 350, verticalGridMargin: 5, horizontalGridSpacing: 5, verticalGridSpacing: 5, children: modCardFetch()));
   }
 
@@ -119,9 +138,7 @@ class _ModCardLayoutState extends State<ModCardLayout> {
             ],
           ),
           Text(widget.mod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
-          Visibility(
-              visible: widget.submod.submodName != widget.mod.modName,
-              child: Text(widget.submod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
+          Visibility(visible: widget.submod.submodName != widget.mod.modName, child: Text(widget.submod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
           // Row(
           //   spacing: 5,
           //   children: [
@@ -150,8 +167,13 @@ class _ModCardLayoutState extends State<ModCardLayout> {
               //           },
               //           child: Text(appText.viewVariants)),
               //     )),
-              Expanded(child: OutlinedButton(onPressed: () {}, child: Text(appText.restore))),
-              
+              Expanded(
+                  child: OutlinedButton(
+                      onPressed: () async {
+                        await applyingPopup(context, false, widget.item, widget.mod, widget.submod);
+                        setState(() {});
+                      },
+                      child: Text(appText.restore))),
             ],
           )
         ],

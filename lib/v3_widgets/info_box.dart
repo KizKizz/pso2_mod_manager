@@ -16,7 +16,7 @@ class InfoBox extends StatelessWidget {
         margin: EdgeInsets.zero,
         elevation: 5,
         child: Padding(
-          padding: const EdgeInsets.all(2),
+          padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
           child: Center(child: Text(info)),
         ));
   }
