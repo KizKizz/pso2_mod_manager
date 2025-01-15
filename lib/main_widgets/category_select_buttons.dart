@@ -66,10 +66,10 @@ class ChoiceAnchorLayout extends StatelessWidget {
               shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(50))),
               tileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
               contentPadding: const EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 2),
-              titleTextStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              titleTextStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Theme.of(context).textTheme.labelLarge!.color),
               minTileHeight: 35,
               minVerticalPadding: 0,
-              leadingAndTrailingTextStyle: const TextStyle(fontSize: 15)),
+              leadingAndTrailingTextStyle: TextStyle(fontSize: 15, color: Theme.of(context).textTheme.labelLarge!.color)),
           child: ChoiceAnchor.create(
             valueTruncate: 2,
             inline: true,

@@ -247,6 +247,33 @@ class ItemData {
         .toList();
   }
 
+  List<String> getIceDetailsWithoutKeys() {
+    return infos.entries
+        .where((e) =>
+            e.value.isNotEmpty &&
+            e.key != 'Japanese Name' &&
+            e.key.toLowerCase() != 'id' &&
+            e.key != 'Icon' &&
+            e.key != 'Adjusted Id' &&
+            e.key != 'English Name' &&
+            !e.key.contains('Bone') &&
+            e.key != 'JP Name' &&
+            e.key != 'EN Name' &&
+            e.key != 'Reboot Human' &&
+            e.key != 'Reboot Cast Male' &&
+            e.key != 'Reboot Cast Female' &&
+            e.key != 'Reboot Fig' &&
+            e.key != 'Reboot VFX' &&
+            e.key != 'PSO2 VFX' &&
+            e.key != 'PSO2 File' &&
+            e.key != 'Gender' &&
+            e.key != 'Gender (Blank usually follows previous)' &&
+            e.key != 'Chat Command' &&
+            e.key != 'Sounds')
+        .map((e) => e.value.trim().split('\\').last)
+        .toList();
+  }
+
   ItemData.fromMap(
       String csvFileName, String csvFilePath, String itemType, List<String> itemCategories, String category, String subCategory, int categoryIndex, String iconImagePath, Map<String, String> infos)
       : this(csvFileName = csvFileName, csvFilePath = csvFilePath, itemType = itemType, itemCategories = itemCategories, category = category, subCategory = subCategory, categoryIndex = categoryIndex,

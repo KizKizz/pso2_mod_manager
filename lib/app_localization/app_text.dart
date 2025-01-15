@@ -85,7 +85,11 @@ class AppText {
       normal = 'Normal',
       open = 'Open',
       successful = 'Successful',
-      failed = 'Failed';
+      failed = 'Failed',
+      replace = 'Replace',
+      cmx = 'CMX',
+      export = 'Export',
+      delete = 'Delete';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -137,8 +141,16 @@ class AppText {
       copyingModFileToGameData = 'Copying %p% to game data',
       localBackupFoundForModFile = 'Local backup found for %p%',
       restoringBackupFileToGameData = 'Restoring %p% to game data',
-      applyingMod = 'Applying %p%',
-      restoringBackups = 'Restoring Backups';
+      applyingMod = 'Applying "%p%"',
+      restoringModBackups = 'Restoring "%p%" Backups',
+      numItems = '%p% Items',
+      numItem = '%p% Item',
+      addToSet = 'Add to Set',
+      setApplyLocations = 'Set apply locations',
+      swapToAnotherItem = 'Swap to another item',
+      addPreviews = 'Add previews',
+      removeBoundingRadius = 'Remove bounding radius',
+      customAqmInjection = 'Custom AQM injection';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -191,7 +203,8 @@ class AppText {
       restoredMods = 'Restored Mods',
       reApplyAll = 'Re-Apply All',
       removeAll = 'Remove All',
-      appliedList = 'Applied List';
+      appliedList = 'Applied List',
+      dunplicateAppliedMods = 'Duplicate Applied Mods';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',
@@ -206,7 +219,8 @@ class AppText {
   // Infos
   String pso2binDirPathInfo = 'PSO2 game data folder, this folder located inside the game installation directory',
       mainDirPathInfo = 'This folder stores your mods and other Mod Manager related stuff\nPreferably outside of pso2 installation directory and nested folders',
-      restoredModInfo = 'These mods had been restored by game update or file check';
+      restoredModInfo = 'These mods had been restored by game update or file check',
+      duplicateAppliedInfo = 'This mod was found using the same files as "%p%"';
 
   // Settings Text
   String appSettings = 'App Settings',

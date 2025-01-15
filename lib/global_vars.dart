@@ -47,4 +47,5 @@ String segaMasterServerBackupURL = '';
 String segaPatchServerURL = '';
 String segaPatchServerBackupURL = '';
 Signal<String> modApplyStatus = Signal('');
+Signal<String> modPopupStatus = Signal('');
 List<CategoryType> masterAppliedModList = [];

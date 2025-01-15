@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/main_widgets/info_box.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
@@ -24,6 +26,20 @@ class CateModGridLayout extends StatefulWidget {
 class _CateModGridLayoutState extends State<CateModGridLayout> {
   @override
   Widget build(BuildContext context) {
+    // Refresh
+          if (modApplyStatus.watch(context) != modApplyStatus.peek()) {
+            setState(
+              () {},
+            );
+          }
+    // Get ext
+    int modNum = 0;
+    int modAppliedNum = 0;
+    for (var item in widget.itemCate.items) {
+      modNum += item.mods.length;
+      modAppliedNum += item.mods.where((e) => e.applyStatus).length;
+    }
+
     return SliverStickyHeader.builder(
         builder: (context, state) => Card(
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
@@ -33,9 +49,20 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
             margin: EdgeInsets.zero,
             elevation: 5,
             child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text('${appText.categoryTypeName(widget.itemCate.group)} - ${appText.categoryName(widget.itemCate.categoryName)}', style: Theme.of(context).textTheme.titleMedium),
-            )),
+                padding: const EdgeInsets.all(8),
+                child: Row(
+                  spacing: 5,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('${appText.categoryTypeName(widget.itemCate.group)} - ${appText.categoryName(widget.itemCate.categoryName)}', style: Theme.of(context).textTheme.titleMedium),
+                    Row(
+                      spacing: 5,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [HeaderInfoBox(info: appText.dText(modNum > 1 ? appText.numMods : appText.numMod, modNum.toString()), borderHighlight: false),
+                      HeaderInfoBox(info: appText.dText(appText.numCurrentlyApplied, modAppliedNum.toString()), borderHighlight: false)],
+                    )
+                  ],
+                ))),
         sliver: ResponsiveSliverGridList(minItemWidth: 260, verticalGridMargin: 5, horizontalGridSpacing: 5, verticalGridSpacing: 5, children: modCardFetch()));
   }
 
@@ -97,14 +124,13 @@ class _ModCardLayoutState extends State<ModCardLayout> {
                   ),
                   InfoBox(
                     info: appText.dText(appText.numCurrentlyApplied, widget.mod.getNumOfAppliedSubmods().toString()),
-                    borderHighlight: false,
+                    borderHighlight: widget.mod.applyStatus,
                   ),
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
                         onPressed: () async {
                           await submodViewPopup(context, widget.item, widget.mod);
-                          setState(() {});
                         },
                         child: Text(appText.viewVariants)),
                   )

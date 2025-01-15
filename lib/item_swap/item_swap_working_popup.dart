@@ -11,6 +11,8 @@ import 'package:pso2_mod_manager/item_swap/mod_swap_general_functions.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_helper_functions.dart';
 import 'package:pso2_mod_manager/mod_add/adding_mod_class.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
+import 'package:pso2_mod_manager/mod_data/mod_class.dart';
+import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/homepage.dart';
 import 'package:pso2_mod_manager/v3_home/mod_add.dart';
@@ -23,11 +25,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 Signal<String> itemSwapWorkingStatus = Signal('');
 
-void itemSwapWorkingPopup(
-  context,
-  ItemData lItemData,
-  ItemData rItemData,
-) {
+void itemSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, ItemData rItemData, Mod mod, SubMod submod) {
   Directory swapOutputDir = Directory('');
 
   showDialog(
@@ -135,13 +133,12 @@ void itemSwapWorkingPopup(
                                     swapOutputDir = Directory('');
                                     if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[0]) {
                                       swapOutputDir = await modSwapAccessories(
-                                          context, true, lItemModGet(), lItemSubmodGet(lItemData), lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), rItemData.getItemID());
+                                          context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), rItemData.getItemID());
                                     } else if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[14] || selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7]) {
-                                      swapOutputDir =
-                                          await modSwapEmotes(context, true, lItemModGet(), lItemSubmodGet(lItemData), rItemData.getName(), lItemData.getIceDetails(), rItemData.getIceDetails(), []);
+                                      swapOutputDir = await modSwapEmotes(context, isVanillaSwap, mod, submod, rItemData.getName(), lItemData.getIceDetails(), rItemData.getIceDetails(), []);
                                     } else {
-                                      swapOutputDir = await modSwapGeneral(context, true, lItemModGet(), lItemSubmodGet(lItemData), lItemData.getIceDetails(), rItemData.getIceDetails(),
-                                          rItemData.getName(), lItemData.getItemID(), rItemData.getItemID());
+                                      swapOutputDir = await modSwapGeneral(
+                                          context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), lItemData.getItemID(), rItemData.getItemID());
                                     }
                                   }
                                 : null,

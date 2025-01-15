@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/main_widgets/info_box.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
@@ -23,6 +25,12 @@ class CateItemGridLayout extends StatefulWidget {
 class _CateItemGridLayoutState extends State<CateItemGridLayout> {
   @override
   Widget build(BuildContext context) {
+    // Refresh
+    if (modApplyStatus.watch(context) != modApplyStatus.peek()) {
+      setState(
+        () {},
+      );
+    }
     return SliverStickyHeader.builder(
         builder: (context, state) => Card(
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
@@ -32,9 +40,22 @@ class _CateItemGridLayoutState extends State<CateItemGridLayout> {
             margin: EdgeInsets.zero,
             elevation: 5,
             child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text('${appText.categoryTypeName(widget.itemCate.group)} - ${appText.categoryName(widget.itemCate.categoryName)}', style: Theme.of(context).textTheme.titleMedium),
-            )),
+                padding: const EdgeInsets.all(8),
+                child: Row(
+                  spacing: 5,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('${appText.categoryTypeName(widget.itemCate.group)} - ${appText.categoryName(widget.itemCate.categoryName)}', style: Theme.of(context).textTheme.titleMedium),
+                    Row(
+                      spacing: 5,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        HeaderInfoBox(info: appText.dText(widget.itemCate.items.length > 1 ? appText.numItems : appText.numItem, widget.itemCate.items.length.toString()), borderHighlight: false),
+                        HeaderInfoBox(info: appText.dText(appText.numCurrentlyApplied, widget.itemCate.items.where((e) => e.applyStatus).length.toString()), borderHighlight: false)
+                      ],
+                    )
+                  ],
+                ))),
         sliver: ResponsiveSliverGridList(
             minItemWidth: 150,
             verticalGridMargin: 5,
@@ -78,14 +99,19 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
               Column(
                 spacing: 5,
                 children: [
-                  InfoBox(info: appText.dText(widget.item.mods.length > 1 ? appText.numMods : appText.numMod, widget.item.mods.length.toString()), borderHighlight: false,),
-                  InfoBox(info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedMods().toString()), borderHighlight: widget.item.applyStatus,),
+                  InfoBox(
+                    info: appText.dText(widget.item.mods.length > 1 ? appText.numMods : appText.numMod, widget.item.mods.length.toString()),
+                    borderHighlight: false,
+                  ),
+                  InfoBox(
+                    info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedMods().toString()),
+                    borderHighlight: widget.item.applyStatus,
+                  ),
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
                         onPressed: () async {
                           await modViewPopup(context, widget.item);
-                          setState(() {});
                         },
                         child: Text(appText.viewMods)),
                   )

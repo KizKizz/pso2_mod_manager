@@ -5,6 +5,7 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/app_paths/sega_file_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/mod_apply/applying_popup.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
@@ -13,7 +14,11 @@ import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/shared_prefs.dart';
 
-Future<void> modUnapplySequence(Item item, Mod mod, SubMod submod) async {
+Future<void> modUnapplySequence(context, bool applying, Item item, Mod mod, SubMod submod) async {
+  await applyingPopup(context, applying, item, mod, submod);
+}
+
+Future<void> modUnapplyRestore(Item item, Mod mod, SubMod submod) async {
   modApplyStatus.value = '';
   if (originalFilesBackupsFromSega) {
     for (var modFile in submod.modFiles) {

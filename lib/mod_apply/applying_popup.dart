@@ -22,7 +22,7 @@ Future<void> applyingPopup(context, bool applying, Item item, Mod mod, SubMod su
               insetPadding: const EdgeInsets.all(5),
               contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               content: FutureBuilder(
-                future: applying ? modApplySequence(item, mod, submod) : modUnapplySequence(item, mod, submod),
+                future: applying ? modBackupApply(item, mod, submod) : modUnapplyRestore(item, mod, submod),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return Center(
@@ -44,7 +44,7 @@ Future<void> applyingPopup(context, bool applying, Item item, Mod mod, SubMod su
                               Padding(
                                 padding: const EdgeInsets.only(top: 10),
                                 child: Text(
-                                  applying ? appText.dText(appText.applyingMod, submod.submodName) : appText.restoringBackups,
+                                  applying ? appText.dText(appText.applyingMod, submod.submodName) : appText.dText(appText.restoringModBackups, submod.submodName),
                                   style: Theme.of(context).textTheme.bodyLarge,
                                 ),
                               ),
@@ -64,7 +64,7 @@ Future<void> applyingPopup(context, bool applying, Item item, Mod mod, SubMod su
                       ],
                     ));
                   } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                    return FutureBuilderError(loadingText: applying ? appText.dText(appText.applyingMod, submod.submodName) : appText.restoringBackups, snapshotError: snapshot.error.toString());
+                    return FutureBuilderError(loadingText: applying ? appText.dText(appText.applyingMod, submod.submodName) : appText.dText(appText.restoringModBackups, submod.submodName), snapshotError: snapshot.error.toString());
                   } else {
                     Navigator.of(context).pop();
                     return const SizedBox();

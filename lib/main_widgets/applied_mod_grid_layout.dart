@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
-import 'package:pso2_mod_manager/mod_apply/applying_popup.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/main_widgets/info_box.dart';
+import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
@@ -9,7 +11,6 @@ import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
-import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:signals/signals_flutter.dart';
@@ -53,7 +54,7 @@ class _AppliedModGridLayoutState extends State<AppliedModGridLayout> {
                     Row(
                       spacing: 5,
                       mainAxisSize: MainAxisSize.min,
-                      children: [InfoBox(info: appText.dText(applyingSubmodCount > 1 ? appText.numMods : appText.numMod, applyingSubmodCount.toString()) , borderHighlight: false)],
+                      children: [HeaderInfoBox(info: appText.dText(applyingSubmodCount > 1 ? appText.numMods : appText.numMod, applyingSubmodCount.toString()), borderHighlight: false)],
                     )
                   ],
                 ))),
@@ -170,8 +171,7 @@ class _ModCardLayoutState extends State<ModCardLayout> {
               Expanded(
                   child: OutlinedButton(
                       onPressed: () async {
-                        await applyingPopup(context, false, widget.item, widget.mod, widget.submod);
-                        setState(() {});
+                        await modToGameData(context, false, widget.item, widget.mod, widget.submod);
                       },
                       child: Text(appText.restore))),
             ],

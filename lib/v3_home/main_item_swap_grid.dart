@@ -6,6 +6,7 @@ import 'package:pso2_mod_manager/item_swap/item_swap_grid_layout.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_motions_select_button.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_type_select_button.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_working_popup.dart';
+import 'package:pso2_mod_manager/item_swap/mod_swap_helper_functions.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:signals/signals_flutter.dart';
@@ -190,7 +191,7 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                   onPressed: lSelectedItemData.watch(context) != null && rSelectedItemData.watch(context) != null
                       ? () {
                           itemSwapWorkingStatus.value = '';
-                          itemSwapWorkingPopup(context, lSelectedItemData.value!, rSelectedItemData.value!);
+                          itemSwapWorkingPopup(context, true, lSelectedItemData.value!, rSelectedItemData.value!, lItemModGet(), lItemSubmodGet(lSelectedItemData.value!));
                         }
                       : null,
                   child: Text(appText.next))

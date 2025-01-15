@@ -31,6 +31,12 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
 
   @override
   Widget build(BuildContext context) {
+    // Refresh
+    if (modApplyStatus.watch(context) != modApplyStatus.peek()) {
+      setState(
+        () {},
+      );
+    }
     // Suggestions
     List<String> filteredStrings = [];
     for (var type in masterModList) {
@@ -51,10 +57,10 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
             }
           }
           if (searchTextController.value.text.isEmpty) {
-              filteredStrings.add(item.itemName);
-            } else if (item.itemName.toLowerCase().contains(searchTextController.value.text.toLowerCase())) {
-              filteredStrings.add(item.itemName);
-            }
+            filteredStrings.add(item.itemName);
+          } else if (item.itemName.toLowerCase().contains(searchTextController.value.text.toLowerCase())) {
+            filteredStrings.add(item.itemName);
+          }
         }
       }
     }

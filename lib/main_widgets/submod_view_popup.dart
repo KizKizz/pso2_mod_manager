@@ -16,6 +16,7 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
   Mod? selectedMod = mod;
   await showDialog(
       barrierDismissible: false,
+      barrierColor: Colors.transparent,
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (dialogContext, setState) {
@@ -26,9 +27,9 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
             );
           }
           return AlertDialog(
-            shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: const BorderRadius.all(Radius.circular(5))),
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
-            insetPadding: const EdgeInsets.all(5),
+            insetPadding: const EdgeInsets.only(top: 25),
             contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
             content: SizedBox(
               width: MediaQuery.of(context).size.width,
@@ -66,7 +67,7 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
                                 return ListTileTheme(
                                     data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
                                     child: ListTile(
-                                      contentPadding: EdgeInsets.zero,
+                                      contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                                       selected: selectedMod == mod ? true : false,
                                       title: Text(mod.modName),
                                       subtitle: Row(
