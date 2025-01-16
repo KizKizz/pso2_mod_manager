@@ -45,6 +45,14 @@ class ItemData {
     return ids;
   }
 
+  String getHQIceName() {
+    return infos.entries.firstWhere((e) => e.key == 'High Quality', orElse: () => const MapEntry('', '')).value;
+  }
+
+  String getLQIceName() {
+    return infos.entries.firstWhere((e) => e.key == 'Normal Quality', orElse: () => const MapEntry('', '')).value;
+  }
+
   // String getIconImagePath() {
   //   return infos.entries.firstWhere((element) => element.key.contains('iconImagePath')).value;
   // }

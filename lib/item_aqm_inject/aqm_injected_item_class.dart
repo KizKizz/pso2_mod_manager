@@ -7,7 +7,8 @@ part 'aqm_injected_item_class.g.dart';
 
 @JsonSerializable()
 class AqmInjectedItem {
-  AqmInjectedItem(this.category, this.id, this.adjustedId, this.iconImagePath, this.itemNameEN, this.itemNameJP, this.hqIcePath, this.lqIcePath, this.iconIcePath, this.isApplied, this.isIconReplaced);
+  AqmInjectedItem(this.category, this.id, this.adjustedId, this.iconImagePath, this.itemNameEN, this.itemNameJP, this.hqIcePath, this.lqIcePath, this.iconIcePath, this.isApplied, this.isIconReplaced,
+      this.isAqmReplaced, this.isBoundingRemoved);
   String category;
   String id;
   String adjustedId;
@@ -19,6 +20,8 @@ class AqmInjectedItem {
   String iconIcePath;
   bool isApplied;
   bool isIconReplaced;
+  bool? isAqmReplaced;
+  bool? isBoundingRemoved;
 
   String getName() {
     if (itemNameLanguage == ItemNameLanguage.jp) {
@@ -29,12 +32,7 @@ class AqmInjectedItem {
   }
 
   List<String> getDetailsForAqmInject() {
-    return [
-      'Id: $id',
-      'Adjusted Id: $adjustedId',
-      'Normal Quality: ${p.basename(lqIcePath)}'
-      'High Quality: ${p.basename(hqIcePath)}'
-    ];
+    return ['Id: $id', 'Adjusted Id: $adjustedId', 'Normal Quality: ${p.basename(lqIcePath)}', 'High Quality: ${p.basename(hqIcePath)}'];
   }
 
   factory AqmInjectedItem.fromJson(Map<String, dynamic> json) => _$AqmInjectedItemFromJson(json);

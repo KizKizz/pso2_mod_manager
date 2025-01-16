@@ -19,6 +19,8 @@ AqmInjectedItem _$AqmInjectedItemFromJson(Map<String, dynamic> json) =>
       json['iconIcePath'] as String,
       json['isApplied'] as bool,
       json['isIconReplaced'] as bool,
+      json['isAqmReplaced'] as bool?,
+      json['isBoundingRemoved'] as bool?,
     );
 
 Map<String, dynamic> _$AqmInjectedItemToJson(AqmInjectedItem instance) =>
@@ -34,4 +36,6 @@ Map<String, dynamic> _$AqmInjectedItemToJson(AqmInjectedItem instance) =>
       'iconIcePath': instance.iconIcePath,
       'isApplied': instance.isApplied,
       'isIconReplaced': instance.isIconReplaced,
+      'isAqmReplaced': instance.isAqmReplaced,
+      'isBoundingRemoved': instance.isBoundingRemoved,
     };

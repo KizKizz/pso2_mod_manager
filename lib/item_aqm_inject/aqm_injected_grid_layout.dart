@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_functions.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_item_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
@@ -25,6 +26,9 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
 
   @override
   Widget build(BuildContext context) {
+    // Refresh
+    if (modAqmInjectedrefresh.watch(context) != modAqmInjectedrefresh.peek()) setState(() {});
+    
     List<AqmInjectedItem> displayingAqmInjectedItem = [];
     if (injectedItemSearchTextController.value.text.isEmpty) {
       displayingAqmInjectedItem = widget.injectedItemList;
@@ -126,7 +130,9 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                     spacing: 5,
                                     overflowSpacing: 5,
                                     alignment: MainAxisAlignment.end,
-                                    children: [OutlinedButton(onPressed: () {}, child: Text(appText.restore))],
+                                    children: [
+                                      OutlinedButton(onPressed: () {}, child: Text(appText.restore))
+                                      ],
                                   )
                                 ],
                               )

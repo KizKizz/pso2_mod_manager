@@ -4,7 +4,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
+import 'package:pso2_mod_manager/app_paths/sega_file_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_functions.dart';
+import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_popup.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_item_class.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
@@ -14,6 +17,7 @@ import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
+import 'package:path/path.dart' as p;
 
 class AqmInjectGridLayout extends StatefulWidget {
   const AqmInjectGridLayout({super.key, required this.itemDataList, required this.scrollController, required this.selectedItemData});
@@ -31,6 +35,9 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
 
   @override
   Widget build(BuildContext context) {
+    // Refresh
+    // if (modAqmInjectingStatus.watch(context) != modAqmInjectingStatus.peek()) setState(() {});
+
     List<ItemData> displayingItemData = [];
     if (itemSwapSearchTextController.value.text.isEmpty) {
       displayingItemData = widget.itemDataList;
@@ -111,6 +118,7 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                       data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
                       child: ListTile(
                         minTileHeight: 90,
+                        enabled: masterAqmInjectedItemList.indexWhere((e) => e.getName() == displayingItemData[index].getName()) == -1,
                         title: Row(
                           spacing: 5,
                           children: [
@@ -134,7 +142,7 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                                     alignment: MainAxisAlignment.end,
                                     children: [
                                       OutlinedButton(
-                                          onPressed: () {
+                                          onPressed: () async {
                                             AqmInjectedItem newItem = AqmInjectedItem(
                                                 displayingItemData[index].category,
                                                 displayingItemData[index].getItemIDs().first,
@@ -142,16 +150,42 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                                                 displayingItemData[index].iconImagePath,
                                                 displayingItemData[index].getENName(),
                                                 displayingItemData[index].getJPName(),
-                                                '',
-                                                '',
-                                                '',
+                                                p.withoutExtension(oItemData
+                                                    .firstWhere(
+                                                      (e) => e.path.contains(displayingItemData[index].getHQIceName()),
+                                                      orElse: () => OfficialIceFile.empty(),
+                                                    )
+                                                    .path),
+                                                p.withoutExtension(oItemData
+                                                    .firstWhere(
+                                                      (e) => e.path.contains(displayingItemData[index].getLQIceName()),
+                                                      orElse: () => OfficialIceFile.empty(),
+                                                    )
+                                                    .path),
+                                                p.withoutExtension(oItemData
+                                                    .firstWhere(
+                                                      (e) => e.path.contains(displayingItemData[index].getIconIceName()),
+                                                      orElse: () => OfficialIceFile.empty(),
+                                                    )
+                                                    .path),
+                                                false,
+                                                false,
                                                 false,
                                                 false);
-                                            masterAqmInjectedItemList.add(newItem);
-                                            //Save to json
-                                            masterAqmInjectedItemList.map((item) => item.toJson()).toList();
-                                            const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-                                            File(mainAqmInjectListJsonPath).writeAsStringSync(encoder.convert(masterAqmInjectedItemList));
+
+                                            bool result = await aqmInjectPopup(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName());
+                                            if (result) {
+                                              newItem.isAqmReplaced = true;
+                                              newItem.isApplied = true;
+                                              masterAqmInjectedItemList.add(newItem);
+                                              modAqmInjectedrefresh.value = true;
+
+                                              //Save to json
+                                              masterAqmInjectedItemList.map((item) => item.toJson()).toList();
+                                              const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+                                              File(mainAqmInjectListJsonPath).writeAsStringSync(encoder.convert(masterAqmInjectedItemList));
+                                            }
+                                            setState(() {});
                                           },
                                           child: Text(appText.injectAQM)),
                                       OutlinedButton(onPressed: () {}, child: Text(appText.removeBounding)),

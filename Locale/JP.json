@@ -1,4 +1,7 @@
 {
+  "fetchingFiles": "Fetching Files",
+  "currentAqmFile": "Current AQM File",
+  "addCustomAqmFiles": "Add Custom AQM Files",
   "dfGlideMotion": "Glide Motion",
   "dfJumpMotion": "Jump Motion",
   "dfLandingMotion": "Landing Motion",

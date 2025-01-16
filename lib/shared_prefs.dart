@@ -20,6 +20,7 @@ Signal<bool> itemIconSlides = Signal<bool>(false);
 Signal<String> selectedDisplayCategory = Signal<String>(appText.all);
 bool originalFilesBackupsFromSega = true;
 double boundingRadiusRemovalValue = -10;
+Signal<String> selectedCustomAQMFilePath = Signal('');
 
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
@@ -83,6 +84,9 @@ Future<void> prefsLoad() async {
   // Bounding radius value
   boundingRadiusRemovalValue = prefs.getDouble('boundingRadiusRemovalValue') ?? -10;
 
-  // Auto bounding radius 
+  // Auto bounding radius
   autoBoundingRadiusRemoval = prefs.getBool('autoBoundingRadiusRemoval') ?? false;
+
+  // Selected custom AQM File Path
+  selectedCustomAQMFilePath.value = prefs.getString('selectedCustomAQMFilePath') ?? '';
 }

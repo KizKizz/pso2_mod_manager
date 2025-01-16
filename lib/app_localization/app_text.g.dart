@@ -214,6 +214,9 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..boundingRadiusRemovalValue = json['boundingRadiusRemovalValue'] as String
   ..autoRemoveBoundingRadius = json['autoRemoveBoundingRadius'] as String
   ..loadingAqmInjectedItems = json['loadingAqmInjectedItems'] as String
+  ..addCustomAqmFiles = json['addCustomAqmFiles'] as String
+  ..currentAqmFile = json['currentAqmFile'] as String
+  ..fetchingFiles = json['fetchingFiles'] as String
   ..failedToFetchRemoteLocaleData =
       json['failedToFetchRemoteLocaleData'] as String
   ..unableToUpdateFile = json['unableToUpdateFile'] as String
@@ -449,6 +452,9 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'boundingRadiusRemovalValue': instance.boundingRadiusRemovalValue,
       'autoRemoveBoundingRadius': instance.autoRemoveBoundingRadius,
       'loadingAqmInjectedItems': instance.loadingAqmInjectedItems,
+      'addCustomAqmFiles': instance.addCustomAqmFiles,
+      'currentAqmFile': instance.currentAqmFile,
+      'fetchingFiles': instance.fetchingFiles,
       'failedToFetchRemoteLocaleData': instance.failedToFetchRemoteLocaleData,
       'unableToUpdateFile': instance.unableToUpdateFile,
       'unableToGetAppVersionDataFromGitHub':

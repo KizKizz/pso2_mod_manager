@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pso2_mod_manager/shared_prefs.dart';
-import 'package:signals/signals_flutter.dart';
 
 class HeaderInfoBox extends StatelessWidget {
   const HeaderInfoBox({super.key, required this.info, required this.borderHighlight});

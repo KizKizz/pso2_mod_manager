@@ -68,3 +68,4 @@ Signal<String> modApplyStatus = Signal('');
 Signal<String> modPopupStatus = Signal('');
 List<CategoryType> masterAppliedModList = [];
 List<AqmInjectedItem> masterAqmInjectedItemList = [];
+List<File> modCustomAQMFiles = [];

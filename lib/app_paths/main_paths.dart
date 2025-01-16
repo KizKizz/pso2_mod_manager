@@ -9,15 +9,16 @@ String backupDirPath = '';
 String mainModListJsonPath = '';
 String mainModSetListJsonPath = '';
 String mainAqmInjectListJsonPath = '';
-String backgroundDirPath = '$mainDataDirPath${p.separator}BackgroundImages';
+String backgroundDirPath = '$mainDataDirPath${p.separator}Background Images';
 String modAddTempDirPath = '$mainDataDirPath${p.separator}AddTemp';
 String modSwapTempDirPath = '$mainDataDirPath${p.separator}SwapTemp';
 String modBoundingRadiusTempDirPath = '$mainDataDirPath${p.separator}BoundingRadiusTemp';
+String modAqmInjectTempDirPath = '$mainDataDirPath${p.separator}AQMInjectTemp';
 String modSwapTempLItemDirPath = '$mainDataDirPath${p.separator}SwapTemp${p.separator}lItem';
 String modSwapTempRItemDirPath = '$mainDataDirPath${p.separator}SwapTemp${p.separator}rItem';
 String modSwapTempOutputDirPath = '$mainDataDirPath${p.separator}SwapTemp${p.separator}output';
 String pso2DataDirPath = '$pso2binDirPath${p.separator}data';
-String modCustomAqmsDirPath = '$mainDataDirPath${p.separator}CustomAQMs';
+String modCustomAqmsDirPath = '$mainDataDirPath${p.separator}Custom AQMs';
 
 // External programs
 String sevenZipExePath = '${Directory.current.path}${p.separator}7zip-x64${p.separator}7z.exe';

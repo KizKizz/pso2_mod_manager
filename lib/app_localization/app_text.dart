@@ -218,7 +218,10 @@ class AppText {
       noMatchingFilesFound = 'No matching files found',
       boundingRadiusRemovalValue = 'Bounding Radius Removal Value',
       autoRemoveBoundingRadius = 'Auto Remove Bounding Radius',
-      loadingAqmInjectedItems = 'Loading AQM Injected Items';
+      loadingAqmInjectedItems = 'Loading AQM Injected Items',
+      addCustomAqmFiles = 'Add Custom AQM Files',
+      currentAqmFile = 'Current AQM File',
+      fetchingFiles = 'Fetching Files';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',
