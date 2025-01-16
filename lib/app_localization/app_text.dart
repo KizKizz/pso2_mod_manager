@@ -159,7 +159,8 @@ class AppText {
       repackingFile = 'Repacking "%p%"',
       aqmInject = 'AQM Inject',
       injectAQM = 'Inject AQM',
-      removeBounding = 'Remove Bounding';
+      removeBounding = 'Remove Bounding',
+      aqmInjected = 'AQM Injected';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',

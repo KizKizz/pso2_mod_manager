@@ -6,6 +6,7 @@ import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
+import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
@@ -28,7 +29,7 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
   Widget build(BuildContext context) {
     // Refresh
     if (modAqmInjectedrefresh.watch(context) != modAqmInjectedrefresh.peek()) setState(() {});
-    
+
     List<AqmInjectedItem> displayingAqmInjectedItem = [];
     if (injectedItemSearchTextController.value.text.isEmpty) {
       displayingAqmInjectedItem = widget.injectedItemList;
@@ -111,12 +112,24 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                         minTileHeight: 90,
                         title: Row(
                           spacing: 5,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             GenericItemIconBox(iconImagePaths: [displayingAqmInjectedItem[index].iconImagePath], boxSize: const Size(80, 80), isNetwork: true),
-                            Text(
-                              displayingAqmInjectedItem[index].getName(),
-                              style: const TextStyle(fontWeight: FontWeight.w500),
-                            )
+                            Column(
+                              spacing: 5,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  displayingAqmInjectedItem[index].getName(),
+                                  style: const TextStyle(fontWeight: FontWeight.w500),
+                                ),
+                                Row(
+                                  spacing: 5,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [Visibility(visible: displayingAqmInjectedItem[index].isAqmReplaced!, child: InfoBox(info: appText.aqmInjected, borderHighlight: false))],
+                                )
+                              ],
+                            ),
                           ],
                         ),
                         subtitle: widget.selectedAqmInjectedItem.watch(context) == displayingAqmInjectedItem[index]
@@ -130,9 +143,7 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                     spacing: 5,
                                     overflowSpacing: 5,
                                     alignment: MainAxisAlignment.end,
-                                    children: [
-                                      OutlinedButton(onPressed: () {}, child: Text(appText.restore))
-                                      ],
+                                    children: [OutlinedButton(onPressed: () {}, child: Text(appText.restore))],
                                   )
                                 ],
                               )
