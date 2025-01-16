@@ -17,7 +17,7 @@ class _SettingsState extends State<Settings> {
     return const CardOverlay(
       paddingValue: 10,
         child: Row(
-          spacing: 5,
+          spacing: 10,
       children: [
         Expanded(flex: 1, child: AppSettingsLayout()),
         Expanded(flex: 1, child: ModSettingsLayout()),

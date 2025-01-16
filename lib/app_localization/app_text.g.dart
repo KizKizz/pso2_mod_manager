@@ -28,6 +28,13 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..dfOuterwears = json['dfOuterwears'] as String
   ..dfSetwears = json['dfSetwears'] as String
   ..dfWeapons = json['dfWeapons'] as String
+  ..dfGlideMotion = json['dfGlideMotion'] as String
+  ..dfJumpMotion = json['dfJumpMotion'] as String
+  ..dfLandingMotion = json['dfLandingMotion'] as String
+  ..dfDashMotion = json['dfDashMotion'] as String
+  ..dfRunMotion = json['dfRunMotion'] as String
+  ..dfStandbyMotion = json['dfStandbyMotion'] as String
+  ..dfSwimMotion = json['dfSwimMotion'] as String
   ..ok = json['ok'] as String
   ..cancel = json['cancel'] as String
   ..cont = json['cont'] as String
@@ -62,6 +69,20 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..process = json['process'] as String
   ..add = json['add'] as String
   ..rename = json['rename'] as String
+  ..both = json['both'] as String
+  ..swap = json['swap'] as String
+  ..types = json['types'] as String
+  ..all = json['all'] as String
+  ..motions = json['motions'] as String
+  ..next = json['next'] as String
+  ..normal = json['normal'] as String
+  ..open = json['open'] as String
+  ..successful = json['successful'] as String
+  ..failed = json['failed'] as String
+  ..replace = json['replace'] as String
+  ..cmx = json['cmx'] as String
+  ..export = json['export'] as String
+  ..delete = json['delete'] as String
   ..patchNotes = json['patchNotes'] as String
   ..appUpdate = json['appUpdate'] as String
   ..tryAgain = json['tryAgain'] as String
@@ -101,6 +122,37 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..matchedItems = json['matchedItems'] as String
   ..changeTextTo = json['changeTextTo'] as String
   ..itemSwap = json['itemSwap'] as String
+  ..openInFileExplorer = json['openInFileExplorer'] as String
+  ..downloadingFileName = json['downloadingFileName'] as String
+  ..addToModManager = json['addToModManager'] as String
+  ..originalFilesBackupPriority = json['originalFilesBackupPriority'] as String
+  ..segaServers = json['segaServers'] as String
+  ..localBackups = json['localBackups'] as String
+  ..creatingBackupForModFile = json['creatingBackupForModFile'] as String
+  ..copyingModFileToGameData = json['copyingModFileToGameData'] as String
+  ..localBackupFoundForModFile = json['localBackupFoundForModFile'] as String
+  ..restoringBackupFileToGameData =
+      json['restoringBackupFileToGameData'] as String
+  ..applyingMod = json['applyingMod'] as String
+  ..restoringModBackups = json['restoringModBackups'] as String
+  ..numItems = json['numItems'] as String
+  ..numItem = json['numItem'] as String
+  ..addToSet = json['addToSet'] as String
+  ..setApplyLocations = json['setApplyLocations'] as String
+  ..swapToAnotherItem = json['swapToAnotherItem'] as String
+  ..addPreviews = json['addPreviews'] as String
+  ..removeBoundingRadius = json['removeBoundingRadius'] as String
+  ..customAqmInjection = json['customAqmInjection'] as String
+  ..editingMod = json['editingMod'] as String
+  ..extractingFile = json['extractingFile'] as String
+  ..readingFile = json['readingFile'] as String
+  ..boundingValueFoundReplacingWithNewValue =
+      json['boundingValueFoundReplacingWithNewValue'] as String
+  ..boundingValueNotFoundInFile = json['boundingValueNotFoundInFile'] as String
+  ..repackingFile = json['repackingFile'] as String
+  ..aqmInject = json['aqmInject'] as String
+  ..injectAQM = json['injectAQM'] as String
+  ..removeBounding = json['removeBounding'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -138,6 +190,30 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..enterNewNameHere = json['enterNewNameHere'] as String
   ..loadingModSets = json['loadingModSets'] as String
   ..addNewSet = json['addNewSet'] as String
+  ..showNoNameItems = json['showNoNameItems'] as String
+  ..hideNoNameItems = json['hideNoNameItems'] as String
+  ..swapToIdleMotions = json['swapToIdleMotions'] as String
+  ..swapToEmotes = json['swapToEmotes'] as String
+  ..swapToBasewears = json['swapToBasewears'] as String
+  ..swapToSetwears = json['swapToSetwears'] as String
+  ..swapToBodyPaints = json['swapToBodyPaints'] as String
+  ..swapToInnerwears = json['swapToInnerwears'] as String
+  ..replaceLQTexturesWithHQ = json['replaceLQTexturesWithHQ'] as String
+  ..sortingFileData = json['sortingFileData'] as String
+  ..itemSwapFinished = json['itemSwapFinished'] as String
+  ..fileDownloadSuccessful = json['fileDownloadSuccessful'] as String
+  ..fileDownloadFailed = json['fileDownloadFailed'] as String
+  ..checkingAppliedMods = json['checkingAppliedMods'] as String
+  ..restoredMods = json['restoredMods'] as String
+  ..reApplyAll = json['reApplyAll'] as String
+  ..removeAll = json['removeAll'] as String
+  ..appliedList = json['appliedList'] as String
+  ..dunplicateAppliedMods = json['dunplicateAppliedMods'] as String
+  ..matchingFilesFound = json['matchingFilesFound'] as String
+  ..noMatchingFilesFound = json['noMatchingFilesFound'] as String
+  ..boundingRadiusRemovalValue = json['boundingRadiusRemovalValue'] as String
+  ..autoRemoveBoundingRadius = json['autoRemoveBoundingRadius'] as String
+  ..loadingAqmInjectedItems = json['loadingAqmInjectedItems'] as String
   ..failedToFetchRemoteLocaleData =
       json['failedToFetchRemoteLocaleData'] as String
   ..unableToUpdateFile = json['unableToUpdateFile'] as String
@@ -148,8 +224,12 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..fileIsNotSupported = json['fileIsNotSupported'] as String
   ..fileAlreadyOnTheList = json['fileAlreadyOnTheList'] as String
   ..nameAlreadyExists = json['nameAlreadyExists'] as String
+  ..noMatchingFilesBetweenItemsToSwap =
+      json['noMatchingFilesBetweenItemsToSwap'] as String
   ..pso2binDirPathInfo = json['pso2binDirPathInfo'] as String
   ..mainDirPathInfo = json['mainDirPathInfo'] as String
+  ..restoredModInfo = json['restoredModInfo'] as String
+  ..duplicateAppliedInfo = json['duplicateAppliedInfo'] as String
   ..appSettings = json['appSettings'] as String
   ..uiLanguage = json['uiLanguage'] as String
   ..itemNameLanguage = json['itemNameLanguage'] as String
@@ -186,6 +266,13 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'dfOuterwears': instance.dfOuterwears,
       'dfSetwears': instance.dfSetwears,
       'dfWeapons': instance.dfWeapons,
+      'dfGlideMotion': instance.dfGlideMotion,
+      'dfJumpMotion': instance.dfJumpMotion,
+      'dfLandingMotion': instance.dfLandingMotion,
+      'dfDashMotion': instance.dfDashMotion,
+      'dfRunMotion': instance.dfRunMotion,
+      'dfStandbyMotion': instance.dfStandbyMotion,
+      'dfSwimMotion': instance.dfSwimMotion,
       'ok': instance.ok,
       'cancel': instance.cancel,
       'cont': instance.cont,
@@ -220,6 +307,20 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'process': instance.process,
       'add': instance.add,
       'rename': instance.rename,
+      'both': instance.both,
+      'swap': instance.swap,
+      'types': instance.types,
+      'all': instance.all,
+      'motions': instance.motions,
+      'next': instance.next,
+      'normal': instance.normal,
+      'open': instance.open,
+      'successful': instance.successful,
+      'failed': instance.failed,
+      'replace': instance.replace,
+      'cmx': instance.cmx,
+      'export': instance.export,
+      'delete': instance.delete,
       'patchNotes': instance.patchNotes,
       'appUpdate': instance.appUpdate,
       'tryAgain': instance.tryAgain,
@@ -259,6 +360,36 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'matchedItems': instance.matchedItems,
       'changeTextTo': instance.changeTextTo,
       'itemSwap': instance.itemSwap,
+      'openInFileExplorer': instance.openInFileExplorer,
+      'downloadingFileName': instance.downloadingFileName,
+      'addToModManager': instance.addToModManager,
+      'originalFilesBackupPriority': instance.originalFilesBackupPriority,
+      'segaServers': instance.segaServers,
+      'localBackups': instance.localBackups,
+      'creatingBackupForModFile': instance.creatingBackupForModFile,
+      'copyingModFileToGameData': instance.copyingModFileToGameData,
+      'localBackupFoundForModFile': instance.localBackupFoundForModFile,
+      'restoringBackupFileToGameData': instance.restoringBackupFileToGameData,
+      'applyingMod': instance.applyingMod,
+      'restoringModBackups': instance.restoringModBackups,
+      'numItems': instance.numItems,
+      'numItem': instance.numItem,
+      'addToSet': instance.addToSet,
+      'setApplyLocations': instance.setApplyLocations,
+      'swapToAnotherItem': instance.swapToAnotherItem,
+      'addPreviews': instance.addPreviews,
+      'removeBoundingRadius': instance.removeBoundingRadius,
+      'customAqmInjection': instance.customAqmInjection,
+      'editingMod': instance.editingMod,
+      'extractingFile': instance.extractingFile,
+      'readingFile': instance.readingFile,
+      'boundingValueFoundReplacingWithNewValue':
+          instance.boundingValueFoundReplacingWithNewValue,
+      'boundingValueNotFoundInFile': instance.boundingValueNotFoundInFile,
+      'repackingFile': instance.repackingFile,
+      'aqmInject': instance.aqmInject,
+      'injectAQM': instance.injectAQM,
+      'removeBounding': instance.removeBounding,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,
@@ -294,6 +425,30 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'enterNewNameHere': instance.enterNewNameHere,
       'loadingModSets': instance.loadingModSets,
       'addNewSet': instance.addNewSet,
+      'showNoNameItems': instance.showNoNameItems,
+      'hideNoNameItems': instance.hideNoNameItems,
+      'swapToIdleMotions': instance.swapToIdleMotions,
+      'swapToEmotes': instance.swapToEmotes,
+      'swapToBasewears': instance.swapToBasewears,
+      'swapToSetwears': instance.swapToSetwears,
+      'swapToBodyPaints': instance.swapToBodyPaints,
+      'swapToInnerwears': instance.swapToInnerwears,
+      'replaceLQTexturesWithHQ': instance.replaceLQTexturesWithHQ,
+      'sortingFileData': instance.sortingFileData,
+      'itemSwapFinished': instance.itemSwapFinished,
+      'fileDownloadSuccessful': instance.fileDownloadSuccessful,
+      'fileDownloadFailed': instance.fileDownloadFailed,
+      'checkingAppliedMods': instance.checkingAppliedMods,
+      'restoredMods': instance.restoredMods,
+      'reApplyAll': instance.reApplyAll,
+      'removeAll': instance.removeAll,
+      'appliedList': instance.appliedList,
+      'dunplicateAppliedMods': instance.dunplicateAppliedMods,
+      'matchingFilesFound': instance.matchingFilesFound,
+      'noMatchingFilesFound': instance.noMatchingFilesFound,
+      'boundingRadiusRemovalValue': instance.boundingRadiusRemovalValue,
+      'autoRemoveBoundingRadius': instance.autoRemoveBoundingRadius,
+      'loadingAqmInjectedItems': instance.loadingAqmInjectedItems,
       'failedToFetchRemoteLocaleData': instance.failedToFetchRemoteLocaleData,
       'unableToUpdateFile': instance.unableToUpdateFile,
       'unableToGetAppVersionDataFromGitHub':
@@ -303,8 +458,12 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'fileIsNotSupported': instance.fileIsNotSupported,
       'fileAlreadyOnTheList': instance.fileAlreadyOnTheList,
       'nameAlreadyExists': instance.nameAlreadyExists,
+      'noMatchingFilesBetweenItemsToSwap':
+          instance.noMatchingFilesBetweenItemsToSwap,
       'pso2binDirPathInfo': instance.pso2binDirPathInfo,
       'mainDirPathInfo': instance.mainDirPathInfo,
+      'restoredModInfo': instance.restoredModInfo,
+      'duplicateAppliedInfo': instance.duplicateAppliedInfo,
       'appSettings': instance.appSettings,
       'uiLanguage': instance.uiLanguage,
       'itemNameLanguage': instance.itemNameLanguage,

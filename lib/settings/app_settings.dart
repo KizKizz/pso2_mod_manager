@@ -19,7 +19,6 @@ class AppSettingsLayout extends StatefulWidget {
 
 class _AppSettingsLayoutState extends State<AppSettingsLayout> {
   late List<AppLocale> appLocales;
-  final onOffLabels = [appText.on, appText.off];
 
   @override
   void initState() {
@@ -78,7 +77,7 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                         // Item icon slides
                         SettingsHeader(icon: Icons.slideshow, text: appText.itemIconSlides),
                         AnimatedHorizontalToggleLayout(
-                          taps: onOffLabels,
+                          taps: [appText.on, appText.off],
                           initialIndex: itemIconSlides.watch(context) ? 0 : 1,
                           width: constraints.maxWidth,
                           onChange: (currentIndex, targetIndex) async {

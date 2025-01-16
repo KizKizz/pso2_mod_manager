@@ -34,6 +34,7 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
                 child: Column(
                   spacing: 5,
                   children: [
+                    // Backup priority
                     SettingsHeader(icon: Icons.backup_outlined, text: appText.originalFilesBackupPriority),
                     AnimatedHorizontalToggleLayout(
                       taps: [appText.segaServers, appText.localBackups],
@@ -44,6 +45,37 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
                         targetIndex == 0 ? originalFilesBackupsFromSega = true : originalFilesBackupsFromSega = false;
                         prefs.setBool('originalFilesBackupsFromSega', originalFilesBackupsFromSega);
                       },
+                    ),
+                    // Auto bounding radius
+                    SettingsHeader(icon: Icons.radio_button_checked_rounded, text: appText.autoRemoveBoundingRadius),
+                    AnimatedHorizontalToggleLayout(
+                      taps: [appText.on, appText.off],
+                      initialIndex: autoBoundingRadiusRemoval ? 0 : 1,
+                      width: constraints.maxWidth,
+                      onChange: (currentIndex, targetIndex) async {
+                        final prefs = await SharedPreferences.getInstance();
+                        targetIndex == 0 ? autoBoundingRadiusRemoval = true : autoBoundingRadiusRemoval = false;
+                        prefs.setBool('autoBoundingRadiusRemoval', autoBoundingRadiusRemoval);
+                      },
+                    ),
+                    // Bounding radius value
+                    SettingsHeader(icon: Icons.radio_button_checked_rounded, text: appText.boundingRadiusRemovalValue),
+                    SizedBox(
+                      width: double.infinity,
+                      child: SliderTheme(
+                          data: const SliderThemeData(showValueIndicator: ShowValueIndicator.always),
+                          child: Slider(
+                            value: boundingRadiusRemovalValue,
+                            min: -200,
+                            max: 0,
+                            label: boundingRadiusRemovalValue.toString(),
+                            onChanged: (value) async {
+                              final prefs = await SharedPreferences.getInstance();
+                              boundingRadiusRemovalValue = value.ceilToDouble();
+                              prefs.setDouble('boundingRadiusRemovalValue', boundingRadiusRemovalValue);
+                              setState(() {});
+                            },
+                          )),
                     ),
                   ],
                 ),

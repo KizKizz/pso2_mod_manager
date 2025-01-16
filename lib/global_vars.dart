@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_paths/sega_file_paths.dart';
+import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_item_class.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_data/category_type_class.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
@@ -28,6 +29,23 @@ List<String> defaultCategoryDirs = [
   'Setwears', //16
   'Weapons' //17
 ];
+List<String> boundingRadiusCategoryDirs = [
+  'Basewears', //1
+  'Body Paints', //2
+  'Cast Arm Parts', //3
+  'Cast Body Parts', //4
+  'Cast Leg Parts', //5
+  'Outerwears', //15
+  'Setwears', //16
+];
+List<String> aqmInjectCategoryDirs = [
+  'Basewears', //1
+  // 'Cast Arm Parts', //3
+  // 'Cast Body Parts', //4
+  // 'Cast Leg Parts', //5
+  'Outerwears', //15
+  'Setwears', //16
+];
 final defaultMotionTypes = ['Glide Motion', 'Jump Motion', 'Landing Motion', 'Dash Motion', 'Run Motion', 'Standby Motion', 'Swim Motion'];
 String charToReplace = '[\\/:*?"<>|]';
 String charToReplaceWithoutSeparators = '[:*?"<>|]';
@@ -49,3 +67,4 @@ String segaPatchServerBackupURL = '';
 Signal<String> modApplyStatus = Signal('');
 Signal<String> modPopupStatus = Signal('');
 List<CategoryType> masterAppliedModList = [];
+List<AqmInjectedItem> masterAqmInjectedItemList = [];

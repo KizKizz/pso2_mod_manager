@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
@@ -44,4 +45,33 @@ Future<void> submodRename(context, Mod mod, SubMod submod) async {
     saveMasterModListToJson();
     modPopupStatus.value = newName;
   }
+}
+
+Future<void> addPreviews(Mod mod, SubMod submod) async {
+  const XTypeGroup imageTypeGroup = XTypeGroup(
+    label: 'Images',
+    extensions: <String>['jpg', 'png'],
+  );
+  const XTypeGroup videoTypeGroup = XTypeGroup(
+    label: 'Videos',
+    extensions: <String>['webm', 'mp4'],
+  );
+  final List<XFile> files = await openFiles(acceptedTypeGroups: <XTypeGroup>[
+    imageTypeGroup,
+    videoTypeGroup,
+  ]);
+  for (var file in files) {
+    if (p.extension(file.path) == '.jpg' || p.extension(file.path) == '.png') {
+      final copiedFile = await File(file.path).copy(submod.location + p.separator + p.basename(file.path));
+      submod.previewImages.add(copiedFile.path);
+      mod.previewImages.add(copiedFile.path);
+    }
+    if (p.extension(file.path) == '.webm' || p.extension(file.path) == '.mp4') {
+      final copiedFile = await File(file.path).copy(submod.location + p.separator + p.basename(file.path));
+      submod.previewVideos.add(copiedFile.path);
+      mod.previewVideos.add(copiedFile.path);
+    }
+  }
+
+  saveMasterModListToJson();
 }

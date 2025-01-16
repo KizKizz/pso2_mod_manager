@@ -19,10 +19,14 @@ Signal<int> backgroundImageSlideInterval = Signal<int>(10);
 Signal<bool> itemIconSlides = Signal<bool>(false);
 Signal<String> selectedDisplayCategory = Signal<String>(appText.all);
 bool originalFilesBackupsFromSega = true;
+double boundingRadiusRemovalValue = -10;
 
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
 String mainDataDirPath = '';
+
+// Auto features
+bool autoBoundingRadiusRemoval = false;
 
 Future<void> prefsLoad() async {
   final prefs = await SharedPreferences.getInstance();
@@ -75,4 +79,10 @@ Future<void> prefsLoad() async {
 
   // Backup priority
   originalFilesBackupsFromSega = prefs.getBool('originalFilesBackupsFromSega') ?? true;
+
+  // Bounding radius value
+  boundingRadiusRemovalValue = prefs.getDouble('boundingRadiusRemovalValue') ?? -10;
+
+  // Auto bounding radius 
+  autoBoundingRadiusRemoval = prefs.getBool('autoBoundingRadiusRemoval') ?? false;
 }

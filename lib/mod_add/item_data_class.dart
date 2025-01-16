@@ -18,13 +18,13 @@ class ItemData {
   String iconImagePath;
   Map<String, String> infos = {};
 
-  // String getJPName() {
-  //   return infos.entries.firstWhere((element) => element.key.contains('JP Name') || element.key.contains('Japanese Name')).value;
-  // }
+  String getJPName() {
+    return infos.entries.firstWhere((element) => element.key.contains('JP Name') || element.key.contains('Japanese Name')).value;
+  }
 
-  // String getENName() {
-  //   return infos.entries.firstWhere((element) => element.key.contains('EN Name') || element.key.contains('English Name')).value;
-  // }
+  String getENName() {
+    return infos.entries.firstWhere((element) => element.key.contains('EN Name') || element.key.contains('English Name')).value;
+  }
 
   String getName() {
     if (itemNameLanguage == ItemNameLanguage.jp) {
@@ -45,9 +45,9 @@ class ItemData {
     return ids;
   }
 
-  String getIconImagePath() {
-    return infos.entries.firstWhere((element) => element.key.contains('iconImagePath')).value;
-  }
+  // String getIconImagePath() {
+  //   return infos.entries.firstWhere((element) => element.key.contains('iconImagePath')).value;
+  // }
 
   List<String> getInfos() {
     List<String> returnInfos = [];
@@ -206,6 +206,28 @@ class ItemData {
             e.value.isNotEmpty &&
             e.key != 'Japanese Name' &&
             e.key != 'English Name' &&
+            !e.key.contains('Bone') &&
+            e.key != 'JP Name' &&
+            e.key != 'EN Name' &&
+            e.key != 'Reboot Human' &&
+            e.key != 'Reboot Cast Male' &&
+            e.key != 'Reboot Cast Female' &&
+            e.key != 'Reboot Fig' &&
+            e.key != 'Reboot VFX' &&
+            e.key != 'PSO2 VFX' &&
+            e.key != 'PSO2 File')
+        .map((e) => '${e.key}: ${e.value}'.trim())
+        .toList();
+  }
+
+  List<String> getDetailsForAqmInject() {
+    return infos.entries
+        .where((e) =>
+            e.value.isNotEmpty &&
+            e.key != 'Japanese Name' &&
+            e.key != 'English Name' &&
+            e.key != 'Icon' &&
+            e.key != 'Sounds' &&
             !e.key.contains('Bone') &&
             e.key != 'JP Name' &&
             e.key != 'EN Name' &&

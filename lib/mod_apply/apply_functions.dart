@@ -4,6 +4,7 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/app_paths/sega_file_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/item_bounding_radius/bounding_radius_popup.dart';
 import 'package:pso2_mod_manager/mod_apply/applying_popup.dart';
 import 'package:pso2_mod_manager/mod_apply/duplicate_popup.dart';
 import 'package:pso2_mod_manager/mod_apply/unapply_functions.dart';
@@ -24,6 +25,13 @@ Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod
   Item? dupItem;
   Mod? dupMod;
   SubMod? dupSubmod;
+
+  // Remove bounding radius
+  if (autoBoundingRadiusRemoval && boundingRadiusCategoryDirs.contains(submod.category)) {
+    await boundingRadiusPopup(context, submod);
+  }
+
+  // Checking for duplicates
   (dupItem, dupMod, dupSubmod) = dublicateAppliedModCheck(submod);
 
   if (dupItem != null && dupMod != null && dupSubmod != null) {
@@ -33,6 +41,7 @@ Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod
     }
   }
 
+  // Apply mod files to game
   if (performApply) {
     await applyingPopup(context, applying, item, mod, submod);
   }

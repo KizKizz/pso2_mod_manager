@@ -8,13 +8,16 @@ String mainModDirPath = '$mainDataDirPath${p.separator}Mods';
 String backupDirPath = '';
 String mainModListJsonPath = '';
 String mainModSetListJsonPath = '';
+String mainAqmInjectListJsonPath = '';
 String backgroundDirPath = '$mainDataDirPath${p.separator}BackgroundImages';
 String modAddTempDirPath = '$mainDataDirPath${p.separator}AddTemp';
 String modSwapTempDirPath = '$mainDataDirPath${p.separator}SwapTemp';
+String modBoundingRadiusTempDirPath = '$mainDataDirPath${p.separator}BoundingRadiusTemp';
 String modSwapTempLItemDirPath = '$mainDataDirPath${p.separator}SwapTemp${p.separator}lItem';
 String modSwapTempRItemDirPath = '$mainDataDirPath${p.separator}SwapTemp${p.separator}rItem';
 String modSwapTempOutputDirPath = '$mainDataDirPath${p.separator}SwapTemp${p.separator}output';
 String pso2DataDirPath = '$pso2binDirPath${p.separator}data';
+String modCustomAqmsDirPath = '$mainDataDirPath${p.separator}CustomAQMs';
 
 // External programs
 String sevenZipExePath = '${Directory.current.path}${p.separator}7zip-x64${p.separator}7z.exe';
@@ -55,6 +58,9 @@ void createMainDirs() {
 
     // Main mod set list
     mainModSetListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManSetsList.json';
+
+    // Main aqm inject list
+    mainAqmInjectListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManAqmInjectedList.json';
   }
 
   // Profile 2
@@ -72,5 +78,8 @@ void createMainDirs() {
 
     // Main mod set list
     mainModSetListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManSetsList_profile2.json';
+
+    // Main aqm inject list
+    mainAqmInjectListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManAqmInjectedList_profile2.json';
   }
 }

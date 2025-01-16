@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/item_bounding_radius/bounding_radius_popup.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_popup.dart';
 import 'package:pso2_mod_manager/main_widgets/popup_menu_functions.dart';
 import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
@@ -7,14 +9,11 @@ import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
-import 'package:pso2_mod_manager/v3_widgets/rename_popup.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:star_menu/star_menu.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:path/path.dart' as p;
-import 'package:io/io.dart' as io;
 
 class SubmodGridLayout extends StatefulWidget {
   const SubmodGridLayout({super.key, required this.item, required this.mod, required this.submods, required this.searchString});
@@ -108,23 +107,31 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                     return [
                       PopupMenuItem(child: MenuIconItem(icon: Icons.list_alt_outlined, text: appText.addToSet)),
                       PopupMenuItem(child: MenuIconItem(icon: Icons.add_location_alt_outlined, text: appText.setApplyLocations)),
-                       const PopupMenuItem(
+                      const PopupMenuItem(
                           height: 0,
                           enabled: false,
                           child: PopupMenuDivider(
                             height: 5,
                           )),
-                      PopupMenuItem(onTap: () async => await modSwapPopup(context, widget.item, widget.mod, widget.submod), child: MenuIconItem(icon: Icons.swap_horizontal_circle_outlined, text: appText.swapToAnotherItem)),
+                      PopupMenuItem(
+                          onTap: () async => await modSwapPopup(context, widget.item, widget.mod, widget.submod),
+                          child: MenuIconItem(icon: Icons.swap_horizontal_circle_outlined, text: appText.swapToAnotherItem)),
                       PopupMenuItem(child: MenuIconItem(icon: Icons.file_present, text: appText.cmx)),
-                      PopupMenuItem(child: MenuIconItem(icon: Icons.radio_button_on_sharp, text: appText.removeBoundingRadius)),
+                      if (boundingRadiusCategoryDirs.contains(widget.submod.category))
+                        PopupMenuItem(onTap: () async => await boundingRadiusPopup(context, widget.submod), child: MenuIconItem(icon: Icons.radio_button_on_sharp, text: appText.removeBoundingRadius)),
                       PopupMenuItem(child: MenuIconItem(icon: Icons.auto_fix_high, text: appText.customAqmInjection)),
-                       const PopupMenuItem(
+                      const PopupMenuItem(
                           height: 0,
                           enabled: false,
                           child: PopupMenuDivider(
                             height: 5,
                           )),
-                      PopupMenuItem(child: MenuIconItem(icon: Icons.preview_outlined, text: appText.addPreviews)),
+                      PopupMenuItem(
+                          onTap: () async {
+                            await addPreviews(widget.mod, widget.submod);
+                            setState(() {});
+                          },
+                          child: MenuIconItem(icon: Icons.preview_outlined, text: appText.addPreviews)),
                       PopupMenuItem(child: MenuIconItem(icon: Icons.import_export, text: appText.export)),
                       PopupMenuItem(onTap: () async => await submodRename(context, widget.mod, widget.submod), child: MenuIconItem(icon: Icons.edit, text: appText.rename)),
                       PopupMenuItem(onTap: () => launchUrlString(widget.submod.location), child: MenuIconItem(icon: Icons.folder_open, text: appText.openInFileExplorer)),

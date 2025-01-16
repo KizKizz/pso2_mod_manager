@@ -150,7 +150,16 @@ class AppText {
       swapToAnotherItem = 'Swap to another item',
       addPreviews = 'Add previews',
       removeBoundingRadius = 'Remove bounding radius',
-      customAqmInjection = 'Custom AQM injection';
+      customAqmInjection = 'Custom AQM injection',
+      editingMod = 'Editing "%p%"',
+      extractingFile = 'Extracting "%p%"',
+      readingFile = 'Reading "%p%"',
+      boundingValueFoundReplacingWithNewValue = 'Bounding value found, replacing it with "%p%"',
+      boundingValueNotFoundInFile = 'Bounding radius value not found in "%p%"',
+      repackingFile = 'Repacking "%p%"',
+      aqmInject = 'AQM Inject',
+      injectAQM = 'Inject AQM',
+      removeBounding = 'Remove Bounding';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -204,7 +213,12 @@ class AppText {
       reApplyAll = 'Re-Apply All',
       removeAll = 'Remove All',
       appliedList = 'Applied List',
-      dunplicateAppliedMods = 'Duplicate Applied Mods';
+      dunplicateAppliedMods = 'Duplicate Applied Mods',
+      matchingFilesFound = 'Matching files found',
+      noMatchingFilesFound = 'No matching files found',
+      boundingRadiusRemovalValue = 'Bounding Radius Removal Value',
+      autoRemoveBoundingRadius = 'Auto Remove Bounding Radius',
+      loadingAqmInjectedItems = 'Loading AQM Injected Items';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',

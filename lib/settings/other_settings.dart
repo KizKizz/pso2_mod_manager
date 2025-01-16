@@ -100,8 +100,10 @@ class _OtherSettingsLayoutState extends State<OtherSettingsLayout> {
                             min: 0,
                             max: 250,
                             label: uiBackgroundColorAlpha.toString(),
-                            onChanged: (value) {
+                            onChanged: (value) async {
+                              final prefs = await SharedPreferences.getInstance();
                               uiBackgroundColorAlpha.value = value.round();
+                              prefs.setInt('uiBackgroundColorAlpha', uiBackgroundColorAlpha.value);
                               setState(() {});
                             },
                           )),

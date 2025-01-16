@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/main_applied_mod_grid.dart';
+import 'package:pso2_mod_manager/v3_home/main_item_aqm_inject_grid.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_swap_grid.dart';
 import 'package:pso2_mod_manager/v3_home/main_modset_grid.dart';
 import 'package:pso2_mod_manager/v3_home/mod_add.dart';
@@ -13,7 +14,7 @@ import 'package:signals/signals_flutter.dart';
 
 Signal<Widget> homepageCurrentWidget = Signal(const MainItemGrid());
 SidebarXController sidebarXController = SidebarXController(selectedIndex: 0, extended: false);
-List<Widget> homepageWidgets = [const MainItemGrid(), const MainModGrid(), const MainAppliedModGrid(), const MainModSetGrid(), const MainItemSwapGrid(), const ModAdd(), const Settings()];
+List<Widget> homepageWidgets = [const MainItemGrid(), const MainModGrid(), const MainAppliedModGrid(), const MainModSetGrid(), const MainItemSwapGrid(), const MainItemAqmInjectGrid(), const ModAdd(), const Settings()];
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -111,6 +112,13 @@ class _HomepageState extends State<Homepage> {
                 label: appText.itemSwap,
                 onTap: () {
                   homepageCurrentWidget.value = const MainItemSwapGrid();
+                },
+              ),
+              SidebarXItem(
+                icon: Icons.auto_fix_high,
+                label: appText.aqmInject,
+                onTap: () {
+                  homepageCurrentWidget.value = const MainItemAqmInjectGrid();
                 },
               ),
             ],
