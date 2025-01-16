@@ -6,7 +6,8 @@ import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
 import 'package:signals/signals_flutter.dart';
 
-Future<bool> aqmInjectPopup(context, String hqIcePath, String lqIcePath, String itemName) async {
+Future<bool> aqmInjectPopup(context, String hqIcePath, String lqIcePath, String itemName, bool restoreAqm, bool restoreBounding, bool restoreAll, bool aqmInjected) async {
+  modAqmInjectedrefresh.value = false;
   return await showDialog(
       barrierDismissible: false,
       context: context,
@@ -17,7 +18,13 @@ Future<bool> aqmInjectPopup(context, String hqIcePath, String lqIcePath, String 
               insetPadding: const EdgeInsets.all(5),
               contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               content: FutureBuilder(
-                future: itemCustomAqmInject(context, hqIcePath, lqIcePath),
+                future: restoreAqm
+                    ? itemCustomAqmRestoreAqm(hqIcePath, lqIcePath)
+                    : restoreBounding
+                        ? itemCustomAqmRestoreBounding(context, hqIcePath, lqIcePath, aqmInjected)
+                        : restoreAll
+                            ? itemCustomAqmRestoreAll(hqIcePath, lqIcePath)
+                            : itemCustomAqmInject(context, hqIcePath, lqIcePath),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return Center(
@@ -62,6 +69,7 @@ Future<bool> aqmInjectPopup(context, String hqIcePath, String lqIcePath, String 
                     return FutureBuilderError(loadingText: appText.dText(appText.editingMod, itemName), snapshotError: snapshot.error.toString());
                   } else {
                     bool result = snapshot.data;
+                    modAqmInjectedrefresh.value = true;
                     Navigator.of(context).pop(result);
                     return const SizedBox();
                   }

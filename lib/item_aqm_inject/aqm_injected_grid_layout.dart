@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_functions.dart';
+import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_popup.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_item_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
@@ -126,7 +128,10 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                 Row(
                                   spacing: 5,
                                   mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [Visibility(visible: displayingAqmInjectedItem[index].isAqmReplaced!, child: InfoBox(info: appText.aqmInjected, borderHighlight: false))],
+                                  children: [
+                                    Visibility(visible: displayingAqmInjectedItem[index].isAqmReplaced!, child: InfoBox(info: appText.aqmInjected, borderHighlight: false)),
+                                    Visibility(visible: displayingAqmInjectedItem[index].isBoundingRemoved!, child: InfoBox(info: appText.boundingRemoved, borderHighlight: false))
+                                  ],
                                 )
                               ],
                             ),
@@ -143,7 +148,49 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                     spacing: 5,
                                     overflowSpacing: 5,
                                     alignment: MainAxisAlignment.end,
-                                    children: [OutlinedButton(onPressed: () {}, child: Text(appText.restore))],
+                                    children: [
+                                      Visibility(
+                                        visible: displayingAqmInjectedItem[index].isAqmReplaced!,
+                                        child: OutlinedButton(
+                                            onPressed: () async {
+                                              bool result = await aqmInjectPopup(context, displayingAqmInjectedItem[index].hqIcePath, displayingAqmInjectedItem[index].lqIcePath,
+                                                  displayingAqmInjectedItem[index].getName(), true, false, false, displayingAqmInjectedItem[index].isAqmReplaced!);
+                                              if (result && !displayingAqmInjectedItem[index].isBoundingRemoved!) {
+                                                masterAqmInjectedItemList.removeAt(index);
+                                              } else if (result && displayingAqmInjectedItem[index].isBoundingRemoved!) {
+                                                displayingAqmInjectedItem[index].isAqmReplaced = false;
+                                              }
+                                              saveMasterAqmInjectListToJson();
+                                            },
+                                            child: Text(appText.removeCustomAQM)),
+                                      ),
+                                      Visibility(
+                                        visible: displayingAqmInjectedItem[index].isBoundingRemoved!,
+                                        child: OutlinedButton(
+                                            onPressed: () async {
+                                              bool result = await aqmInjectPopup(context, displayingAqmInjectedItem[index].hqIcePath, displayingAqmInjectedItem[index].lqIcePath,
+                                                  displayingAqmInjectedItem[index].getName(), false, true, false, displayingAqmInjectedItem[index].isAqmReplaced!);
+                                              if (result && !displayingAqmInjectedItem[index].isAqmReplaced!) {
+                                                masterAqmInjectedItemList.removeAt(index);
+                                              } else if (result && displayingAqmInjectedItem[index].isAqmReplaced!) {
+                                                displayingAqmInjectedItem[index].isBoundingRemoved = false;
+                                              }
+                                              saveMasterAqmInjectListToJson();
+                                            },
+                                            child: Text(appText.restoreBounding)),
+                                      ),
+                                      Visibility(
+                                        visible: displayingAqmInjectedItem[index].isAqmReplaced! && displayingAqmInjectedItem[index].isBoundingRemoved!,
+                                        child: OutlinedButton(
+                                            onPressed: () async {
+                                              bool result = await aqmInjectPopup(context, displayingAqmInjectedItem[index].hqIcePath, displayingAqmInjectedItem[index].lqIcePath,
+                                                  displayingAqmInjectedItem[index].getName(), false, false, true, displayingAqmInjectedItem[index].isAqmReplaced!);
+                                              if (result) masterAqmInjectedItemList.removeAt(index);
+                                              saveMasterAqmInjectListToJson();
+                                            },
+                                            child: Text(appText.restoreAll)),
+                                      )
+                                    ],
                                   )
                                 ],
                               )

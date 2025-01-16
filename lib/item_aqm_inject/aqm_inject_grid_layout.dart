@@ -36,7 +36,7 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    // if (modAqmInjectingStatus.watch(context) != modAqmInjectingStatus.peek()) setState(() {});
+    if (modAqmInjectedrefresh.watch(context) != modAqmInjectedrefresh.peek()) setState(() {});
 
     List<ItemData> displayingItemData = [];
     if (itemSwapSearchTextController.value.text.isEmpty) {
@@ -142,54 +142,140 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                                     alignment: MainAxisAlignment.end,
                                     children: [
                                       OutlinedButton(
-                                          onPressed: () async {
-                                            AqmInjectedItem newItem = AqmInjectedItem(
-                                                displayingItemData[index].category,
-                                                displayingItemData[index].getItemIDs().first,
-                                                displayingItemData[index].getItemIDs().last,
-                                                displayingItemData[index].iconImagePath,
-                                                displayingItemData[index].getENName(),
-                                                displayingItemData[index].getJPName(),
-                                                p.withoutExtension(oItemData
-                                                    .firstWhere(
-                                                      (e) => e.path.contains(displayingItemData[index].getHQIceName()),
-                                                      orElse: () => OfficialIceFile.empty(),
-                                                    )
-                                                    .path),
-                                                p.withoutExtension(oItemData
-                                                    .firstWhere(
-                                                      (e) => e.path.contains(displayingItemData[index].getLQIceName()),
-                                                      orElse: () => OfficialIceFile.empty(),
-                                                    )
-                                                    .path),
-                                                p.withoutExtension(oItemData
-                                                    .firstWhere(
-                                                      (e) => e.path.contains(displayingItemData[index].getIconIceName()),
-                                                      orElse: () => OfficialIceFile.empty(),
-                                                    )
-                                                    .path),
-                                                false,
-                                                false,
-                                                false,
-                                                false);
+                                          onPressed: masterAqmInjectedItemList.indexWhere((e) => e.getName() == displayingItemData[index].getName()) == -1
+                                              ? () async {
+                                                  AqmInjectedItem newItem = AqmInjectedItem(
+                                                      displayingItemData[index].category,
+                                                      displayingItemData[index].getItemIDs().first,
+                                                      displayingItemData[index].getItemIDs().last,
+                                                      displayingItemData[index].iconImagePath,
+                                                      displayingItemData[index].getENName(),
+                                                      displayingItemData[index].getJPName(),
+                                                      p.withoutExtension(oItemData
+                                                          .firstWhere(
+                                                            (e) => e.path.contains(displayingItemData[index].getHQIceName()),
+                                                            orElse: () => OfficialIceFile.empty(),
+                                                          )
+                                                          .path),
+                                                      p.withoutExtension(oItemData
+                                                          .firstWhere(
+                                                            (e) => e.path.contains(displayingItemData[index].getLQIceName()),
+                                                            orElse: () => OfficialIceFile.empty(),
+                                                          )
+                                                          .path),
+                                                      p.withoutExtension(oItemData
+                                                          .firstWhere(
+                                                            (e) => e.path.contains(displayingItemData[index].getIconIceName()),
+                                                            orElse: () => OfficialIceFile.empty(),
+                                                          )
+                                                          .path),
+                                                      false,
+                                                      false,
+                                                      false,
+                                                      false);
 
-                                            bool result = await aqmInjectPopup(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName());
-                                            if (result) {
-                                              newItem.isAqmReplaced = true;
-                                              newItem.isApplied = true;
-                                              masterAqmInjectedItemList.add(newItem);
-                                              modAqmInjectedrefresh.value = true;
-
-                                              //Save to json
-                                              masterAqmInjectedItemList.map((item) => item.toJson()).toList();
-                                              const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-                                              File(mainAqmInjectListJsonPath).writeAsStringSync(encoder.convert(masterAqmInjectedItemList));
-                                            }
-                                            setState(() {});
-                                          },
+                                                  bool result = await aqmInjectPopup(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName(), false, false, false, false);
+                                                  if (result) {
+                                                    newItem.isAqmReplaced = true;
+                                                    newItem.isApplied = true;
+                                                    masterAqmInjectedItemList.add(newItem);
+                                                    saveMasterAqmInjectListToJson();
+                                                  }
+                                                }
+                                              : null,
                                           child: Text(appText.injectAQM)),
-                                      OutlinedButton(onPressed: () {}, child: Text(appText.removeBounding)),
-                                      OutlinedButton(onPressed: () {}, child: Text(appText.both))
+                                      OutlinedButton(
+                                          onPressed: masterAqmInjectedItemList.indexWhere((e) => e.getName() == displayingItemData[index].getName()) == -1
+                                              ? () async {
+                                                  AqmInjectedItem newItem = AqmInjectedItem(
+                                                      displayingItemData[index].category,
+                                                      displayingItemData[index].getItemIDs().first,
+                                                      displayingItemData[index].getItemIDs().last,
+                                                      displayingItemData[index].iconImagePath,
+                                                      displayingItemData[index].getENName(),
+                                                      displayingItemData[index].getJPName(),
+                                                      p.withoutExtension(oItemData
+                                                          .firstWhere(
+                                                            (e) => e.path.contains(displayingItemData[index].getHQIceName()),
+                                                            orElse: () => OfficialIceFile.empty(),
+                                                          )
+                                                          .path),
+                                                      p.withoutExtension(oItemData
+                                                          .firstWhere(
+                                                            (e) => e.path.contains(displayingItemData[index].getLQIceName()),
+                                                            orElse: () => OfficialIceFile.empty(),
+                                                          )
+                                                          .path),
+                                                      p.withoutExtension(oItemData
+                                                          .firstWhere(
+                                                            (e) => e.path.contains(displayingItemData[index].getIconIceName()),
+                                                            orElse: () => OfficialIceFile.empty(),
+                                                          )
+                                                          .path),
+                                                      false,
+                                                      false,
+                                                      false,
+                                                      false);
+
+                                                  bool result = await itemCustomAqmBounding(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName());
+                                                  if (result) {
+                                                    newItem.isBoundingRemoved = true;
+                                                    newItem.isApplied = true;
+                                                    masterAqmInjectedItemList.add(newItem);
+                                                    modAqmInjectedrefresh.value = true;
+                                                    saveMasterAqmInjectListToJson();
+                                                  }
+                                                  setState(() {});
+                                                }
+                                              : null,
+                                          child: Text(appText.removeBounding)),
+                                      OutlinedButton(
+                                          onPressed: masterAqmInjectedItemList.indexWhere((e) => e.getName() == displayingItemData[index].getName()) == -1
+                                              ? () async {
+                                                  AqmInjectedItem newItem = AqmInjectedItem(
+                                                      displayingItemData[index].category,
+                                                      displayingItemData[index].getItemIDs().first,
+                                                      displayingItemData[index].getItemIDs().last,
+                                                      displayingItemData[index].iconImagePath,
+                                                      displayingItemData[index].getENName(),
+                                                      displayingItemData[index].getJPName(),
+                                                      p.withoutExtension(oItemData
+                                                          .firstWhere(
+                                                            (e) => e.path.contains(displayingItemData[index].getHQIceName()),
+                                                            orElse: () => OfficialIceFile.empty(),
+                                                          )
+                                                          .path),
+                                                      p.withoutExtension(oItemData
+                                                          .firstWhere(
+                                                            (e) => e.path.contains(displayingItemData[index].getLQIceName()),
+                                                            orElse: () => OfficialIceFile.empty(),
+                                                          )
+                                                          .path),
+                                                      p.withoutExtension(oItemData
+                                                          .firstWhere(
+                                                            (e) => e.path.contains(displayingItemData[index].getIconIceName()),
+                                                            orElse: () => OfficialIceFile.empty(),
+                                                          )
+                                                          .path),
+                                                      false,
+                                                      false,
+                                                      false,
+                                                      false);
+
+                                                  bool aqmResult = await aqmInjectPopup(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName(), false, false, false, false);
+                                                  // ignore: use_build_context_synchronously
+                                                  bool boundingResult = await itemCustomAqmBounding(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName());
+                                                  if (aqmResult || boundingResult) {
+                                                    newItem.isAqmReplaced = aqmResult;
+                                                    newItem.isBoundingRemoved = boundingResult;
+                                                    newItem.isApplied = true;
+                                                    masterAqmInjectedItemList.add(newItem);
+                                                    modAqmInjectedrefresh.value = true;
+                                                    saveMasterAqmInjectListToJson();
+                                                  }
+                                                }
+                                              : null,
+                                          child: Text(appText.both))
                                     ],
                                   )
                                 ],

@@ -160,7 +160,11 @@ class AppText {
       aqmInject = 'AQM Inject',
       injectAQM = 'Inject AQM',
       removeBounding = 'Remove Bounding',
-      aqmInjected = 'AQM Injected';
+      aqmInjected = 'AQM Injected',
+      boundingRemoved = 'Bounding Removed',
+      removeCustomAQM = 'Remove Custom AQM',
+      restoreBounding = 'Restore Bounding',
+      restoreAll = 'Restore All';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
