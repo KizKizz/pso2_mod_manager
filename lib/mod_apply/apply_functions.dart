@@ -4,9 +4,12 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/app_paths/sega_file_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_functions.dart';
+import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_popup.dart';
+import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_item_class.dart';
 import 'package:pso2_mod_manager/item_bounding_radius/bounding_radius_popup.dart';
 import 'package:pso2_mod_manager/mod_apply/applying_popup.dart';
-import 'package:pso2_mod_manager/mod_apply/duplicate_popup.dart';
+import 'package:pso2_mod_manager/mod_apply/duplicate_popups.dart';
 import 'package:pso2_mod_manager/mod_apply/unapply_functions.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
@@ -22,27 +25,43 @@ Future<void> modToGameData(context, bool applying, Item item, Mod mod, SubMod su
 
 Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod submod) async {
   bool performApply = true;
+
+  // Checking for duplicates in Aqm Inject
+  AqmInjectedItem? dupAqmItem = duplicateAqmInjectedFilesCheck(submod);
+
+  if (dupAqmItem != null) {
+    performApply = await duplicateAqmInjectedFilesPopup(context, dupAqmItem);
+    if (performApply) {
+      bool result = await aqmInjectPopup(context, dupAqmItem.hqIcePath, dupAqmItem.lqIcePath, dupAqmItem.getName(), false, false, true, dupAqmItem.isAqmReplaced!, false);
+      if (result) masterAqmInjectedItemList.remove(dupAqmItem);
+      saveMasterAqmInjectListToJson();
+    } else {
+      return;
+    }
+  }
+
+  // Checking for duplicates in applied
   Item? dupItem;
   Mod? dupMod;
   SubMod? dupSubmod;
-
-  // Remove bounding radius
-  if (autoBoundingRadiusRemoval && boundingRadiusCategoryDirs.contains(submod.category)) {
-    await boundingRadiusPopup(context, submod);
-  }
-
-  // Checking for duplicates
-  (dupItem, dupMod, dupSubmod) = dublicateAppliedModCheck(submod);
+  (dupItem, dupMod, dupSubmod) = duplicateAppliedModCheck(submod);
 
   if (dupItem != null && dupMod != null && dupSubmod != null) {
-    performApply = await duplicatePopup(context, dupItem, dupMod, dupSubmod, submod.submodName);
+    performApply = await duplicateAppliedModPopup(context, dupItem, dupMod, dupSubmod, submod.submodName);
     if (performApply) {
       await modUnapplySequence(context, false, dupItem, dupMod, dupSubmod);
+    } else {
+      return;
     }
   }
 
   // Apply mod files to game
   if (performApply) {
+    // Remove bounding radius
+    if (autoBoundingRadiusRemoval && boundingRadiusCategoryDirs.contains(submod.category)) {
+      await boundingRadiusPopup(context, submod);
+    }
+
     await applyingPopup(context, applying, item, mod, submod);
   }
 }
@@ -129,7 +148,7 @@ Future<void> modApply(Item item, Mod mod, SubMod submod, ModFile modFile, Offici
   }
 }
 
-(Item?, Mod?, SubMod?) dublicateAppliedModCheck(SubMod newSubmod) {
+(Item?, Mod?, SubMod?) duplicateAppliedModCheck(SubMod newSubmod) {
   for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
     for (var cate in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0)) {
       for (var item in cate.items.where((e) => e.applyStatus)) {
@@ -145,4 +164,13 @@ Future<void> modApply(Item item, Mod mod, SubMod submod, ModFile modFile, Offici
   }
 
   return (null, null, null);
+}
+
+AqmInjectedItem? duplicateAqmInjectedFilesCheck(SubMod newSubmod) {
+  for (var item in masterAqmInjectedItemList) {
+    if (newSubmod.getModFileNames().contains(p.basenameWithoutExtension(item.hqIcePath)) || newSubmod.getModFileNames().contains(p.basenameWithoutExtension(item.lqIcePath))) {
+      return item;
+    }
+  }
+  return null;
 }

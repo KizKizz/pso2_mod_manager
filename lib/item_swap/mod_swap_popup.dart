@@ -11,7 +11,9 @@ import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_swap_grid.dart';
+import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
+import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
 import 'package:signals/signals_flutter.dart';
 
 Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
@@ -38,8 +40,7 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                   : submod.category == defaultCategoryDirs[16]
                       ? e.subCategory == 'Setwear'
                       : submod.category == defaultCategoryDirs[14]
-                          ? e.category == submod.category &&
-                              (e.subCategory == selectedItemSwapMotionType.watch(context) || selectedItemSwapMotionType.watch(context) == appText.all)
+                          ? e.category == submod.category && (e.subCategory == selectedItemSwapMotionType.watch(context) || selectedItemSwapMotionType.watch(context) == appText.all)
                           : e.category == submod.category)
               .where((e) => selectedItemSwapTypeCategory.watch(context) == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.watch(context).toLowerCase())
               .toList();
@@ -109,10 +110,33 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                     spacing: 5,
                     children: [
                       Expanded(
-                          child: ItemSwapGridLayout(
-                        itemDataList: lDisplayingItems,
-                        scrollController: lScrollController,
-                        selectedItemData: lSelectedItemData,
+                          child: Column(
+                        spacing: 5,
+                        children: [
+                          Expanded(
+                              child: ItemSwapGridLayout(
+                            itemDataList: lDisplayingItems,
+                            scrollController: lScrollController,
+                            selectedItemData: lSelectedItemData,
+                          )),
+                          Row(
+                            spacing: 5,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(width: 300, height: 170, child: SubmodImageBox(filePaths: submod.previewImages, isNew: submod.isNew)),
+                              Expanded(
+                                child: Column(
+                                  spacing: 5,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(submod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleLarge),
+                                    Text(submod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
                       )),
                       Expanded(
                           child: ItemSwapGridLayout(

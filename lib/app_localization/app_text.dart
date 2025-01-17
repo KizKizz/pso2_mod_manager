@@ -88,6 +88,8 @@ class AppText {
       failed = 'Failed',
       replace = 'Replace',
       cmx = 'CMX',
+      aqm = 'AQM',
+      bounding = 'Bounding',
       export = 'Export',
       delete = 'Delete';
 
@@ -150,7 +152,8 @@ class AppText {
       swapToAnotherItem = 'Swap to another item',
       addPreviews = 'Add previews',
       removeBoundingRadius = 'Remove bounding radius',
-      customAqmInjection = 'Custom AQM injection',
+      injectCustomAQM = 'Inject custom AQM',
+      removeCustomAQMs = 'Remove custom AQM',
       editingMod = 'Editing "%p%"',
       extractingFile = 'Extracting "%p%"',
       readingFile = 'Reading "%p%"',
@@ -218,7 +221,8 @@ class AppText {
       reApplyAll = 'Re-Apply All',
       removeAll = 'Remove All',
       appliedList = 'Applied List',
-      dunplicateAppliedMods = 'Duplicate Applied Mods',
+      duplicatesInAppliedMods = 'Duplicates In Applied Mods',
+      duplicateInAQMInjectedItems = 'Duplicate In AQM Injected Items',
       matchingFilesFound = 'Matching files found',
       noMatchingFilesFound = 'No matching files found',
       boundingRadiusRemovalValue = 'Bounding Radius Removal Value',
@@ -242,7 +246,8 @@ class AppText {
   String pso2binDirPathInfo = 'PSO2 game data folder, this folder located inside the game installation directory',
       mainDirPathInfo = 'This folder stores your mods and other Mod Manager related stuff\nPreferably outside of pso2 installation directory and nested folders',
       restoredModInfo = 'These mods had been restored by game update or file check',
-      duplicateAppliedInfo = 'This mod was found using the same files as "%p%"';
+      duplicateAppliedInfo = 'This mod was found using the same files as "%p%"',
+      duplicateAqmInjectInfo = 'This mod was found using the same files as "%p%" in AQM Inject';
 
   // Settings Text
   String appSettings = 'App Settings',

@@ -6,7 +6,7 @@ import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
 import 'package:signals/signals_flutter.dart';
 
-Future<bool> aqmInjectPopup(context, String hqIcePath, String lqIcePath, String itemName, bool restoreAqm, bool restoreBounding, bool restoreAll, bool aqmInjected) async {
+Future<bool> aqmInjectPopup(context, String hqIcePath, String lqIcePath, String itemName, bool restoreAqm, bool restoreBounding, bool restoreAll, bool aqmInjected, bool fromSubmod) async {
   modAqmInjectedrefresh.value = false;
   return await showDialog(
       barrierDismissible: false,
@@ -19,12 +19,12 @@ Future<bool> aqmInjectPopup(context, String hqIcePath, String lqIcePath, String 
               contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               content: FutureBuilder(
                 future: restoreAqm
-                    ? itemCustomAqmRestoreAqm(hqIcePath, lqIcePath)
+                    ? itemCustomAqmRestoreAqm(hqIcePath, lqIcePath, fromSubmod)
                     : restoreBounding
                         ? itemCustomAqmRestoreBounding(context, hqIcePath, lqIcePath, aqmInjected)
                         : restoreAll
                             ? itemCustomAqmRestoreAll(hqIcePath, lqIcePath)
-                            : itemCustomAqmInject(context, hqIcePath, lqIcePath),
+                            : itemCustomAqmInject(context, hqIcePath, lqIcePath, fromSubmod),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return Center(

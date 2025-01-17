@@ -1,9 +1,6 @@
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
-import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/app_paths/sega_file_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_functions.dart';
@@ -38,11 +35,29 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
     // Refresh
     if (modAqmInjectedrefresh.watch(context) != modAqmInjectedrefresh.peek()) setState(() {});
 
+    // Filtered data
     List<ItemData> displayingItemData = [];
     if (itemSwapSearchTextController.value.text.isEmpty) {
       displayingItemData = widget.itemDataList;
     } else {
       displayingItemData = widget.itemDataList.where((e) => e.getName().toLowerCase().contains(itemSwapSearchTextController.value.text.toLowerCase())).toList();
+    }
+
+    List<String> currentlyAppliedFiles = [];
+    for (var type in masterModList) {
+      for (var cate in type.categories.where((e) => e.getNumOfAppliedItems() > 0)) {
+        for (var item in cate.items.where((e) => e.applyStatus)) {
+          for (var mod in item.mods.where((e) => e.applyStatus)) {
+            for (var submod in mod.submods.where((e) => e.applyStatus)) {
+              for (var modFile in submod.modFiles.where((e) => e.applyStatus)) {
+                if (!currentlyAppliedFiles.contains(modFile.modFileName)) {
+                  currentlyAppliedFiles.add(modFile.modFileName);
+                }
+              }
+            }
+          }
+        }
+      }
     }
 
     return Column(
@@ -118,7 +133,9 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                       data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
                       child: ListTile(
                         minTileHeight: 90,
-                        enabled: masterAqmInjectedItemList.indexWhere((e) => e.getName() == displayingItemData[index].getName()) == -1,
+                        enabled: !currentlyAppliedFiles.contains(p.basenameWithoutExtension(displayingItemData[index].getHQIceName())) &&
+                            !currentlyAppliedFiles.contains(p.basenameWithoutExtension(displayingItemData[index].getLQIceName())) &&
+                            masterAqmInjectedItemList.indexWhere((e) => e.getName() == displayingItemData[index].getName()) == -1,
                         title: Row(
                           spacing: 5,
                           children: [
@@ -174,7 +191,7 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                                                       false,
                                                       false);
 
-                                                  bool result = await aqmInjectPopup(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName(), false, false, false, false);
+                                                  bool result = await aqmInjectPopup(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName(), false, false, false, false, false);
                                                   if (result) {
                                                     newItem.isAqmReplaced = true;
                                                     newItem.isApplied = true;
@@ -262,7 +279,7 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                                                       false,
                                                       false);
 
-                                                  bool aqmResult = await aqmInjectPopup(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName(), false, false, false, false);
+                                                  bool aqmResult = await aqmInjectPopup(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName(), false, false, false, false, false);
                                                   // ignore: use_build_context_synchronously
                                                   bool boundingResult = await itemCustomAqmBounding(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName());
                                                   if (aqmResult || boundingResult) {

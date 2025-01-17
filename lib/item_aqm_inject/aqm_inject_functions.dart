@@ -31,7 +31,7 @@ Future<List<AqmInjectedItem>> aqmInjectedItemsFetch() async {
   return structureFromJson;
 }
 
-Future<bool> itemCustomAqmInject(context, String hqIcePath, String lqIcePath) async {
+Future<bool> itemCustomAqmInject(context, String hqIcePath, String lqIcePath, bool fromSubmod) async {
   modAqmInjectingStatus.value = '';
   Directory(modAqmInjectTempDirPath).createSync(recursive: true);
   List<String> aqmInjectedFiles = [];
@@ -40,22 +40,35 @@ Future<bool> itemCustomAqmInject(context, String hqIcePath, String lqIcePath) as
   List<File> downloadedFiles = [];
   modAqmInjectingStatus.value = appText.fetchingFiles;
   await Future.delayed(const Duration(milliseconds: 10));
+  File localHQIce = File('');
+  File localLQIce = File('');
 
-  File localHQIce = File(pso2binDirPath + p.separator + hqIcePath.replaceAll('/', p.separator));
-  if (localHQIce.existsSync()) {
-    File copiedFile = await localHQIce.copy(modAqmInjectTempDirPath + p.separator + p.basename(hqIcePath));
-    downloadedFiles.add(copiedFile);
+  if (fromSubmod) {
+    localHQIce = File(hqIcePath);
+    localLQIce = File(lqIcePath);
+    if (localHQIce.existsSync()) {
+      downloadedFiles.add(localHQIce);
+    }
+    if (localLQIce.existsSync()) {
+      downloadedFiles.add(localLQIce);
+    }
   } else {
-    File dlFile = await aqmInjectOriginalFileDownload('$hqIcePath.pat', 'm', modAqmInjectTempDirPath);
-    downloadedFiles.add(dlFile);
-  }
-  File localLQIce = File(pso2binDirPath + p.separator + lqIcePath.replaceAll('/', p.separator));
-  if (localLQIce.existsSync()) {
-    File copiedFile = await localLQIce.copy(modAqmInjectTempDirPath + p.separator + p.basename(lqIcePath));
-    downloadedFiles.add(copiedFile);
-  } else {
-    File dlFile = await aqmInjectOriginalFileDownload('$lqIcePath.pat', 'm', modAqmInjectTempDirPath);
-    downloadedFiles.add(dlFile);
+    localHQIce = File(pso2binDirPath + p.separator + hqIcePath.replaceAll('/', p.separator));
+    if (localHQIce.existsSync()) {
+      File copiedFile = await localHQIce.copy(modAqmInjectTempDirPath + p.separator + p.basename(hqIcePath));
+      downloadedFiles.add(copiedFile);
+    } else {
+      File dlFile = await aqmInjectOriginalFileDownload('$hqIcePath.pat', 'm', modAqmInjectTempDirPath);
+      downloadedFiles.add(dlFile);
+    }
+    localLQIce = File(pso2binDirPath + p.separator + lqIcePath.replaceAll('/', p.separator));
+    if (localLQIce.existsSync()) {
+      File copiedFile = await localLQIce.copy(modAqmInjectTempDirPath + p.separator + p.basename(lqIcePath));
+      downloadedFiles.add(copiedFile);
+    } else {
+      File dlFile = await aqmInjectOriginalFileDownload('$lqIcePath.pat', 'm', modAqmInjectTempDirPath);
+      downloadedFiles.add(dlFile);
+    }
   }
 
   if (downloadedFiles.isNotEmpty) {
@@ -161,22 +174,36 @@ Future<bool> itemCustomAqmRestoreAll(String hqIcePath, String lqIcePath) async {
   }
 }
 
-Future<bool> itemCustomAqmRestoreAqm(String hqIcePath, String lqIcePath) async {
+Future<bool> itemCustomAqmRestoreAqm(String hqIcePath, String lqIcePath, bool fromSubmod) async {
   Directory(modAqmInjectTempDirPath).createSync(recursive: true);
   int packRetries = 0;
   List<File> filesToRemove = [];
   modAqmInjectingStatus.value = appText.fetchingFiles;
   await Future.delayed(const Duration(milliseconds: 10));
 
-  File localHQIce = File(pso2binDirPath + p.separator + hqIcePath.replaceAll('/', p.separator));
-  if (localHQIce.existsSync()) {
-    File copiedFile = await localHQIce.copy(modAqmInjectTempDirPath + p.separator + p.basename(hqIcePath));
-    filesToRemove.add(copiedFile);
-  }
-  File localLQIce = File(pso2binDirPath + p.separator + lqIcePath.replaceAll('/', p.separator));
-  if (localLQIce.existsSync()) {
-    File copiedFile = await localLQIce.copy(modAqmInjectTempDirPath + p.separator + p.basename(lqIcePath));
-    filesToRemove.add(copiedFile);
+  File localHQIce = File('');
+  File localLQIce = File('');
+
+  if (fromSubmod) {
+    localHQIce = File(hqIcePath);
+    localLQIce = File(lqIcePath);
+    if (localHQIce.existsSync()) {
+      filesToRemove.add(localHQIce);
+    }
+    if (localLQIce.existsSync()) {
+      filesToRemove.add(localLQIce);
+    }
+  } else {
+    localHQIce = File(pso2binDirPath + p.separator + hqIcePath.replaceAll('/', p.separator));
+    if (localHQIce.existsSync()) {
+      File copiedFile = await localHQIce.copy(modAqmInjectTempDirPath + p.separator + p.basename(hqIcePath));
+      filesToRemove.add(copiedFile);
+    }
+    localLQIce = File(pso2binDirPath + p.separator + lqIcePath.replaceAll('/', p.separator));
+    if (localLQIce.existsSync()) {
+      File copiedFile = await localLQIce.copy(modAqmInjectTempDirPath + p.separator + p.basename(lqIcePath));
+      filesToRemove.add(copiedFile);
+    }
   }
 
   if (filesToRemove.isNotEmpty) {
@@ -257,7 +284,7 @@ Future<bool> itemCustomAqmRestoreAqm(String hqIcePath, String lqIcePath) async {
 Future<bool> itemCustomAqmRestoreBounding(context, String hqIcePath, String lqIcePath, bool aqmInjected) async {
   bool restoreAllResult = await itemCustomAqmRestoreAll(hqIcePath, lqIcePath);
   if (restoreAllResult && aqmInjected) {
-    bool result = await itemCustomAqmInject(context, hqIcePath, lqIcePath);
+    bool result = await itemCustomAqmInject(context, hqIcePath, lqIcePath, false);
     if (result) {
       return true;
     } else {

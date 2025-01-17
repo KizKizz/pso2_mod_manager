@@ -35,9 +35,14 @@ SubMod _$SubModFromJson(Map<String, dynamic> json) => SubMod(
       (json['modFiles'] as List<dynamic>)
           .map((e) => ModFile.fromJson(e as Map<String, dynamic>))
           .toList(),
-    )..creationDate = json['creationDate'] == null
-        ? null
-        : DateTime.parse(json['creationDate'] as String);
+    )
+      ..creationDate = json['creationDate'] == null
+          ? null
+          : DateTime.parse(json['creationDate'] as String)
+      ..customAQMInjected = json['customAQMInjected'] as bool?
+      ..hqIcePath = json['hqIcePath'] as String?
+      ..lqIcePath = json['lqIcePath'] as String?
+      ..boundingRemoved = json['boundingRemoved'] as bool?;
 
 Map<String, dynamic> _$SubModToJson(SubMod instance) => <String, dynamic>{
       'submodName': instance.submodName,
@@ -48,6 +53,10 @@ Map<String, dynamic> _$SubModToJson(SubMod instance) => <String, dynamic>{
       'applyStatus': instance.applyStatus,
       'applyDate': instance.applyDate.toIso8601String(),
       'creationDate': instance.creationDate?.toIso8601String(),
+      'customAQMInjected': instance.customAQMInjected,
+      'hqIcePath': instance.hqIcePath,
+      'lqIcePath': instance.lqIcePath,
+      'boundingRemoved': instance.boundingRemoved,
       'position': instance.position,
       'isNew': instance.isNew,
       'isFavorite': instance.isFavorite,

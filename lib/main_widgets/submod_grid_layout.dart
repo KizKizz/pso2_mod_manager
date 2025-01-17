@@ -3,9 +3,11 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_bounding_radius/bounding_radius_popup.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_popup.dart';
+import 'package:pso2_mod_manager/main_widgets/info_tag.dart';
 import 'package:pso2_mod_manager/main_widgets/popup_menu_functions.dart';
 import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
+import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
@@ -79,7 +81,26 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
             mainAxisSize: MainAxisSize.min,
             spacing: 5,
             children: [
-              SubmodImageBox(filePaths: widget.submod.previewImages, isNew: widget.submod.isNew),
+              Stack(
+                alignment: AlignmentDirectional.bottomStart,
+                children: [
+                  SubmodImageBox(filePaths: widget.submod.previewImages, isNew: widget.submod.isNew),
+                  Visibility(
+                      visible: widget.submod.hasCmx! || widget.submod.customAQMInjected! || widget.submod.boundingRemoved!,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 0, bottom: 4),
+                        child: Row(
+                          spacing: 5,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Visibility(visible: widget.submod.hasCmx!, child: InfoTag(info: appText.cmx, borderHighlight: widget.submod.cmxApplied!)),
+                            Visibility(visible: widget.submod.customAQMInjected!, child: InfoTag(info: appText.aqm, borderHighlight: widget.submod.customAQMInjected!)),
+                            Visibility(visible: widget.submod.boundingRemoved!, child: InfoTag(info: appText.bounding, borderHighlight: widget.submod.boundingRemoved!)),
+                          ],
+                        ),
+                      )),
+                ],
+              ),
               Text(widget.submod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
               Row(spacing: 5, children: [
                 Expanded(
@@ -94,7 +115,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                         child: Text(widget.submod.applyStatus ? appText.restore : appText.apply))),
                 PopupMenuButton(
                   shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-                  color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                  color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
                   padding: EdgeInsets.zero,
                   menuPadding: EdgeInsets.zero,
                   tooltip: '',
@@ -117,9 +138,31 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                           onTap: () async => await modSwapPopup(context, widget.item, widget.mod, widget.submod),
                           child: MenuIconItem(icon: Icons.swap_horizontal_circle_outlined, text: appText.swapToAnotherItem)),
                       PopupMenuItem(child: MenuIconItem(icon: Icons.file_present, text: appText.cmx)),
-                      if (boundingRadiusCategoryDirs.contains(widget.submod.category))
-                        PopupMenuItem(onTap: () async => await boundingRadiusPopup(context, widget.submod), child: MenuIconItem(icon: Icons.radio_button_on_sharp, text: appText.removeBoundingRadius)),
-                      PopupMenuItem(child: MenuIconItem(icon: Icons.auto_fix_high, text: appText.customAqmInjection)),
+                      PopupMenuItem(
+                          enabled: boundingRadiusCategoryDirs.contains(widget.submod.category) && !widget.submod.applyStatus,
+                          onTap: () async {
+                            await boundingRadiusPopup(context, widget.submod);
+                            widget.submod.boundingRemoved = true;
+                            saveMasterModListToJson();
+                            setState(() {});
+                          },
+                          child: MenuIconItem(icon: Icons.radio_button_on_sharp, text: appText.removeBoundingRadius)),
+                      if (!widget.submod.customAQMInjected!)
+                      PopupMenuItem(
+                          enabled: aqmInjectCategoryDirs.contains(widget.submod.category) && !widget.submod.applyStatus && !widget.submod.customAQMInjected!,
+                          onTap: () async {
+                            await submodAqmInject(context, widget.submod);
+                            setState(() {});
+                          },
+                          child: MenuIconItem(icon: Icons.auto_fix_high, text: appText.injectCustomAQM)),
+                      if (widget.submod.customAQMInjected!)
+                      PopupMenuItem(
+                          enabled: aqmInjectCategoryDirs.contains(widget.submod.category) && !widget.submod.applyStatus && widget.submod.customAQMInjected!,
+                          onTap: () async {
+                            await submodCustomAqmRemove(context, widget.submod);
+                            setState(() {});
+                          },
+                          child: MenuIconItem(icon: Icons.auto_fix_off, text: appText.removeCustomAQMs)),
                       const PopupMenuItem(
                           height: 0,
                           enabled: false,

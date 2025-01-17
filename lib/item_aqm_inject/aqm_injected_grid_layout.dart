@@ -154,7 +154,7 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                         child: OutlinedButton(
                                             onPressed: () async {
                                               bool result = await aqmInjectPopup(context, displayingAqmInjectedItem[index].hqIcePath, displayingAqmInjectedItem[index].lqIcePath,
-                                                  displayingAqmInjectedItem[index].getName(), true, false, false, displayingAqmInjectedItem[index].isAqmReplaced!);
+                                                  displayingAqmInjectedItem[index].getName(), true, false, false, displayingAqmInjectedItem[index].isAqmReplaced!, false);
                                               if (result && !displayingAqmInjectedItem[index].isBoundingRemoved!) {
                                                 masterAqmInjectedItemList.removeAt(index);
                                               } else if (result && displayingAqmInjectedItem[index].isBoundingRemoved!) {
@@ -169,7 +169,7 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                         child: OutlinedButton(
                                             onPressed: () async {
                                               bool result = await aqmInjectPopup(context, displayingAqmInjectedItem[index].hqIcePath, displayingAqmInjectedItem[index].lqIcePath,
-                                                  displayingAqmInjectedItem[index].getName(), false, true, false, displayingAqmInjectedItem[index].isAqmReplaced!);
+                                                  displayingAqmInjectedItem[index].getName(), false, true, false, displayingAqmInjectedItem[index].isAqmReplaced!, false);
                                               if (result && !displayingAqmInjectedItem[index].isAqmReplaced!) {
                                                 masterAqmInjectedItemList.removeAt(index);
                                               } else if (result && displayingAqmInjectedItem[index].isAqmReplaced!) {
@@ -184,7 +184,7 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                         child: OutlinedButton(
                                             onPressed: () async {
                                               bool result = await aqmInjectPopup(context, displayingAqmInjectedItem[index].hqIcePath, displayingAqmInjectedItem[index].lqIcePath,
-                                                  displayingAqmInjectedItem[index].getName(), false, false, true, displayingAqmInjectedItem[index].isAqmReplaced!);
+                                                  displayingAqmInjectedItem[index].getName(), false, false, true, displayingAqmInjectedItem[index].isAqmReplaced!, false);
                                               if (result) masterAqmInjectedItemList.removeAt(index);
                                               saveMasterAqmInjectListToJson();
                                             },

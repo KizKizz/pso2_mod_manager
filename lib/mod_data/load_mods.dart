@@ -152,6 +152,10 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
                       //submod.category = curJsonSubmodsList[submodIndex].category;
                       submod.isFavorite = curJsonSubmodsList[submodIndex].isFavorite;
                       submod.isNew = curJsonSubmodsList[submodIndex].isNew;
+                      curJsonSubmodsList[submodIndex].customAQMInjected == null ? submod.customAQMInjected = false : submod.customAQMInjected = curJsonSubmodsList[submodIndex].customAQMInjected;
+                      curJsonSubmodsList[submodIndex].hqIcePath == null ? submod.hqIcePath = '' : submod.hqIcePath = curJsonSubmodsList[submodIndex].hqIcePath;
+                      curJsonSubmodsList[submodIndex].lqIcePath == null ? submod.lqIcePath = '' : submod.lqIcePath = curJsonSubmodsList[submodIndex].lqIcePath;
+                      curJsonSubmodsList[submodIndex].boundingRemoved == null ? submod.boundingRemoved = false : submod.boundingRemoved = curJsonSubmodsList[submodIndex].boundingRemoved;
                       //submod.itemName = curJsonSubmodsList[submodIndex].itemName;
                       //submod.location = curJsonSubmodsList[submodIndex].location;
                       //submod.modName = curJsonSubmodsList[submodIndex].modName;

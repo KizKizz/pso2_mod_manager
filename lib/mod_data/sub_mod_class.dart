@@ -22,6 +22,10 @@ class SubMod with ChangeNotifier {
   bool applyStatus;
   DateTime applyDate;
   DateTime? creationDate = DateTime(0);
+  bool? customAQMInjected = false;
+  String? hqIcePath = '';
+  String? lqIcePath = '';
+  bool? boundingRemoved = false;
   int position;
   bool isNew;
   bool isFavorite;

@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_popup.dart';
+import 'package:pso2_mod_manager/item_bounding_radius/bounding_radius_popup.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
@@ -74,4 +76,54 @@ Future<void> addPreviews(Mod mod, SubMod submod) async {
   }
 
   saveMasterModListToJson();
+}
+
+Future<bool> submodAqmInject(context, SubMod submod) async {
+  String hqIcePath = '';
+  String lqIcePath = '';
+  for (var modFile in submod.modFiles) {
+    if (hqIcePath.isEmpty) {
+      int hqIndex = pItemData.indexWhere((e) => e.category == submod.category && e.getHQIceName().contains(modFile.modFileName));
+      if (hqIndex != -1) {
+        hqIcePath = modFile.location;
+        if (lqIcePath.isNotEmpty) break;
+      }
+    }
+    if (lqIcePath.isEmpty) {
+      int lqIndex = pItemData.indexWhere((e) => e.category == submod.category && e.getLQIceName().contains(modFile.modFileName));
+      if (lqIndex != -1) {
+        lqIcePath = modFile.location;
+        if (hqIcePath.isNotEmpty) break;
+      }
+    }
+  }
+
+  bool result = await aqmInjectPopup(context, hqIcePath, lqIcePath, submod.itemName, false, false, false, false, true);
+
+  if (result) {
+    submod.customAQMInjected = true;
+    submod.hqIcePath = hqIcePath;
+    submod.lqIcePath = lqIcePath;
+    saveMasterModListToJson();
+    return true;
+  } else {
+    return false;
+  }
+}
+
+Future<bool> submodCustomAqmRemove(context, SubMod submod) async {
+  String hqIcePath = submod.hqIcePath != null ? submod.hqIcePath! : '';
+  String lqIcePath = submod.lqIcePath != null ? submod.lqIcePath! : '';
+
+  bool aqmRemovalResult = await aqmInjectPopup(context, hqIcePath, lqIcePath, submod.itemName, true, false, false, false, true);
+  if (aqmRemovalResult && submod.boundingRemoved!) {
+    await boundingRadiusPopup(context, submod);
+  }
+  if (aqmRemovalResult) {
+    submod.customAQMInjected = false;
+    saveMasterModListToJson();
+    return true;
+  } else {
+    return false;
+  }
 }

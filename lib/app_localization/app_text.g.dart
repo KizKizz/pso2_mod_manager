@@ -81,6 +81,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..failed = json['failed'] as String
   ..replace = json['replace'] as String
   ..cmx = json['cmx'] as String
+  ..aqm = json['aqm'] as String
+  ..bounding = json['bounding'] as String
   ..export = json['export'] as String
   ..delete = json['delete'] as String
   ..patchNotes = json['patchNotes'] as String
@@ -142,7 +144,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..swapToAnotherItem = json['swapToAnotherItem'] as String
   ..addPreviews = json['addPreviews'] as String
   ..removeBoundingRadius = json['removeBoundingRadius'] as String
-  ..customAqmInjection = json['customAqmInjection'] as String
+  ..injectCustomAQM = json['injectCustomAQM'] as String
+  ..removeCustomAQMs = json['removeCustomAQMs'] as String
   ..editingMod = json['editingMod'] as String
   ..extractingFile = json['extractingFile'] as String
   ..readingFile = json['readingFile'] as String
@@ -153,6 +156,11 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..aqmInject = json['aqmInject'] as String
   ..injectAQM = json['injectAQM'] as String
   ..removeBounding = json['removeBounding'] as String
+  ..aqmInjected = json['aqmInjected'] as String
+  ..boundingRemoved = json['boundingRemoved'] as String
+  ..removeCustomAQM = json['removeCustomAQM'] as String
+  ..restoreBounding = json['restoreBounding'] as String
+  ..restoreAll = json['restoreAll'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -208,7 +216,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..reApplyAll = json['reApplyAll'] as String
   ..removeAll = json['removeAll'] as String
   ..appliedList = json['appliedList'] as String
-  ..dunplicateAppliedMods = json['dunplicateAppliedMods'] as String
+  ..duplicatesInAppliedMods = json['duplicatesInAppliedMods'] as String
+  ..duplicateInAQMInjectedItems = json['duplicateInAQMInjectedItems'] as String
   ..matchingFilesFound = json['matchingFilesFound'] as String
   ..noMatchingFilesFound = json['noMatchingFilesFound'] as String
   ..boundingRadiusRemovalValue = json['boundingRadiusRemovalValue'] as String
@@ -233,6 +242,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..mainDirPathInfo = json['mainDirPathInfo'] as String
   ..restoredModInfo = json['restoredModInfo'] as String
   ..duplicateAppliedInfo = json['duplicateAppliedInfo'] as String
+  ..duplicateAqmInjectInfo = json['duplicateAqmInjectInfo'] as String
   ..appSettings = json['appSettings'] as String
   ..uiLanguage = json['uiLanguage'] as String
   ..itemNameLanguage = json['itemNameLanguage'] as String
@@ -322,6 +332,8 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'failed': instance.failed,
       'replace': instance.replace,
       'cmx': instance.cmx,
+      'aqm': instance.aqm,
+      'bounding': instance.bounding,
       'export': instance.export,
       'delete': instance.delete,
       'patchNotes': instance.patchNotes,
@@ -382,7 +394,8 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'swapToAnotherItem': instance.swapToAnotherItem,
       'addPreviews': instance.addPreviews,
       'removeBoundingRadius': instance.removeBoundingRadius,
-      'customAqmInjection': instance.customAqmInjection,
+      'injectCustomAQM': instance.injectCustomAQM,
+      'removeCustomAQMs': instance.removeCustomAQMs,
       'editingMod': instance.editingMod,
       'extractingFile': instance.extractingFile,
       'readingFile': instance.readingFile,
@@ -393,6 +406,11 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'aqmInject': instance.aqmInject,
       'injectAQM': instance.injectAQM,
       'removeBounding': instance.removeBounding,
+      'aqmInjected': instance.aqmInjected,
+      'boundingRemoved': instance.boundingRemoved,
+      'removeCustomAQM': instance.removeCustomAQM,
+      'restoreBounding': instance.restoreBounding,
+      'restoreAll': instance.restoreAll,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,
@@ -446,7 +464,8 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'reApplyAll': instance.reApplyAll,
       'removeAll': instance.removeAll,
       'appliedList': instance.appliedList,
-      'dunplicateAppliedMods': instance.dunplicateAppliedMods,
+      'duplicatesInAppliedMods': instance.duplicatesInAppliedMods,
+      'duplicateInAQMInjectedItems': instance.duplicateInAQMInjectedItems,
       'matchingFilesFound': instance.matchingFilesFound,
       'noMatchingFilesFound': instance.noMatchingFilesFound,
       'boundingRadiusRemovalValue': instance.boundingRadiusRemovalValue,
@@ -470,6 +489,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'mainDirPathInfo': instance.mainDirPathInfo,
       'restoredModInfo': instance.restoredModInfo,
       'duplicateAppliedInfo': instance.duplicateAppliedInfo,
+      'duplicateAqmInjectInfo': instance.duplicateAqmInjectInfo,
       'appSettings': instance.appSettings,
       'uiLanguage': instance.uiLanguage,
       'itemNameLanguage': instance.itemNameLanguage,
