@@ -127,9 +127,6 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..openInFileExplorer = json['openInFileExplorer'] as String
   ..downloadingFileName = json['downloadingFileName'] as String
   ..addToModManager = json['addToModManager'] as String
-  ..originalFilesBackupPriority = json['originalFilesBackupPriority'] as String
-  ..segaServers = json['segaServers'] as String
-  ..localBackups = json['localBackups'] as String
   ..creatingBackupForModFile = json['creatingBackupForModFile'] as String
   ..copyingModFileToGameData = json['copyingModFileToGameData'] as String
   ..localBackupFoundForModFile = json['localBackupFoundForModFile'] as String
@@ -220,8 +217,6 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..duplicateInAQMInjectedItems = json['duplicateInAQMInjectedItems'] as String
   ..matchingFilesFound = json['matchingFilesFound'] as String
   ..noMatchingFilesFound = json['noMatchingFilesFound'] as String
-  ..boundingRadiusRemovalValue = json['boundingRadiusRemovalValue'] as String
-  ..autoRemoveBoundingRadius = json['autoRemoveBoundingRadius'] as String
   ..loadingAqmInjectedItems = json['loadingAqmInjectedItems'] as String
   ..addCustomAqmFiles = json['addCustomAqmFiles'] as String
   ..currentAqmFile = json['currentAqmFile'] as String
@@ -255,7 +250,15 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..themeColorScheme = json['themeColorScheme'] as String
   ..backgroundSlideshow = json['backgroundSlideshow'] as String
   ..addImages = json['addImages'] as String
-  ..itemIconSlides = json['itemIconSlides'] as String;
+  ..itemIconSlides = json['itemIconSlides'] as String
+  ..boundingRadiusRemovalValue = json['boundingRadiusRemovalValue'] as String
+  ..autoRemoveBoundingRadius = json['autoRemoveBoundingRadius'] as String
+  ..autoInjectCustomAQM = json['autoInjectCustomAQM'] as String
+  ..customAQMFiles = json['customAQMFiles'] as String
+  ..originalFilesRestorePriority =
+      json['originalFilesRestorePriority'] as String
+  ..segaServers = json['segaServers'] as String
+  ..localBackups = json['localBackups'] as String;
 
 Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'dfCastParts': instance.dfCastParts,
@@ -378,9 +381,6 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'openInFileExplorer': instance.openInFileExplorer,
       'downloadingFileName': instance.downloadingFileName,
       'addToModManager': instance.addToModManager,
-      'originalFilesBackupPriority': instance.originalFilesBackupPriority,
-      'segaServers': instance.segaServers,
-      'localBackups': instance.localBackups,
       'creatingBackupForModFile': instance.creatingBackupForModFile,
       'copyingModFileToGameData': instance.copyingModFileToGameData,
       'localBackupFoundForModFile': instance.localBackupFoundForModFile,
@@ -468,8 +468,6 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'duplicateInAQMInjectedItems': instance.duplicateInAQMInjectedItems,
       'matchingFilesFound': instance.matchingFilesFound,
       'noMatchingFilesFound': instance.noMatchingFilesFound,
-      'boundingRadiusRemovalValue': instance.boundingRadiusRemovalValue,
-      'autoRemoveBoundingRadius': instance.autoRemoveBoundingRadius,
       'loadingAqmInjectedItems': instance.loadingAqmInjectedItems,
       'addCustomAqmFiles': instance.addCustomAqmFiles,
       'currentAqmFile': instance.currentAqmFile,
@@ -503,4 +501,11 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'backgroundSlideshow': instance.backgroundSlideshow,
       'addImages': instance.addImages,
       'itemIconSlides': instance.itemIconSlides,
+      'boundingRadiusRemovalValue': instance.boundingRadiusRemovalValue,
+      'autoRemoveBoundingRadius': instance.autoRemoveBoundingRadius,
+      'autoInjectCustomAQM': instance.autoInjectCustomAQM,
+      'customAQMFiles': instance.customAQMFiles,
+      'originalFilesRestorePriority': instance.originalFilesRestorePriority,
+      'segaServers': instance.segaServers,
+      'localBackups': instance.localBackups,
     };

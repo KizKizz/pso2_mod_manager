@@ -60,6 +60,7 @@ Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod
     // Remove bounding radius
     if (autoBoundingRadiusRemoval && boundingRadiusCategoryDirs.contains(submod.category)) {
       await boundingRadiusPopup(context, submod);
+      submod.boundingRemoved = true;
     }
 
     await applyingPopup(context, applying, item, mod, submod);

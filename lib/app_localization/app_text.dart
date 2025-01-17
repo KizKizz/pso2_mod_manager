@@ -136,9 +136,6 @@ class AppText {
       openInFileExplorer = 'Open In File Explorer',
       downloadingFileName = 'Downloading %p%',
       addToModManager = 'Add To Mod Manager',
-      originalFilesBackupPriority = 'Original Files Backup Priority',
-      segaServers = 'Sega Servers',
-      localBackups = 'Local Backups',
       creatingBackupForModFile = 'Creating backup for %p%',
       copyingModFileToGameData = 'Copying %p% to game data',
       localBackupFoundForModFile = 'Local backup found for %p%',
@@ -225,8 +222,6 @@ class AppText {
       duplicateInAQMInjectedItems = 'Duplicate In AQM Injected Items',
       matchingFilesFound = 'Matching files found',
       noMatchingFilesFound = 'No matching files found',
-      boundingRadiusRemovalValue = 'Bounding Radius Removal Value',
-      autoRemoveBoundingRadius = 'Auto Remove Bounding Radius',
       loadingAqmInjectedItems = 'Loading AQM Injected Items',
       addCustomAqmFiles = 'Add Custom AQM Files',
       currentAqmFile = 'Current AQM File',
@@ -262,7 +257,14 @@ class AppText {
       themeColorScheme = 'Theme Color Scheme',
       backgroundSlideshow = 'Background Slideshow',
       addImages = 'Add Images',
-      itemIconSlides = 'Item Icon Slides';
+      itemIconSlides = 'Item Icon Slides',
+      boundingRadiusRemovalValue = 'Bounding Radius Removal Value',
+      autoRemoveBoundingRadius = 'Auto Remove Bounding Radius',
+      autoInjectCustomAQM = 'Auto Inject Custom AQM',
+      customAQMFiles = 'Custom AQM Files',
+      originalFilesRestorePriority = 'Original Files Restore Priority',
+      segaServers = 'Sega Servers',
+      localBackups = 'Local Backups';
 
   factory AppText.fromJson(Map<String, dynamic> json) => _$AppTextFromJson(json);
   Map<String, dynamic> toJson() => _$AppTextToJson(this);

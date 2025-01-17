@@ -153,6 +153,7 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
                       submod.isFavorite = curJsonSubmodsList[submodIndex].isFavorite;
                       submod.isNew = curJsonSubmodsList[submodIndex].isNew;
                       curJsonSubmodsList[submodIndex].customAQMInjected == null ? submod.customAQMInjected = false : submod.customAQMInjected = curJsonSubmodsList[submodIndex].customAQMInjected;
+                      curJsonSubmodsList[submodIndex].customAQMFileName == null ? submod.customAQMFileName = '' : submod.customAQMFileName = curJsonSubmodsList[submodIndex].customAQMFileName;
                       curJsonSubmodsList[submodIndex].hqIcePath == null ? submod.hqIcePath = '' : submod.hqIcePath = curJsonSubmodsList[submodIndex].hqIcePath;
                       curJsonSubmodsList[submodIndex].lqIcePath == null ? submod.lqIcePath = '' : submod.lqIcePath = curJsonSubmodsList[submodIndex].lqIcePath;
                       curJsonSubmodsList[submodIndex].boundingRemoved == null ? submod.boundingRemoved = false : submod.boundingRemoved = curJsonSubmodsList[submodIndex].boundingRemoved;

@@ -23,6 +23,7 @@ class SubMod with ChangeNotifier {
   DateTime applyDate;
   DateTime? creationDate = DateTime(0);
   bool? customAQMInjected = false;
+  String? customAQMFileName = '';
   String? hqIcePath = '';
   String? lqIcePath = '';
   bool? boundingRemoved = false;

@@ -28,6 +28,7 @@ String mainDataDirPath = '';
 
 // Auto features
 bool autoBoundingRadiusRemoval = false;
+bool autoInjectCustomAqm = false;
 
 Future<void> prefsLoad() async {
   final prefs = await SharedPreferences.getInstance();
@@ -89,4 +90,7 @@ Future<void> prefsLoad() async {
 
   // Selected custom AQM File Path
   selectedCustomAQMFilePath.value = prefs.getString('selectedCustomAQMFilePath') ?? '';
+
+  // Auto inject custom aqm
+  autoInjectCustomAqm = prefs.getBool('autoInjectCustomAqm') ?? false;
 }

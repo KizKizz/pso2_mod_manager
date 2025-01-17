@@ -7,6 +7,7 @@ import 'package:pso2_mod_manager/item_bounding_radius/bounding_radius_popup.dart
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
+import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/rename_popup.dart';
 import 'package:path/path.dart' as p;
 import 'package:io/io.dart' as io;
@@ -102,6 +103,7 @@ Future<bool> submodAqmInject(context, SubMod submod) async {
 
   if (result) {
     submod.customAQMInjected = true;
+    submod.customAQMFileName = p.basename(selectedCustomAQMFilePath.value);
     submod.hqIcePath = hqIcePath;
     submod.lqIcePath = lqIcePath;
     saveMasterModListToJson();
@@ -121,6 +123,7 @@ Future<bool> submodCustomAqmRemove(context, SubMod submod) async {
   }
   if (aqmRemovalResult) {
     submod.customAQMInjected = false;
+    submod.customAQMFileName = '';
     saveMasterModListToJson();
     return true;
   } else {
