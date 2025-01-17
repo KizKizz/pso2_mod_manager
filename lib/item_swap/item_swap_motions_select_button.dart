@@ -4,7 +4,7 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/main_widgets/category_select_buttons.dart';
 import 'package:signals/signals_flutter.dart';
 
-Signal<String> selectedItemSwapMotionType = Signal<String>(appText.all);
+Signal<String> selectedItemSwapMotionType = Signal<String>('All');
 
 class ItemSwapMotionTypeSelectButtons extends StatefulWidget {
   const ItemSwapMotionTypeSelectButtons({super.key, required this.lScrollController, required this.rScrollController});
@@ -17,7 +17,7 @@ class ItemSwapMotionTypeSelectButtons extends StatefulWidget {
 }
 
 class _ItemSwapMotionTypeSelectButtonsState extends State<ItemSwapMotionTypeSelectButtons> {
-  final motionTypes = [appText.all, 'Glide Motion', 'Jump Motion', 'Landing Motion', 'Dash Motion', 'Run Motion', 'Standby Motion', 'Swim Motion'];
+  final motionTypes = ['All', 'Glide Motion', 'Jump Motion', 'Landing Motion', 'Dash Motion', 'Run Motion', 'Standby Motion', 'Swim Motion'];
 
   @override
   Widget build(BuildContext context) {

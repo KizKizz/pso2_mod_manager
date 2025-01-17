@@ -41,6 +41,9 @@ class AppText {
       dfStandbyMotion = 'Standby Motion',
       dfSwimMotion = 'Swim Motion';
 
+  // Sorting Name
+  String nameAlphabetical = 'Name (Alphabetical)', recentlyAdded = 'Recently Added', recentlyApplied = 'Recently Applied';
+
   // One word Strings
   String ok = 'OK',
       cancel = 'Cancel',
@@ -91,7 +94,8 @@ class AppText {
       aqm = 'AQM',
       bounding = 'Bounding',
       export = 'Export',
-      delete = 'Delete';
+      delete = 'Delete',
+      sort = 'Sort';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -282,6 +286,7 @@ class AppText {
   }
 
   String motionTypeName(String name) {
+    if (name == 'All') return all;
     int index = defaultMotionTypes.indexOf(name);
 
     switch (index) {
@@ -305,6 +310,7 @@ class AppText {
   }
 
   String categoryTypeName(String name) {
+    if (name == 'All') return all;
     int index = defaultCategoryTypes.indexOf(name);
 
     switch (index) {
@@ -320,6 +326,7 @@ class AppText {
   }
 
   String categoryName(String name) {
+    if (name == 'All') return all;
     int index = defaultCategoryDirs.indexOf(name);
 
     switch (index) {
@@ -359,6 +366,22 @@ class AppText {
         return dfSetwears;
       case 17:
         return dfWeapons;
+      default:
+        return name;
+    }
+  }
+
+  String sortingTypeName(String name) {
+    if (name == 'All') return all;
+    int index = modSortingSelections.indexOf(name);
+
+    switch (index) {
+      case 0:
+        return nameAlphabetical;
+      case 1:
+        return recentlyAdded;
+      case 2:
+        return recentlyApplied;
       default:
         return name;
     }

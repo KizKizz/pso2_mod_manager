@@ -47,6 +47,7 @@ List<String> aqmInjectCategoryDirs = [
   'Setwears', //16
 ];
 final defaultMotionTypes = ['Glide Motion', 'Jump Motion', 'Landing Motion', 'Dash Motion', 'Run Motion', 'Standby Motion', 'Swim Motion'];
+final modSortingSelections = ['Name (Alphabetical)', 'Recently Added', 'Recently Applied'];
 String charToReplace = '[\\/:*?"<>|]';
 String charToReplaceWithoutSeparators = '[:*?"<>|]';
 

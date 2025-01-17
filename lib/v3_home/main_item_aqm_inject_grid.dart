@@ -67,7 +67,7 @@ class _MainItemAqmInjectGridState extends State<MainItemAqmInjectGrid> {
             : selectedAqmInjectCategory.watch(context) == defaultCategoryDirs[16]
                 ? e.subCategory == 'Setwear'
                 : selectedAqmInjectCategory.watch(context) == defaultCategoryDirs[14]
-                    ? e.category == selectedAqmInjectCategory.watch(context) && (e.subCategory == selectedItemSwapMotionType.watch(context) || selectedItemSwapMotionType.watch(context) == appText.all)
+                    ? e.category == selectedAqmInjectCategory.watch(context) && (e.subCategory == selectedItemSwapMotionType.watch(context) || selectedItemSwapMotionType.watch(context) == 'All')
                     : e.category == selectedAqmInjectCategory.watch(context))
         .where((e) => selectedItemSwapTypeCategory.watch(context) == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.watch(context).toLowerCase())
         .toList();

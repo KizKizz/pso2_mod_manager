@@ -1,4 +1,7 @@
 {
+  "autoInjectCustomAQM": "Auto Inject Custom AQM",
+  "customAQMFiles": "Custom AQM Files",
+  "originalFilesRestorePriority": "Original Files Restore Priority",
   "injectCustomAQM": "Inject custom AQM",
   "removeCustomAQMs": "Remove custom AQM",
   "aqmInjected": "AQM Injected",

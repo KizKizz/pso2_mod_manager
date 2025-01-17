@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/main_widgets/sorting_buttons.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/main_widgets/cate_item_grid_layout.dart';
@@ -31,6 +32,13 @@ class _MainItemGridState extends State<MainItemGrid> {
 
   @override
   Widget build(BuildContext context) {
+    // Refresh
+    if (selectedDisplaySort.watch(context) != selectedDisplaySort.peek()) {
+      setState(
+        () {},
+      );
+    }
+    
     // Suggestions
     List<String> filteredStrings = [];
     for (var type in masterModList) {
@@ -60,10 +68,25 @@ class _MainItemGridState extends State<MainItemGrid> {
     }
 
     List<Category> displayingCategories = [];
-    if (selectedDisplayCategory.watch(context) == appText.all) {
+    if (selectedDisplayCategory.watch(context) == 'All') {
       displayingCategories = categories;
     } else {
       displayingCategories = categories.where((e) => e.categoryName == selectedDisplayCategory.watch(context)).toList();
+    }
+
+    // Sort
+    if (selectedDisplaySort.value == modSortingSelections[0]) {
+      for (var category in displayingCategories) {
+        category.items.sort((a, b) => a.itemName.compareTo(b.itemName));
+      }
+    } else if (selectedDisplaySort.value == modSortingSelections[1]) {
+      for (var category in displayingCategories) {
+        category.items.sort((a, b) => b.creationDate!.compareTo(b.creationDate!));
+      }
+    } else if (selectedDisplaySort.value == modSortingSelections[2]) {
+      for (var category in displayingCategories) {
+        category.items.sort((a, b) => b.applyDate.compareTo(a.applyDate));
+      }
     }
 
     return AnimatedOpacity(
@@ -127,6 +150,7 @@ class _MainItemGridState extends State<MainItemGrid> {
                   ]),
                 ),
               ),
+              Expanded(flex: 1, child: SortingButtons(scrollController: controller)),
               Expanded(
                   flex: 1,
                   child: Padding(

@@ -18,7 +18,7 @@ class CategorySelectButtons extends StatefulWidget {
 class _CategorySelectButtonsState extends State<CategorySelectButtons> {
   @override
   Widget build(BuildContext context) {
-    if (!widget.categoryNames.contains(appText.all)) widget.categoryNames.insert(0, appText.all);
+    if (!widget.categoryNames.contains('All')) widget.categoryNames.insert(0, 'All');
     return SizedBox(
       height: 40,
       child: PromptedChoice<String>.single(

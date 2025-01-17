@@ -17,7 +17,8 @@ Color darkModeSeedColor = darkColorScheme.primary;
 Signal<bool> hideAppBackgroundSlides = Signal<bool>(false);
 Signal<int> backgroundImageSlideInterval = Signal<int>(10);
 Signal<bool> itemIconSlides = Signal<bool>(false);
-Signal<String> selectedDisplayCategory = Signal<String>(appText.all);
+Signal<String> selectedDisplayCategory = Signal<String>('All');
+Signal<String> selectedDisplaySort = Signal<String>('Name (Alphabetical)');
 bool originalFilesBackupsFromSega = true;
 double boundingRadiusRemovalValue = -10;
 Signal<String> selectedCustomAQMFilePath = Signal('');
@@ -68,6 +69,9 @@ Future<void> prefsLoad() async {
 
   // Main list filter
   selectedDisplayCategory.value = prefs.getString('selectedDisplayCategory') ?? 'All';
+  
+  // Main list sort
+  selectedDisplaySort.value = prefs.getString('selectedDisplaySort') ?? 'Name (Alphabetical)';
 
   // Color schemes
   final lightModeSeedColorValue = prefs.getStringList('lightModeSeedColorValue') ??
