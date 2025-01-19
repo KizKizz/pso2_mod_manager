@@ -95,7 +95,8 @@ class AppText {
       bounding = 'Bounding',
       export = 'Export',
       delete = 'Delete',
-      sort = 'Sort';
+      sort = 'Sort',
+      create = 'Create';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -229,7 +230,9 @@ class AppText {
       loadingAqmInjectedItems = 'Loading AQM Injected Items',
       addCustomAqmFiles = 'Add Custom AQM Files',
       currentAqmFile = 'Current AQM File',
-      fetchingFiles = 'Fetching Files';
+      fetchingFiles = 'Fetching Files', 
+      newModSet = 'New Mod Set',
+      enterNewSetName = 'Enter name of the Set';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',
@@ -239,7 +242,8 @@ class AppText {
       fileIsNotSupported = '"%p%" is not supported',
       fileAlreadyOnTheList = '"%p%" already on the list',
       nameAlreadyExists = 'Name already exists',
-      noMatchingFilesBetweenItemsToSwap = 'No matching files between items to swap';
+      noMatchingFilesBetweenItemsToSwap = 'No matching files between items to swap',
+      nameCannotBeEmpty = 'Name cannot be empty';
 
   // Infos
   String pso2binDirPathInfo = 'PSO2 game data folder, this folder located inside the game installation directory',

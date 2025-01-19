@@ -35,6 +35,9 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..dfRunMotion = json['dfRunMotion'] as String
   ..dfStandbyMotion = json['dfStandbyMotion'] as String
   ..dfSwimMotion = json['dfSwimMotion'] as String
+  ..nameAlphabetical = json['nameAlphabetical'] as String
+  ..recentlyAdded = json['recentlyAdded'] as String
+  ..recentlyApplied = json['recentlyApplied'] as String
   ..ok = json['ok'] as String
   ..cancel = json['cancel'] as String
   ..cont = json['cont'] as String
@@ -85,6 +88,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..bounding = json['bounding'] as String
   ..export = json['export'] as String
   ..delete = json['delete'] as String
+  ..sort = json['sort'] as String
+  ..create = json['create'] as String
   ..patchNotes = json['patchNotes'] as String
   ..appUpdate = json['appUpdate'] as String
   ..tryAgain = json['tryAgain'] as String
@@ -221,6 +226,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..addCustomAqmFiles = json['addCustomAqmFiles'] as String
   ..currentAqmFile = json['currentAqmFile'] as String
   ..fetchingFiles = json['fetchingFiles'] as String
+  ..newModSet = json['newModSet'] as String
+  ..enterNewSetName = json['enterNewSetName'] as String
   ..failedToFetchRemoteLocaleData =
       json['failedToFetchRemoteLocaleData'] as String
   ..unableToUpdateFile = json['unableToUpdateFile'] as String
@@ -233,6 +240,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..nameAlreadyExists = json['nameAlreadyExists'] as String
   ..noMatchingFilesBetweenItemsToSwap =
       json['noMatchingFilesBetweenItemsToSwap'] as String
+  ..nameCannotBeEmpty = json['nameCannotBeEmpty'] as String
   ..pso2binDirPathInfo = json['pso2binDirPathInfo'] as String
   ..mainDirPathInfo = json['mainDirPathInfo'] as String
   ..restoredModInfo = json['restoredModInfo'] as String
@@ -289,6 +297,9 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'dfRunMotion': instance.dfRunMotion,
       'dfStandbyMotion': instance.dfStandbyMotion,
       'dfSwimMotion': instance.dfSwimMotion,
+      'nameAlphabetical': instance.nameAlphabetical,
+      'recentlyAdded': instance.recentlyAdded,
+      'recentlyApplied': instance.recentlyApplied,
       'ok': instance.ok,
       'cancel': instance.cancel,
       'cont': instance.cont,
@@ -339,6 +350,8 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'bounding': instance.bounding,
       'export': instance.export,
       'delete': instance.delete,
+      'sort': instance.sort,
+      'create': instance.create,
       'patchNotes': instance.patchNotes,
       'appUpdate': instance.appUpdate,
       'tryAgain': instance.tryAgain,
@@ -472,6 +485,8 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'addCustomAqmFiles': instance.addCustomAqmFiles,
       'currentAqmFile': instance.currentAqmFile,
       'fetchingFiles': instance.fetchingFiles,
+      'newModSet': instance.newModSet,
+      'enterNewSetName': instance.enterNewSetName,
       'failedToFetchRemoteLocaleData': instance.failedToFetchRemoteLocaleData,
       'unableToUpdateFile': instance.unableToUpdateFile,
       'unableToGetAppVersionDataFromGitHub':
@@ -483,6 +498,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'nameAlreadyExists': instance.nameAlreadyExists,
       'noMatchingFilesBetweenItemsToSwap':
           instance.noMatchingFilesBetweenItemsToSwap,
+      'nameCannotBeEmpty': instance.nameCannotBeEmpty,
       'pso2binDirPathInfo': instance.pso2binDirPathInfo,
       'mainDirPathInfo': instance.mainDirPathInfo,
       'restoredModInfo': instance.restoredModInfo,

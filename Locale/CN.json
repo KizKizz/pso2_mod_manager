@@ -1,4 +1,11 @@
 {
+  "newModSet": "New Mod Set",
+  "nameAlphabetical": "Name (Alphabetical)",
+  "recentlyAdded": "Recently Added",
+  "recentlyApplied": "Recently Applied",
+  "create": "Create",
+  "enterNewSetName": "Enter name of the Set",
+  "nameCannotBeEmpty": "Name cannot be empty",
   "autoInjectCustomAQM": "Auto Inject Custom AQM",
   "customAQMFiles": "Custom AQM Files",
   "originalFilesRestorePriority": "Original Files Restore Priority",

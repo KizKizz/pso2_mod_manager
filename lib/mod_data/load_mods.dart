@@ -244,7 +244,7 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
         }
       }
       //sort cates in catetype
-      type.categories.sort(((a, b) => a.position.compareTo(b.position)));
+      // type.categories.sort(((a, b) => a.position.compareTo(b.position)));
     }
   }
 
@@ -257,7 +257,7 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
   }
 
   //Sort types position
-  cateTypes.sort(((a, b) => a.position.compareTo(b.position)));
+  // cateTypes.sort(((a, b) => a.position.compareTo(b.position)));
 
   //Save to json
   cateTypes.map((cateType) => cateType.toJson()).toList();
@@ -313,7 +313,7 @@ Future<List<Item>> itemsFetcher(context, String catePath, bool reload) async {
       //   }
       // }
       if (iconFilesInDir.where((element) => p.basenameWithoutExtension(element.path) == p.basename(dir.path)).isNotEmpty) {
-        itemIcons.addAll(iconFilesInDir.map((e) => e.path));
+        itemIcons.addAll(iconFilesInDir.where((e) => e.existsSync()).map((e) => e.path));
       }
       if (itemIcons.isEmpty) {
         // itemIcons.add('assets/img/placeholdersquare.png');

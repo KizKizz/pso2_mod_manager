@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
+import 'package:pso2_mod_manager/mod_sets/mod_set_functions.dart';
 import 'package:pso2_mod_manager/mod_sets/modset_grid_layout.dart';
 import 'package:pso2_mod_manager/mod_sets/modset_select_buttons.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
@@ -50,13 +51,17 @@ class _MainModSetGridState extends State<MainModSetGrid> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                flex: 3,
+                  flex: 3,
                   child: SizedBox(
                     height: 40,
                     child: OutlinedButton(
-                        style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                        onPressed: () {},
+                        style: ButtonStyle(
+                            backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                            side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                        onPressed: () async {
+                          await newModSetCreate(context);
+                          setState(() {});
+                        },
                         child: Text(appText.addNewSet)),
                   )),
               Expanded(

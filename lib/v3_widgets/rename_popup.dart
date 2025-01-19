@@ -43,6 +43,7 @@ Future<String?> renamePopup(context, String parentDirPath, String currentName) a
                       if (Directory(parentDirPath).listSync().indexWhere((element) => p.basenameWithoutExtension(element.path).toLowerCase() == newName.text.toLowerCase()) != -1) {
                         return appText.nameAlreadyExists;
                       }
+                      if (newName.value.text.isEmpty) return appText.nameCannotBeEmpty;
                       return null;
                     },
                     decoration: InputDecoration(

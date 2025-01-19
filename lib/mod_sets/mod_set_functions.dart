@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
+import 'package:pso2_mod_manager/mod_sets/new_set_name_popup.dart';
 import 'package:pso2_mod_manager/system_loads/app_modset_load_page.dart';
 
 Future<List<ModSet>> modSetLoader() async {
@@ -32,6 +34,20 @@ Future<List<ModSet>> modSetLoader() async {
   );
 
   return newModSets;
+}
+
+void saveMasterModSetListToJson() {
+  //Save to json
+  masterModSetList.map((modset) => modset.toJson()).toList();
+  const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+  File(mainModSetListJsonPath).writeAsStringSync(encoder.convert(masterModSetList));
+}
+
+Future<void> newModSetCreate(context) async {
+  String? setName = await newModSetNamePopup(context);
+  if (setName != null) {
+    masterModSetList.add(ModSet(setName, 0, true, false, DateTime.now(), DateTime(0), []));
+  }
 }
 
 // List<Item> itemsFromAppliedListFetch(List<CategoryType> appliedList) {

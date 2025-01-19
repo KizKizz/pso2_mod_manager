@@ -6,12 +6,13 @@ part 'mod_set_class.g.dart';
 
 @JsonSerializable()
 class ModSet with ChangeNotifier {
-  ModSet(this.setName, this.position, this.visible, this.expanded, this.addedDate, this.setItems);
+  ModSet(this.setName, this.position, this.visible, this.expanded, this.addedDate, this.appliedDate, this.setItems);
   String setName;
   int position;
   bool visible;
   bool expanded;
   DateTime addedDate;
+  DateTime? appliedDate;
   List<Item> setItems;
 
   void addItem(Item item) {

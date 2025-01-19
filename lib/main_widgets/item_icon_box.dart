@@ -54,7 +54,7 @@ class _ItemIconBoxState extends State<ItemIconBox> {
                               indicatorRadius: 4,
                               currentIndicatorColor: Theme.of(context).colorScheme.primary,
                               indicatorBackgroundColor: Theme.of(context).hintColor.withAlpha(200)))),
-                  items: widget.item.icons
+                  items: widget.item.icons.where((e) => File(e).existsSync())
                       .map((e) => Image.file(
                             File(e),
                             filterQuality: FilterQuality.none,

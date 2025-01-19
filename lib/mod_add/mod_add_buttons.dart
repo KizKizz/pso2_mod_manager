@@ -116,7 +116,7 @@ class _ModAddProcessedButtonsState extends State<ModAddProcessedButtons> {
           onPressed: curModAddProcessedStatus.watch(context) == ModAddProcessedState.dataInList
               ? () async {
                   curModAddProcessedStatus.value = ModAddProcessedState.addingToMasterList;
-                  await modAddToMasterList(false, ModSet('', 0, false, false, DateTime(0), []));
+                  await modAddToMasterList(false, ModSet('', 0, false, false, DateTime(0), DateTime(0), []));
                   modAddingList.isNotEmpty ? curModAddProcessedStatus.value = ModAddProcessedState.dataInList : curModAddProcessedStatus.value = ModAddProcessedState.waiting;
                 }
               : null,
