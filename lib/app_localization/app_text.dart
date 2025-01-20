@@ -96,7 +96,8 @@ class AppText {
       export = 'Export',
       delete = 'Delete',
       sort = 'Sort',
-      create = 'Create';
+      create = 'Create',
+      success = 'Success';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -169,7 +170,10 @@ class AppText {
       boundingRemoved = 'Bounding Removed',
       removeCustomAQM = 'Remove Custom AQM',
       restoreBounding = 'Restore Bounding',
-      restoreAll = 'Restore All';
+      restoreAll = 'Restore All',
+      permanentlyDeleteItem = 'Permanently delete "%p%"?',
+      holdToDelete = 'Hold To Delete',
+      successfullyDeletedItem = 'Successfully deleted "%p%"';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',

@@ -13,6 +13,7 @@ import 'package:path/path.dart' as p;
 import 'package:io/io.dart' as io;
 
 Future<void> submodRename(context, Mod mod, SubMod submod) async {
+  modPopupStatus.value = submod.submodName;
   String? newName = await renamePopup(context, p.dirname(submod.location), submod.submodName);
   if (newName != null) {
     if (p.isWithin(mod.location, submod.location)) {
@@ -20,9 +21,28 @@ Future<void> submodRename(context, Mod mod, SubMod submod) async {
       await io.copyPath(submod.location, newPath);
       await Directory(submod.location).delete(recursive: true);
       submod.submodName = newName;
+      submod.cmxFile = submod.cmxFile!.replaceFirst(submod.location, newPath);
       for (var modFile in submod.modFiles) {
         modFile.submodName = newName;
         modFile.location = modFile.location.replaceFirst(submod.location, newPath);
+        for (int i = 0; i < modFile.previewImages!.length; i++) {
+          modFile.previewImages![i] = modFile.previewImages![i].replaceFirst(submod.location, newPath);
+        }
+        for (int i = 0; i < modFile.previewVideos!.length; i++) {
+          modFile.previewVideos![i] = modFile.previewVideos![i].replaceFirst(submod.location, newPath);
+        }
+      }
+      for (var path in submod.previewImages) {
+        path = path.replaceFirst(submod.location, newPath);
+      }
+      for (var path in submod.previewVideos) {
+        path = path.replaceFirst(submod.location, newPath);
+      }
+      for (var path in mod.previewImages) {
+        path = path.replaceFirst(submod.location, newPath);
+      }
+      for (var path in mod.previewVideos) {
+        path = path.replaceFirst(submod.location, newPath);
       }
       submod.location = newPath;
     } else {
@@ -31,15 +51,55 @@ Future<void> submodRename(context, Mod mod, SubMod submod) async {
       await Directory(mod.location).delete(recursive: true);
       mod.modName = newName;
       submod.submodName = newName;
+      submod.cmxFile = submod.cmxFile!.replaceFirst(submod.location, newPath);
       for (var modFile in submod.modFiles) {
         modFile.submodName = newName;
         modFile.location = modFile.location.replaceFirst(submod.location, newPath);
+        for (int i = 0; i < modFile.previewImages!.length; i++) {
+          modFile.previewImages![i] = modFile.previewImages![i].replaceFirst(submod.location, newPath);
+        }
+        for (int i = 0; i < modFile.previewVideos!.length; i++) {
+          modFile.previewVideos![i] = modFile.previewVideos![i].replaceFirst(submod.location, newPath);
+        }
       }
+      for (int i = 0; i < submod.previewImages.length; i++) {
+        submod.previewImages[i] = submod.previewImages[i].replaceFirst(submod.location, newPath);
+      }
+      for (int i = 0; i < submod.previewVideos.length; i++) {
+        submod.previewVideos[i] = submod.previewVideos[i].replaceFirst(submod.location, newPath);
+      }
+      for (int i = 0; i < mod.previewImages.length; i++) {
+        mod.previewImages[i] = mod.previewImages[i].replaceFirst(submod.location, newPath);
+      }
+      for (int i = 0; i < mod.previewVideos.length; i++) {
+        mod.previewVideos[i] = mod.previewVideos[i].replaceFirst(submod.location, newPath);
+      }
+
+      // submods inside mod folder
       for (var smod in mod.submods.where((e) => p.isWithin(mod.location, e.location))) {
         for (var modFile in smod.modFiles) {
           modFile.location = modFile.location.replaceFirst(mod.location, newPath);
+          for (int i = 0; i < modFile.previewImages!.length; i++) {
+            modFile.previewImages![i] = modFile.previewImages![i].replaceFirst(mod.location, newPath);
+          }
+          for (int i = 0; i < modFile.previewVideos!.length; i++) {
+            modFile.previewVideos![i] = modFile.previewVideos![i].replaceFirst(mod.location, newPath);
+          }
         }
         smod.location = smod.location.replaceFirst(mod.location, newPath);
+        smod.cmxFile = smod.cmxFile!.replaceFirst(mod.location, newPath);
+        for (int i = 0; i < smod.previewImages.length; i++) {
+          smod.previewImages[i] = smod.previewImages[i].replaceFirst(mod.location, newPath);
+        }
+        for (int i = 0; i < smod.previewVideos.length; i++) {
+          smod.previewVideos[i] = smod.previewVideos[i].replaceFirst(mod.location, newPath);
+        }
+        for (int i = 0; i < mod.previewImages.length; i++) {
+          mod.previewImages[i] = mod.previewImages[i].replaceFirst(mod.location, newPath);
+        }
+        for (int i = 0; i < mod.previewVideos.length; i++) {
+          mod.previewVideos[i] = mod.previewVideos[i].replaceFirst(mod.location, newPath);
+        }
       }
 
       mod.location = newPath;

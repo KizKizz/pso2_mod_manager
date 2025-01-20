@@ -37,7 +37,11 @@ void itemSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, ItemD
             backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
             insetPadding: const EdgeInsets.all(5),
             contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
-            content: OverflowBar(
+            content: Column(
+              spacing: 5,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                OverflowBar(
               spacing: 5,
               overflowSpacing: 5,
               overflowAlignment: OverflowBarAlignment.center,
@@ -87,6 +91,32 @@ void itemSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, ItemD
                             children: rItemData.getDetails().map((e) => Text(e)).toList(),
                           ),
                         )
+                      ],
+                    ))
+              ],
+            ),
+                const Icon(Icons.arrow_downward_rounded, size: 30),
+                CardOverlay(
+                    paddingValue: 10,
+                    child: Column(
+                      spacing: 5,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        GenericItemIconBox(iconImagePaths: [lItemData.iconImagePath], boxSize: const Size(100, 100), isNetwork: true),
+                        Text(appText.categoryName(rItemData.category), style: Theme.of(context).textTheme.titleMedium),
+                        Text(rItemData.getName(), style: Theme.of(context).textTheme.titleLarge),
+                        Visibility(
+                          visible: !isVanillaSwap,
+                          child: Text(submod.submodName, style: Theme.of(context).textTheme.labelLarge),)
+                        // SingleChildScrollView(
+                        //   physics: const SuperRangeMaintainingScrollPhysics(),
+                        //   child: Column(
+                        //     mainAxisAlignment: MainAxisAlignment.start,
+                        //     crossAxisAlignment: CrossAxisAlignment.start,
+                        //     mainAxisSize: MainAxisSize.min,
+                        //     children: rItemData.getDetails().map((e) => Text(e)).toList(),
+                        //   ),
+                        // )
                       ],
                     ))
               ],

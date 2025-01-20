@@ -62,7 +62,7 @@ class _SubmodImageBoxState extends State<SubmodImageBox> {
                     slideIndicator: CircularWaveSlideIndicator(
                         slideIndicatorOptions: SlideIndicatorOptions(
                             itemSpacing: 10, indicatorRadius: 4, currentIndicatorColor: Theme.of(context).colorScheme.primary, indicatorBackgroundColor: Theme.of(context).hintColor.withAlpha(200)))),
-                items: paths.map((e) => Image.file(File(e))).toList(),
+                items: paths.where((e) => File(e).existsSync()).map((e) => Image.file(File(e))).toList(),
               ),
               Visibility(
                   visible: paths.isNotEmpty,

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
+import 'package:pso2_mod_manager/main_widgets/submod_grid_layout.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
+import 'package:pso2_mod_manager/mod_sets/mod_set_functions.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_home/main_modset_grid.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
@@ -34,9 +38,49 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
             margin: EdgeInsets.zero,
             elevation: 5,
             child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text(widget.modSet.setName, style: Theme.of(context).textTheme.titleMedium),
-            )),
+                padding: const EdgeInsets.all(10),
+                child: Row(
+                  spacing: 5,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(widget.modSet.setName, style: Theme.of(context).textTheme.titleMedium),
+                    Row(
+                      spacing: 5,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        HeaderInfoBox(info: appText.dText(widget.modSet.setItems.length > 1 ? appText.numItems : appText.numItem, widget.modSet.setItems.length.toString()), borderHighlight: false),
+                        SizedBox(
+                          width: 25,
+                          height: 25,
+                          child: PopupMenuButton(
+                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
+                            color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
+                            padding: EdgeInsets.zero,
+                            menuPadding: EdgeInsets.zero,
+                            tooltip: '',
+                            elevation: 5,
+                            style: ButtonStyle(
+                                visualDensity: VisualDensity.adaptivePlatformDensity,
+                                shape: WidgetStatePropertyAll(
+                                    RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1), borderRadius: const BorderRadius.all(Radius.circular(5))))),
+                            itemBuilder: (BuildContext context) {
+                              return [
+                                PopupMenuItem(
+                                    onTap: () async {
+                                      await modSetDelete(context, widget.modSet);
+                                      setState(() {
+                                        modSetRefreshSignal.value = 'deleted ${widget.modSet.setName}';
+                                      });
+                                    },
+                                    child: MenuIconItem(icon: Icons.delete_forever_outlined, text: appText.delete)),
+                              ];
+                            },
+                          ),
+                        )
+                      ],
+                    )
+                  ],
+                ))),
         sliver: ResponsiveSliverGridList(minItemWidth: 350, verticalGridMargin: 5, horizontalGridSpacing: 5, verticalGridSpacing: 5, children: modCardFetch()));
   }
 
@@ -102,9 +146,15 @@ class _ModCardLayoutState extends State<ModCardLayout> {
             children: [
               Expanded(
                   child: InfoBox(
-                      info: appText.dText(widget.mod.submods.where((e) => e.setNames.contains(widget.setName)).length > 1 ? appText.numVariants : appText.numVariant,
-                          widget.mod.submods.where((e) => e.setNames.contains(widget.setName)).length.toString()), borderHighlight: false,)),
-              Expanded(child: InfoBox(info: appText.dText(appText.numCurrentlyApplied, widget.mod.getNumOfAppliedSubmods().toString()), borderHighlight: false,)),
+                info: appText.dText(widget.mod.submods.where((e) => e.setNames.contains(widget.setName)).length > 1 ? appText.numVariants : appText.numVariant,
+                    widget.mod.submods.where((e) => e.setNames.contains(widget.setName)).length.toString()),
+                borderHighlight: false,
+              )),
+              Expanded(
+                  child: InfoBox(
+                info: appText.dText(appText.numCurrentlyApplied, widget.mod.getNumOfAppliedSubmods().toString()),
+                borderHighlight: false,
+              )),
             ],
           ),
           Row(

@@ -3,9 +3,12 @@ import 'dart:io';
 
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
 import 'package:pso2_mod_manager/mod_sets/new_set_name_popup.dart';
 import 'package:pso2_mod_manager/system_loads/app_modset_load_page.dart';
+import 'package:pso2_mod_manager/v3_widgets/delete_confirm_popup.dart';
+import 'package:pso2_mod_manager/v3_widgets/notifications.dart';
 
 Future<List<ModSet>> modSetLoader() async {
   List<ModSet> newModSets = [];
@@ -23,15 +26,16 @@ Future<List<ModSet>> modSetLoader() async {
     for (var item in set.setItems) {
       item.setNames.removeWhere((element) => !setNames.contains(element));
     }
+    set.appliedDate ??= DateTime.now();
   }
 
   // for (var set in newModSets) {
   //   set.setItems = allSetItems.where((element) => element.setNames.contains(set.setName)).toList();
   // }
 
-  newModSets.sort(
-    (a, b) => b.addedDate.compareTo(a.addedDate),
-  );
+  // newModSets.sort(
+  //   (a, b) => b.addedDate.compareTo(a.addedDate),
+  // );
 
   return newModSets;
 }
@@ -47,6 +51,26 @@ Future<void> newModSetCreate(context) async {
   String? setName = await newModSetNamePopup(context);
   if (setName != null) {
     masterModSetList.add(ModSet(setName, 0, true, false, DateTime.now(), DateTime(0), []));
+    saveMasterModSetListToJson();
+  }
+}
+
+Future<void> modSetDelete(context, ModSet modset) async {
+  bool confirmation = await deleteConfirmPopup(context, modset.setName);
+  if (confirmation) {
+    for (var item in modset.setItems) {
+      for (var mod in item.mods.where((e) => e.modName.contains(modset.setName))) {
+        for (var submod in mod.submods.where((e) => e.modName.contains(modset.setName))) {
+          submod.setNames.removeWhere((e) => e == modset.setName);
+        }
+        mod.setNames.removeWhere((e) => e == modset.setName);
+      }
+      item.setNames.removeWhere((e) => e == modset.setName);
+    }
+    masterModSetList.remove(modset);
+    saveMasterModSetListToJson();
+    saveMasterModListToJson();
+    deletedNotification(context, modset.setName);
   }
 }
 

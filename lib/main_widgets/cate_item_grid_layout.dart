@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
-import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
@@ -26,11 +25,11 @@ class _CateItemGridLayoutState extends State<CateItemGridLayout> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (modApplyStatus.watch(context) != modApplyStatus.peek()) {
-      setState(
-        () {},
-      );
-    }
+    // if (modApplyStatus.watch(context) != modApplyStatus.peek()) {
+    //   setState(
+    //     () {},
+    //   );
+    // }
     return SliverStickyHeader.builder(
         builder: (context, state) => Card(
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
@@ -40,7 +39,7 @@ class _CateItemGridLayoutState extends State<CateItemGridLayout> {
             margin: EdgeInsets.zero,
             elevation: 5,
             child: Padding(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(10),
                 child: Row(
                   spacing: 5,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -112,6 +111,7 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
                     child: OutlinedButton(
                         onPressed: () async {
                           await modViewPopup(context, widget.item);
+                          setState(() {});
                         },
                         child: Text(appText.viewMods)),
                   )

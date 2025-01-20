@@ -77,7 +77,7 @@ class _MainModGridState extends State<MainModGrid> {
     // Sort
     if (selectedDisplaySort.value == modSortingSelections[0]) {
       for (var category in displayingCategories) {
-        category.items.sort((a, b) => a.itemName.compareTo(b.itemName));
+        category.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
       }
     } else if (selectedDisplaySort.value == modSortingSelections[1]) {
       for (var category in displayingCategories) {

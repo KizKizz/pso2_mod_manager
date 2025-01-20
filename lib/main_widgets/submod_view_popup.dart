@@ -21,7 +21,7 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (dialogContext, setState) {
           // Refresh
-          if (modApplyStatus.watch(context) != modApplyStatus.peek()) {
+          if (modApplyStatus.watch(context) != modApplyStatus.peek() || modPopupStatus.watch(context) != modPopupStatus.peek()) {
             setState(
               () {},
             );

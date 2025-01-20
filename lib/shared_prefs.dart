@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:pso2_mod_manager/app_colorscheme.dart';
-import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_localization/item_locale.dart';
 import 'package:pso2_mod_manager/settings/other_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,6 +18,7 @@ Signal<int> backgroundImageSlideInterval = Signal<int>(10);
 Signal<bool> itemIconSlides = Signal<bool>(false);
 Signal<String> selectedDisplayCategory = Signal<String>('All');
 Signal<String> selectedDisplaySort = Signal<String>('Name (Alphabetical)');
+Signal<String> selectedDisplaySortModSet = Signal<String>('Name (Alphabetical)');
 bool originalFilesBackupsFromSega = true;
 double boundingRadiusRemovalValue = -10;
 Signal<String> selectedCustomAQMFilePath = Signal('');
@@ -72,6 +72,9 @@ Future<void> prefsLoad() async {
   
   // Main list sort
   selectedDisplaySort.value = prefs.getString('selectedDisplaySort') ?? 'Name (Alphabetical)';
+
+  // Mod set list sort
+  selectedDisplaySortModSet.value = prefs.getString('selectedDisplaySortModSet') ?? 'Name (Alphabetical)';
 
   // Color schemes
   final lightModeSeedColorValue = prefs.getStringList('lightModeSeedColorValue') ??

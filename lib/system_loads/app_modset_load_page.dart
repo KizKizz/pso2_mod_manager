@@ -21,7 +21,7 @@ class _AppModSetLoadPageState extends State<AppModSetLoadPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: modSetLoader() ,
+      future: modSetLoader(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return Center(
@@ -66,6 +66,7 @@ class _AppModSetLoadPageState extends State<AppModSetLoadPage> {
           return FutureBuilderError(loadingText: appText.loadingModSets, snapshotError: snapshot.error.toString());
         } else {
           masterModSetList = snapshot.data;
+          saveMasterModSetListToJson();
           pageIndex++;
           curPage.value = appPages[pageIndex];
           return const SizedBox();

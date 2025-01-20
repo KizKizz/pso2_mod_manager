@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
-import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
@@ -27,11 +26,11 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-          if (modApplyStatus.watch(context) != modApplyStatus.peek()) {
-            setState(
-              () {},
-            );
-          }
+    // if (modApplyStatus.watch(context) != modApplyStatus.peek()) {
+    //   setState(
+    //     () {},
+    //   );
+    // }
     // Get ext
     int modNum = 0;
     int modAppliedNum = 0;
@@ -49,7 +48,7 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
             margin: EdgeInsets.zero,
             elevation: 5,
             child: Padding(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(10),
                 child: Row(
                   spacing: 5,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -58,8 +57,10 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
                     Row(
                       spacing: 5,
                       mainAxisSize: MainAxisSize.min,
-                      children: [HeaderInfoBox(info: appText.dText(modNum > 1 ? appText.numMods : appText.numMod, modNum.toString()), borderHighlight: false),
-                      HeaderInfoBox(info: appText.dText(appText.numCurrentlyApplied, modAppliedNum.toString()), borderHighlight: false)],
+                      children: [
+                        HeaderInfoBox(info: appText.dText(modNum > 1 ? appText.numMods : appText.numMod, modNum.toString()), borderHighlight: false),
+                        HeaderInfoBox(info: appText.dText(appText.numCurrentlyApplied, modAppliedNum.toString()), borderHighlight: false)
+                      ],
                     )
                   ],
                 ))),
@@ -131,6 +132,7 @@ class _ModCardLayoutState extends State<ModCardLayout> {
                     child: OutlinedButton(
                         onPressed: () async {
                           await submodViewPopup(context, widget.item, widget.mod);
+                          setState(() {});
                         },
                         child: Text(appText.viewVariants)),
                   )
