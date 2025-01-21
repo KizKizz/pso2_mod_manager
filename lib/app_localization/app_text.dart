@@ -234,7 +234,7 @@ class AppText {
       loadingAqmInjectedItems = 'Loading AQM Injected Items',
       addCustomAqmFiles = 'Add Custom AQM Files',
       currentAqmFile = 'Current AQM File',
-      fetchingFiles = 'Fetching Files', 
+      fetchingFiles = 'Fetching Files',
       newModSet = 'New Mod Set',
       enterNewSetName = 'Enter name of the Set';
 
@@ -254,7 +254,8 @@ class AppText {
       mainDirPathInfo = 'This folder stores your mods and other Mod Manager related stuff\nPreferably outside of pso2 installation directory and nested folders',
       restoredModInfo = 'These mods had been restored by game update or file check',
       duplicateAppliedInfo = 'This mod was found using the same files as "%p%"',
-      duplicateAqmInjectInfo = 'This mod was found using the same files as "%p%" in AQM Inject';
+      duplicateAqmInjectInfo = 'This mod was found using the same files as "%p%" in AQM Inject',
+      selectSetsToAddToOrRemoveFrom = 'Select Set(s) to add to or to remove from';
 
   // Settings Text
   String appSettings = 'App Settings',

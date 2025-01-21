@@ -126,7 +126,12 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                           RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1), borderRadius: const BorderRadius.all(Radius.circular(20))))),
                   itemBuilder: (BuildContext context) {
                     return [
-                      PopupMenuItem(child: MenuIconItem(icon: Icons.list_alt_outlined, text: appText.addToSet)),
+                      PopupMenuItem(
+                          onTap: () async {
+                            await submodAddToSet(context, widget.item, widget.mod, widget.submod);
+                            setState(() {});
+                          },
+                          child: MenuIconItem(icon: Icons.list_alt_outlined, text: appText.addToSet)),
                       PopupMenuItem(child: MenuIconItem(icon: Icons.add_location_alt_outlined, text: appText.setApplyLocations)),
                       const PopupMenuItem(
                           height: 0,
@@ -148,21 +153,21 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                           },
                           child: MenuIconItem(icon: Icons.radio_button_on_sharp, text: appText.removeBoundingRadius)),
                       if (!widget.submod.customAQMInjected!)
-                      PopupMenuItem(
-                          enabled: aqmInjectCategoryDirs.contains(widget.submod.category) && !widget.submod.applyStatus && !widget.submod.customAQMInjected!,
-                          onTap: () async {
-                            await submodAqmInject(context, widget.submod);
-                            setState(() {});
-                          },
-                          child: MenuIconItem(icon: Icons.auto_fix_high, text: appText.injectCustomAQM)),
+                        PopupMenuItem(
+                            enabled: aqmInjectCategoryDirs.contains(widget.submod.category) && !widget.submod.applyStatus && !widget.submod.customAQMInjected!,
+                            onTap: () async {
+                              await submodAqmInject(context, widget.submod);
+                              setState(() {});
+                            },
+                            child: MenuIconItem(icon: Icons.auto_fix_high, text: appText.injectCustomAQM)),
                       if (widget.submod.customAQMInjected!)
-                      PopupMenuItem(
-                          enabled: aqmInjectCategoryDirs.contains(widget.submod.category) && !widget.submod.applyStatus && widget.submod.customAQMInjected!,
-                          onTap: () async {
-                            await submodCustomAqmRemove(context, widget.submod);
-                            setState(() {});
-                          },
-                          child: MenuIconItem(icon: Icons.auto_fix_off, text: appText.removeCustomAQMs)),
+                        PopupMenuItem(
+                            enabled: aqmInjectCategoryDirs.contains(widget.submod.category) && !widget.submod.applyStatus && widget.submod.customAQMInjected!,
+                            onTap: () async {
+                              await submodCustomAqmRemove(context, widget.submod);
+                              setState(() {});
+                            },
+                            child: MenuIconItem(icon: Icons.auto_fix_off, text: appText.removeCustomAQMs)),
                       const PopupMenuItem(
                           height: 0,
                           enabled: false,

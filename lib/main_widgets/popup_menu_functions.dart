@@ -8,6 +8,8 @@ import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
+import 'package:pso2_mod_manager/mod_sets/mod_set_functions.dart';
+import 'package:pso2_mod_manager/mod_sets/mod_to_set_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/rename_popup.dart';
 import 'package:path/path.dart' as p;
@@ -192,6 +194,24 @@ Future<bool> submodCustomAqmRemove(context, SubMod submod) async {
   }
 }
 
-void submodAddToSet(context, Item item, Mod mod, SubMod submod) {
-  
+Future<void> submodAddToSet(context, Item item, Mod mod, SubMod submod) async {
+  final (toAddSets, toRemoveSets) = await modToSetPopup(context, submod);
+  for (var modset in toRemoveSets) {
+    int iIndex = modset.setItems.indexWhere((e) => e.location == item.location);
+    if (submod.setNames.contains(modset.setName)) submod.setNames.remove(modset.setName);
+    if (mod.submods.indexWhere((e) => e.setNames.contains(modset.setName)) == -1) mod.setNames.remove(modset.setName);
+    if (item.mods.indexWhere((e) => e.setNames.contains(modset.setName)) == -1) item.setNames.remove(modset.setName);
+    if (!item.setNames.contains(modset.setName) && iIndex != -1) modset.setItems.removeAt(iIndex);
+  }
+  for (var modset in toAddSets) {
+    if (modset.setItems.indexWhere((e) => e.location == item.location) == -1) modset.setItems.add(item);
+    if (!item.setNames.contains(modset.setName)) item.setNames.add(modset.setName);
+    if (!mod.setNames.contains(modset.setName)) mod.setNames.add(modset.setName);
+    if (!submod.setNames.contains(modset.setName)) submod.setNames.add(modset.setName);
+  }
+
+  if (toAddSets.isNotEmpty || toRemoveSets.isNotEmpty) {
+    saveMasterModSetListToJson();
+    saveMasterModListToJson();
+  }
 }
