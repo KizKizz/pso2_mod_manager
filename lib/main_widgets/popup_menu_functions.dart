@@ -4,6 +4,7 @@ import 'package:file_selector/file_selector.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_popup.dart';
 import 'package:pso2_mod_manager/item_bounding_radius/bounding_radius_popup.dart';
+import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
@@ -189,4 +190,8 @@ Future<bool> submodCustomAqmRemove(context, SubMod submod) async {
   } else {
     return false;
   }
+}
+
+void submodAddToSet(context, Item item, Mod mod, SubMod submod) {
+  
 }
