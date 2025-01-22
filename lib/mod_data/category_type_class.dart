@@ -26,8 +26,16 @@ class CategoryType with ChangeNotifier {
     for (var category in categories) {
       names.addAll(category.getDistinctNames().where((e) => !names.contains(e)));
     }
-    
+
     return names;
+  }
+
+  bool containsCategory(String categoryName) {
+    if (categories.indexWhere((e) => e == categoryName) != -1) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   factory CategoryType.fromJson(Map<String, dynamic> json) => _$CategoryTypeFromJson(json);

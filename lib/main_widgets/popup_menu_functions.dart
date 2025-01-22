@@ -210,7 +210,37 @@ Future<void> submodAddToSet(context, Item item, Mod mod, SubMod submod) async {
     if (!submod.setNames.contains(modset.setName)) submod.setNames.add(modset.setName);
   }
 
+  submod.setNames.isNotEmpty ? submod.isSet = true : submod.isSet = false;
+  mod.setNames.isNotEmpty ? mod.isSet = true : mod.isSet = false;
+  item.setNames.isNotEmpty ? item.isSet = true : item.isSet = false;
+
   if (toAddSets.isNotEmpty || toRemoveSets.isNotEmpty) {
+    saveMasterModSetListToJson();
+    saveMasterModListToJson();
+  }
+}
+
+Future<void> submodDelete(Item item, Mod mod, SubMod submod) async {
+  if (Directory(submod.location).existsSync()) await Directory(submod.location).delete(recursive: true);
+  if (!Directory(submod.location).existsSync()) {
+    // Remove from sets
+    for (var setName in submod.setNames) {
+      mod.setNames.remove(setName);
+    }
+    item.setNames.removeWhere((e) => !mod.setNames.contains(e));
+    if (item.setNames.isEmpty) {
+      for (var modset in masterModSetList) {
+        int iIndex = modset.setItems.indexWhere((e) => e.location == item.location);
+        if (iIndex != -1) modset.setItems.removeAt(iIndex);
+      }
+    }
+    // Remove from list
+    mod.submods.remove(submod);
+    if (mod.submods.isEmpty) item.removeMod(mod);
+    if (item.mods.isEmpty) {
+      int tIndex = masterModList.indexWhere((e) => e.containsCategory(item.category));
+      masterModList[tIndex].categories.firstWhere((e) => e.categoryName == item.category).removeItem(item);
+    }
     saveMasterModSetListToJson();
     saveMasterModListToJson();
   }

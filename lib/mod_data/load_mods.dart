@@ -163,10 +163,10 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
                       //submod.submodName = curJsonSubmodsList[submodIndex].submodName;
                       //submod.previewImages = curJsonSubmodsList[submodIndex].previewImages;
                       //submod.previewVideos = curJsonSubmodsList[submodIndex].previewVideos;
-                      if (curJsonSubmodsList[submodIndex].cmxApplied != null && curJsonSubmodsList[submodIndex].cmxApplied == true) submod.hasCmx = curJsonSubmodsList[submodIndex].hasCmx;
-                      submod.cmxApplied = curJsonSubmodsList[submodIndex].cmxApplied;
-                      submod.cmxStartPos = curJsonSubmodsList[submodIndex].cmxStartPos;
-                      submod.cmxEndPos = curJsonSubmodsList[submodIndex].cmxEndPos;
+                      curJsonSubmodsList[submodIndex].hasCmx == null ? submod.hasCmx = false : submod.hasCmx = curJsonSubmodsList[submodIndex].hasCmx;
+                      curJsonSubmodsList[submodIndex].cmxApplied == null ? submod.cmxApplied = false : submod.cmxApplied = curJsonSubmodsList[submodIndex].cmxApplied;
+                      curJsonSubmodsList[submodIndex].cmxStartPos == null ? submod.cmxStartPos = 0 : submod.cmxStartPos = curJsonSubmodsList[submodIndex].cmxStartPos;
+                      curJsonSubmodsList[submodIndex].cmxEndPos == null ? submod.cmxEndPos = 0 : submod.cmxEndPos = curJsonSubmodsList[submodIndex].cmxEndPos;
                       //submod.cmxFile = curJsonSubmodsList[submodIndex].cmxFile;
                       submod.isSet = curJsonSubmodsList[submodIndex].isSet;
                       submod.setNames = curJsonSubmodsList[submodIndex].setNames;

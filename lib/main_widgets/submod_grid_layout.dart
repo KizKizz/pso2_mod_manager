@@ -131,7 +131,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                             await submodAddToSet(context, widget.item, widget.mod, widget.submod);
                             setState(() {});
                           },
-                          child: MenuIconItem(icon: Icons.list_alt_outlined, text: appText.addToSet)),
+                          child: MenuIconItem(icon: Icons.list_alt_outlined, text: appText.modSets)),
                       PopupMenuItem(child: MenuIconItem(icon: Icons.add_location_alt_outlined, text: appText.setApplyLocations)),
                       const PopupMenuItem(
                           height: 0,
@@ -189,7 +189,12 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                           child: PopupMenuDivider(
                             height: 5,
                           )),
-                      PopupMenuItem(child: MenuIconItem(icon: Icons.delete_forever_outlined, text: appText.delete)),
+                      PopupMenuItem(
+                          onTap: () async {
+                            await submodDelete(widget.item, widget.mod, widget.submod);
+                            setState(() {});
+                          },
+                          child: MenuIconItem(icon: Icons.delete_forever_outlined, text: appText.delete)),
                     ];
                   },
                 )

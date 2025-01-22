@@ -84,11 +84,11 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
         sliver: ResponsiveSliverGridList(minItemWidth: 350, verticalGridMargin: 5, horizontalGridSpacing: 5, verticalGridSpacing: 5, children: modCardFetch()));
   }
 
-  List<ModCardLayout> modCardFetch() {
-    List<ModCardLayout> modCardList = [];
+  List<ModSetCardLayout> modCardFetch() {
+    List<ModSetCardLayout> modCardList = [];
     for (var item in widget.modSet.setItems) {
       for (var mod in item.mods.where((e) => e.isSet && e.setNames.contains(widget.modSet.setName))) {
-        modCardList.add(ModCardLayout(item: item, mod: mod, setName: widget.modSet.setName));
+        modCardList.add(ModSetCardLayout(item: item, mod: mod, setName: widget.modSet.setName));
       }
     }
 
@@ -96,18 +96,18 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
   }
 }
 
-class ModCardLayout extends StatefulWidget {
-  const ModCardLayout({super.key, required this.item, required this.mod, required this.setName});
+class ModSetCardLayout extends StatefulWidget {
+  const ModSetCardLayout({super.key, required this.item, required this.mod, required this.setName});
 
   final Item item;
   final Mod mod;
   final String setName;
 
   @override
-  State<ModCardLayout> createState() => _ModCardLayoutState();
+  State<ModSetCardLayout> createState() => _ModSetCardLayoutState();
 }
 
-class _ModCardLayoutState extends State<ModCardLayout> {
+class _ModSetCardLayoutState extends State<ModSetCardLayout> {
   @override
   Widget build(BuildContext context) {
     return CardOverlay(
@@ -161,7 +161,7 @@ class _ModCardLayoutState extends State<ModCardLayout> {
             spacing: 5,
             children: [
               Visibility(
-                  visible: widget.mod.submods.where((e) => e.setNames.contains(widget.setName)).length > 1,
+                  visible: widget.mod.submods.where((e) => e.setNames.contains(widget.setName)).length > 1 || widget.item.mods.where((e) => e.setNames.contains(widget.setName)).length > 1,
                   child: Expanded(
                     child: OutlinedButton(
                         onPressed: () {

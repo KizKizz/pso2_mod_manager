@@ -3,6 +3,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_functions.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
@@ -67,6 +68,7 @@ class _AppModSetLoadPageState extends State<AppModSetLoadPage> {
         } else {
           masterModSetList = snapshot.data;
           saveMasterModSetListToJson();
+          saveMasterModListToJson();
           pageIndex++;
           curPage.value = appPages[pageIndex];
           return const SizedBox();

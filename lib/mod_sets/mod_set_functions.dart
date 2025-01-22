@@ -23,19 +23,28 @@ Future<List<ModSet>> modSetLoader() async {
   //remove nonexistence set name
   List<String> setNames = newModSets.map((e) => e.setName).toList();
   for (var set in newModSets) {
+    // List<Item> notContainSetItems = [];
+    set.setItems.removeWhere((e) => e.mods.indexWhere((m) => m.setNames.contains(set.setName)) == -1);
     for (var item in set.setItems) {
       item.setNames.removeWhere((element) => !setNames.contains(element));
+      for (var mod in item.mods.where((e) => e.setNames.contains(set.setName))) {
+        for (var submod in mod.submods.where((e) => e.setNames.contains(set.setName))) {
+          if (!submod.isSet) submod.isSet = true;
+        }
+        if (mod.submods.indexWhere((e) => e.isSet) != 1) {
+          mod.isSet = true;
+        } else {
+          mod.isSet = false;
+        }
+      }
+      if (item.mods.indexWhere((e) => e.isSet) != 1) {
+        item.isSet = true;
+      } else {
+        item.isSet = false;
+      }
     }
     set.appliedDate ??= DateTime.now();
   }
-
-  // for (var set in newModSets) {
-  //   set.setItems = allSetItems.where((element) => element.setNames.contains(set.setName)).toList();
-  // }
-
-  // newModSets.sort(
-  //   (a, b) => b.addedDate.compareTo(a.addedDate),
-  // );
 
   return newModSets;
 }
