@@ -11,6 +11,7 @@ import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_functions.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_to_set_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_widgets/delete_confirm_popup.dart';
 import 'package:pso2_mod_manager/v3_widgets/rename_popup.dart';
 import 'package:path/path.dart' as p;
 import 'package:io/io.dart' as io;
@@ -220,28 +221,31 @@ Future<void> submodAddToSet(context, Item item, Mod mod, SubMod submod) async {
   }
 }
 
-Future<void> submodDelete(Item item, Mod mod, SubMod submod) async {
-  if (Directory(submod.location).existsSync()) await Directory(submod.location).delete(recursive: true);
-  if (!Directory(submod.location).existsSync()) {
-    // Remove from sets
-    for (var setName in submod.setNames) {
-      mod.setNames.remove(setName);
-    }
-    item.setNames.removeWhere((e) => !mod.setNames.contains(e));
-    if (item.setNames.isEmpty) {
-      for (var modset in masterModSetList) {
-        int iIndex = modset.setItems.indexWhere((e) => e.location == item.location);
-        if (iIndex != -1) modset.setItems.removeAt(iIndex);
+Future<void> submodDelete(context, Item item, Mod mod, SubMod submod) async {
+  final result = await deleteConfirmPopup(context, submod.submodName);
+  if (result) {
+    if (Directory(submod.location).existsSync()) await Directory(submod.location).delete(recursive: true);
+    if (!Directory(submod.location).existsSync()) {
+      // Remove from sets
+      for (var setName in submod.setNames) {
+        mod.setNames.remove(setName);
       }
+      item.setNames.removeWhere((e) => !mod.setNames.contains(e));
+      if (item.setNames.isEmpty) {
+        for (var modset in masterModSetList) {
+          int iIndex = modset.setItems.indexWhere((e) => e.location == item.location);
+          if (iIndex != -1) modset.setItems.removeAt(iIndex);
+        }
+      }
+      // Remove from list
+      mod.submods.remove(submod);
+      if (mod.submods.isEmpty) item.removeMod(mod);
+      if (item.mods.isEmpty) {
+        int tIndex = masterModList.indexWhere((e) => e.containsCategory(item.category));
+        masterModList[tIndex].categories.firstWhere((e) => e.categoryName == item.category).removeItem(item);
+      }
+      saveMasterModSetListToJson();
+      saveMasterModListToJson();
     }
-    // Remove from list
-    mod.submods.remove(submod);
-    if (mod.submods.isEmpty) item.removeMod(mod);
-    if (item.mods.isEmpty) {
-      int tIndex = masterModList.indexWhere((e) => e.containsCategory(item.category));
-      masterModList[tIndex].categories.firstWhere((e) => e.categoryName == item.category).removeItem(item);
-    }
-    saveMasterModSetListToJson();
-    saveMasterModListToJson();
   }
 }

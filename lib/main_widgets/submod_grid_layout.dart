@@ -111,6 +111,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                           } else {
                             await modToGameData(context, false, widget.item, widget.mod, widget.submod);
                           }
+                          modApplyStatus.value = '';
                         },
                         child: Text(widget.submod.applyStatus ? appText.restore : appText.apply))),
                 PopupMenuButton(
@@ -191,8 +192,8 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                           )),
                       PopupMenuItem(
                           onTap: () async {
-                            await submodDelete(widget.item, widget.mod, widget.submod);
-                            setState(() {});
+                            await submodDelete(context, widget.item, widget.mod, widget.submod);
+                            modPopupStatus.value = '${widget.submod.submodName} deleted';
                           },
                           child: MenuIconItem(icon: Icons.delete_forever_outlined, text: appText.delete)),
                     ];
