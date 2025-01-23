@@ -173,7 +173,8 @@ class AppText {
       restoreAll = 'Restore All',
       permanentlyDeleteItem = 'Permanently delete "%p%"?',
       holdToDelete = 'Hold To Delete',
-      successfullyDeletedItem = 'Successfully deleted "%p%"';
+      successfullyDeletedItem = 'Successfully deleted "%p%"',
+      setActive = 'Set Active';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',

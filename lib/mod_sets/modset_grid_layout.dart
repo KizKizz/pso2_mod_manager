@@ -5,15 +5,16 @@ import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_grid_layout.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
+import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_functions.dart';
+import 'package:pso2_mod_manager/mod_sets/modset_mod_view_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/main_modset_grid.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
-import 'package:pso2_mod_manager/main_widgets/submod_view_popup.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -87,9 +88,8 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
   List<ModSetCardLayout> modCardFetch() {
     List<ModSetCardLayout> modCardList = [];
     for (var item in widget.modSet.setItems) {
-      for (var mod in item.mods.where((e) => e.isSet && e.setNames.contains(widget.modSet.setName))) {
-        modCardList.add(ModSetCardLayout(item: item, mod: mod, setName: widget.modSet.setName));
-      }
+      var (mod, submod) = item.getActiveInSet(widget.modSet.setName);
+      if (mod != null && submod != null) modCardList.add(ModSetCardLayout(item: item, activeMod: mod, activeSubmod: submod, setName: widget.modSet.setName));
     }
 
     return modCardList;
@@ -97,10 +97,11 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
 }
 
 class ModSetCardLayout extends StatefulWidget {
-  const ModSetCardLayout({super.key, required this.item, required this.mod, required this.setName});
+  const ModSetCardLayout({super.key, required this.item, required this.activeMod, required this.activeSubmod, required this.setName});
 
   final Item item;
-  final Mod mod;
+  final Mod activeMod;
+  final SubMod activeSubmod;
   final String setName;
 
   @override
@@ -133,26 +134,32 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
               ),
               Expanded(
                 flex: 3,
-                child: SubmodImageBox(filePaths: widget.mod.submods.firstWhere((e) => e.setNames.contains(widget.setName)).previewImages, isNew: widget.mod.isNew),
+                child: SubmodImageBox(filePaths: widget.activeSubmod.previewImages, isNew: widget.activeSubmod.isNew),
               )
             ],
           ),
-          Text(widget.mod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
           Visibility(
-              visible: widget.mod.submods.firstWhere((e) => e.setNames.contains(widget.setName)).submodName != widget.mod.modName,
-              child: Text(widget.mod.submods.firstWhere((e) => e.setNames.contains(widget.setName)).submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
+              visible: widget.activeMod.modName != widget.activeSubmod.submodName, child: Text(widget.activeMod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
+          Text(widget.activeSubmod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
           Row(
             spacing: 5,
             children: [
               Expanded(
                   child: InfoBox(
-                info: appText.dText(widget.mod.submods.where((e) => e.setNames.contains(widget.setName)).length > 1 ? appText.numVariants : appText.numVariant,
-                    widget.mod.submods.where((e) => e.setNames.contains(widget.setName)).length.toString()),
+                info: appText.dText(widget.item.mods.where((e) => e.isSet && e.setNames.contains(widget.setName)).length > 1 ? appText.numMods : appText.numMod,
+                    widget.item.mods.where((e) => e.isSet && e.setNames.contains(widget.setName)).length.toString()),
                 borderHighlight: false,
               )),
               Expanded(
                   child: InfoBox(
-                info: appText.dText(appText.numCurrentlyApplied, widget.mod.getNumOfAppliedSubmods().toString()),
+                info: appText.dText(widget.item.getSubmods().where((e) => e.isSet && e.setNames.contains(widget.setName)).length > 1 ? appText.numVariants : appText.numVariant,
+                    widget.item.getSubmods().where((e) => e.isSet && e.setNames.contains(widget.setName)).length.toString()),
+                borderHighlight: false,
+              )),
+              Expanded(
+                flex: 2,
+                  child: InfoBox(
+                info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedMods().toString()),
                 borderHighlight: false,
               )),
             ],
@@ -161,15 +168,16 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
             spacing: 5,
             children: [
               Visibility(
-                  visible: widget.mod.submods.where((e) => e.setNames.contains(widget.setName)).length > 1 || widget.item.mods.where((e) => e.setNames.contains(widget.setName)).length > 1,
+                  visible:
+                      widget.item.getSubmods().where((e) => e.isSet && e.setNames.contains(widget.setName)).length > 1 || widget.item.mods.where((e) => e.setNames.contains(widget.setName)).length > 1,
                   child: Expanded(
                     child: OutlinedButton(
                         onPressed: () {
-                          submodViewPopup(context, widget.item, widget.mod);
+                          modsetModViewPopup(context, widget.item, widget.setName);
                         },
                         child: Text(appText.viewVariants)),
                   )),
-              Expanded(child: OutlinedButton(onPressed: () {}, child: Text(appText.apply))),
+              Expanded(child: OutlinedButton(onPressed: () {}, child: Text(widget.activeSubmod.applyStatus ? appText.restore : appText.apply))),
               IconButton(
                   onPressed: () async {},
                   icon: const Icon(

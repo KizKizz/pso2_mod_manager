@@ -27,7 +27,6 @@ Future<List<ModSet>> modSetLoader() async {
   //remove nonexistence set name
   List<String> setNames = newModSets.map((e) => e.setName).toList();
   for (var set in newModSets) {
-    // List<Item> notContainSetItems = [];
     set.setItems.removeWhere((e) => e.mods.indexWhere((m) => m.setNames.contains(set.setName)) == -1);
     for (var item in set.setItems) {
       item.setNames.removeWhere((element) => !setNames.contains(element));
@@ -35,7 +34,7 @@ Future<List<ModSet>> modSetLoader() async {
         for (var submod in mod.submods.where((e) => e.setNames.contains(set.setName))) {
           if (!submod.isSet) submod.isSet = true;
         }
-        if (mod.submods.indexWhere((e) => e.isSet) != 1) {
+        if (mod.submods.indexWhere((e) => e.isSet) != 1 || mod.setNames.contains(set.setName)) {
           mod.isSet = true;
         } else {
           mod.isSet = false;
@@ -75,6 +74,7 @@ Future<void> modSetDelete(context, ModSet modset) async {
       for (var mod in item.mods.where((e) => e.modName.contains(modset.setName))) {
         for (var submod in mod.submods.where((e) => e.modName.contains(modset.setName))) {
           submod.setNames.removeWhere((e) => e == modset.setName);
+          submod.activeInSets!.removeWhere((e) => e == modset.setName);
         }
         mod.setNames.removeWhere((e) => e == modset.setName);
       }

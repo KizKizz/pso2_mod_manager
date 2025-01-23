@@ -18,7 +18,9 @@ SubMod _$SubModFromJson(Map<String, dynamic> json) => SubMod(
       json['isNew'] as bool,
       json['isFavorite'] as bool,
       json['isSet'] as bool,
-      json['isActiveInSet'] as bool?,
+      (json['activeInSets'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
       json['hasCmx'] as bool?,
       json['cmxApplied'] as bool?,
       (json['cmxStartPos'] as num?)?.toInt(),
@@ -64,7 +66,7 @@ Map<String, dynamic> _$SubModToJson(SubMod instance) => <String, dynamic>{
       'isNew': instance.isNew,
       'isFavorite': instance.isFavorite,
       'isSet': instance.isSet,
-      'isActiveInSet': instance.isActiveInSet,
+      'activeInSets': instance.activeInSets,
       'hasCmx': instance.hasCmx,
       'cmxApplied': instance.cmxApplied,
       'cmxStartPos': instance.cmxStartPos,
