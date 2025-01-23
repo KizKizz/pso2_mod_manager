@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
 import 'package:pso2_mod_manager/mod_sets/new_set_name_popup.dart';
@@ -10,12 +11,15 @@ import 'package:pso2_mod_manager/system_loads/app_modset_load_page.dart';
 import 'package:pso2_mod_manager/v3_widgets/delete_confirm_popup.dart';
 import 'package:pso2_mod_manager/v3_widgets/notifications.dart';
 
+List<Item> modSetItemsFromMasterList = [];
+
 Future<List<ModSet>> modSetLoader() async {
   List<ModSet> newModSets = [];
   // Load list from json
   var jsonData = jsonDecode(File(mainModSetListJsonPath).readAsStringSync());
   for (var set in jsonData) {
     newModSets.add(ModSet.fromJson(set));
+    newModSets.last.setItems = modSetItemsFromMasterList.where((e) => e.setNames.contains(newModSets.last.setName)).toList();
     modsetLoadingStatus.value = newModSets.last.setName;
     await Future.delayed(const Duration(microseconds: 1000));
   }

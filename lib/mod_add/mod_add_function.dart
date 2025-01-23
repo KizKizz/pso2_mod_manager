@@ -406,7 +406,7 @@ List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newMo
     }
 
     //add to submod
-    SubMod subModInItemDir = SubMod(p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, addingToSet ? true : false, false, false,
+    SubMod subModInItemDir = SubMod(p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, addingToSet ? true : false, false, false, false,
         -1, -1, '', addingToSet ? [modSetName] : [], [], modPreviewImages, modPreviewVideos, [], modFilesInItemDir);
     subModInItemDir.setLatestCreationDate();
 
@@ -490,7 +490,7 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName, 
       hasCmx = true;
     }
 
-    SubMod newSubmod = SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), 0, true, false, addingToSet ? true : false, hasCmx, false, -1, -1, cmxFile,
+    SubMod newSubmod = SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), 0, true, false, addingToSet ? true : false, false, hasCmx, false, -1, -1, cmxFile,
         addingToSet ? [modSetName] : [], [], modPreviewImages, modPreviewVideos, [], modFiles);
     newSubmod.setLatestCreationDate();
 
@@ -545,7 +545,7 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName, 
     //Get submod name
     List<String> parentPaths = dir.path.split(modPath).last.trim().split(Uri.file('/').toFilePath());
     parentPaths.removeWhere((element) => element.isEmpty);
-    SubMod newSubmod = SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), 0, true, false, addingToSet ? true : false, hasCmx, false, -1, -1,
+    SubMod newSubmod = SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), 0, true, false, addingToSet ? true : false, false, hasCmx, false, -1, -1,
         cmxFile, addingToSet ? [modSetName] : [], [], modPreviewImages, modPreviewVideos, [], modFiles);
     newSubmod.setLatestCreationDate();
 

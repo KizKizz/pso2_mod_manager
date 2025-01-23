@@ -85,7 +85,7 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
 
     List<Category> displayingCategories = [];
     if (selectedDisplayCategory.watch(context) == 'All') {
-      displayingCategories = categories;
+      displayingCategories = categories.where((e) => e.getNumOfAppliedItems() > 0).toList();
     } else {
       displayingCategories = categories.where((e) => e.categoryName == selectedDisplayCategory.watch(context)).toList();
     }

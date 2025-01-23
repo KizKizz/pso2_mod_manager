@@ -90,6 +90,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..delete = json['delete'] as String
   ..sort = json['sort'] as String
   ..create = json['create'] as String
+  ..success = json['success'] as String
   ..patchNotes = json['patchNotes'] as String
   ..appUpdate = json['appUpdate'] as String
   ..tryAgain = json['tryAgain'] as String
@@ -163,6 +164,9 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..removeCustomAQM = json['removeCustomAQM'] as String
   ..restoreBounding = json['restoreBounding'] as String
   ..restoreAll = json['restoreAll'] as String
+  ..permanentlyDeleteItem = json['permanentlyDeleteItem'] as String
+  ..holdToDelete = json['holdToDelete'] as String
+  ..successfullyDeletedItem = json['successfullyDeletedItem'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -246,6 +250,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..restoredModInfo = json['restoredModInfo'] as String
   ..duplicateAppliedInfo = json['duplicateAppliedInfo'] as String
   ..duplicateAqmInjectInfo = json['duplicateAqmInjectInfo'] as String
+  ..selectSetsToAddToOrRemoveFrom =
+      json['selectSetsToAddToOrRemoveFrom'] as String
   ..appSettings = json['appSettings'] as String
   ..uiLanguage = json['uiLanguage'] as String
   ..itemNameLanguage = json['itemNameLanguage'] as String
@@ -352,6 +358,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'delete': instance.delete,
       'sort': instance.sort,
       'create': instance.create,
+      'success': instance.success,
       'patchNotes': instance.patchNotes,
       'appUpdate': instance.appUpdate,
       'tryAgain': instance.tryAgain,
@@ -424,6 +431,9 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'removeCustomAQM': instance.removeCustomAQM,
       'restoreBounding': instance.restoreBounding,
       'restoreAll': instance.restoreAll,
+      'permanentlyDeleteItem': instance.permanentlyDeleteItem,
+      'holdToDelete': instance.holdToDelete,
+      'successfullyDeletedItem': instance.successfullyDeletedItem,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,
@@ -504,6 +514,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'restoredModInfo': instance.restoredModInfo,
       'duplicateAppliedInfo': instance.duplicateAppliedInfo,
       'duplicateAqmInjectInfo': instance.duplicateAqmInjectInfo,
+      'selectSetsToAddToOrRemoveFrom': instance.selectSetsToAddToOrRemoveFrom,
       'appSettings': instance.appSettings,
       'uiLanguage': instance.uiLanguage,
       'itemNameLanguage': instance.itemNameLanguage,

@@ -153,7 +153,7 @@ Future<bool> itemCustomAqmBounding(context, String hqIcePath, String lqIcePath, 
       false, false, [], [], [], [], [], []);
   ModFile lqModFile = ModFile(p.basename(lqIcePath), itemName, itemName, itemName, '', '', [], pso2binDirPath + p.separator + lqIcePath.replaceAll('/', p.separator), false, DateTime(0), 0, false,
       false, false, [], [], [], [], [], []);
-  SubMod submod = SubMod(itemName, itemName, itemName, '', '', false, DateTime(0), 0, false, false, false, false, false, 0, 0, '', [], [], [], [], [], [hqModFile, lqModFile]);
+  SubMod submod = SubMod(itemName, itemName, itemName, '', '', false, DateTime(0), 0, false, false, false, false, false, false, 0, 0, '', [], [], [], [], [], [hqModFile, lqModFile]);
   await boundingRadiusPopup(context, submod);
   return true;
 }

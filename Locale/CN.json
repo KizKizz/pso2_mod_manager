@@ -1,4 +1,8 @@
 {
+  "permanentlyDeleteItem": "Permanently delete \"%p%\"?",
+  "holdToDelete": "Hold To Delete",
+  "successfullyDeletedItem": "Successfully deleted \"%p%\"",
+  "selectSetsToAddToOrRemoveFrom": "Select Set(s) to add to or to remove from",
   "newModSet": "New Mod Set",
   "nameAlphabetical": "Name (Alphabetical)",
   "recentlyAdded": "Recently Added",

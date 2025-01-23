@@ -295,7 +295,7 @@ SubMod lItemSubmodGet(ItemData lItemData) {
     }
   }
 
-  return SubMod(fromItemNameSwap, fromItemNameSwap, lItemData.getName(), lItemData.category, '', false, DateTime(0), 0, false, false, false, false, false, -1, -1, '', [], [], [], [], [], modFileList);
+  return SubMod(fromItemNameSwap, fromItemNameSwap, lItemData.getName(), lItemData.category, '', false, DateTime(0), 0, false, false, false, false, false, false, -1, -1, '', [], [], [], [], [], modFileList);
 }
 
 Mod lItemModGet() {

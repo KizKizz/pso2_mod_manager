@@ -10,6 +10,7 @@ import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
+import 'package:pso2_mod_manager/mod_sets/mod_set_functions.dart';
 import 'package:pso2_mod_manager/system_loads/app_mod_load_page.dart';
 
 Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
@@ -122,9 +123,7 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
               item.setNames = curJsonItemsList[itemIndex].setNames;
               //item.location = curJsonItemsList[itemIndex].location;
               //Populate modset items
-              if (item.isSet) {
-                // allSetItems.add(item);
-              }
+              if (item.isSet) modSetItemsFromMasterList.add(item);
               final curJsonModsList = curJsonItemsList[itemIndex].mods;
               for (var mod in item.mods) {
                 int modIndex = curJsonModsList.indexWhere((element) => element.modName == mod.modName);
@@ -169,6 +168,7 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
                       curJsonSubmodsList[submodIndex].cmxEndPos == null ? submod.cmxEndPos = 0 : submod.cmxEndPos = curJsonSubmodsList[submodIndex].cmxEndPos;
                       //submod.cmxFile = curJsonSubmodsList[submodIndex].cmxFile;
                       submod.isSet = curJsonSubmodsList[submodIndex].isSet;
+                      curJsonSubmodsList[submodIndex].isActiveInSet == null ? submod.isActiveInSet = false : submod.isActiveInSet = curJsonSubmodsList[submodIndex].isActiveInSet;
                       submod.setNames = curJsonSubmodsList[submodIndex].setNames;
                       curJsonSubmodsList[submodIndex].applyLocations == null ? submod.applyLocations = [] : submod.applyLocations = curJsonSubmodsList[submodIndex].applyLocations;
                       final curJsonModFilesList = curJsonSubmodsList[submodIndex].modFiles;
@@ -388,8 +388,8 @@ Future<List<Mod>> modsFetcher(String itemPath, String cateName) async {
     }
 
     //add to submod
-    SubMod subModInItemDir = SubMod(p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, false, false, false, -1, -1, '', [], [],
-        modPreviewImages, modPreviewVideos, [], modFilesInItemDir);
+    SubMod subModInItemDir = SubMod(p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, false, false, false, false, -1, -1, '',
+        [], [], modPreviewImages, modPreviewVideos, [], modFilesInItemDir);
 
     //add to mod
     mods.add(Mod(p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, false, [], modPreviewImages, modPreviewVideos, [], [subModInItemDir]));
@@ -484,8 +484,8 @@ Future<List<SubMod>> subModFetcher(String modPath, String cateName, String itemN
     }
 
     if (modFiles.isNotEmpty) {
-      submods.add(SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), 0, false, false, false, hasCmx, false, -1, -1, cmxFile, [], [], modPreviewImages,
-          modPreviewVideos, [], modFiles));
+      submods.add(SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), 0, false, false, false, false, hasCmx, false, -1, -1, cmxFile, [], [],
+          modPreviewImages, modPreviewVideos, [], modFiles));
       modLoadingStatus.value = '$cateName\n$itemName\n${p.basename(modPath)}\n${p.basename(modPath)}';
       await Future.delayed(const Duration(microseconds: 1000));
     }
@@ -563,7 +563,7 @@ Future<List<SubMod>> subModFetcher(String modPath, String cateName, String itemN
     if (modFiles.isNotEmpty) {
       List<String> parentPaths = dir.path.split(modPath).last.trim().split(Uri.file('/').toFilePath());
       parentPaths.removeWhere((element) => element.isEmpty);
-      submods.add(SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), 0, false, false, false, hasCmx, false, -1, -1, cmxFile, [], [],
+      submods.add(SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), 0, false, false, false, false, hasCmx, false, -1, -1, cmxFile, [], [],
           modPreviewImages, modPreviewVideos, [], modFiles));
       modLoadingStatus.value = '$cateName\n$itemName\n${p.basename(modPath)}\n${parentPaths.join(' > ')}';
       await Future.delayed(const Duration(microseconds: 1000));
