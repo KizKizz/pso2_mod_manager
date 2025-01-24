@@ -1,3 +1,4 @@
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
@@ -159,7 +160,9 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                                     alignment: MainAxisAlignment.end,
                                     children: [
                                       OutlinedButton(
-                                          onPressed: masterAqmInjectedItemList.indexWhere((e) => e.getName() == displayingItemData[index].getName()) == -1
+                                          onPressed: masterAqmInjectedItemList.indexWhere((e) => e.getName() == displayingItemData[index].getName()) == -1 &&
+                                                  selectedCustomAQMFilePath.watch(context).isNotEmpty &&
+                                                  File(selectedCustomAQMFilePath.value).existsSync()
                                               ? () async {
                                                   AqmInjectedItem newItem = AqmInjectedItem(
                                                       displayingItemData[index].category,
@@ -191,7 +194,8 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                                                       false,
                                                       false);
 
-                                                  bool result = await aqmInjectPopup(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName(), false, false, false, false, false);
+                                                  bool result =
+                                                      await aqmInjectPopup(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName(), false, false, false, false, false);
                                                   if (result) {
                                                     newItem.isAqmReplaced = true;
                                                     newItem.isApplied = true;
@@ -279,7 +283,8 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                                                       false,
                                                       false);
 
-                                                  bool aqmResult = await aqmInjectPopup(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName(), false, false, false, false, false);
+                                                  bool aqmResult =
+                                                      await aqmInjectPopup(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName(), false, false, false, false, false);
                                                   // ignore: use_build_context_synchronously
                                                   bool boundingResult = await itemCustomAqmBounding(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName());
                                                   if (aqmResult || boundingResult) {

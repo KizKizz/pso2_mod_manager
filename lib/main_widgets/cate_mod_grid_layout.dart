@@ -133,7 +133,7 @@ class _ModCardLayoutState extends State<ModCardLayout> {
                     child: OutlinedButton(
                         onPressed: () async {
                           await submodViewPopup(context, widget.item, widget.mod);
-                          setState(() {});
+                          if (mounted) setState(() {});
                         },
                         child: Text(appText.viewVariants)),
                   )

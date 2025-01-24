@@ -11,6 +11,7 @@ import 'package:pso2_mod_manager/main_widgets/submod_grid_layout.dart';
 import 'package:pso2_mod_manager/v3_widgets/vertical_divider.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 Future<void> modViewPopup(context, Item item) async {
   Mod? selectedMod = item.mods.first;
@@ -50,11 +51,31 @@ Future<void> modViewPopup(context, Item item) async {
                           item.itemName,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        InfoBox(
-                          info: appText.dText(item.mods.length > 1 ? appText.numMods : appText.numMod, item.mods.length.toString()),
-                          borderHighlight: false,
+                        Row(
+                          spacing: 5,
+                          children: [
+                            Expanded(
+                              child: InfoBox(
+                                info: appText.dText(item.mods.length > 1 ? appText.numMods : appText.numMod, item.mods.length.toString()),
+                                borderHighlight: false,
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: InfoBox(
+                                info: appText.dText(appText.numCurrentlyApplied, item.getNumOfAppliedMods().toString()),
+                                borderHighlight: item.applyStatus,
+                              ),
+                            ),
+                          ],
                         ),
-                        InfoBox(info: appText.dText(appText.numCurrentlyApplied, item.getNumOfAppliedMods().toString()), borderHighlight: item.applyStatus),
+                        Row(
+                          spacing: 5,
+                          children: [
+                            Expanded(child: OutlinedButton(onPressed: () => launchUrlString(item.location), child: Text(appText.openInFileExplorer))),
+                            IconButton.outlined(visualDensity: VisualDensity.adaptivePlatformDensity, onPressed: () {}, icon: const Icon(Icons.delete_forever_outlined, color: Colors.redAccent))
+                          ],
+                        ),
                         const HoriDivider(),
                         Expanded(
                             child: CustomScrollView(physics: const SuperRangeMaintainingScrollPhysics(), slivers: [

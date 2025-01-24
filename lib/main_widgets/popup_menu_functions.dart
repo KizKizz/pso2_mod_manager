@@ -239,11 +239,15 @@ Future<void> submodDelete(context, Item item, Mod mod, SubMod submod) async {
       }
       // Remove from list
       mod.submods.remove(submod);
-      if (mod.submods.isEmpty) item.removeMod(mod);
+      if (mod.submods.isEmpty) {
+        if (Directory(mod.location).existsSync()) await Directory(mod.location).delete(recursive: true);
+        item.mods.remove(mod);
+      }
       if (item.mods.isEmpty) {
+        if (Directory(item.location).existsSync()) await Directory(item.location).delete(recursive: true);
         int tIndex = masterModList.indexWhere((e) => e.containsCategory(item.category));
         if (tIndex != -1) {
-          masterModList[tIndex].categories.firstWhere((e) => e.categoryName == item.category).removeItem(item);
+          masterModList[tIndex].categories.firstWhere((e) => e.categoryName == item.category).items.remove(item);
         }
       }
       saveMasterModSetListToJson();

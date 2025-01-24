@@ -31,7 +31,7 @@ class CategoryType with ChangeNotifier {
   }
 
   bool containsCategory(String categoryName) {
-    if (categories.indexWhere((e) => e == categoryName) != -1) {
+    if (categories.indexWhere((e) => e.categoryName == categoryName) != -1) {
       return true;
     } else {
       return false;

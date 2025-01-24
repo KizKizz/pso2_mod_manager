@@ -234,8 +234,6 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                             await submodDelete(context, widget.item, widget.mod, widget.submod);
                             modPopupStatus.value = '${widget.submod.submodName} deleted';
                             if (widget.mod.submods.isEmpty) {
-                              // ignore: use_build_context_synchronously
-                              Navigator.of(context).pop();
                               mainGridStatus.value = '"${widget.mod.modName}" in "${widget.item.itemName}" is empty and removed';
                             }
                           },
