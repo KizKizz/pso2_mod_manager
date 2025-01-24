@@ -97,7 +97,8 @@ class AppText {
       delete = 'Delete',
       sort = 'Sort',
       create = 'Create',
-      success = 'Success';
+      success = 'Success',
+      checksum = 'Checksum';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
