@@ -7,17 +7,17 @@ import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 
-class CategorySelectButtons extends StatefulWidget {
-  const CategorySelectButtons({super.key, required this.categories, required this.scrollController});
+class AppliedModCategorySelectButtons extends StatefulWidget {
+  const AppliedModCategorySelectButtons({super.key, required this.categories, required this.scrollController});
 
   final List<Category> categories;
   final ScrollController scrollController;
 
   @override
-  State<CategorySelectButtons> createState() => _CategorySelectButtonsState();
+  State<AppliedModCategorySelectButtons> createState() => _AppliedModCategorySelectButtonsState();
 }
 
-class _CategorySelectButtonsState extends State<CategorySelectButtons> {
+class _AppliedModCategorySelectButtonsState extends State<AppliedModCategorySelectButtons> {
   late List<String> categoryNames;
   List<int> cateItemAmount = [];
 
@@ -49,12 +49,12 @@ class _CategorySelectButtonsState extends State<CategorySelectButtons> {
       height: 40,
       child: PromptedChoice<String>.single(
           title: appText.view,
-          value: appText.categoryName(selectedDisplayCategory.value),
+          value: appText.categoryName(selectedDisplayCategoryAppliedList.value),
           modalFit: FlexFit.tight,
           onChanged: (value) async {
             final prefs = await SharedPreferences.getInstance();
-            selectedDisplayCategory.value = value!;
-            prefs.setString('selectedDisplayCategory', selectedDisplayCategory.value);
+            selectedDisplayCategoryAppliedList.value = value!;
+            prefs.setString('selectedDisplayCategoryAppliedList', selectedDisplayCategoryAppliedList.value);
             widget.scrollController.jumpTo(0);
           },
           itemCount: categoryNames.length,
@@ -72,7 +72,8 @@ class _CategorySelectButtonsState extends State<CategorySelectButtons> {
                     ChoiceText(
                       appText.categoryName(categoryNames[i]),
                       highlight: state.search?.value,
-                      style: TextStyle(color: selectedDisplayCategory.watch(context) == categoryNames[i] ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.bodyMedium!.color),
+                      style: TextStyle(
+                          color: selectedDisplayCategoryAppliedList.watch(context) == categoryNames[i] ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.bodyMedium!.color),
                     ),
                     HeaderInfoBox(info: appText.dText(cateItemAmount[i] > 1 ? appText.numItems : appText.numItem, cateItemAmount[i].toString()), borderHighlight: false)
                   ],

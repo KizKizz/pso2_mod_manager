@@ -7,19 +7,19 @@ import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 
-class CategorySelectButtons extends StatefulWidget {
-  const CategorySelectButtons({super.key, required this.categories, required this.scrollController});
+class CateModCategorySelectButtons extends StatefulWidget {
+  const CateModCategorySelectButtons({super.key, required this.categories, required this.scrollController});
 
   final List<Category> categories;
   final ScrollController scrollController;
 
   @override
-  State<CategorySelectButtons> createState() => _CategorySelectButtonsState();
+  State<CateModCategorySelectButtons> createState() => _CateModCategorySelectButtonsState();
 }
 
-class _CategorySelectButtonsState extends State<CategorySelectButtons> {
+class _CateModCategorySelectButtonsState extends State<CateModCategorySelectButtons> {
   late List<String> categoryNames;
-  List<int> cateItemAmount = [];
+  List<int> cateModAmount = [];
 
   @override
   void initState() {
@@ -29,20 +29,27 @@ class _CategorySelectButtonsState extends State<CategorySelectButtons> {
 
   @override
   Widget build(BuildContext context) {
-    cateItemAmount = widget.categories.map((e) => e.items.length).toList();
+    cateModAmount = [];
+    for (var cate in widget.categories) {
+      int curAmount = 0;
+      for (var item in cate.items) {
+        curAmount += item.mods.length;
+      }
+      cateModAmount.add(curAmount);
+    }
     if (!categoryNames.contains('All')) {
       categoryNames.insert(0, 'All');
       int totalItems = 0;
-      for (var count in cateItemAmount) {
+      for (var count in cateModAmount) {
         totalItems += count;
       }
-      cateItemAmount.insert(0, totalItems);
+      cateModAmount.insert(0, totalItems);
     } else {
       int totalItems = 0;
-      for (var count in cateItemAmount) {
+      for (var count in cateModAmount) {
         totalItems += count;
       }
-      cateItemAmount.insert(0, totalItems);
+      cateModAmount.insert(0, totalItems);
     }
 
     return SizedBox(
@@ -74,7 +81,7 @@ class _CategorySelectButtonsState extends State<CategorySelectButtons> {
                       highlight: state.search?.value,
                       style: TextStyle(color: selectedDisplayCategory.watch(context) == categoryNames[i] ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.bodyMedium!.color),
                     ),
-                    HeaderInfoBox(info: appText.dText(cateItemAmount[i] > 1 ? appText.numItems : appText.numItem, cateItemAmount[i].toString()), borderHighlight: false)
+                    HeaderInfoBox(info: appText.dText(cateModAmount[i] > 1 ? appText.numMods : appText.numMod, cateModAmount[i].toString()), borderHighlight: false)
                   ],
                 ));
           },

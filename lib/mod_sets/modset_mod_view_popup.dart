@@ -99,7 +99,7 @@ Future<void> modsetModViewPopup(context, Item item, String setName) async {
                           )
                         : CustomScrollView(
                               physics: const SuperRangeMaintainingScrollPhysics(),
-                              slivers: [SubmodGridLayout(item: item, mod: selectedMod!, submods: selectedMod!.submods.where((e) => e.isSet && e.setNames.contains(setName)).toList(), searchString: searchTextController.value.text)],
+                              slivers: [SubmodGridLayout(item: item, mod: selectedMod!, submods: selectedMod!.submods.where((e) => e.isSet && e.setNames.contains(setName)).toList(), searchString: searchTextController.value.text, modSetName: setName,)],
                             ),
                   ),
                 ],

@@ -20,7 +20,9 @@ import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/shared_prefs.dart';
 
 Future<void> modToGameData(context, bool applying, Item item, Mod mod, SubMod submod) async {
+  applying ? modPopupStatus.value = 'Applying files from "${submod.submodName}" to the game' : modPopupStatus.value = 'Removing files from "${submod.submodName}" to the game';
   applying ? await modApplySequence(context, applying, item, mod, submod) : await modUnapplySequence(context, applying, item, mod, submod);
+  modPopupStatus.value = 'Done!';
 }
 
 Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod submod) async {

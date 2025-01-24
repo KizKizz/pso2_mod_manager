@@ -174,7 +174,8 @@ class AppText {
       permanentlyDeleteItem = 'Permanently delete "%p%"?',
       holdToDelete = 'Hold To Delete',
       successfullyDeletedItem = 'Successfully deleted "%p%"',
-      setActive = 'Set Active';
+      setSubmodToBeActiveInSet = 'Set "%p%" to be active in "%p%" Set',
+      submodIsCurrentlyActiveInSet = '"%p%" is currently active in "%p%" Set';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',

@@ -21,7 +21,7 @@ Future<void> modViewPopup(context, Item item) async {
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (dialogContext, setState) {
           // Refresh
-          if (modApplyStatus.watch(context) != modApplyStatus.peek() || modPopupStatus.watch(context) != modPopupStatus.peek()) {
+          if (modPopupStatus.watch(context) != modPopupStatus.peek()) {
             setState(
               () {},
             );
@@ -99,7 +99,7 @@ Future<void> modViewPopup(context, Item item) async {
                           )
                         : CustomScrollView(
                               physics: const SuperRangeMaintainingScrollPhysics(),
-                              slivers: [SubmodGridLayout(item: item, mod: selectedMod!, submods: selectedMod!.submods, searchString: searchTextController.value.text)],
+                              slivers: [SubmodGridLayout(item: item, mod: selectedMod!, submods: selectedMod!.submods, searchString: searchTextController.value.text, modSetName: '',)],
                             ),
                   ),
                 ],

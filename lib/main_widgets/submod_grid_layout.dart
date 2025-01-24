@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
@@ -10,20 +12,23 @@ import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
+import 'package:pso2_mod_manager/mod_sets/mod_set_functions.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:star_menu/star_menu.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class SubmodGridLayout extends StatefulWidget {
-  const SubmodGridLayout({super.key, required this.item, required this.mod, required this.submods, required this.searchString});
+  const SubmodGridLayout({super.key, required this.item, required this.mod, required this.submods, required this.searchString, required this.modSetName});
 
   final Item item;
   final Mod mod;
   final List<SubMod> submods;
   final String searchString;
+  final String modSetName;
 
   @override
   State<SubmodGridLayout> createState() => _SubmodGridLayoutState();
@@ -43,22 +48,29 @@ class _SubmodGridLayoutState extends State<SubmodGridLayout> {
                       submod: e,
                       item: widget.item,
                       mod: widget.mod,
+                      modSetName: widget.modSetName,
                     ))
                 .toList()
             : widget.submods
                 .where((e) =>
                     e.getModFileNames().where((e) => e.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty || e.submodName.toLowerCase().contains(widget.searchString.toLowerCase()))
-                .map((e) => SubmodCardLayout(item: widget.item, mod: widget.mod, submod: e))
+                .map((e) => SubmodCardLayout(
+                      item: widget.item,
+                      mod: widget.mod,
+                      submod: e,
+                      modSetName: widget.modSetName,
+                    ))
                 .toList());
   }
 }
 
 class SubmodCardLayout extends StatefulWidget {
-  const SubmodCardLayout({super.key, required this.item, required this.mod, required this.submod});
+  const SubmodCardLayout({super.key, required this.item, required this.mod, required this.submod, required this.modSetName});
 
   final Item item;
   final Mod mod;
   final SubMod submod;
+  final String modSetName;
 
   @override
   State<SubmodCardLayout> createState() => _SubmodCardLayoutState();
@@ -111,9 +123,32 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                           } else {
                             await modToGameData(context, false, widget.item, widget.mod, widget.submod);
                           }
-                          modApplyStatus.value = '';
                         },
                         child: Text(widget.submod.applyStatus ? appText.restore : appText.apply))),
+                Visibility(
+                    visible: widget.modSetName.isNotEmpty,
+                    child: ModManTooltip(
+                      message: widget.submod.activeInSets!.contains(widget.modSetName)
+                          ? appText.dTexts(appText.submodIsCurrentlyActiveInSet, [widget.submod.submodName, widget.modSetName])
+                          : appText.dTexts(appText.setSubmodToBeActiveInSet, [widget.submod.submodName, widget.modSetName]),
+                      child: IconButton.outlined(
+                          visualDensity: VisualDensity.adaptivePlatformDensity,
+                          onPressed: !widget.submod.activeInSets!.contains(widget.modSetName)
+                              ? () {
+                                  for (var mod in widget.item.mods) {
+                                    for (var submod in mod.submods) {
+                                      submod.activeInSets!.removeWhere((e) => e == widget.modSetName);
+                                    }
+                                  }
+                                  if (!widget.submod.activeInSets!.contains(widget.modSetName)) widget.submod.activeInSets!.add(widget.modSetName);
+                                  modPopupStatus.value = '"${widget.modSetName}" active submod changed to "${widget.submod.submodName}" in "${widget.item.itemName}"';
+                                  saveMasterModListToJson();
+                                  saveMasterModSetListToJson();
+                                }
+                              : null,
+                          icon: Icon(widget.submod.activeInSets!.contains(widget.modSetName) ? Icons.check_box_outlined : Icons.check_box_outline_blank_rounded,
+                              color: widget.submod.activeInSets!.contains(widget.modSetName) ? Theme.of(context).colorScheme.primary : null)),
+                    )),
                 PopupMenuButton(
                   shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
                   color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
@@ -155,7 +190,11 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                           child: MenuIconItem(icon: Icons.radio_button_on_sharp, text: appText.removeBoundingRadius)),
                       if (!widget.submod.customAQMInjected!)
                         PopupMenuItem(
-                            enabled: aqmInjectCategoryDirs.contains(widget.submod.category) && !widget.submod.applyStatus && !widget.submod.customAQMInjected!,
+                            enabled: aqmInjectCategoryDirs.contains(widget.submod.category) &&
+                                !widget.submod.applyStatus &&
+                                !widget.submod.customAQMInjected! &&
+                                selectedCustomAQMFilePath.watch(context).isNotEmpty &&
+                                File(selectedCustomAQMFilePath.value).existsSync(),
                             onTap: () async {
                               await submodAqmInject(context, widget.submod);
                               setState(() {});
@@ -194,6 +233,11 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                           onTap: () async {
                             await submodDelete(context, widget.item, widget.mod, widget.submod);
                             modPopupStatus.value = '${widget.submod.submodName} deleted';
+                            if (widget.mod.submods.isEmpty) {
+                              // ignore: use_build_context_synchronously
+                              Navigator.of(context).pop();
+                              mainGridStatus.value = '"${widget.mod.modName}" in "${widget.item.itemName}" is empty and removed';
+                            }
                           },
                           child: MenuIconItem(icon: Icons.delete_forever_outlined, text: appText.delete)),
                     ];

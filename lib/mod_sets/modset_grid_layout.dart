@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
+import 'package:pso2_mod_manager/main_widgets/popup_menu_functions.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_grid_layout.dart';
+import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
@@ -157,11 +159,11 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
                 borderHighlight: false,
               )),
               Expanded(
-                flex: 2,
+                  flex: 2,
                   child: InfoBox(
-                info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedMods().toString()),
-                borderHighlight: false,
-              )),
+                    info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedMods().toString()),
+                    borderHighlight: false,
+                  )),
             ],
           ),
           Row(
@@ -177,12 +179,24 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
                         },
                         child: Text(appText.viewVariants)),
                   )),
-              Expanded(child: OutlinedButton(onPressed: () {}, child: Text(widget.activeSubmod.applyStatus ? appText.restore : appText.apply))),
-              IconButton(
-                  onPressed: () async {},
+              Expanded(
+                  child: OutlinedButton(
+                      onPressed: () async {
+                        if (!widget.activeSubmod.applyStatus) {
+                          await modToGameData(context, true, widget.item, widget.activeMod, widget.activeSubmod);
+                        } else {
+                          await modToGameData(context, false, widget.item, widget.activeMod, widget.activeSubmod);
+                        }
+                        setState(() {});
+                      },
+                      child: Text(widget.activeSubmod.applyStatus ? appText.restore : appText.apply))),
+              IconButton.outlined(
+                  onPressed: () async {
+                    await submodAddToSet(context, widget.item, widget.activeMod, widget.activeSubmod);
+                    modSetRefreshSignal.value = '${widget.item} modified in ${widget.setName}';
+                  },
                   icon: const Icon(
-                    Icons.delete_forever_outlined,
-                    color: Colors.red,
+                    Icons.edit_attributes_outlined,
                   ),
                   visualDensity: VisualDensity.adaptivePlatformDensity),
             ],

@@ -167,7 +167,9 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..permanentlyDeleteItem = json['permanentlyDeleteItem'] as String
   ..holdToDelete = json['holdToDelete'] as String
   ..successfullyDeletedItem = json['successfullyDeletedItem'] as String
-  ..setActive = json['setActive'] as String
+  ..setSubmodToBeActiveInSet = json['setSubmodToBeActiveInSet'] as String
+  ..submodIsCurrentlyActiveInSet =
+      json['submodIsCurrentlyActiveInSet'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -435,7 +437,8 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'permanentlyDeleteItem': instance.permanentlyDeleteItem,
       'holdToDelete': instance.holdToDelete,
       'successfullyDeletedItem': instance.successfullyDeletedItem,
-      'setActive': instance.setActive,
+      'setSubmodToBeActiveInSet': instance.setSubmodToBeActiveInSet,
+      'submodIsCurrentlyActiveInSet': instance.submodIsCurrentlyActiveInSet,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,

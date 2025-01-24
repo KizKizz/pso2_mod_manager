@@ -21,7 +21,7 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (dialogContext, setState) {
           // Refresh
-          if (modApplyStatus.watch(context) != modApplyStatus.peek() || modPopupStatus.watch(context) != modPopupStatus.peek()) {
+          if (modPopupStatus.watch(context) != modPopupStatus.peek()) {
             setState(
               () {},
             );
@@ -108,6 +108,7 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
                                 searchString: searchTextController.value.text,
                                 item: item,
                                 mod: selectedMod!,
+                                modSetName: '',
                               )
                             ],
                           ),

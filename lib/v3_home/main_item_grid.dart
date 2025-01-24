@@ -155,7 +155,7 @@ class _MainItemGridState extends State<MainItemGrid> {
                   flex: 1,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 1),
-                    child: CategorySelectButtons(categoryNames: categories.map((e) => e.categoryName).toList(), scrollController: controller),
+                    child: CategorySelectButtons(categories: categories, scrollController: controller),
                   )),
             ],
           ),

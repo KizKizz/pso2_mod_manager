@@ -242,7 +242,9 @@ Future<void> submodDelete(context, Item item, Mod mod, SubMod submod) async {
       if (mod.submods.isEmpty) item.removeMod(mod);
       if (item.mods.isEmpty) {
         int tIndex = masterModList.indexWhere((e) => e.containsCategory(item.category));
-        masterModList[tIndex].categories.firstWhere((e) => e.categoryName == item.category).removeItem(item);
+        if (tIndex != -1) {
+          masterModList[tIndex].categories.firstWhere((e) => e.categoryName == item.category).removeItem(item);
+        }
       }
       saveMasterModSetListToJson();
       saveMasterModListToJson();

@@ -1,4 +1,7 @@
 {
+  "setSubmodToBeActiveInSet": "Set \"%p%\" to be active in \"%p%\" Set",
+  "submodIsCurrentlyActiveInSet": "\"%p%\" is currently active in \"%p%\" Set",
+  "setActive": "Set Active",
   "permanentlyDeleteItem": "Permanently delete \"%p%\"?",
   "holdToDelete": "Hold To Delete",
   "successfullyDeletedItem": "Successfully deleted \"%p%\"",
