@@ -66,6 +66,7 @@ class _AppModLoadPageState extends State<AppModLoadPage> {
           return FutureBuilderError(loadingText: appText.loadingModFiles, snapshotError: snapshot.error.toString());
         } else {
           masterModList = snapshot.data;
+          saveMasterModListToJson();
           pageIndex++;
           curPage.value = appPages[pageIndex];
           return const SizedBox();

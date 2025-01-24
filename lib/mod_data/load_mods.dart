@@ -92,7 +92,7 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
   for (var type in cateTypes) {
     int typeIndex = structureFromJson.indexWhere((element) => element.groupName == type.groupName);
     if (typeIndex != -1) {
-      type.position = typeIndex;
+      // type.position = typeIndex;
       type.expanded = structureFromJson[typeIndex].expanded;
       // type.visible = isEmptyCatesHide && type.categories.where((element) => element.items.isNotEmpty).isNotEmpty ? true : structureFromJson[typeIndex].visible;
       //Settings for categories
@@ -257,12 +257,12 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
   }
 
   //Sort types position
-  // cateTypes.sort(((a, b) => a.position.compareTo(b.position)));
+  cateTypes.sort(((a, b) => a.position.compareTo(b.position)));
 
   //Save to json
-  cateTypes.map((cateType) => cateType.toJson()).toList();
-  const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-  File(mainModListJsonPath).writeAsStringSync(encoder.convert(cateTypes));
+  // cateTypes.map((cateType) => cateType.toJson()).toList();
+  // const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+  // File(mainModListJsonPath).writeAsStringSync(encoder.convert(cateTypes));
 
   //Get hidden catetypes and cates
   // if (isEmptyCatesHide) {
