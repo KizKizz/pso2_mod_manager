@@ -123,6 +123,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
           child: AppBar(
             title: DragToMoveArea(
                 child: Row(
+                  crossAxisAlignment:CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

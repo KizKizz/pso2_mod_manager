@@ -91,6 +91,11 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..sort = json['sort'] as String
   ..create = json['create'] as String
   ..success = json['success'] as String
+  ..checksum = json['checksum'] as String
+  ..profiles = json['profiles'] as String
+  ..profile1 = json['profile1'] as String
+  ..profile2 = json['profile2'] as String
+  ..reload = json['reload'] as String
   ..patchNotes = json['patchNotes'] as String
   ..appUpdate = json['appUpdate'] as String
   ..tryAgain = json['tryAgain'] as String
@@ -170,6 +175,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..setSubmodToBeActiveInSet = json['setSubmodToBeActiveInSet'] as String
   ..submodIsCurrentlyActiveInSet =
       json['submodIsCurrentlyActiveInSet'] as String
+  ..notFoundClickToBrowse = json['notFoundClickToBrowse'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -362,6 +368,11 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'sort': instance.sort,
       'create': instance.create,
       'success': instance.success,
+      'checksum': instance.checksum,
+      'profiles': instance.profiles,
+      'profile1': instance.profile1,
+      'profile2': instance.profile2,
+      'reload': instance.reload,
       'patchNotes': instance.patchNotes,
       'appUpdate': instance.appUpdate,
       'tryAgain': instance.tryAgain,
@@ -439,6 +450,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'successfullyDeletedItem': instance.successfullyDeletedItem,
       'setSubmodToBeActiveInSet': instance.setSubmodToBeActiveInSet,
       'submodIsCurrentlyActiveInSet': instance.submodIsCurrentlyActiveInSet,
+      'notFoundClickToBrowse': instance.notFoundClickToBrowse,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,

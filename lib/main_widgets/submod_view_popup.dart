@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/main_widgets/popup_list_tile.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
@@ -95,7 +96,24 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
                                           // InfoBox(info: appText.dText(appText.numCurrentlyApplied, mod.getNumOfAppliedSubmods().toString()), borderHighlight: mod.applyStatus)
                                         ],
                                       ),
-                                      trailing: Visibility(visible: mod.applyStatus, child: Icon(Icons.turned_in, color: Theme.of(context).colorScheme.primary)),
+                                      trailing: Row(
+                                        spacing: 5,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Visibility(visible: mod.applyStatus, child: Icon(Icons.turned_in, color: Theme.of(context).colorScheme.primary)),
+                                          PopupListTile(
+                                            item: item,
+                                            mod: mod,
+                                            selectedMod: selectedMod,
+                                            onSelectedMod: () {
+                                              selectedMod = mod;
+                                              setState(
+                                                () {},
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
                                       onTap: () {
                                         selectedMod = mod;
                                         setState(

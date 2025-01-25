@@ -15,7 +15,7 @@ class _ChecksumIndicatorState extends State<ChecksumIndicator> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+        padding: const EdgeInsets.only(left: 5, right: 10),
         child: Row(
           spacing: 5,
           children: [

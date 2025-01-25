@@ -9,6 +9,7 @@ String backupDirPath = '';
 String mainModListJsonPath = '';
 String mainModSetListJsonPath = '';
 String mainAqmInjectListJsonPath = '';
+String mainVitalGaugeListJsonPath = '';
 String backgroundDirPath = '$mainDataDirPath${p.separator}Background Images';
 String modAddTempDirPath = '$mainDataDirPath${p.separator}AddTemp';
 String modSwapTempDirPath = '$mainDataDirPath${p.separator}SwapTemp';
@@ -63,6 +64,9 @@ void createMainDirs() {
 
     // Main aqm inject list
     mainAqmInjectListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManAqmInjectedList.json';
+
+    // Main vital gauge list
+    mainVitalGaugeListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManVitalGaugeList.json';
   }
 
   // Profile 2
@@ -83,5 +87,8 @@ void createMainDirs() {
 
     // Main aqm inject list
     mainAqmInjectListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManAqmInjectedList_profile2.json';
+    
+    // Main vital gauge list
+    mainVitalGaugeListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManVitalGaugeList_profile2.json';
   }
 }

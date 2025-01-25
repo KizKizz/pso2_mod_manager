@@ -259,7 +259,13 @@ class MenuIconItem extends StatelessWidget {
     return Row(
       spacing: 5,
       mainAxisSize: MainAxisSize.min,
-      children: [Icon(icon), Text(text)],
+      children: [
+        Icon(icon, color: text == appText.delete ? Colors.redAccent : Theme.of(context).iconTheme.color),
+        Text(
+          text,
+          style: TextStyle(color: text == appText.delete ? Colors.redAccent : null),
+        )
+      ],
     );
   }
 }

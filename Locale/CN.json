@@ -1,4 +1,10 @@
 {
+  "checksum": "Checksum",
+  "profiles": "Profiles",
+  "profile1": "Profile 1",
+  "profile2": "Profile 2",
+  "reload": "Reload",
+  "notFoundClickToBrowse": "Not Found. Click To Browse",
   "setSubmodToBeActiveInSet": "Set \"%p%\" to be active in \"%p%\" Set",
   "submodIsCurrentlyActiveInSet": "\"%p%\" is currently active in \"%p%\" Set",
   "setActive": "Set Active",

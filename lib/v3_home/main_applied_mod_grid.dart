@@ -84,10 +84,10 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
     }
 
     List<Category> displayingCategories = [];
-    if (selectedDisplayCategory.watch(context) == 'All') {
+    if (selectedDisplayCategoryAppliedList.watch(context) == 'All') {
       displayingCategories = categories.where((e) => e.getNumOfAppliedItems() > 0).toList();
     } else {
-      displayingCategories = categories.where((e) => e.categoryName == selectedDisplayCategory.watch(context)).toList();
+      displayingCategories = categories.where((e) => e.categoryName == selectedDisplayCategoryAppliedList.watch(context)).toList();
     }
 
     return AnimatedOpacity(

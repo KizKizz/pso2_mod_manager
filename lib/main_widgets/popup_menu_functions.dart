@@ -16,6 +16,43 @@ import 'package:pso2_mod_manager/v3_widgets/rename_popup.dart';
 import 'package:path/path.dart' as p;
 import 'package:io/io.dart' as io;
 
+Future<void> modRename(context, Mod mod) async {
+  modPopupStatus.value = mod.modName;
+  String? newName = await renamePopup(context, p.dirname(mod.location), mod.modName);
+  if (newName != null) {
+    String newPath = p.dirname(mod.location) + p.separator + newName;
+    await io.copyPath(mod.location, newPath);
+    for (int i = 0; i < mod.submods.length; i++) {
+      for (int k = 0; k < mod.submods[i].modFiles.length; k++) {
+        mod.submods[i].modFiles[k].location.replaceFirst(mod.location, newPath);
+        for (int l = 0; l < mod.submods[i].modFiles[k].previewImages!.length; l++) {
+          mod.submods[i].modFiles[k].previewImages![l].replaceFirst(mod.location, newPath);
+        }
+        for (int l = 0; l < mod.submods[i].modFiles[k].previewVideos!.length; l++) {
+          mod.submods[i].modFiles[k].previewVideos![l].replaceFirst(mod.location, newPath);
+        }
+      }
+      for (int l = 0; l < mod.submods[i].previewImages.length; l++) {
+        mod.submods[i].previewImages[l].replaceFirst(mod.location, newPath);
+      }
+      for (int l = 0; l < mod.submods[i].previewVideos.length; l++) {
+        mod.submods[i].previewVideos[l].replaceFirst(mod.location, newPath);
+      }
+      mod.submods[i].cmxFile!.replaceFirst(mod.location, newPath);
+      mod.submods[i].location.replaceFirst(mod.location, newPath);
+    }
+    for (int l = 0; l < mod.previewImages.length; l++) {
+      mod.previewImages[l].replaceFirst(mod.location, newPath);
+    }
+    for (int l = 0; l < mod.previewVideos.length; l++) {
+      mod.previewVideos[l].replaceFirst(mod.location, newPath);
+    }
+    mod.location = newPath;
+    saveMasterModListToJson();
+    modPopupStatus.value = newName;
+  }
+}
+
 Future<void> submodRename(context, Mod mod, SubMod submod) async {
   modPopupStatus.value = submod.submodName;
   String? newName = await renamePopup(context, p.dirname(submod.location), submod.submodName);
@@ -228,14 +265,12 @@ Future<void> submodDelete(context, Item item, Mod mod, SubMod submod) async {
     if (!Directory(submod.location).existsSync()) {
       // Remove from sets
       for (var setName in submod.setNames) {
-        mod.setNames.remove(setName);
+        if (mod.submods.where((e) => e.setNames.contains(setName)).isEmpty) mod.setNames.remove(setName);
       }
       item.setNames.removeWhere((e) => !mod.setNames.contains(e));
-      if (item.setNames.isEmpty) {
-        for (var modset in masterModSetList) {
-          int iIndex = modset.setItems.indexWhere((e) => e.location == item.location);
-          if (iIndex != -1) modset.setItems.removeAt(iIndex);
-        }
+      for (var modset in masterModSetList) {
+        int iIndex = modset.setItems.indexWhere((e) => e.location == item.location);
+        if (iIndex != -1 && !item.setNames.contains(modset.setName)) modset.setItems.removeAt(iIndex);
       }
       // Remove from list
       mod.submods.remove(submod);
@@ -243,6 +278,34 @@ Future<void> submodDelete(context, Item item, Mod mod, SubMod submod) async {
         if (Directory(mod.location).existsSync()) await Directory(mod.location).delete(recursive: true);
         item.mods.remove(mod);
       }
+      if (item.mods.isEmpty) {
+        if (Directory(item.location).existsSync()) await Directory(item.location).delete(recursive: true);
+        int tIndex = masterModList.indexWhere((e) => e.containsCategory(item.category));
+        if (tIndex != -1) {
+          masterModList[tIndex].categories.firstWhere((e) => e.categoryName == item.category).items.remove(item);
+        }
+      }
+      saveMasterModSetListToJson();
+      saveMasterModListToJson();
+    }
+  }
+}
+
+Future<void> modDelete(context, Item item, Mod mod) async {
+  final result = await deleteConfirmPopup(context, mod.modName);
+  if (result) {
+    if (Directory(mod.location).existsSync()) await Directory(mod.location).delete(recursive: true);
+    if (!Directory(mod.location).existsSync()) {
+      // Remove from sets
+      for (var setName in mod.setNames) {
+        if (item.mods.where((e) => e.setNames.contains(setName)).isEmpty) item.setNames.remove(setName);
+      }
+      for (var modset in masterModSetList) {
+        int iIndex = modset.setItems.indexWhere((e) => e.location == item.location);
+        if (iIndex != -1 && !item.setNames.contains(modset.setName)) modset.setItems.removeAt(iIndex);
+      }
+      // Remove from list
+      item.mods.remove(mod);
       if (item.mods.isEmpty) {
         if (Directory(item.location).existsSync()) await Directory(item.location).delete(recursive: true);
         int tIndex = masterModList.indexWhere((e) => e.containsCategory(item.category));
