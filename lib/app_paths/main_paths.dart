@@ -19,6 +19,7 @@ String modSwapTempRItemDirPath = '$mainDataDirPath${p.separator}SwapTemp${p.sepa
 String modSwapTempOutputDirPath = '$mainDataDirPath${p.separator}SwapTemp${p.separator}output';
 String pso2DataDirPath = '$pso2binDirPath${p.separator}data';
 String modCustomAqmsDirPath = '$mainDataDirPath${p.separator}Custom AQMs';
+String modChecksumFilePath = '$mainDataDirPath${p.separator}Checksum${p.separator}d4455ebc2bef618f29106da7692ebc1a';
 
 // External programs
 String sevenZipExePath = '${Directory.current.path}${p.separator}7zip-x64${p.separator}7z.exe';

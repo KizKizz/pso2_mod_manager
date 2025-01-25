@@ -95,7 +95,47 @@ Future<void> modViewPopup(context, Item item) async {
                                           Text(appText.dText(mod.submods.length > 1 ? appText.numVariants : appText.numVariant, mod.submods.length.toString())),
                                         ],
                                       ),
-                                      trailing: Visibility(visible: mod.applyStatus, child: Icon(Icons.turned_in, color: Theme.of(context).colorScheme.primary)),
+                                      trailing: Row(
+                                        spacing: 5,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Visibility(visible: mod.applyStatus, child: Icon(Icons.turned_in, color: Theme.of(context).colorScheme.primary)),
+                                          PopupMenuButton(
+                                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
+                                            color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
+                                            padding: EdgeInsets.zero,
+                                            menuPadding: EdgeInsets.zero,
+                                            tooltip: '',
+                                            elevation: 5,
+                                            style: ButtonStyle(
+                                                visualDensity: VisualDensity.adaptivePlatformDensity,
+                                                shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                                                    side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1), borderRadius: const BorderRadius.all(Radius.circular(20))))),
+                                            itemBuilder: (BuildContext context) {
+                                              return [
+                                                PopupMenuItem(child: MenuIconItem(icon: Icons.import_export, text: appText.export)),
+                                                // PopupMenuItem(onTap: () async => await submodRename(context, widget.mod, widget.submod), child: MenuIconItem(icon: Icons.edit, text: appText.rename)),
+                                                // PopupMenuItem(onTap: () => launchUrlString(widget.submod.location), child: MenuIconItem(icon: Icons.folder_open, text: appText.openInFileExplorer)),
+                                                const PopupMenuItem(
+                                                    height: 0,
+                                                    enabled: false,
+                                                    child: PopupMenuDivider(
+                                                      height: 5,
+                                                    )),
+                                                // PopupMenuItem(
+                                                //     onTap: () async {
+                                                //       await submodDelete(context, widget.item, widget.mod, widget.submod);
+                                                //       modPopupStatus.value = '${widget.submod.submodName} deleted';
+                                                //       if (widget.mod.submods.isEmpty) {
+                                                //         mainGridStatus.value = '"${widget.mod.modName}" in "${widget.item.itemName}" is empty and removed';
+                                                //       }
+                                                //     },
+                                                //     child: MenuIconItem(icon: Icons.delete_forever_outlined, text: appText.delete)),
+                                              ];
+                                            },
+                                          )
+                                        ],
+                                      ),
                                       onTap: () {
                                         selectedMod = mod;
                                         setState(
@@ -119,9 +159,17 @@ Future<void> modViewPopup(context, Item item) async {
                             ),
                           )
                         : CustomScrollView(
-                              physics: const SuperRangeMaintainingScrollPhysics(),
-                              slivers: [SubmodGridLayout(item: item, mod: selectedMod!, submods: selectedMod!.submods, searchString: searchTextController.value.text, modSetName: '',)],
-                            ),
+                            physics: const SuperRangeMaintainingScrollPhysics(),
+                            slivers: [
+                              SubmodGridLayout(
+                                item: item,
+                                mod: selectedMod!,
+                                submods: selectedMod!.submods,
+                                searchString: searchTextController.value.text,
+                                modSetName: '',
+                              )
+                            ],
+                          ),
                   ),
                 ],
               ),

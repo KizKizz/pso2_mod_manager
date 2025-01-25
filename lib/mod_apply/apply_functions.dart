@@ -11,6 +11,7 @@ import 'package:pso2_mod_manager/item_bounding_radius/bounding_radius_popup.dart
 import 'package:pso2_mod_manager/mod_apply/applying_popup.dart';
 import 'package:pso2_mod_manager/mod_apply/duplicate_popups.dart';
 import 'package:pso2_mod_manager/mod_apply/unapply_functions.dart';
+import 'package:pso2_mod_manager/mod_checksum/checksum_functions.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
@@ -27,6 +28,9 @@ Future<void> modToGameData(context, bool applying, Item item, Mod mod, SubMod su
 
 Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod submod) async {
   bool performApply = true;
+
+  // Paste checksum
+  await checksumToGameData();
 
   // Checking for duplicates in Aqm Inject
   AqmInjectedItem? dupAqmItem = duplicateAqmInjectedFilesCheck(submod);

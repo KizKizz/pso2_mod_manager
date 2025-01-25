@@ -71,3 +71,4 @@ List<CategoryType> masterAppliedModList = [];
 List<AqmInjectedItem> masterAqmInjectedItemList = [];
 List<File> modCustomAQMFiles = [];
 Signal<String> mainGridStatus = Signal('');
+Signal<bool> checksumAvailability = Signal(false);

@@ -7,13 +7,17 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pso2_mod_manager/app_colorscheme.dart';
 import 'package:pso2_mod_manager/app_localization/app_locale.dart';
+import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/mod_checksum/checksum_functions.dart';
 import 'package:pso2_mod_manager/settings/other_settings.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/system_loads/app_locale_page.dart';
 import 'package:pso2_mod_manager/v3_widgets/background_slideshow.dart';
+import 'package:pso2_mod_manager/mod_checksum/checksum_indicator.dart';
+import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:window_manager/window_manager.dart';
@@ -33,6 +37,7 @@ Future<void> main(List<String> args) async {
 
   await prefsLoad();
   await AppLocale().localeInit();
+  checksumAvailability.value = await checksumFileFetch();
 
   WindowOptions windowOptions = WindowOptions(
       size: Size(prefs.getDouble('windowWidth') ?? 1280, prefs.getDouble('windowHeight') ?? 720),
@@ -65,7 +70,9 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: lightModeSeedColor == lightColorScheme.primary ? ThemeData.from(colorScheme: lightColorScheme) : ThemeData.from(colorScheme: ColorScheme.fromSeed(seedColor: lightModeSeedColor)),
-            darkTheme: darkModeSeedColor == darkColorScheme.primary ? ThemeData.from(colorScheme: darkColorScheme) : ThemeData.from(colorScheme: ColorScheme.fromSeed(seedColor: darkModeSeedColor, brightness: Brightness.dark)) ,
+            darkTheme: darkModeSeedColor == darkColorScheme.primary
+                ? ThemeData.from(colorScheme: darkColorScheme)
+                : ThemeData.from(colorScheme: ColorScheme.fromSeed(seedColor: darkModeSeedColor, brightness: Brightness.dark)),
             themeMode: currentMode,
             home: const MyHomePage(
               title: 'PSO2NGS Mod Manager',
@@ -116,18 +123,25 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
           child: AppBar(
             title: DragToMoveArea(
                 child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  widget.title,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Theme.of(context).textTheme.headlineSmall!.color),
+                Row(
+                  children: [
+                    Text(
+                      widget.title,
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Theme.of(context).textTheme.headlineSmall!.color),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5),
+                      child: Text(
+                        'v$curAppVersion',
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, fontStyle: FontStyle.italic, color: Theme.of(context).textTheme.headlineSmall!.color),
+                      ),
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 5),
-                  child: Text(
-                    'v$curAppVersion',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, fontStyle: FontStyle.italic, color: Theme.of(context).textTheme.headlineSmall!.color),
-                  ),
-                )
+                const ChecksumIndicator()
               ],
             )),
             titleSpacing: 5,
@@ -173,7 +187,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
           children: [
             Visibility(
                 visible: backgroundImageFiles.watch(context).isNotEmpty && !hideAppBackgroundSlides.watch(context),
-                child: const BackgroundSlideshow(isMini: false,)),
+                child: const BackgroundSlideshow(
+                  isMini: false,
+                )),
             curPage.watch(context)
           ],
         ));

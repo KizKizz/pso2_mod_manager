@@ -180,7 +180,8 @@ class AppText {
       holdToDelete = 'Hold To Delete',
       successfullyDeletedItem = 'Successfully deleted "%p%"',
       setSubmodToBeActiveInSet = 'Set "%p%" to be active in "%p%" Set',
-      submodIsCurrentlyActiveInSet = '"%p%" is currently active in "%p%" Set';
+      submodIsCurrentlyActiveInSet = '"%p%" is currently active in "%p%" Set',
+      notFoundClickToBrowse = 'Not Found. Click To Browse';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
