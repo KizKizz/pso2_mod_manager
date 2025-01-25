@@ -98,7 +98,11 @@ class AppText {
       sort = 'Sort',
       create = 'Create',
       success = 'Success',
-      checksum = 'Checksum';
+      checksum = 'Checksum',
+      profiles = 'Profiles',
+      profile1 = 'Profile 1',
+      profile2 = 'Profile 2',
+      reload = 'Reload';
 
   // Short Strings
   String patchNotes = 'Patch Notes',

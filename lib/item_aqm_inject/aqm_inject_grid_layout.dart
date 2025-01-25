@@ -251,7 +251,9 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                                               : null,
                                           child: Text(appText.removeBounding)),
                                       OutlinedButton(
-                                          onPressed: masterAqmInjectedItemList.indexWhere((e) => e.getName() == displayingItemData[index].getName()) == -1
+                                          onPressed: masterAqmInjectedItemList.indexWhere((e) => e.getName() == displayingItemData[index].getName()) == -1 &&
+                                                  selectedCustomAQMFilePath.watch(context).isNotEmpty &&
+                                                  File(selectedCustomAQMFilePath.value).existsSync()
                                               ? () async {
                                                   AqmInjectedItem newItem = AqmInjectedItem(
                                                       displayingItemData[index].category,
