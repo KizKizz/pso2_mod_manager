@@ -46,6 +46,10 @@ List<VitalGaugeBackground> vitalGaugeBackgroundFetch() {
   return vitalGaugesDataFromJson;
 }
 
+List<File> customVitalGaugeImagesFetch() {
+  return Directory(vitalGaugeDirPath).listSync().whereType<File>().where((element) => p.extension(element.path) == '.png').toList();
+}
+
 void saveMasterVitalGaugeToJson(List<VitalGaugeBackground> vitalGaugeBackgroundList) {
   //Save to json
   vitalGaugeBackgroundList.map((vg) => vg.toJson()).toList();
