@@ -146,7 +146,7 @@ void itemSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, ItemD
                         child: OutlinedButton(
                             onPressed: () async {
                               modAddDragDropPaths.add(swapOutputDir.path);
-                              sidebarXController.selectIndex(homepageWidgets.length - 2);
+                              // sidebarXController.selectIndex(homepageWidgets.length - 2);
                               homepageCurrentWidget.value = const ModAdd();
                               itemSwapWorkingStatus.value = '';
                               curModAddDragDropStatus.value = ModAddDragDropState.fileInList;

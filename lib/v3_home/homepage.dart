@@ -1,7 +1,7 @@
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
-import 'package:pso2_mod_manager/main_widgets/sidebar_button.dart';
+import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/main_applied_mod_grid.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_aqm_inject_grid.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_swap_grid.dart';
@@ -11,13 +11,12 @@ import 'package:pso2_mod_manager/v3_home/mod_add.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_grid.dart';
 import 'package:pso2_mod_manager/v3_home/main_mod_grid.dart';
 import 'package:pso2_mod_manager/v3_home/settings.dart';
-import 'package:sidebarx/sidebarx.dart';
 import 'package:signals/signals_flutter.dart';
 
 Signal<Widget> homepageCurrentWidget = Signal(const MainItemGrid());
-SidebarXController sidebarXController = SidebarXController(selectedIndex: 0, extended: false);
-SideMenuController sideMenuController = SideMenuController();
-int sideButtonSlectedIndex = 0;
+bool sideBarCollapse = true;
+SideMenuController mainSideMenuController = SideMenuController();
+SideMenuController footerSideMenuController = SideMenuController();
 List<Widget> homepageWidgets = [
   const MainItemGrid(),
   const MainModGrid(),
@@ -39,243 +38,157 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
+    List<String> homepageWidgetNames = [appText.itemList, appText.modList, appText.appliedList, appText.modSets, appText.itemSwap, appText.aqmInject, appText.vitalGauge];
+    List<Icon> homepageWidgetIcons = [
+      const Icon(Icons.list_alt),
+      const Icon(Icons.grid_view),
+      const Icon(Icons.turned_in),
+      const Icon(Icons.library_books_outlined),
+      const Icon(Icons.swap_horizontal_circle_outlined),
+      const Icon(Icons.auto_fix_high),
+      const Icon(Icons.calendar_view_day_rounded),
+    ];
+    List<String> homepageFooterWidgetNames = [appText.addMods, appText.settings];
+    List<Icon> homepageFooterWidgetIcon = [
+      const Icon(Icons.add_circle_outline_sharp),
+      const Icon(Icons.settings),
+    ];
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Row(
         spacing: 5,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // SidebarX(
-          //   controller: sidebarXController,
-          //   theme: SidebarXTheme(
-          //       width: 60,
-          //       margin: const EdgeInsets.all(5),
-          //       itemPadding: const EdgeInsets.all(5),
-          //       selectedItemPadding: const EdgeInsets.all(5),
-          //       itemTextPadding: const EdgeInsets.only(left: 15),
-          //       selectedItemTextPadding: const EdgeInsets.only(left: 15),
-          //       selectedIconTheme: IconThemeData(color: Theme.of(context).colorScheme.primary),
-          //       selectedTextStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
-          //       hoverIconTheme: IconThemeData(color: Theme.of(context).colorScheme.tertiary),
-          //       hoverTextStyle: TextStyle(color: Theme.of(context).colorScheme.tertiary),
-          //       decoration: BoxDecoration(
-          //           color: Theme.of(context).colorScheme.surfaceContainer.withAlpha(uiBackgroundColorAlpha.watch(context)),
-          //           boxShadow: [BoxShadow(color: Theme.of(context).shadowColor.withAlpha(50), spreadRadius: 2, blurRadius: 3, offset: const Offset(2, 2))],
-          //           border: Border.all(width: 1.5, color: Theme.of(context).colorScheme.outline),
-          //           borderRadius: const BorderRadius.all(Radius.circular(10)))),
-          //   extendedTheme: const SidebarXTheme(
-          //     width: 140,
-          //     margin: EdgeInsets.all(5),
-          //     itemTextPadding: EdgeInsets.only(left: 15),
-          //     selectedItemTextPadding: EdgeInsets.only(left: 15),
-          //   ),
-          //   headerBuilder: (context, extended) {
-          //     return Padding(
-          //       padding: const EdgeInsets.only(top: 10),
-          //       child: extended
-          //           ? Center(
-          //               child: Column(
-          //                 mainAxisSize: MainAxisSize.min,
-          //                 mainAxisAlignment: MainAxisAlignment.center,
-          //                 spacing: 5,
-          //                 children: [Icon(modManCurActiveProfile == 1 ? Icons.filter_1 : Icons.filter_2), Text(appText.dText(appText.profileNum, modManCurActiveProfile.toString()))],
-          //               ),
-          //             )
-          //           : Icon(modManCurActiveProfile == 1 ? Icons.filter_1 : Icons.filter_2),
-          //     );
-          //   },
-          //   headerDivider: Divider(
-          //     height: 15,
-          //     thickness: 1,
-          //     indent: 3,
-          //     endIndent: 3,
-          //     color: Theme.of(context).colorScheme.outline,
-          //   ),
-          //   items: [
-          //     SidebarXItem(
-          //       icon: Icons.list_alt,
-          //       label: appText.itemList,
-          //       onTap: () {
-          //         homepageCurrentWidget.value = const MainItemGrid();
-          //       },
-          //     ),
-          //     SidebarXItem(
-          //       icon: Icons.grid_view,
-          //       label: appText.modList,
-          //       onTap: () {
-          //         homepageCurrentWidget.value = const MainModGrid();
-          //       },
-          //     ),
-          //     SidebarXItem(
-          //       icon: Icons.turned_in,
-          //       label: appText.appliedList,
-          //       onTap: () {
-          //         homepageCurrentWidget.value = const MainAppliedModGrid();
-          //       },
-          //     ),
-          //     SidebarXItem(
-          //       icon: Icons.library_books_outlined,
-          //       label: appText.modSets,
-          //       onTap: () {
-          //         homepageCurrentWidget.value = const MainModSetGrid();
-          //       },
-          //     ),
-          //     SidebarXItem(
-          //       icon: Icons.swap_horizontal_circle_outlined,
-          //       label: appText.itemSwap,
-          //       onTap: () {
-          //         homepageCurrentWidget.value = const MainItemSwapGrid();
-          //       },
-          //     ),
-          //     SidebarXItem(
-          //       icon: Icons.auto_fix_high,
-          //       label: appText.aqmInject,
-          //       onTap: () {
-          //         homepageCurrentWidget.value = const MainItemAqmInjectGrid();
-          //       },
-          //     ),
-          //     SidebarXItem(
-          //       icon: Icons.calendar_view_day_sharp,
-          //       label: appText.vitalGauge,
-          //       onTap: () {
-          //         homepageCurrentWidget.value = const MainVitalGaugeGrid();
-          //       },
-          //     ),
-          //   ],
-          //   footerDivider: Divider(
-          //     height: 5,
-          //     thickness: 2,
-          //     indent: 3,
-          //     endIndent: 3,
-          //     color: Theme.of(context).colorScheme.outline,
-          //   ),
-          //   footerItems: [
-          //     SidebarXItem(
-          //         icon: Icons.add_circle_outline,
-          //         label: appText.addMods,
-          //         onTap: () {
-          //           homepageCurrentWidget.value = const ModAdd();
-          //         }),
-          //     SidebarXItem(
-          //         icon: Icons.settings,
-          //         label: appText.settings,
-          //         onTap: () {
-          //           homepageCurrentWidget.value = const Settings();
-          //         }),
-          //   ],
-          // ),
-          SideMenu(
-            style: SideMenuStyle(
-              displayMode: SideMenuDisplayMode.auto,
-              decoration: BoxDecoration(),
-              openSideMenuWidth: 140,
-              compactSideMenuWidth: 60,
-              hoverColor: Colors.blue[100],
-              selectedColor: Colors.lightBlue,
-              selectedIconColor: Colors.white,
-              unselectedIconColor: Colors.black54,
-              backgroundColor: Colors.grey,
-              selectedTitleTextStyle: TextStyle(color: Colors.white),
-              unselectedTitleTextStyle: TextStyle(color: Colors.black54),
-              iconSize: 20,
-              itemBorderRadius: const BorderRadius.all(
-                Radius.circular(5.0),
-              ),
-              showTooltip: true,
-              showHamburger: true,
-              itemHeight: 50.0,
-              itemInnerSpacing: 8.0,
-              itemOuterPadding: const EdgeInsets.symmetric(horizontal: 5.0),
-              toggleColor: Colors.black54,
+          Padding(
+            padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
+            child: SideMenu(
+                style: SideMenuStyle(
+                  displayMode: sideBarCollapse ? SideMenuDisplayMode.compact : SideMenuDisplayMode.open,
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surfaceContainer.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                      boxShadow: [BoxShadow(color: Theme.of(context).shadowColor.withAlpha(50), spreadRadius: 2, blurRadius: 3, offset: const Offset(2, 2))],
+                      border: Border.all(width: 1.5, color: Theme.of(context).colorScheme.outline),
+                      borderRadius: const BorderRadius.all(Radius.circular(10))),
+                  openSideMenuWidth: 140,
+                  compactSideMenuWidth: 60,
+                  hoverColor: Theme.of(context).hoverColor,
+                  selectedColor: Theme.of(context).colorScheme.primaryContainer,
+                  selectedIconColor: Theme.of(context).iconTheme.color,
+                  unselectedIconColor: Theme.of(context).iconTheme.color,
+                  selectedTitleTextStyle: Theme.of(context).textTheme.labelLarge,
+                  unselectedTitleTextStyle: Theme.of(context).textTheme.labelLarge,
+                  iconSize: 20,
+                  itemBorderRadius: const BorderRadius.all(
+                    Radius.circular(5.0),
+                  ),
+                  showTooltip: false,
+                  showHamburger: false,
+                  itemHeight: 40.0,
+                  itemInnerSpacing: 6.5,
+                  itemOuterPadding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5),
 
-              // Additional properties for expandable items
-              selectedTitleTextStyleExpandable: TextStyle(color: Colors.white), // Adjust the style as needed
-              unselectedTitleTextStyleExpandable: TextStyle(color: Colors.black54), // Adjust the style as needed
-              selectedIconColorExpandable: Colors.white, // Adjust the color as needed
-              unselectedIconColorExpandable: Colors.black54, // Adjust the color as needed
-              arrowCollapse: Colors.blueGrey, // Adjust the color as needed
-              arrowOpen: Colors.lightBlueAccent, // Adjust the color as needed
-              iconSizeExpandable: 24.0, // Adjust the size as needed
-            ),
-            showToggle: true,
-            alwaysShowFooter: true,
-            controller: sideMenuController,
-            items: [
-              SideMenuItem(
-                title: appText.addFolders,
-                onTap: (index, sideMenuController) {},
-              )
-              // SideBarButton(
-              //             iconData: Icons.list_alt,
-              //             label: appText.itemList,
-              //             showLabel: false,
-              //             selected: sideButtonSlectedIndex == 0,
-              //             onPressed: () {
-              //               homepageCurrentWidget.value = homepageWidgets[0];
-              //               sideButtonSlectedIndex = 0;
-              //             },
-              //           ),
-              //           SideBarButton(
-              //             iconData: Icons.grid_view,
-              //             label: appText.modList,
-              //             showLabel: false,
-              //             selected: sideButtonSlectedIndex == 1,
-              //             onPressed: () {
-              //               homepageCurrentWidget.value = homepageWidgets[1];
-              //               sideButtonSlectedIndex = 1;
-              //             },
-              //           ),
-              //           SideBarButton(
-              //             iconData: Icons.turned_in,
-              //             label: appText.appliedList,
-              //             showLabel: false,
-              //             selected: sideButtonSlectedIndex == 2,
-              //             onPressed: () {
-              //               homepageCurrentWidget.value = homepageWidgets[2];
-              //               sideButtonSlectedIndex = 2;
-              //             },
-              //           ),
-              //           SideBarButton(
-              //             iconData: Icons.library_books_outlined,
-              //             label: appText.modSets,
-              //             showLabel: false,
-              //             selected: sideButtonSlectedIndex == 3,
-              //             onPressed: () {
-              //               homepageCurrentWidget.value = homepageWidgets[3];
-              //               sideButtonSlectedIndex = 3;
-              //             },
-              //           ),
-              //           SideBarButton(
-              //             iconData: Icons.swap_horizontal_circle_outlined,
-              //             label: appText.itemSwap,
-              //             showLabel: false,
-              //             selected: sideButtonSlectedIndex == 4,
-              //             onPressed: () {
-              //               homepageCurrentWidget.value = homepageWidgets[4];
-              //               sideButtonSlectedIndex = 4;
-              //             },
-              //           ),
-              //           SideBarButton(
-              //             iconData: Icons.auto_fix_high,
-              //             label: appText.aqmInject,
-              //             showLabel: false,
-              //             selected: sideButtonSlectedIndex == 5,
-              //             onPressed: () {
-              //               homepageCurrentWidget.value = homepageWidgets[5];
-              //               sideButtonSlectedIndex = 5;
-              //             },
-              //           ),
-              //           SideBarButton(
-              //             iconData: Icons.calendar_view_day_rounded,
-              //             label: appText.vitalGauge,
-              //             showLabel: false,
-              //             selected: sideButtonSlectedIndex == 6,
-              //             onPressed: () {
-              //               homepageCurrentWidget.value = homepageWidgets[6];
-              //               sideButtonSlectedIndex = 6;
-              //             },
-              //           ),
-            ],
+                  // Additional properties for expandable items
+                  selectedTitleTextStyleExpandable: Theme.of(context).textTheme.labelLarge,
+                  unselectedTitleTextStyleExpandable: Theme.of(context).textTheme.labelLarge,
+                  selectedIconColorExpandable: Theme.of(context).iconTheme.color,
+                  unselectedIconColorExpandable: Theme.of(context).iconTheme.color,
+                  arrowCollapse: Colors.blueGrey,
+                  arrowOpen: Colors.lightBlueAccent,
+                ),
+                controller: mainSideMenuController,
+                title: Padding(
+                  padding: const EdgeInsets.only(top: 10, left: 2),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: 5,
+                    children: [
+                      Icon(modManCurActiveProfile == 1 ? Icons.filter_1 : Icons.filter_2),
+                      Text(appText.dText(appText.profileNum, modManCurActiveProfile.toString()), textAlign: TextAlign.center),
+                      const Divider(thickness: 1, height: 5, indent: 5, endIndent: 5)
+                    ],
+                  ),
+                ),
+                items: [
+                  for (int i = 0; i < homepageWidgets.length; i++)
+                    SideMenuItem(
+                      icon: homepageWidgetIcons[i],
+                      title: homepageWidgetNames[i],
+                      onTap: (index, sideMenuController) {
+                        homepageCurrentWidget.value = homepageWidgets[i];
+                        footerSideMenuController.changePage(-1);
+                        mainSideMenuController.changePage(index);
+                      },
+                    )
+                ],
+                alwaysShowFooter: true,
+                footer: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      height: 100,
+                      child: SideMenu(
+                          style: SideMenuStyle(
+                            displayMode: sideBarCollapse ? SideMenuDisplayMode.compact : SideMenuDisplayMode.open,
+                            openSideMenuWidth: 140,
+                            compactSideMenuWidth: 60,
+                            hoverColor: Theme.of(context).hoverColor,
+                            selectedColor: Theme.of(context).colorScheme.primaryContainer,
+                            selectedIconColor: Theme.of(context).iconTheme.color,
+                            unselectedIconColor: Theme.of(context).iconTheme.color,
+                            selectedTitleTextStyle: Theme.of(context).textTheme.labelLarge,
+                            unselectedTitleTextStyle: Theme.of(context).textTheme.labelLarge,
+                            iconSize: 20,
+                            itemBorderRadius: const BorderRadius.all(
+                              Radius.circular(5.0),
+                            ),
+                            showTooltip: false,
+                            showHamburger: false,
+                            itemHeight: 40.0,
+                            itemInnerSpacing: 6.5,
+                            itemOuterPadding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5),
+
+                            // Additional properties for expandable items
+                            selectedTitleTextStyleExpandable: Theme.of(context).textTheme.labelLarge,
+                            unselectedTitleTextStyleExpandable: Theme.of(context).textTheme.labelLarge,
+                            selectedIconColorExpandable: Theme.of(context).iconTheme.color,
+                            unselectedIconColorExpandable: Theme.of(context).iconTheme.color,
+                            
+                          ),
+                          items: [
+                            for (int i = 0; i < homepageFooterWidgets.length; i++)
+                              SideMenuItem(
+                                icon: homepageFooterWidgetIcon[i],
+                                title: homepageFooterWidgetNames[i],
+                                onTap: (index, sideMenuController) {
+                                  homepageCurrentWidget.value = homepageFooterWidgets[i];
+                                  mainSideMenuController.changePage(-1);
+                                  footerSideMenuController.changePage(index);
+                                },
+                              )
+                          ],
+                          controller: footerSideMenuController),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(5),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: IconButton(
+                            visualDensity: VisualDensity.adaptivePlatformDensity,
+                            style: ButtonStyle(
+                                shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ))),
+                            onPressed: () {
+                              sideBarCollapse ? sideBarCollapse = false : sideBarCollapse = true;
+                              setState(() {});
+                            },
+                            icon: Icon(sideBarCollapse ? Icons.arrow_forward_ios : Icons.arrow_back_ios)),
+                      ),
+                    )
+                  ],
+                )),
           ),
           Expanded(child: Padding(padding: const EdgeInsets.only(top: 5.5, bottom: 5, right: 5), child: homepageCurrentWidget.watch(context)))
         ],
