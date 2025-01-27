@@ -62,6 +62,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "8.8.1"
+  badges:
+    dependency: transitive
+    description:
+      name: badges
+      sha256: a7b6bbd60dce418df0db3058b53f9d083c22cdb5132a052145dc267494df0b84
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.2"
   boolean_selector:
     dependency: transitive
     description:
@@ -198,6 +206,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.2"
+  crop_image:
+    dependency: "direct main"
+    description:
+      name: crop_image
+      sha256: "2e629cd141a360cb9060b5a0837fd49b0260d3d931244717213bf164f6813c82"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.15"
   cross_file:
     dependency: transitive
     description:
@@ -254,6 +270,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.0"
+  easy_sidemenu:
+    dependency: "direct main"
+    description:
+      name: easy_sidemenu
+      sha256: "946e6846094a1be39a53065329ff54661b600f1769d9095c62e4c8c3ca4ffd58"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.0"
   elegant_notification:
     dependency: "direct main"
     description:
@@ -470,7 +494,7 @@ packages:
     source: hosted
     version: "4.1.1"
   image:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: image
       sha256: "8346ad4b5173924b5ddddab782fc7d8a6300178c8b1dc427775405a01701c4a6"
@@ -1114,14 +1138,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.12.0"
-  star_menu:
-    dependency: "direct main"
-    description:
-      name: star_menu
-      sha256: f29c7d255677c49ec2412ec2d17220d967f54b72b9e6afc5688fe122ea4d1d78
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.1"
   stream_channel:
     dependency: transitive
     description:

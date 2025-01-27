@@ -18,7 +18,6 @@ import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:signals/signals_flutter.dart';
-import 'package:star_menu/star_menu.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class SubmodGridLayout extends StatefulWidget {
@@ -77,7 +76,6 @@ class SubmodCardLayout extends StatefulWidget {
 }
 
 class _SubmodCardLayoutState extends State<SubmodCardLayout> {
-  StarMenuController starMenuController = StarMenuController();
 
   @override
   Widget build(BuildContext context) {

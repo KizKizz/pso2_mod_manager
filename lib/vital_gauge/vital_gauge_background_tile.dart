@@ -1,11 +1,16 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/vital_gauge/vital_gauge_popups.dart';
 import 'package:pso2_mod_manager/vital_gauge/vital_gauge_class.dart';
+import 'package:path/path.dart' as p;
+import 'package:pso2_mod_manager/vital_gauge/vital_gauge_functions.dart';
 
 class VitalGaugeBackgroundTile extends StatefulWidget {
-  const VitalGaugeBackgroundTile({super.key, required this.background});
+  const VitalGaugeBackgroundTile({super.key, required this.background, required this.vitalGaugeBackgroundList});
 
+  final List<VitalGaugeBackground> vitalGaugeBackgroundList;
   final VitalGaugeBackground background;
 
   @override
@@ -50,40 +55,23 @@ class _VitalGaugeBackgroundTileState extends State<VitalGaugeBackgroundTile> {
                           ],
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(left: 1, bottom: 1),
-                          child: ModManTooltip(
-                            message: curLangText!.uiHoldToRestoreThisBackgroundToItsOriginal,
-                            child: InkWell(
-                              child: Container(
-                                decoration: ShapeDecoration(
-                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.4),
-                                  shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                ),
-                                child: const Icon(
-                                  Icons.restore,
-                                  color: Colors.red,
-                                ),
-                              ),
-                              onLongPress: () async {
-                                String downloadedFilePath =
-                                    await downloadIconIceFromOfficial(widget.background.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
-                                try {
-                                  File(downloadedFilePath).copySync(widget.background.icePath);
+                          padding: const EdgeInsets.all(2.5),
+                          child: IconButton.filled(
+                              visualDensity: VisualDensity.adaptivePlatformDensity,
+                              style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(150))),
+                              onPressed: () async {
+                                bool result = await vitalGaugeRestorePopup(context, widget.background);
+                                if (result) {
                                   widget.background.replacedMd5 = '';
                                   widget.background.replacedImagePath = '';
                                   widget.background.replacedImageName = '';
                                   widget.background.isReplaced = false;
-                                  saveVitalGaugesInfoToJson(vgData);
-                                } catch (e) {
-                                  // ignore: use_build_context_synchronously
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(snackBarMessage(context, '${curLangText!.uiFailed}!', '${widget.background.iceName}\n${curLangText!.uiNoFilesInGameDataToReplace}', 5000));
+                                  saveMasterVitalGaugeToJson(widget.vitalGaugeBackgroundList);
+                                  setState(() {});
                                 }
-                                setState(() {});
                               },
-                            ),
-                          ),
-                        ),
+                              icon: Text(appText.restore)),
+                        )
                       ],
                     ),
                   ),
@@ -103,50 +91,19 @@ class _VitalGaugeBackgroundTileState extends State<VitalGaugeBackgroundTile> {
                         ),
                       ),
                     ),
-                    if (_loading[i])
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5, bottom: 5),
-                        child: CircularProgressIndicator(
-                          strokeWidth: 6,
-                          backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                        ),
-                      ),
                   ],
                 ),
         );
       },
-      onAcceptWithDetails: (data) {
-        _loading[i] = true;
-        setState(
-          () {},
-        );
-        Future.delayed(const Duration(milliseconds: 500), () {
-          setState(
-            () {
-              String imgPath = data.data.toString();
-              customVgBackgroundApply(context, imgPath, widget.background).then((value) {
-                if (value) {
-                  widget.background.replacedImagePath = imgPath;
-                  widget.background.replacedImageName = p.basename(imgPath);
-                  widget.background.isReplaced = true;
-                  saveVitalGaugesInfoToJson(vgData);
-                  // Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                  //   element.deleteSync(recursive: true);
-                  // });
-                  _loading[i] = false;
-                  setState(
-                    () {},
-                  );
-                } else {
-                  _loading[i] = false;
-                  setState(
-                    () {},
-                  );
-                }
-              });
-            },
-          );
-        });
+      onAcceptWithDetails: (data) async {
+        final result = await vitalGaugeApplyPopup(context, data.data.toString(), widget.background);
+        if (result) {
+          widget.background.replacedImagePath = data.data.toString();
+          widget.background.replacedImageName = p.basename(data.data.toString());
+          widget.background.isReplaced = true;
+          setState(() {});
+          saveMasterVitalGaugeToJson(widget.vitalGaugeBackgroundList);
+        }
       },
     );
   }

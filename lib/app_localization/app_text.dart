@@ -102,7 +102,10 @@ class AppText {
       profiles = 'Profiles',
       profile1 = 'Profile 1',
       profile2 = 'Profile 2',
-      reload = 'Reload';
+      reload = 'Reload',
+      overwrite = 'Overwrite',
+      images = 'Images',
+      videos = 'Videos';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -181,7 +184,11 @@ class AppText {
       successfullyDeletedItem = 'Successfully deleted "%p%"',
       setSubmodToBeActiveInSet = 'Set "%p%" to be active in "%p%" Set',
       submodIsCurrentlyActiveInSet = '"%p%" is currently active in "%p%" Set',
-      notFoundClickToBrowse = 'Not Found. Click To Browse';
+      notFoundClickToBrowse = 'Not Found. Click To Browse',
+      vitalGauge = 'Vital Gauge',
+      convertingFileToDds = 'Converting "%p%" to dds',
+      imageName = 'Image Name',
+      showAll = 'Show All';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -244,7 +251,12 @@ class AppText {
       currentAqmFile = 'Current AQM File',
       fetchingFiles = 'Fetching Files',
       newModSet = 'New Mod Set',
-      enterNewSetName = 'Enter name of the Set';
+      enterNewSetName = 'Enter name of the Set',
+      createNewBackground = 'Create New Background',
+      loadingVitalGaugeBackgrounds = 'Loading Vital Gauge Backgrounds',
+      generatingIceFile = 'Generating ice file',
+      showAppliedOnly = 'Show Applied Only',
+      checkingAppliedVitalGauges = 'Checking Applied Vital Gauges';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',

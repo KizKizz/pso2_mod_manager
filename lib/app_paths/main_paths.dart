@@ -18,6 +18,7 @@ String modAqmInjectTempDirPath = '$mainDataDirPath${p.separator}AQMInjectTemp';
 String modSwapTempLItemDirPath = '$mainDataDirPath${p.separator}SwapTemp${p.separator}lItem';
 String modSwapTempRItemDirPath = '$mainDataDirPath${p.separator}SwapTemp${p.separator}rItem';
 String modSwapTempOutputDirPath = '$mainDataDirPath${p.separator}SwapTemp${p.separator}output';
+String modVitalGaugeTempDirPath = '$mainDataDirPath${p.separator}VitalGaugeTemp';
 String pso2DataDirPath = '$pso2binDirPath${p.separator}data';
 String modCustomAqmsDirPath = '$mainDataDirPath${p.separator}Custom AQMs';
 String vitalGaugeDirPath = '$mainDataDirPath${p.separator}Vital Gauge';

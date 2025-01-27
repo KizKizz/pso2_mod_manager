@@ -6,6 +6,7 @@ import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_item_class.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_data/category_type_class.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
+import 'package:pso2_mod_manager/vital_gauge/vital_gauge_class.dart';
 import 'package:signals/signals_flutter.dart';
 
 List<String> defaultCategoryTypes = ['Cast Parts', 'Layering Wears', 'Others'];
@@ -69,6 +70,7 @@ Signal<String> modApplyStatus = Signal('');
 Signal<String> modPopupStatus = Signal('');
 List<CategoryType> masterAppliedModList = [];
 List<AqmInjectedItem> masterAqmInjectedItemList = [];
+List<VitalGaugeBackground> masterVitalGaugeBackgroundList = [];
 List<File> modCustomAQMFiles = [];
 Signal<String> mainGridStatus = Signal('');
 Signal<bool> checksumAvailability = Signal(false);

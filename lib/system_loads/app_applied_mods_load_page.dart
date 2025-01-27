@@ -56,16 +56,6 @@ class _AppAppliedModsLoadPageState extends State<AppAppliedModsLoadPage> {
                   ],
                 ),
               ),
-              ConstrainedBox(
-                  constraints: const BoxConstraints(minWidth: 350),
-                  child: CardOverlay(
-                    paddingValue: 15,
-                    child: Text(
-                      modsetLoadingStatus.watch(context),
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ))
             ],
           ));
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {

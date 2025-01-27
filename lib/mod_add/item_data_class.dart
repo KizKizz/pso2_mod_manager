@@ -100,6 +100,10 @@ class ItemData {
     return infos.entries.firstWhere((element) => element.key.contains('Icon')).value;
   }
 
+  String getImageIceName() {
+    return infos.entries.firstWhere((element) => element.key.contains('Ice Hash - Image')).value;
+  }
+
   bool containsCategory(List<String> filters) {
     for (var cateName in itemCategories) {
       if (filters.contains(cateName.replaceAll('NGS', '').replaceAll('PSO2', '').trim())) {

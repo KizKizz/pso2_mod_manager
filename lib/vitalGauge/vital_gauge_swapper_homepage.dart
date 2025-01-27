@@ -475,7 +475,6 @@ void vitalGaugeHomePage(context) {
                                                                                                         vgData[i].icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
                                                                                                         modManAddModsTempDirPath);
                                                                                                     try {
-                                                                                                      File(downloadedFilePath).copySync(vgData[i].icePath);
                                                                                                       vgData[i].replacedMd5 = '';
                                                                                                       vgData[i].replacedImagePath = '';
                                                                                                       vgData[i].replacedImageName = '';

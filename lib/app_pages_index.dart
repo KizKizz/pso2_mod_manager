@@ -6,6 +6,8 @@ import 'package:pso2_mod_manager/system_loads/app_mod_load_page.dart';
 import 'package:pso2_mod_manager/system_loads/app_modset_load_page.dart';
 import 'package:pso2_mod_manager/system_loads/app_path_page.dart';
 import 'package:pso2_mod_manager/system_loads/app_update_page.dart';
+import 'package:pso2_mod_manager/system_loads/app_vital_gauge_applied_check_page.dart';
+import 'package:pso2_mod_manager/system_loads/app_vital_gauge_load_page.dart';
 import 'package:pso2_mod_manager/system_loads/official_data_fetch_page.dart';
 import 'package:pso2_mod_manager/system_loads/player_data_load_page.dart';
 import 'package:pso2_mod_manager/system_loads/player_data_update_page.dart';
@@ -25,5 +27,7 @@ final List<Widget> appPages = [
   const AppModLoadPage(),
   const AppModSetLoadPage(),
   const AppAppliedModsLoadPage(),
+  const AppVitalGaugeLoadPage(),
+  const AppVitalGaugeAppliedCheckPage(),
   const Homepage()
 ];

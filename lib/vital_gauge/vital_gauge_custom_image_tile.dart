@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:pso2_mod_manager/app_localization/app_text.dart';
 
 class VitalGaugeCustomImageTile extends StatefulWidget {
   const VitalGaugeCustomImageTile({super.key, required this.customImageFile, required this.onDeleteButtonPress});
@@ -43,7 +42,17 @@ class _VitalGaugeCustomImageTileState extends State<VitalGaugeCustomImageTile> {
               ),
             ),
           ),
-          OutlinedButton(onPressed: () => widget.onDeleteButtonPress, child: Text(appText.delete, style: const TextStyle(color: Colors.redAccent),))
+          Padding(
+            padding: const EdgeInsets.all(2.5),
+            child: IconButton.filled(
+                visualDensity: VisualDensity.adaptivePlatformDensity,
+                style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(150))),
+                onPressed: widget.onDeleteButtonPress,
+                icon: const Icon(
+                  Icons.delete_forever_rounded,
+                  color: Colors.redAccent,
+                )),
+          )
         ],
       ),
     );

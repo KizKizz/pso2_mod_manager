@@ -2,23 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
-import 'package:pso2_mod_manager/app_version/github_access_check.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
+import 'package:pso2_mod_manager/vital_gauge/vital_gauge_functions.dart';
 
-class AppGitHubAccessPage extends StatefulWidget {
-  const AppGitHubAccessPage({super.key});
+class AppVitalGaugeLoadPage extends StatefulWidget {
+  const AppVitalGaugeLoadPage({super.key});
 
   @override
-  State<AppGitHubAccessPage> createState() => _AppGitHubAccessPageState();
+  State<AppVitalGaugeLoadPage> createState() => _AppVitalGaugeLoadPageState();
 }
 
-class _AppGitHubAccessPageState extends State<AppGitHubAccessPage> {
+class _AppVitalGaugeLoadPageState extends State<AppVitalGaugeLoadPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: githubAccessCheck(),
+      future: vitalGaugeBackgroundFetch(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return Center(
@@ -36,7 +36,7 @@ class _AppGitHubAccessPageState extends State<AppGitHubAccessPage> {
                   Padding(
                     padding: const EdgeInsets.only(top: 10),
                     child: Text(
-                      appText.checkingGitHubAccess,
+                      appText.loadingVitalGaugeBackgrounds,
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                   ),
@@ -45,9 +45,9 @@ class _AppGitHubAccessPageState extends State<AppGitHubAccessPage> {
             ),
           );
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-          return FutureBuilderError(loadingText: appText.checkingGitHubAccess, snapshotError: snapshot.error.toString());
+          return FutureBuilderError(loadingText: appText.loadingVitalGaugeBackgrounds, snapshotError: snapshot.error.toString());
         } else {
-          offlineMode = snapshot.data;
+          masterVitalGaugeBackgroundList = snapshot.data;
           pageIndex++;
           curPage.value = appPages[pageIndex];
           return const SizedBox();
