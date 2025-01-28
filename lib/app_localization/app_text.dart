@@ -188,7 +188,9 @@ class AppText {
       vitalGauge = 'Vital Gauge',
       convertingFileToDds = 'Converting "%p%" to dds',
       imageName = 'Image Name',
-      showAll = 'Show All';
+      showAll = 'Show All',
+      lineStrike = 'Line Strike',
+      getImage = 'Get Image';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',

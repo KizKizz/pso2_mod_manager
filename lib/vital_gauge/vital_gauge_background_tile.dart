@@ -56,8 +56,7 @@ class _VitalGaugeBackgroundTileState extends State<VitalGaugeBackgroundTile> {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(2.5),
-                          child: IconButton.filled(
-                              visualDensity: VisualDensity.adaptivePlatformDensity,
+                          child: OutlinedButton(
                               style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(150))),
                               onPressed: () async {
                                 bool result = await vitalGaugeRestorePopup(context, widget.background);
@@ -70,7 +69,7 @@ class _VitalGaugeBackgroundTileState extends State<VitalGaugeBackgroundTile> {
                                   setState(() {});
                                 }
                               },
-                              icon: Text(appText.restore)),
+                              child: Text(appText.restore)),
                         )
                       ],
                     ),

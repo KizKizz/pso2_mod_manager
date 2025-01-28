@@ -96,6 +96,9 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..profile1 = json['profile1'] as String
   ..profile2 = json['profile2'] as String
   ..reload = json['reload'] as String
+  ..overwrite = json['overwrite'] as String
+  ..images = json['images'] as String
+  ..videos = json['videos'] as String
   ..patchNotes = json['patchNotes'] as String
   ..appUpdate = json['appUpdate'] as String
   ..tryAgain = json['tryAgain'] as String
@@ -176,6 +179,12 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..submodIsCurrentlyActiveInSet =
       json['submodIsCurrentlyActiveInSet'] as String
   ..notFoundClickToBrowse = json['notFoundClickToBrowse'] as String
+  ..vitalGauge = json['vitalGauge'] as String
+  ..convertingFileToDds = json['convertingFileToDds'] as String
+  ..imageName = json['imageName'] as String
+  ..showAll = json['showAll'] as String
+  ..lineStrike = json['lineStrike'] as String
+  ..getImage = json['getImage'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -241,6 +250,12 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..fetchingFiles = json['fetchingFiles'] as String
   ..newModSet = json['newModSet'] as String
   ..enterNewSetName = json['enterNewSetName'] as String
+  ..createNewBackground = json['createNewBackground'] as String
+  ..loadingVitalGaugeBackgrounds =
+      json['loadingVitalGaugeBackgrounds'] as String
+  ..generatingIceFile = json['generatingIceFile'] as String
+  ..showAppliedOnly = json['showAppliedOnly'] as String
+  ..checkingAppliedVitalGauges = json['checkingAppliedVitalGauges'] as String
   ..failedToFetchRemoteLocaleData =
       json['failedToFetchRemoteLocaleData'] as String
   ..unableToUpdateFile = json['unableToUpdateFile'] as String
@@ -373,6 +388,9 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'profile1': instance.profile1,
       'profile2': instance.profile2,
       'reload': instance.reload,
+      'overwrite': instance.overwrite,
+      'images': instance.images,
+      'videos': instance.videos,
       'patchNotes': instance.patchNotes,
       'appUpdate': instance.appUpdate,
       'tryAgain': instance.tryAgain,
@@ -451,6 +469,12 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'setSubmodToBeActiveInSet': instance.setSubmodToBeActiveInSet,
       'submodIsCurrentlyActiveInSet': instance.submodIsCurrentlyActiveInSet,
       'notFoundClickToBrowse': instance.notFoundClickToBrowse,
+      'vitalGauge': instance.vitalGauge,
+      'convertingFileToDds': instance.convertingFileToDds,
+      'imageName': instance.imageName,
+      'showAll': instance.showAll,
+      'lineStrike': instance.lineStrike,
+      'getImage': instance.getImage,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,
@@ -514,6 +538,11 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'fetchingFiles': instance.fetchingFiles,
       'newModSet': instance.newModSet,
       'enterNewSetName': instance.enterNewSetName,
+      'createNewBackground': instance.createNewBackground,
+      'loadingVitalGaugeBackgrounds': instance.loadingVitalGaugeBackgrounds,
+      'generatingIceFile': instance.generatingIceFile,
+      'showAppliedOnly': instance.showAppliedOnly,
+      'checkingAppliedVitalGauges': instance.checkingAppliedVitalGauges,
       'failedToFetchRemoteLocaleData': instance.failedToFetchRemoteLocaleData,
       'unableToUpdateFile': instance.unableToUpdateFile,
       'unableToGetAppVersionDataFromGitHub':

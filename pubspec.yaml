@@ -86,7 +86,6 @@ dependencies:
   media_kit_video: ^1.2.5 # For video rendering.
   media_kit_libs_video: ^1.0.5 # Native video dependencies.
   media_kit_libs_linux: ^1.0.2   
-  sidebarx: ^0.17.1
   flutter_sticky_header: ^0.7.0
   responsive_grid_list: ^1.4.0
   flutter_carousel_widget: ^3.1.0

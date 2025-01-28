@@ -10,6 +10,7 @@ String mainModListJsonPath = '';
 String mainModSetListJsonPath = '';
 String mainAqmInjectListJsonPath = '';
 String mainVitalGaugeListJsonPath = '';
+String mainLineStrikeCardListJsonPath = '';
 String backgroundDirPath = '$mainDataDirPath${p.separator}Background Images';
 String modAddTempDirPath = '$mainDataDirPath${p.separator}AddTemp';
 String modSwapTempDirPath = '$mainDataDirPath${p.separator}SwapTemp';
@@ -23,6 +24,9 @@ String pso2DataDirPath = '$pso2binDirPath${p.separator}data';
 String modCustomAqmsDirPath = '$mainDataDirPath${p.separator}Custom AQMs';
 String vitalGaugeDirPath = '$mainDataDirPath${p.separator}Vital Gauge';
 String modChecksumFilePath = '$mainDataDirPath${p.separator}Checksum${p.separator}d4455ebc2bef618f29106da7692ebc1a';
+
+String lineStrikeExportedCardsDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}ExportedCards';
+String lineStrikeCardsDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}Cards';
 
 // External programs
 String sevenZipExePath = '${Directory.current.path}${p.separator}7zip-x64${p.separator}7z.exe';
@@ -69,6 +73,9 @@ void createMainDirs() {
 
     // Main vital gauge list
     mainVitalGaugeListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManVitalGaugeList.json';
+
+     // Main line strike card list
+    mainLineStrikeCardListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManLSCardList.json';
   }
 
   // Profile 2
@@ -92,5 +99,8 @@ void createMainDirs() {
     
     // Main vital gauge list
     mainVitalGaugeListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManVitalGaugeList_profile2.json';
+
+     // Main line strike card list
+    mainLineStrikeCardListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManLSCardList_profile2.json';
   }
 }
