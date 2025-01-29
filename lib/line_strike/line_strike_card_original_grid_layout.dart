@@ -13,16 +13,14 @@ class LineStrikeCardOriginalGridLayout extends StatefulWidget {
 }
 
 class _LineStrikeCardOriginalGridLayoutState extends State<LineStrikeCardOriginalGridLayout> {
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
-        child: ResponsiveGridList( minItemWidth: 150,
+        child: ResponsiveGridList(
+            minItemWidth: 190,
             verticalGridMargin: 5,
             horizontalGridSpacing: 5,
-            verticalGridSpacing: 5, children: [
-              for (int i = 0; i < widget.cards.length; i++)
-              LineStrikeCardOriginalTile(card: widget.cards[i], lineStrikeCardList: widget.cards)
-            ]));
+            verticalGridSpacing: 5,
+            children: [for (int i = 0; i < widget.cards.length; i++) LineStrikeCardOriginalTile(card: widget.cards[i], lineStrikeCardList: widget.cards)]));
   }
 }

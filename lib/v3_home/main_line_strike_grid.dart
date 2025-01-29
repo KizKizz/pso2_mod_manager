@@ -6,12 +6,11 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_card_custom_image_grid_layout.dart';
+import 'package:pso2_mod_manager/line_strike/line_strike_card_functions.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_card_original_grid_layout.dart';
+import 'package:pso2_mod_manager/line_strike/line_strike_image_crop_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
-import 'package:pso2_mod_manager/vital_gauge/vital_gauge_background_grid_layout.dart';
-import 'package:pso2_mod_manager/vital_gauge/vital_gauge_custom_image_grid_layout.dart';
 import 'package:pso2_mod_manager/vital_gauge/vital_gauge_functions.dart';
-import 'package:pso2_mod_manager/vital_gauge/vital_gauge_image_crop_popup.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -25,7 +24,7 @@ class MainLineStrikeGrid extends StatefulWidget {
 class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
   double fadeInOpacity = 0;
   List<File> customBackgroundImages = [];
-  bool vitalGaugeShowAppliedOnly = false;
+  bool lineStrikeShowAppliedOnly = false;
 
   @override
   void initState() {
@@ -35,7 +34,8 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
       fadeInOpacity = 1;
       if (mounted) setState(() {});
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      customBackgroundImages = await customCardImagesFetch();
     });
   }
 
@@ -66,7 +66,7 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
                       final XFile? selectedImageFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
                       if (selectedImageFile != null) {
                         // ignore: use_build_context_synchronously
-                        File? croppedImage = await vitalGaugeImageCropPopup(context, File(selectedImageFile.path));
+                        File? croppedImage = await lineStrikeImageCropPopup(context, File(selectedImageFile.path), LineStrikeItemType.card);
                         if (croppedImage != null && croppedImage.existsSync()) customBackgroundImages.insert(0, croppedImage);
                         setState(() {});
                       }
@@ -81,7 +81,7 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
                         backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
                         side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
                     onPressed: () async {
-                      launchUrlString(vitalGaugeDirPath);
+                      launchUrlString(lineStrikeCardsDirPath);
                     },
                     child: Text(appText.openInFileExplorer)),
               )),
@@ -93,7 +93,7 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
                         backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
                         side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
                     onPressed: () async {
-                      customBackgroundImages = customVitalGaugeImagesFetch();
+                      customBackgroundImages = await customCardImagesFetch();
                       setState(() {});
                     },
                     child: Text(appText.refresh)),
@@ -106,10 +106,10 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
                         backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
                         side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
                     onPressed: () async {
-                      vitalGaugeShowAppliedOnly ? vitalGaugeShowAppliedOnly = false : vitalGaugeShowAppliedOnly = true;
+                      lineStrikeShowAppliedOnly ? lineStrikeShowAppliedOnly = false : lineStrikeShowAppliedOnly = true;
                       setState(() {});
                     },
-                    child: Text(vitalGaugeShowAppliedOnly ? appText.showAll : appText.showAppliedOnly)),
+                    child: Text(lineStrikeShowAppliedOnly ? appText.showAll : appText.showAppliedOnly)),
               ))
             ],
           ),
@@ -118,7 +118,7 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
             spacing: 5,
             children: [
               LineStrikeCardcustomImageGridLayout(customImageFiles: customBackgroundImages),
-              LineStrikeCardOriginalGridLayout(cards: cards)
+              LineStrikeCardOriginalGridLayout(cards: lineStrikeShowAppliedOnly ? masterLineStrikeCardList.where((e) => e.isReplaced).toList() : masterLineStrikeCardList)
             ],
           )),
         ],

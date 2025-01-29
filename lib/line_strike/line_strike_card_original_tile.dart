@@ -2,8 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/line_strike/line_strike_card_apply_popup.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_card_class.dart';
-import 'package:path/path.dart' as p;
+import 'package:pso2_mod_manager/line_strike/line_strike_card_functions.dart';
 
 class LineStrikeCardOriginalTile extends StatefulWidget {
   const LineStrikeCardOriginalTile({super.key, required this.card, required this.lineStrikeCardList});
@@ -73,7 +74,18 @@ class _LineStrikeCardOriginalTileState extends State<LineStrikeCardOriginalTile>
                 ),
         );
       },
-      onAcceptWithDetails: (data) {},
+      onAcceptWithDetails: (data) async {
+        String imgPath = data.data.toString();
+        bool result = await lineStrikeCardApplyPopup(context, imgPath, widget.card);
+        if (result) {
+          widget.card.replacedImagePath = imgPath;
+          widget.card.isReplaced = true;
+          saveMasterLineStrikeCardListToJson(widget.lineStrikeCardList);
+          setState(
+            () {},
+          );
+        } 
+      },
     );
   }
 }

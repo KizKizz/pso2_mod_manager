@@ -27,11 +27,15 @@ String modChecksumFilePath = '$mainDataDirPath${p.separator}Checksum${p.separato
 
 String lineStrikeExportedCardsDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}ExportedCards';
 String lineStrikeCardsDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}Cards';
+String lineStrikeCardTempDirPath = '$mainDataDirPath${p.separator}LineStrikeTemp${p.separator}Card';
+String lineStrikeCustomizedCacheDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}CustomizedCache';
 
 // External programs
 String sevenZipExePath = '${Directory.current.path}${p.separator}7zip-x64${p.separator}7z.exe';
 String zamboniExePath = '${Directory.current.path}${p.separator}Zamboni${p.separator}Zamboni.exe';
 String pngDdsConvExePath = '${Directory.current.path}${p.separator}png_dds_converter${p.separator}png_dds_converter.exe';
+
+String githubIconDatabaseLink = 'https://raw.githubusercontent.com/KizKizz/pso2ngs_file_downloader/main';
 
 Future<(bool, bool)> appMainPathsCheck() async {
   bool pso2bin = true;
@@ -74,7 +78,7 @@ void createMainDirs() {
     // Main vital gauge list
     mainVitalGaugeListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManVitalGaugeList.json';
 
-     // Main line strike card list
+    // Main line strike card list
     mainLineStrikeCardListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManLSCardList.json';
   }
 
@@ -96,11 +100,11 @@ void createMainDirs() {
 
     // Main aqm inject list
     mainAqmInjectListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManAqmInjectedList_profile2.json';
-    
+
     // Main vital gauge list
     mainVitalGaugeListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManVitalGaugeList_profile2.json';
 
-     // Main line strike card list
+    // Main line strike card list
     mainLineStrikeCardListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManLSCardList_profile2.json';
   }
 }

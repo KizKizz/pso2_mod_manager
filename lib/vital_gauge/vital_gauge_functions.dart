@@ -32,7 +32,7 @@ Future<List<VitalGaugeBackground>> vitalGaugeBackgroundFetch() async {
     String ddsName = p.basenameWithoutExtension(info.infos.entries.firstWhere((element) => element.key == 'Path').value.split('/').last);
     String iceName = info.infos.entries.firstWhere((element) => element.key == 'Ice Hash - Image').value.split('\\').last;
     String icePath = p.withoutExtension(pso2binDirPath + p.separator + oItemData.firstWhere((e) => e.path.contains(iceName)).path.replaceAll('/', p.separator));
-    String pngPath = 'https://raw.githubusercontent.com/KizKizz/pso2ngs_file_downloader/main${info.iconImagePath.replaceAll('\\', '/')}';
+    String pngPath = '$githubIconDatabaseLink${info.iconImagePath.replaceAll('\\', '/')}';
     vitalGaugeData.add(VitalGaugeBackground(icePath, iceName, ddsName, pngPath, '', '', '', '', false));
   }
 

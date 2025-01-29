@@ -44,6 +44,8 @@ class AppText {
   // Sorting Name
   String nameAlphabetical = 'Name (Alphabetical)', recentlyAdded = 'Recently Added', recentlyApplied = 'Recently Applied';
 
+  // Card Elements
+  String cardDarkElement = 'Dark', cardLightElement = 'Light', cardFireElement = 'Fire', cardIceElement = 'Ice', cardLightningElement = 'Lightning', cardWindElement = 'Wind';
   // One word Strings
   String ok = 'OK',
       cancel = 'Cancel',
@@ -105,7 +107,8 @@ class AppText {
       reload = 'Reload',
       overwrite = 'Overwrite',
       images = 'Images',
-      videos = 'Videos';
+      videos = 'Videos',
+      select = 'Select';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -258,7 +261,9 @@ class AppText {
       loadingVitalGaugeBackgrounds = 'Loading Vital Gauge Backgrounds',
       generatingIceFile = 'Generating ice file',
       showAppliedOnly = 'Show Applied Only',
-      checkingAppliedVitalGauges = 'Checking Applied Vital Gauges';
+      checkingAppliedVitalGauges = 'Checking Applied Vital Gauges',
+      loadingLineStrikeCards = 'Loading Line Strike Cards',
+      selectCardElement = 'Select Card Element';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',
@@ -269,7 +274,9 @@ class AppText {
       fileAlreadyOnTheList = '"%p%" already on the list',
       nameAlreadyExists = 'Name already exists',
       noMatchingFilesBetweenItemsToSwap = 'No matching files between items to swap',
-      nameCannotBeEmpty = 'Name cannot be empty';
+      nameCannotBeEmpty = 'Name cannot be empty',
+      failedToReplaceCard = 'Failed to replace card',
+      failedToReplaceCardIcon = 'Failed to replace card icon';
 
   // Infos
   String pso2binDirPathInfo = 'PSO2 game data folder, this folder located inside the game installation directory',

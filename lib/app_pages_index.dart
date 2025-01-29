@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/system_loads/app_applied_mods_load_page.dart';
 import 'package:pso2_mod_manager/system_loads/app_github_access_page.dart';
+import 'package:pso2_mod_manager/system_loads/app_line_strike_card_load_page.dart';
 import 'package:pso2_mod_manager/system_loads/app_locale_page.dart';
 import 'package:pso2_mod_manager/system_loads/app_mod_load_page.dart';
 import 'package:pso2_mod_manager/system_loads/app_modset_load_page.dart';
@@ -29,5 +30,6 @@ final List<Widget> appPages = [
   const AppAppliedModsLoadPage(),
   const AppVitalGaugeLoadPage(),
   const AppVitalGaugeAppliedCheckPage(),
+  const AppLineStrikeCardLoadPage(),
   const Homepage()
 ];
