@@ -19,7 +19,7 @@ class _LineStrikeBoardImageTileState extends State<LineStrikeBoardImageTile> {
       dragAnchorStrategy: pointerDragAnchorStrategy,
       feedback: Image.file(
         widget.customImageFile,
-        scale: 1.4,
+        scale: 2,
         filterQuality: FilterQuality.high,
         fit: BoxFit.fill,
       ),

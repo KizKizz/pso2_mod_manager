@@ -24,11 +24,19 @@ enum LineStrikeItemType {
 
 Future<File?> lineStrikeImageCropPopup(context, File newImageFile, LineStrikeItemType lineStrikeItemType) async {
   final imageCropController = CropController(
-    aspectRatio: lineStrikeItemType == LineStrikeItemType.card ? 347 / 451 : 347 / 451,
+    aspectRatio: lineStrikeItemType == LineStrikeItemType.card
+        ? 347 / 451
+        : lineStrikeItemType == LineStrikeItemType.board
+            ? 867 / 488
+            : 347 / 451,
     //minimumImageSize: 100,
     //defaultCrop: const Rect.fromLTRB(0.1, 0.1, 0.9, 0.9),
   );
-  Size imageSize = lineStrikeItemType == LineStrikeItemType.card ? const Size(347.0, 451.0) : const Size(347.0, 451.0);
+  Size imageSize = lineStrikeItemType == LineStrikeItemType.card
+      ? const Size(347, 451)
+      : lineStrikeItemType == LineStrikeItemType.board
+          ? const Size(867, 488)
+          : const Size(347.0, 451.0);
   DateTime now = DateTime.now();
   String formattedDate = DateFormat('MM-dd-yyyy-kk-mm-ss').format(now);
   TextEditingController newImageName = TextEditingController(text: '${p.basenameWithoutExtension(newImageFile.path)}_$formattedDate');
@@ -119,15 +127,28 @@ Future<File?> lineStrikeImageCropPopup(context, File newImageFile, LineStrikeIte
                             img.Image? image = img.decodePng(bytes);
                             img.Image resized = img.copyResize(image!, width: imageSize.width.toInt(), height: imageSize.height.toInt());
 
-                            File croppedImage = File(Uri.file('$lineStrikeCardsDirPath/${newImageName.text}.png').toFilePath());
-                            croppedImage.writeAsBytesSync(img.encodePng(resized));
-                            //croppedImage.writeAsBytes(bytes, flush: true);
-                            imageCropController.dispose();
-                            //Future.delayed(const Duration(milliseconds: 100), () {
-                            if (context.mounted) {
-                              Navigator.pop(context, croppedImage);
+                            if (lineStrikeItemType == LineStrikeItemType.card) {
+                              File croppedImage = File(Uri.file('$lineStrikeCardsDirPath/${newImageName.text}.png').toFilePath());
+                              croppedImage.writeAsBytesSync(img.encodePng(resized));
+                              imageCropController.dispose();
+                              if (context.mounted) {
+                                Navigator.pop(context, croppedImage);
+                              }
+                            } else if (lineStrikeItemType == LineStrikeItemType.board) {
+                              File croppedImage = File(Uri.file('$lineStrikeBoardsDirPath/${newImageName.text}.png').toFilePath());
+                              croppedImage.writeAsBytesSync(img.encodePng(resized));
+                              imageCropController.dispose();
+                              if (context.mounted) {
+                                Navigator.pop(context, croppedImage);
+                              }
+                            } else if (lineStrikeItemType == LineStrikeItemType.sleeve) {
+                              File croppedImage = File(Uri.file('$lineStrikeSleevesDirPath/${newImageName.text}.png').toFilePath());
+                              croppedImage.writeAsBytesSync(img.encodePng(resized));
+                              imageCropController.dispose();
+                              if (context.mounted) {
+                                Navigator.pop(context, croppedImage);
+                              }
                             }
-                            //});
                           }
                         },
                         child: Text(appText.save)),
@@ -145,15 +166,28 @@ Future<File?> lineStrikeImageCropPopup(context, File newImageFile, LineStrikeIte
                           img.Image? image = img.decodePng(bytes);
                           img.Image resized = img.copyResize(image!, width: imageSize.width.toInt(), height: imageSize.height.toInt());
 
-                          File croppedImage = File(Uri.file('$lineStrikeCardsDirPath/${newImageName.text}.png').toFilePath());
-                          croppedImage.writeAsBytesSync(img.encodePng(resized));
-                          //croppedImage.writeAsBytes(bytes, flush: true);
-                          imageCropController.dispose();
-                          //Future.delayed(const Duration(milliseconds: 100), () {
-                          if (context.mounted) {
-                            Navigator.pop(context, croppedImage);
+                          if (lineStrikeItemType == LineStrikeItemType.card) {
+                            File croppedImage = File(Uri.file('$lineStrikeCardsDirPath/${newImageName.text}.png').toFilePath());
+                            croppedImage.writeAsBytesSync(img.encodePng(resized));
+                            imageCropController.dispose();
+                            if (context.mounted) {
+                              Navigator.pop(context, croppedImage);
+                            }
+                          } else if (lineStrikeItemType == LineStrikeItemType.board) {
+                            File croppedImage = File(Uri.file('$lineStrikeBoardsDirPath/${newImageName.text}.png').toFilePath());
+                            croppedImage.writeAsBytesSync(img.encodePng(resized));
+                            imageCropController.dispose();
+                            if (context.mounted) {
+                              Navigator.pop(context, croppedImage);
+                            }
+                          } else if (lineStrikeItemType == LineStrikeItemType.sleeve) {
+                            File croppedImage = File(Uri.file('$lineStrikeSleevesDirPath/${newImageName.text}.png').toFilePath());
+                            croppedImage.writeAsBytesSync(img.encodePng(resized));
+                            imageCropController.dispose();
+                            if (context.mounted) {
+                              Navigator.pop(context, croppedImage);
+                            }
                           }
-                          //});
                         },
                         child: Text(appText.overwrite)),
                   ),

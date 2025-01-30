@@ -18,7 +18,8 @@ class _LineStrikeBoardOriginalGridLayoutState extends State<LineStrikeBoardOrigi
   Widget build(BuildContext context) {
     return Expanded(
         child: ResponsiveGridList(
-            minItemWidth: 190,
+            listViewBuilderOptions: ListViewBuilderOptions(controller: widget.rScrollController),
+            minItemWidth: double.infinity,
             verticalGridMargin: 5,
             horizontalGridSpacing: 5,
             verticalGridSpacing: 5,

@@ -18,6 +18,7 @@ class _LineStrikeCardOriginalGridLayoutState extends State<LineStrikeCardOrigina
   Widget build(BuildContext context) {
     return Expanded(
         child: ResponsiveGridList(
+          listViewBuilderOptions: ListViewBuilderOptions(controller: widget.rScrollController),
             minItemWidth: 190,
             verticalGridMargin: 5,
             horizontalGridSpacing: 5,

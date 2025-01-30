@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/line_strike/line_strike_board_custom_image_grid_layout.dart';
+import 'package:pso2_mod_manager/line_strike/line_strike_board_functions.dart';
+import 'package:pso2_mod_manager/line_strike/line_strike_board_original_grid_layout.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_card_custom_image_grid_layout.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_card_functions.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_card_original_grid_layout.dart';
@@ -36,13 +39,20 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
       fadeInOpacity = 1;
       if (mounted) setState(() {});
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
+  }
+
+  Future<void> customImageFetch() async {
+    if (selectedLineStrikeType.watch(context) == LineStrikeItemType.card) {
       customBackgroundImages = await customCardImagesFetch();
-    });
+    } else if (selectedLineStrikeType.watch(context) == LineStrikeItemType.board) {
+      customBackgroundImages = await customBoardImageFetch();
+    } else if (selectedLineStrikeType.watch(context) == LineStrikeItemType.sleeve) {}
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    customImageFetch();
     return AnimatedOpacity(
       opacity: fadeInOpacity,
       duration: const Duration(milliseconds: 500),
@@ -68,7 +78,7 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
                       final XFile? selectedImageFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
                       if (selectedImageFile != null) {
                         // ignore: use_build_context_synchronously
-                        File? croppedImage = await lineStrikeImageCropPopup(context, File(selectedImageFile.path), LineStrikeItemType.card);
+                        File? croppedImage = await lineStrikeImageCropPopup(context, File(selectedImageFile.path), selectedLineStrikeType.value);
                         if (croppedImage != null && croppedImage.existsSync()) customBackgroundImages.insert(0, croppedImage);
                         setState(() {});
                       }
@@ -83,7 +93,11 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
                         backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
                         side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
                     onPressed: () async {
-                      launchUrlString(lineStrikeCardsDirPath);
+                      launchUrlString(selectedLineStrikeType.value == LineStrikeItemType.card
+                          ? lineStrikeCardsDirPath
+                          : selectedLineStrikeType.value == LineStrikeItemType.board
+                              ? lineStrikeBoardsDirPath
+                              : lineStrikeSleevesDirPath);
                     },
                     child: Text(appText.openInFileExplorer)),
               )),
@@ -95,7 +109,11 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
                         backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
                         side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
                     onPressed: () async {
-                      customBackgroundImages = await customCardImagesFetch();
+                      if (selectedLineStrikeType.value == LineStrikeItemType.card) {
+                        customBackgroundImages = await customCardImagesFetch();
+                      } else if (selectedLineStrikeType.value == LineStrikeItemType.board) {
+                        customBackgroundImages = await customBoardImageFetch();
+                      }
                       setState(() {});
                     },
                     child: Text(appText.refresh)),
@@ -116,14 +134,30 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
               Expanded(child: LineStrikeTypeSelectButton(lScrollController: lScrollController, rScrollController: rScrollController))
             ],
           ),
-          Expanded(
-              child: Row(
-            spacing: 5,
-            children: [
-              LineStrikeCardcustomImageGridLayout(customImageFiles: customBackgroundImages),
-              LineStrikeCardOriginalGridLayout(cards: lineStrikeShowAppliedOnly ? masterLineStrikeCardList.where((e) => e.isReplaced).toList() : masterLineStrikeCardList)
-            ],
-          )),
+          Visibility(
+            visible: selectedLineStrikeType.value == LineStrikeItemType.card,
+            child: Expanded(
+                child: Row(
+              spacing: 5,
+              children: [
+                LineStrikeCardcustomImageGridLayout(customImageFiles: customBackgroundImages, lScrollController: lScrollController),
+                LineStrikeCardOriginalGridLayout(
+                    cards: lineStrikeShowAppliedOnly ? masterLineStrikeCardList.where((e) => e.isReplaced).toList() : masterLineStrikeCardList, rScrollController: rScrollController)
+              ],
+            )),
+          ),
+          Visibility(
+            visible: selectedLineStrikeType.value == LineStrikeItemType.board,
+            child: Expanded(
+                child: Row(
+              spacing: 5,
+              children: [
+                LineStrikeBoardCustomImageGridLayout(customImageFiles: customBackgroundImages, lScrollController: lScrollController),
+                LineStrikeBoardOriginalGridLayout(
+                    boards: lineStrikeShowAppliedOnly ? masterLineStrikeBoardList.where((e) => e.isReplaced).toList() : masterLineStrikeBoardList, rScrollController: rScrollController)
+              ],
+            )),
+          ),
         ],
       ),
     );

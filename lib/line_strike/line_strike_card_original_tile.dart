@@ -44,8 +44,8 @@ class _LineStrikeCardOriginalTileState extends State<LineStrikeCardOriginalTile>
                         Padding(
                           padding: const EdgeInsets.only(right: 0),
                           child: SizedBox(
-                            width: 100,
-                            height: 150,
+                            width: 120,
+                            height: 160,
                             child: AspectRatio(
                               aspectRatio: 1,
                               child: Image.file(
@@ -64,8 +64,10 @@ class _LineStrikeCardOriginalTileState extends State<LineStrikeCardOriginalTile>
                         ElevatedButton(
                             onPressed: () async {
                               bool result = await lineStrikeCardRestorePopup(context, widget.card, widget.lineStrikeCardList);
-                              // ignore: use_build_context_synchronously
-                              result ? restoreSuccessNotification(context, widget.card.cardZeroDdsName) : restoreFailedNotification(context, widget.card.cardZeroDdsName);
+                              if (mounted) {
+                                // ignore: use_build_context_synchronously
+                                result ? restoreSuccessNotification(context, widget.card.cardZeroDdsName) : restoreFailedNotification(context, widget.card.cardZeroDdsName);
+                              }
                             },
                             child: Text(appText.restore)),
                         ModManTooltip(

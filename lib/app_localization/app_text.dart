@@ -271,6 +271,7 @@ class AppText {
       showAppliedOnly = 'Show Applied Only',
       checkingAppliedVitalGauges = 'Checking Applied Vital Gauges',
       loadingLineStrikeCards = 'Loading Line Strike Cards',
+      loadingLineStrikeBoards = 'Loading Line Strike Boards',
       selectCardElement = 'Select Card Element',
       exportToPngImage = 'Export to png image';
 
@@ -285,7 +286,10 @@ class AppText {
       noMatchingFilesBetweenItemsToSwap = 'No matching files between items to swap',
       nameCannotBeEmpty = 'Name cannot be empty',
       failedToReplaceCard = 'Failed to replace card',
-      failedToReplaceCardIcon = 'Failed to replace card icon';
+      failedToReplaceCardIcon = 'Failed to replace card icon',
+      failedToReplaceBoard = 'Failed to replace board',
+      failedToReplaceBoardIcon = 'Failed to replace board icon';
+
 
   // Infos
   String pso2binDirPathInfo = 'PSO2 game data folder, this folder located inside the game installation directory',

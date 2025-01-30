@@ -125,11 +125,18 @@ Future<bool> customImageApply(context, String imgPath, LineStrikeCard cardDataFi
   String newCardZeroTempIcePath = Uri.file('$lineStrikeCardTempDirPath/${p.basename(cardDataFile.cardZeroIcePath)}/group2').toFilePath();
   Directory(newCardZeroTempIcePath).createSync(recursive: true);
   if (Directory(newCardZeroTempIcePath).existsSync()) {
-    final response = await http.get(Uri.parse(cardDataFile.cardZeroIconWebPath));
+    // Status
+    lineStrikeStatus.value = appText.dText(appText.downloadingFileName, p.basename(cardDataFile.cardZeroIconWebPath));
+    Future.delayed(const Duration(microseconds: 10));
 
+    final response = await http.get(Uri.parse(cardDataFile.cardZeroIconWebPath));
     if (response.statusCode == 200) {
       File originalCard = await File('$newCardZeroTempIcePath${p.separator}${p.basename(cardDataFile.cardZeroIconWebPath)}').writeAsBytes(response.bodyBytes);
       cardZeroImageHash = await originalCard.getMd5Hash();
+      // Status
+      lineStrikeStatus.value = appText.dText(appText.repackingFile, p.basename(cardDataFile.cardZeroIcePath));
+      Future.delayed(const Duration(microseconds: 10));
+
       replacedCardZeroIce = await cardArtReplace(
           context, replaceImage, cardDataFile.cardZeroIcePath, cardDataFile.cardZeroDdsName, Uri.file('$newCardZeroTempIcePath/${p.basename(cardDataFile.cardZeroIconWebPath)}').toFilePath());
 
@@ -137,6 +144,9 @@ Future<bool> customImageApply(context, String imgPath, LineStrikeCard cardDataFi
         int i = 0;
         while (i < 10) {
           try {
+            // Status
+            lineStrikeStatus.value = appText.dText(appText.copyingModFileToGameData, p.basename(cardDataFile.cardZeroIcePath));
+            Future.delayed(const Duration(microseconds: 10));
             File copiedFile = replacedCardZeroIce.copySync(cardDataFile.cardZeroIcePath);
             //cache
             String cachePath = cardDataFile.cardZeroIcePath.replaceFirst(pso2DataDirPath, lineStrikeCustomizedCacheDirPath);
@@ -163,11 +173,18 @@ Future<bool> customImageApply(context, String imgPath, LineStrikeCard cardDataFi
   String newCardOneTempIcePath = Uri.file('$lineStrikeCardTempDirPath/${p.basename(cardDataFile.cardOneIcePath)}/group2').toFilePath();
   Directory(newCardOneTempIcePath).createSync(recursive: true);
   if (Directory(newCardOneTempIcePath).existsSync()) {
+    // Status
+    lineStrikeStatus.value = appText.dText(appText.downloadingFileName, p.basename(cardDataFile.cardOneIconWebPath));
+    Future.delayed(const Duration(microseconds: 10));
+
     final response = await http.get(Uri.parse(cardDataFile.cardOneIconWebPath));
     if (response.statusCode == 200) {
       File originalCard = await File(Uri.file('$newCardOneTempIcePath/${p.basename(cardDataFile.cardOneIconWebPath)}').toFilePath()).writeAsBytes(response.bodyBytes);
       File? replacedCardOneIce;
       if (cardZeroImageHash != await originalCard.getMd5Hash()) {
+        // Status
+        lineStrikeStatus.value = appText.dText(appText.repackingFile, p.basename(cardDataFile.cardOneIcePath));
+        Future.delayed(const Duration(microseconds: 10));
         replacedCardOneIce = await cardArtReplace(
             context, replaceImage, cardDataFile.cardOneIcePath, cardDataFile.cardOneDdsName, Uri.file('$newCardOneTempIcePath/${p.basename(cardDataFile.cardOneIconWebPath)}').toFilePath());
       } else {
@@ -178,6 +195,9 @@ Future<bool> customImageApply(context, String imgPath, LineStrikeCard cardDataFi
         int i = 0;
         while (i < 10) {
           try {
+            // Status
+            lineStrikeStatus.value = appText.dText(appText.copyingModFileToGameData, p.basename(cardDataFile.cardOneIcePath));
+            Future.delayed(const Duration(microseconds: 10));
             File copiedFile = replacedCardOneIce.copySync(cardDataFile.cardOneIcePath);
             //cache
             String cachePath = cardDataFile.cardOneIcePath.replaceFirst(pso2DataDirPath, lineStrikeCustomizedCacheDirPath);
@@ -191,6 +211,7 @@ Future<bool> customImageApply(context, String imgPath, LineStrikeCard cardDataFi
         }
         if (i > 10) {
           lineStrikeStatus.value = appText.failedToReplaceCard;
+          Future.delayed(const Duration(microseconds: 10));
           return false;
         }
       }
@@ -206,17 +227,26 @@ Future<bool> customImageApply(context, String imgPath, LineStrikeCard cardDataFi
   Directory(newCardZeroTempIconIcePath).createSync(recursive: true);
 
   if (Directory(newCardZeroTempIconIcePath).existsSync()) {
-    final response = await http.get(Uri.parse(cardDataFile.cardZeroSquareIconWebPath));
+    // Status
+    lineStrikeStatus.value = appText.dText(appText.downloadingFileName, p.basename(cardDataFile.cardZeroIconWebPath));
+    Future.delayed(const Duration(microseconds: 10));
 
+    final response = await http.get(Uri.parse(cardDataFile.cardZeroSquareIconWebPath));
     if (response.statusCode == 200) {
       File originalCardIcon = await File(Uri.file('$newCardZeroTempIconIcePath/${p.basename(cardDataFile.cardZeroSquareIconWebPath)}').toFilePath()).writeAsBytes(response.bodyBytes);
       cardZeroIconImageHash = await originalCardIcon.getMd5Hash();
+      // Status
+      lineStrikeStatus.value = appText.dText(appText.repackingFile, p.basename(cardDataFile.cardZeroIconIcePath));
+      Future.delayed(const Duration(microseconds: 10));
       replacedCardZeroIconIce = await cardIconArtReplace(resizedIconImage, cardDataFile.cardZeroIconIcePath, cardDataFile.cardZeroIconDdsName,
           Uri.file('$newCardZeroTempIconIcePath/${p.basename(cardDataFile.cardZeroSquareIconWebPath)}').toFilePath());
       if (replacedCardZeroIconIce != null && replacedCardZeroIconIce.existsSync()) {
         int i = 0;
         while (i < 10) {
           try {
+            // Status
+            lineStrikeStatus.value = appText.dText(appText.copyingModFileToGameData, p.basename(cardDataFile.cardZeroIconIcePath));
+            Future.delayed(const Duration(microseconds: 10));
             File copiedFile = replacedCardZeroIconIce.copySync(cardDataFile.cardZeroIconIcePath);
             //cache
             String cachePath = cardDataFile.cardZeroIconIcePath.replaceFirst(pso2DataDirPath, lineStrikeCustomizedCacheDirPath);
@@ -230,6 +260,7 @@ Future<bool> customImageApply(context, String imgPath, LineStrikeCard cardDataFi
         }
         if (i > 10) {
           lineStrikeStatus.value = appText.failedToReplaceCardIcon;
+          Future.delayed(const Duration(microseconds: 10));
           return false;
         }
       }
@@ -241,11 +272,18 @@ Future<bool> customImageApply(context, String imgPath, LineStrikeCard cardDataFi
   Directory(newCardOneTempIconIcePath).createSync(recursive: true);
 
   if (Directory(newCardOneTempIconIcePath).existsSync()) {
+    // Status
+    lineStrikeStatus.value = appText.dText(appText.downloadingFileName, p.basename(cardDataFile.cardOneIconWebPath));
+    Future.delayed(const Duration(microseconds: 10));
+
     final response = await http.get(Uri.parse(cardDataFile.cardOneSquareIconWebPath));
     if (response.statusCode == 200) {
       File originalCardIcon = await File(Uri.file('$newCardOneTempIconIcePath/${p.basename(cardDataFile.cardOneSquareIconWebPath)}').toFilePath()).writeAsBytes(response.bodyBytes);
       File? replacedCardOneIconIce;
       if (cardZeroIconImageHash != await originalCardIcon.getMd5Hash()) {
+        // Status
+        lineStrikeStatus.value = appText.dText(appText.repackingFile, p.basename(cardDataFile.cardOneIconIcePath));
+        Future.delayed(const Duration(microseconds: 10));
         replacedCardOneIconIce = await cardIconArtReplace(resizedIconImage, cardDataFile.cardOneIconIcePath, cardDataFile.cardOneIconDdsName, cardDataFile.cardOneSquareIconWebPath);
       } else {
         await Directory(Uri.file('$lineStrikeCardTempDirPath/${p.basename(cardDataFile.cardOneIconIcePath)}').toFilePath()).delete(recursive: true);
@@ -255,6 +293,9 @@ Future<bool> customImageApply(context, String imgPath, LineStrikeCard cardDataFi
         int i = 0;
         while (i < 10) {
           try {
+            // Status
+            lineStrikeStatus.value = appText.dText(appText.copyingModFileToGameData, p.basename(cardDataFile.cardOneIconIcePath));
+            Future.delayed(const Duration(microseconds: 10));
             File copiedFile = replacedCardOneIconIce.copySync(cardDataFile.cardOneIconIcePath);
             //cache
             String cachePath = cardDataFile.cardOneIconIcePath.replaceFirst(pso2DataDirPath, lineStrikeCustomizedCacheDirPath);
@@ -268,12 +309,15 @@ Future<bool> customImageApply(context, String imgPath, LineStrikeCard cardDataFi
         }
         if (i > 10) {
           lineStrikeStatus.value = appText.failedToReplaceCardIcon;
+          Future.delayed(const Duration(microseconds: 10));
           return false;
         }
       }
     }
   }
-
+  // Status
+  lineStrikeStatus.value = appText.success;
+  Future.delayed(const Duration(microseconds: 10));
   return true;
 }
 
