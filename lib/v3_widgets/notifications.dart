@@ -43,3 +43,43 @@ void deletedNotification(context, name) {
     onDismiss: () {},
   ).show(context);
 }
+
+void restoreSuccessNotification(context, name) {
+  ElegantNotification.success(
+    width: 360,
+    stackedOptions: StackedOptions(
+      key: 'bottomRight',
+      type: StackedType.below,
+      itemOffset: const Offset(0, 5),
+    ),
+    background: Theme.of(context).scaffoldBackgroundColor,
+    notificationMargin: 1,
+    border: Border.all(width: 1, color: Theme.of(context).colorScheme.outline),
+    position: Alignment.bottomRight,
+    animation: AnimationType.fromRight,
+    title: Text(appText.success, style: Theme.of(context).textTheme.titleMedium,),
+    description: Text(appText.dText(appText.successfullyRestoredFile, name), style: Theme.of(context).textTheme.bodyMedium,),
+    shadow: BoxShadow(color: Theme.of(context).shadowColor),
+    onDismiss: () {},
+  ).show(context);
+}
+
+void restoreFailedNotification(context, name) {
+  ElegantNotification.error(
+    width: 360,
+    stackedOptions: StackedOptions(
+      key: 'bottomRight',
+      type: StackedType.below,
+      itemOffset: const Offset(0, 5),
+    ),
+    background: Theme.of(context).scaffoldBackgroundColor,
+    notificationMargin: 1,
+    border: Border.all(width: 1, color: Theme.of(context).colorScheme.outline),
+    position: Alignment.bottomRight,
+    animation: AnimationType.fromRight,
+    title: Text(appText.success, style: Theme.of(context).textTheme.titleMedium,),
+    description: Text(appText.dText(appText.failedToRestoredFile, name), style: Theme.of(context).textTheme.bodyMedium,),
+    shadow: BoxShadow(color: Theme.of(context).shadowColor),
+    onDismiss: () {},
+  ).show(context);
+}

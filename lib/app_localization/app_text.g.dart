@@ -38,6 +38,12 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..nameAlphabetical = json['nameAlphabetical'] as String
   ..recentlyAdded = json['recentlyAdded'] as String
   ..recentlyApplied = json['recentlyApplied'] as String
+  ..cardDarkElement = json['cardDarkElement'] as String
+  ..cardLightElement = json['cardLightElement'] as String
+  ..cardFireElement = json['cardFireElement'] as String
+  ..cardIceElement = json['cardIceElement'] as String
+  ..cardLightningElement = json['cardLightningElement'] as String
+  ..cardWindElement = json['cardWindElement'] as String
   ..ok = json['ok'] as String
   ..cancel = json['cancel'] as String
   ..cont = json['cont'] as String
@@ -99,6 +105,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..overwrite = json['overwrite'] as String
   ..images = json['images'] as String
   ..videos = json['videos'] as String
+  ..select = json['select'] as String
   ..patchNotes = json['patchNotes'] as String
   ..appUpdate = json['appUpdate'] as String
   ..tryAgain = json['tryAgain'] as String
@@ -184,7 +191,6 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..imageName = json['imageName'] as String
   ..showAll = json['showAll'] as String
   ..lineStrike = json['lineStrike'] as String
-  ..getImage = json['getImage'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -256,6 +262,9 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..generatingIceFile = json['generatingIceFile'] as String
   ..showAppliedOnly = json['showAppliedOnly'] as String
   ..checkingAppliedVitalGauges = json['checkingAppliedVitalGauges'] as String
+  ..loadingLineStrikeCards = json['loadingLineStrikeCards'] as String
+  ..selectCardElement = json['selectCardElement'] as String
+  ..exportToPngImage = json['exportToPngImage'] as String
   ..failedToFetchRemoteLocaleData =
       json['failedToFetchRemoteLocaleData'] as String
   ..unableToUpdateFile = json['unableToUpdateFile'] as String
@@ -269,6 +278,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..noMatchingFilesBetweenItemsToSwap =
       json['noMatchingFilesBetweenItemsToSwap'] as String
   ..nameCannotBeEmpty = json['nameCannotBeEmpty'] as String
+  ..failedToReplaceCard = json['failedToReplaceCard'] as String
+  ..failedToReplaceCardIcon = json['failedToReplaceCardIcon'] as String
   ..pso2binDirPathInfo = json['pso2binDirPathInfo'] as String
   ..mainDirPathInfo = json['mainDirPathInfo'] as String
   ..restoredModInfo = json['restoredModInfo'] as String
@@ -330,6 +341,12 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'nameAlphabetical': instance.nameAlphabetical,
       'recentlyAdded': instance.recentlyAdded,
       'recentlyApplied': instance.recentlyApplied,
+      'cardDarkElement': instance.cardDarkElement,
+      'cardLightElement': instance.cardLightElement,
+      'cardFireElement': instance.cardFireElement,
+      'cardIceElement': instance.cardIceElement,
+      'cardLightningElement': instance.cardLightningElement,
+      'cardWindElement': instance.cardWindElement,
       'ok': instance.ok,
       'cancel': instance.cancel,
       'cont': instance.cont,
@@ -391,6 +408,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'overwrite': instance.overwrite,
       'images': instance.images,
       'videos': instance.videos,
+      'select': instance.select,
       'patchNotes': instance.patchNotes,
       'appUpdate': instance.appUpdate,
       'tryAgain': instance.tryAgain,
@@ -474,7 +492,6 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'imageName': instance.imageName,
       'showAll': instance.showAll,
       'lineStrike': instance.lineStrike,
-      'getImage': instance.getImage,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,
@@ -543,6 +560,9 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'generatingIceFile': instance.generatingIceFile,
       'showAppliedOnly': instance.showAppliedOnly,
       'checkingAppliedVitalGauges': instance.checkingAppliedVitalGauges,
+      'loadingLineStrikeCards': instance.loadingLineStrikeCards,
+      'selectCardElement': instance.selectCardElement,
+      'exportToPngImage': instance.exportToPngImage,
       'failedToFetchRemoteLocaleData': instance.failedToFetchRemoteLocaleData,
       'unableToUpdateFile': instance.unableToUpdateFile,
       'unableToGetAppVersionDataFromGitHub':
@@ -555,6 +575,8 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'noMatchingFilesBetweenItemsToSwap':
           instance.noMatchingFilesBetweenItemsToSwap,
       'nameCannotBeEmpty': instance.nameCannotBeEmpty,
+      'failedToReplaceCard': instance.failedToReplaceCard,
+      'failedToReplaceCardIcon': instance.failedToReplaceCardIcon,
       'pso2binDirPathInfo': instance.pso2binDirPathInfo,
       'mainDirPathInfo': instance.mainDirPathInfo,
       'restoredModInfo': instance.restoredModInfo,

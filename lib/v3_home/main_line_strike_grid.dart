@@ -9,8 +9,8 @@ import 'package:pso2_mod_manager/line_strike/line_strike_card_custom_image_grid_
 import 'package:pso2_mod_manager/line_strike/line_strike_card_functions.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_card_original_grid_layout.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_image_crop_popup.dart';
+import 'package:pso2_mod_manager/line_strike/line_strike_type_select_button.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
-import 'package:pso2_mod_manager/vital_gauge/vital_gauge_functions.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -25,6 +25,8 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
   double fadeInOpacity = 0;
   List<File> customBackgroundImages = [];
   bool lineStrikeShowAppliedOnly = false;
+  ScrollController lScrollController = ScrollController();
+  ScrollController rScrollController = ScrollController();
 
   @override
   void initState() {
@@ -110,7 +112,8 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
                       setState(() {});
                     },
                     child: Text(lineStrikeShowAppliedOnly ? appText.showAll : appText.showAppliedOnly)),
-              ))
+              )),
+              Expanded(child: LineStrikeTypeSelectButton(lScrollController: lScrollController, rScrollController: rScrollController))
             ],
           ),
           Expanded(

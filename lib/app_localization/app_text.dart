@@ -44,8 +44,12 @@ class AppText {
   // Sorting Name
   String nameAlphabetical = 'Name (Alphabetical)', recentlyAdded = 'Recently Added', recentlyApplied = 'Recently Applied';
 
+  // Line Strike types
+  String cards = 'Cards', boards = 'Boards', sleeves = 'Sleeves';
+  
   // Card Elements
   String cardDarkElement = 'Dark', cardLightElement = 'Light', cardFireElement = 'Fire', cardIceElement = 'Ice', cardLightningElement = 'Lightning', cardWindElement = 'Wind';
+
   // One word Strings
   String ok = 'OK',
       cancel = 'Cancel',
@@ -193,7 +197,11 @@ class AppText {
       imageName = 'Image Name',
       showAll = 'Show All',
       lineStrike = 'Line Strike',
-      getImage = 'Get Image';
+      exportingFile = 'Exporting "%p%',
+      convertingFileToPng = 'Converting "%p%" to png',
+      restoringFile = 'Restoring "%p%"',
+      successfullyRestoredFile = 'Successfully restored "%p%"',
+      failedToRestoredFile = 'Failed to restore "%p%"';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -263,7 +271,8 @@ class AppText {
       showAppliedOnly = 'Show Applied Only',
       checkingAppliedVitalGauges = 'Checking Applied Vital Gauges',
       loadingLineStrikeCards = 'Loading Line Strike Cards',
-      selectCardElement = 'Select Card Element';
+      selectCardElement = 'Select Card Element',
+      exportToPngImage = 'Export to png image';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',

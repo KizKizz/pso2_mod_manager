@@ -7,7 +7,7 @@ import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
 import 'package:signals/signals_flutter.dart';
 
-Future<bool> lineStrikeCardApplyPopup(context, String customImagePath, LineStrikeCard card) async {
+Future<bool> lineStrikeCardRestorePopup(context, LineStrikeCard card, List<LineStrikeCard> lineStrikeCardsList) async {
   return await showDialog(
       barrierDismissible: false,
       context: context,
@@ -18,7 +18,7 @@ Future<bool> lineStrikeCardApplyPopup(context, String customImagePath, LineStrik
               insetPadding: const EdgeInsets.all(5),
               contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               content: FutureBuilder(
-                future: customImageApply(context, customImagePath, card),
+                future: customImageRemove(card, lineStrikeCardsList),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return Center(
@@ -40,7 +40,7 @@ Future<bool> lineStrikeCardApplyPopup(context, String customImagePath, LineStrik
                               Padding(
                                 padding: const EdgeInsets.only(top: 10),
                                 child: Text(
-                                  appText.dText(appText.editingMod, card.cardZeroDdsName),
+                                  appText.dText(appText.restoringFile, card.cardZeroDdsName),
                                   style: Theme.of(context).textTheme.bodyLarge,
                                 ),
                               ),
@@ -60,7 +60,7 @@ Future<bool> lineStrikeCardApplyPopup(context, String customImagePath, LineStrik
                       ],
                     ));
                   } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                    return FutureBuilderError(loadingText: appText.dText(appText.editingMod, card.cardZeroDdsName), snapshotError: snapshot.error.toString());
+                    return FutureBuilderError(loadingText: appText.dText(appText.restoringFile, card.cardZeroDdsName), snapshotError: snapshot.error.toString());
                   } else {
                     bool result = snapshot.data;
                     Navigator.of(context).pop(result);

@@ -11,6 +11,8 @@ String mainModSetListJsonPath = '';
 String mainAqmInjectListJsonPath = '';
 String mainVitalGaugeListJsonPath = '';
 String mainLineStrikeCardListJsonPath = '';
+String mainLineStrikeBoardListJsonPath = '';
+String mainLineStrikeSleeveListJsonPath = '';
 String backgroundDirPath = '$mainDataDirPath${p.separator}Background Images';
 String modAddTempDirPath = '$mainDataDirPath${p.separator}AddTemp';
 String modSwapTempDirPath = '$mainDataDirPath${p.separator}SwapTemp';
@@ -29,6 +31,10 @@ String lineStrikeExportedCardsDirPath = '$mainDataDirPath${p.separator}Line Stri
 String lineStrikeCardsDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}Cards';
 String lineStrikeCardTempDirPath = '$mainDataDirPath${p.separator}LineStrikeTemp${p.separator}Card';
 String lineStrikeCustomizedCacheDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}CustomizedCache';
+String lineStrikeBoardsDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}Boards';
+String lineStrikeBoardTempDirPath = '$mainDataDirPath${p.separator}LineStrikeTemp${p.separator}Board';
+String lineStrikeSleevesDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}Sleeves';
+String lineStrikeSleeveTempDirPath = '$mainDataDirPath${p.separator}LineStrikeTemp${p.separator}Sleeve';
 
 // External programs
 String sevenZipExePath = '${Directory.current.path}${p.separator}7zip-x64${p.separator}7z.exe';
@@ -80,6 +86,12 @@ void createMainDirs() {
 
     // Main line strike card list
     mainLineStrikeCardListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManLSCardList.json';
+    
+    // Main line strike board list
+    mainLineStrikeBoardListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManLSBoardList.json';
+    
+    // Main line strike sleeve list
+    mainLineStrikeSleeveListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManLSSleeveList.json';
   }
 
   // Profile 2
@@ -106,5 +118,11 @@ void createMainDirs() {
 
     // Main line strike card list
     mainLineStrikeCardListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManLSCardList_profile2.json';
+    
+    // Main line strike board list
+    mainLineStrikeBoardListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManLSBoardList_profile2.json';
+    
+    // Main line strike sleeve list
+    mainLineStrikeSleeveListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManLSSleeveList_profile2.json';
   }
 }

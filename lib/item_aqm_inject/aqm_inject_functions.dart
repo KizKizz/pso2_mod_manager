@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:background_downloader/background_downloader.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
+import 'package:pso2_mod_manager/app_paths/original_ice_download.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_item_class.dart';
 import 'package:pso2_mod_manager/item_bounding_radius/bounding_radius_popup.dart';
@@ -58,7 +58,7 @@ Future<bool> itemCustomAqmInject(context, String hqIcePath, String lqIcePath, bo
       File copiedFile = await localHQIce.copy(modAqmInjectTempDirPath + p.separator + p.basename(hqIcePath));
       downloadedFiles.add(copiedFile);
     } else {
-      File dlFile = await aqmInjectOriginalFileDownload('$hqIcePath.pat', 'm', modAqmInjectTempDirPath);
+      File dlFile = await originalIceDownload('$hqIcePath.pat', modAqmInjectTempDirPath, modAqmInjectingStatus);
       downloadedFiles.add(dlFile);
     }
     localLQIce = File(pso2binDirPath + p.separator + lqIcePath.replaceAll('/', p.separator));
@@ -66,7 +66,7 @@ Future<bool> itemCustomAqmInject(context, String hqIcePath, String lqIcePath, bo
       File copiedFile = await localLQIce.copy(modAqmInjectTempDirPath + p.separator + p.basename(lqIcePath));
       downloadedFiles.add(copiedFile);
     } else {
-      File dlFile = await aqmInjectOriginalFileDownload('$lqIcePath.pat', 'm', modAqmInjectTempDirPath);
+      File dlFile = await originalIceDownload('$lqIcePath.pat', modAqmInjectTempDirPath, modAqmInjectingStatus);
       downloadedFiles.add(dlFile);
     }
   }
@@ -163,7 +163,7 @@ Future<bool> itemCustomAqmRestoreAll(String hqIcePath, String lqIcePath) async {
   final filePaths = [hqIcePath, lqIcePath];
   for (var filePath in filePaths) {
     if (filePath.isNotEmpty) {
-      File downloadedFile = await aqmInjectOriginalFileDownload('$filePath.pat', 'm', pso2binDirPath + p.separator + p.dirname(filePath.replaceAll('/', p.separator)));
+      File downloadedFile = await originalIceDownload('$filePath.pat', pso2binDirPath + p.separator + p.dirname(filePath.replaceAll('/', p.separator)), modAqmInjectingStatus);
       if (downloadedFile.existsSync()) restoredCheck[filePaths.indexOf(filePath)] = true;
     }
   }
@@ -293,34 +293,6 @@ Future<bool> itemCustomAqmRestoreBounding(context, String hqIcePath, String lqIc
   } else {
     return restoreAllResult ? true : false;
   }
-}
-
-Future<File> aqmInjectOriginalFileDownload(String networkFilePath, String server, String saveDirLocation) async {
-  if (networkFilePath.isNotEmpty) {
-    final serverURLs = [segaMasterServerURL, segaPatchServerURL, segaMasterServerBackupURL, segaPatchServerBackupURL];
-    for (var url in serverURLs) {
-      final task = DownloadTask(
-          url: '$url$networkFilePath',
-          filename: p.basenameWithoutExtension(networkFilePath),
-          headers: {"User-Agent": "AQUA_HTTP"},
-          directory: saveDirLocation,
-          updates: Updates.statusAndProgress,
-          allowPause: false);
-
-      final result = await FileDownloader().download(task,
-          onProgress: (progress) => modAqmInjectingStatus.value = '${appText.dText(appText.downloadingFileName, p.basenameWithoutExtension(networkFilePath))} [ ${(progress * 100).round()}% ]');
-
-      switch (result.status) {
-        case TaskStatus.complete:
-          modAqmInjectingStatus.value = appText.fileDownloadSuccessful;
-          return File(saveDirLocation + p.separator + p.basenameWithoutExtension(networkFilePath));
-        default:
-          modAqmInjectingStatus.value = appText.fileDownloadFailed;
-      }
-    }
-  }
-
-  return File('');
 }
 
 void saveMasterAqmInjectListToJson() {

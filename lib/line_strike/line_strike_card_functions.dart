@@ -3,8 +3,10 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
+import 'package:pso2_mod_manager/app_paths/original_ice_download.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_card_class.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_card_element_popup.dart';
@@ -139,7 +141,7 @@ Future<bool> customImageApply(context, String imgPath, LineStrikeCard cardDataFi
             //cache
             String cachePath = cardDataFile.cardZeroIcePath.replaceFirst(pso2DataDirPath, lineStrikeCustomizedCacheDirPath);
             File(cachePath).parent.createSync(recursive: true);
-            replacedCardZeroIce.copySync(cachePath);
+            await replacedCardZeroIce.copy(cachePath);
             cardDataFile.cardZeroReplacedIceMd5 = await copiedFile.getMd5Hash();
             i = 10;
           } catch (e) {
@@ -495,4 +497,88 @@ Future<File?> cardIconArtReplace(img.Image? resizedIconImage, String iconIcePath
     }
   }
   return null;
+}
+
+Future<File?> cardExport(LineStrikeCard card) async {
+  Directory(lineStrikeCardTempDirPath).createSync(recursive: true);
+  File cachedIce = File(card.cardZeroIcePath.replaceFirst(pso2DataDirPath, lineStrikeCustomizedCacheDirPath));
+  if (cachedIce.existsSync()) {
+    final copiedIce = await cachedIce.copy(cachedIce.path.replaceFirst(cachedIce.parent.path, lineStrikeCardTempDirPath));
+    // Status
+    lineStrikeStatus.value = appText.dText(appText.extractingFile, p.basename(copiedIce.path));
+    Future.delayed(const Duration(microseconds: 10));
+
+    await Process.run('$zamboniExePath -outdir "$lineStrikeCardTempDirPath"', [copiedIce.path]);
+    File ddsFile = File(Uri.file('$lineStrikeCardTempDirPath/${p.basename(copiedIce.path)}_ext/group2/${card.cardZeroDdsName}.dds').toFilePath());
+    if (ddsFile.existsSync()) {
+      // Status
+      lineStrikeStatus.value = appText.dText(appText.convertingFileToPng, p.basename(copiedIce.path));
+      Future.delayed(const Duration(microseconds: 10));
+
+      await Process.run(pngDdsConvExePath, [ddsFile.path, ddsFile.path.replaceFirst(p.extension(ddsFile.path), '.png'), '-ddstopng']);
+      img.Image? pngFile = await img.decodePngFile(ddsFile.path.replaceFirst(p.extension(ddsFile.path), '.png'));
+
+      img.Image croppedImage = img.copyCrop(
+        pngFile!,
+        x: 1,
+        y: 0,
+        width: 367,
+        height: 512,
+      );
+      DateTime now = DateTime.now();
+      String formattedDate = DateFormat('MM-dd-yyyy-kk-mm-ss').format(now);
+      File exportedFile = await File(Uri.file('$lineStrikeExportedCardsDirPath/${card.cardZeroDdsName}_$formattedDate.png').toFilePath()).writeAsBytes(img.encodePng(croppedImage));
+      if (exportedFile.existsSync()) {
+        // Status
+        lineStrikeStatus.value = appText.success;
+        Future.delayed(const Duration(microseconds: 10));
+
+        return exportedFile;
+      }
+    }
+  }
+  // Status
+  lineStrikeStatus.value = appText.failed;
+  Future.delayed(const Duration(microseconds: 10));
+
+  return null;
+}
+
+Future<bool> customImageRemove(LineStrikeCard card, List<LineStrikeCard> lineStrikeCardList) async {
+  File downloadedCardZeroIceFile =
+      await originalIceDownload('${card.cardZeroIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(card.cardZeroIcePath), lineStrikeStatus);
+  File downloadedCardZeroIconIceFile =
+      await originalIceDownload('${card.cardZeroIconIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(card.cardZeroIconIcePath), lineStrikeStatus);
+  File downloadedCardOneIceFile = await originalIceDownload('${card.cardOneIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(card.cardOneIcePath), lineStrikeStatus);
+  File downloadedCardOneIconIceFile =
+      await originalIceDownload('${card.cardOneIconIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(card.cardOneIconIcePath), lineStrikeStatus);
+  //remove settings
+  if (downloadedCardZeroIceFile.existsSync()) card.cardZeroReplacedIceMd5 = '';
+  if (downloadedCardZeroIconIceFile.existsSync()) card.cardZeroReplacedIconIceMd5 = '';
+  if (downloadedCardOneIceFile.existsSync()) card.cardOneReplacedIceMd5 = '';
+  if (downloadedCardOneIconIceFile.existsSync()) card.cardOneReplacedIconIceMd5 = '';
+  if (card.cardZeroReplacedIceMd5.isEmpty && card.cardZeroReplacedIconIceMd5.isEmpty && card.cardOneReplacedIceMd5.isEmpty && card.cardOneReplacedIconIceMd5.isEmpty) {
+    card.replacedImagePath = '';
+    card.isReplaced = false;
+    // Remove cache
+    File cardZeroCache = File(card.cardZeroIcePath.replaceFirst(pso2DataDirPath, lineStrikeCustomizedCacheDirPath));
+    if (cardZeroCache.existsSync()) await cardZeroCache.delete(recursive: true);
+    File cardZeroIconCache = File(card.cardZeroIconIcePath.replaceFirst(pso2DataDirPath, lineStrikeCustomizedCacheDirPath));
+    if (cardZeroIconCache.existsSync()) await cardZeroIconCache.delete(recursive: true);
+    File cardOneCache = File(card.cardOneIcePath.replaceFirst(pso2DataDirPath, lineStrikeCustomizedCacheDirPath));
+    if (cardOneCache.existsSync()) await cardOneCache.delete(recursive: true);
+    File cardOneIconCache = File(card.cardOneIconIcePath.replaceFirst(pso2DataDirPath, lineStrikeCustomizedCacheDirPath));
+    if (cardOneIconCache.existsSync()) await cardOneIconCache.delete(recursive: true);
+    saveMasterLineStrikeCardListToJson(lineStrikeCardList);
+    // Status
+    lineStrikeStatus.value = appText.success;
+    Future.delayed(const Duration(microseconds: 10));
+
+    return true;
+  }
+  // Status
+  lineStrikeStatus.value = appText.failed;
+  Future.delayed(const Duration(microseconds: 10));
+
+  return false;
 }
