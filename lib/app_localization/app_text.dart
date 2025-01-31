@@ -46,7 +46,7 @@ class AppText {
 
   // Line Strike types
   String cards = 'Cards', boards = 'Boards', sleeves = 'Sleeves';
-  
+
   // Card Elements
   String cardDarkElement = 'Dark', cardLightElement = 'Light', cardFireElement = 'Fire', cardIceElement = 'Ice', cardLightningElement = 'Lightning', cardWindElement = 'Wind';
 
@@ -201,7 +201,8 @@ class AppText {
       convertingFileToPng = 'Converting "%p%" to png',
       restoringFile = 'Restoring "%p%"',
       successfullyRestoredFile = 'Successfully restored "%p%"',
-      failedToRestoredFile = 'Failed to restore "%p%"';
+      failedToRestoredFile = 'Failed to restore "%p%"',
+      reapplyingFile = 'Re-Applying "%p%"';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -272,8 +273,12 @@ class AppText {
       checkingAppliedVitalGauges = 'Checking Applied Vital Gauges',
       loadingLineStrikeCards = 'Loading Line Strike Cards',
       loadingLineStrikeBoards = 'Loading Line Strike Boards',
+      loadingLineStrikeSleeves = 'Loading Line Strike Sleeves',
       selectCardElement = 'Select Card Element',
-      exportToPngImage = 'Export to png image';
+      exportToPngImage = 'Export to png image',
+      checkingAppliedLineStrikeItems = 'Checking Applied Line Strike Items',
+      loadingQuickSwapItems = 'Loading Quick Swap Items',
+      selecteMoreItems = 'Select More Items';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',
@@ -288,8 +293,9 @@ class AppText {
       failedToReplaceCard = 'Failed to replace card',
       failedToReplaceCardIcon = 'Failed to replace card icon',
       failedToReplaceBoard = 'Failed to replace board',
-      failedToReplaceBoardIcon = 'Failed to replace board icon';
-
+      failedToReplaceBoardIcon = 'Failed to replace board icon',
+      failedToReplaceSleeve = 'Failed to replace sleeve',
+      failedToReplaceSleeveIcon = 'Failed to replace sleeve icon';
 
   // Infos
   String pso2binDirPathInfo = 'PSO2 game data folder, this folder located inside the game installation directory',

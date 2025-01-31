@@ -27,7 +27,7 @@ Future<List<LineStrikeBoard>> lineStrikeBoardsFetch() async {
 
   List<ItemData> boardItemData = pItemData.where((element) => element.csvFileName == 'Line Duel Boards.csv').toList();
 
-  for (var data in boardItemData.where((e) => boardData.indexWhere((b) => e.iconImagePath.contains(b.iceDdsName)) == -1)) {
+  for (var data in boardItemData.where((e) => boardData.indexWhere((b) => e.iconImagePath.contains(b.iconIceDdsName)) == -1)) {
     await Future.delayed(const Duration(milliseconds: 50));
     String icePath = p.withoutExtension(pso2binDirPath +
         p.separator +
@@ -73,7 +73,7 @@ Future<bool> customBoardImageApply(String imgPath, LineStrikeBoard boardDataFile
 
   //download and replace
   //icon
-  File downloadedIconIceFile = await originalIceDownload('${boardDataFile.iconIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', lineStrikeBoardTempDirPath, lineStrikeStatus);
+  File downloadedIconIceFile = await originalIceDownload('${boardDataFile.iconIcePath.replaceFirst(pso2binDirPath + p.separator, '')}.pat', lineStrikeBoardTempDirPath, lineStrikeStatus);
   await Process.run('$zamboniExePath -outdir "$lineStrikeBoardTempDirPath"', [downloadedIconIceFile.path]);
   String newTempIconIcePath = Uri.file('$lineStrikeBoardTempDirPath/${p.basename(boardDataFile.iconIcePath)}_ext/group2').toFilePath();
 

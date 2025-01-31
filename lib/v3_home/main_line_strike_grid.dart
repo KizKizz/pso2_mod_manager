@@ -12,6 +12,9 @@ import 'package:pso2_mod_manager/line_strike/line_strike_card_custom_image_grid_
 import 'package:pso2_mod_manager/line_strike/line_strike_card_functions.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_card_original_grid_layout.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_image_crop_popup.dart';
+import 'package:pso2_mod_manager/line_strike/line_strike_sleeve_custom_image_grid_layout.dart';
+import 'package:pso2_mod_manager/line_strike/line_strike_sleeve_functions.dart';
+import 'package:pso2_mod_manager/line_strike/line_strike_sleeve_original_grid_layout.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_type_select_button.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:signals/signals_flutter.dart';
@@ -46,7 +49,9 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
       customBackgroundImages = await customCardImagesFetch();
     } else if (selectedLineStrikeType.watch(context) == LineStrikeItemType.board) {
       customBackgroundImages = await customBoardImageFetch();
-    } else if (selectedLineStrikeType.watch(context) == LineStrikeItemType.sleeve) {}
+    } else if (selectedLineStrikeType.watch(context) == LineStrikeItemType.sleeve) {
+      customBackgroundImages = await customSleeveImageFetch();
+    }
     setState(() {});
   }
 
@@ -113,6 +118,8 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
                         customBackgroundImages = await customCardImagesFetch();
                       } else if (selectedLineStrikeType.value == LineStrikeItemType.board) {
                         customBackgroundImages = await customBoardImageFetch();
+                      } else if (selectedLineStrikeType.value == LineStrikeItemType.sleeve) {
+                        customBackgroundImages = await customSleeveImageFetch();
                       }
                       setState(() {});
                     },
@@ -155,6 +162,18 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
                 LineStrikeBoardCustomImageGridLayout(customImageFiles: customBackgroundImages, lScrollController: lScrollController),
                 LineStrikeBoardOriginalGridLayout(
                     boards: lineStrikeShowAppliedOnly ? masterLineStrikeBoardList.where((e) => e.isReplaced).toList() : masterLineStrikeBoardList, rScrollController: rScrollController)
+              ],
+            )),
+          ),
+          Visibility(
+            visible: selectedLineStrikeType.value == LineStrikeItemType.sleeve,
+            child: Expanded(
+                child: Row(
+              spacing: 5,
+              children: [
+                LineStrikesSleeveCustomImageGridLayout(customImageFiles: customBackgroundImages, lScrollController: lScrollController),
+                LineStrikeSleeveOriginalGridLayout(
+                    sleeves: lineStrikeShowAppliedOnly ? masterLineStrikeSleeveList.where((e) => e.isReplaced).toList() : masterLineStrikeSleeveList, rScrollController: rScrollController)
               ],
             )),
           ),

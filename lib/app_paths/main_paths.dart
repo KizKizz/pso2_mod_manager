@@ -13,6 +13,7 @@ String mainVitalGaugeListJsonPath = '';
 String mainLineStrikeCardListJsonPath = '';
 String mainLineStrikeBoardListJsonPath = '';
 String mainLineStrikeSleeveListJsonPath = '';
+String mainQuickSwapListJsonPath = '';
 String backgroundDirPath = '$mainDataDirPath${p.separator}Background Images';
 String modAddTempDirPath = '$mainDataDirPath${p.separator}AddTemp';
 String modSwapTempDirPath = '$mainDataDirPath${p.separator}SwapTemp';
@@ -92,6 +93,9 @@ void createMainDirs() {
     
     // Main line strike sleeve list
     mainLineStrikeSleeveListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManLSSleeveList.json';
+    
+    // Main quick swap list
+    mainQuickSwapListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManQuickSwapApplyItemList.json';
   }
 
   // Profile 2
@@ -124,5 +128,8 @@ void createMainDirs() {
     
     // Main line strike sleeve list
     mainLineStrikeSleeveListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManLSSleeveList_profile2.json';
+    
+    // Main quick swap list
+    mainQuickSwapListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManQuickSwapApplyItemList_profile2.json';
   }
 }

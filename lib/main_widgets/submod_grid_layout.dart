@@ -7,13 +7,16 @@ import 'package:pso2_mod_manager/item_bounding_radius/bounding_radius_popup.dart
 import 'package:pso2_mod_manager/item_swap/mod_swap_popup.dart';
 import 'package:pso2_mod_manager/main_widgets/info_tag.dart';
 import 'package:pso2_mod_manager/main_widgets/popup_menu_functions.dart';
+import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_functions.dart';
+import 'package:pso2_mod_manager/quick_swap/quick_swap_items_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
@@ -76,7 +79,6 @@ class SubmodCardLayout extends StatefulWidget {
 }
 
 class _SubmodCardLayoutState extends State<SubmodCardLayout> {
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -147,6 +149,50 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                           icon: Icon(widget.submod.activeInSets!.contains(widget.modSetName) ? Icons.check_box_outlined : Icons.check_box_outline_blank_rounded,
                               color: widget.submod.activeInSets!.contains(widget.modSetName) ? Theme.of(context).colorScheme.primary : null)),
                     )),
+                // Quick swap Menu
+                PopupMenuButton(
+                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
+                    color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
+                    padding: EdgeInsets.zero,
+                    menuPadding: EdgeInsets.zero,
+                    icon: const Icon(Icons.add),
+                    tooltip: '',
+                    elevation: 5,
+                    style: ButtonStyle(
+                        visualDensity: VisualDensity.adaptivePlatformDensity,
+                        shape: WidgetStatePropertyAll(
+                            RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1), borderRadius: const BorderRadius.all(Radius.circular(20))))),
+                    itemBuilder: (BuildContext context) {
+                      List<ItemData> selectedQuickSwapItems = masterQuickSwapItemList
+                          .where((e) =>
+                              e.getName().isNotEmpty &&
+                                  (e.category == widget.submod.category ||
+                                      widget.submod.category == defaultCategoryDirs[16] && e.category == defaultCategoryDirs[1] ||
+                                      widget.submod.category == defaultCategoryDirs[2] && e.category == defaultCategoryDirs[11]) ||
+                              widget.submod.category == defaultCategoryDirs[11] && e.category == defaultCategoryDirs[2])
+                          .toList();
+                      return [
+                        for (int i = 0; i < selectedQuickSwapItems.length; i++)
+                          PopupMenuItem(
+                              onTap: () {},
+                              child: Row(
+                                spacing: 10,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  GenericItemIconBox(iconImagePaths: [selectedQuickSwapItems[i].iconImagePath], boxSize: const Size(60, 60), isNetwork: true),
+                                  Text(selectedQuickSwapItems[i].getName())
+                                ],
+                              )),
+                        PopupMenuItem(
+                            onTap: () async {
+                              await quickSwapItemsPopup(context, widget.submod.category);
+                              setState(() {});
+                            },
+                            child: MenuIconItem(icon: Icons.add, text: appText.selecteMoreItems)),
+                      ];
+                    }),
+
+                // Function menu
                 PopupMenuButton(
                   shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
                   color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),

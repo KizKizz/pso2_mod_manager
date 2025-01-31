@@ -8,8 +8,10 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/app_paths/original_ice_download.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/line_strike/line_strike_board_class.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_card_class.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_card_element_popup.dart';
+import 'package:pso2_mod_manager/line_strike/line_strike_sleeve_class.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:path/path.dart' as p;
 import 'package:image/image.dart' as img;
@@ -625,4 +627,69 @@ Future<bool> customImageRemove(LineStrikeCard card, List<LineStrikeCard> lineStr
   Future.delayed(const Duration(microseconds: 10));
 
   return false;
+}
+
+Future<void> unappliedLineStrikeCheck() async {
+  // Cards
+  List<LineStrikeCard> replacedCards = masterLineStrikeCardList.where((e) => e.isReplaced).toList();
+  for (var card in replacedCards) {
+    if (card.cardZeroReplacedIceMd5 != await File(card.cardZeroIcePath).getMd5Hash()) {
+      // Status
+      lineStrikeStatus.value = appText.dText(appText.reapplyingFile, p.basename(card.cardZeroIcePath));
+      Future.delayed(const Duration(microseconds: 10));
+      await File(card.cardZeroIcePath.replaceFirst(pso2DataDirPath, lineStrikeCustomizedCacheDirPath)).copy(card.cardZeroIcePath);
+    }
+    if (card.cardZeroReplacedIconIceMd5 != await File(card.cardZeroIconIcePath).getMd5Hash()) {
+      // Status
+      lineStrikeStatus.value = appText.dText(appText.reapplyingFile, p.basename(card.cardZeroIconIcePath));
+      Future.delayed(const Duration(microseconds: 10));
+      await File(card.cardZeroIconIcePath.replaceFirst(pso2DataDirPath, lineStrikeCustomizedCacheDirPath)).copy(card.cardZeroIconIcePath);
+    }
+    if (card.cardOneReplacedIceMd5 != await File(card.cardOneIcePath).getMd5Hash()) {
+      // Status
+      lineStrikeStatus.value = appText.dText(appText.reapplyingFile, p.basename(card.cardOneIcePath));
+      Future.delayed(const Duration(microseconds: 10));
+      await File(card.cardOneIcePath.replaceFirst(pso2DataDirPath, lineStrikeCustomizedCacheDirPath)).copy(card.cardOneIcePath);
+    }
+    if (card.cardOneReplacedIconIceMd5 != await File(card.cardOneIconIcePath).getMd5Hash()) {
+      // Status
+      lineStrikeStatus.value = appText.dText(appText.reapplyingFile, p.basename(card.cardOneIconIcePath));
+      Future.delayed(const Duration(microseconds: 10));
+      await File(card.cardOneIconIcePath.replaceFirst(pso2DataDirPath, lineStrikeCustomizedCacheDirPath)).copy(card.cardOneIconIcePath);
+    }
+  }
+
+  // Boards
+  List<LineStrikeBoard> replacedBoards = masterLineStrikeBoardList.where((e) => e.isReplaced).toList();
+  for (var board in replacedBoards) {
+    if (board.replacedIceMd5 != await File(board.icePath).getMd5Hash()) {
+      // Status
+      lineStrikeStatus.value = appText.dText(appText.reapplyingFile, p.basename(board.icePath));
+      Future.delayed(const Duration(microseconds: 10));
+      await File(board.icePath.replaceFirst(pso2DataDirPath, lineStrikeCustomizedCacheDirPath)).copy(board.icePath);
+    }
+    if (board.replacedIconIceMd5 != await File(board.iconIcePath).getMd5Hash()) {
+      // Status
+      lineStrikeStatus.value = appText.dText(appText.reapplyingFile, p.basename(board.iconIcePath));
+      Future.delayed(const Duration(microseconds: 10));
+      await File(board.iconIcePath.replaceFirst(pso2DataDirPath, lineStrikeCustomizedCacheDirPath)).copy(board.iconIcePath);
+    }
+  }
+  
+  // Sleeves
+  List<LineStrikeSleeve> replacedSleeves = masterLineStrikeSleeveList.where((e) => e.isReplaced).toList();
+  for (var sleeve in replacedSleeves) {
+    if (sleeve.replacedIceMd5 != await File(sleeve.icePath).getMd5Hash()) {
+      // Status
+      lineStrikeStatus.value = appText.dText(appText.reapplyingFile, p.basename(sleeve.icePath));
+      Future.delayed(const Duration(microseconds: 10));
+      await File(sleeve.icePath.replaceFirst(pso2DataDirPath, lineStrikeCustomizedCacheDirPath)).copy(sleeve.icePath);
+    }
+    if (sleeve.replacedIconIceMd5 != await File(sleeve.iconIcePath).getMd5Hash()) {
+      // Status
+      lineStrikeStatus.value = appText.dText(appText.reapplyingFile, p.basename(sleeve.iconIcePath));
+      Future.delayed(const Duration(microseconds: 10));
+      await File(sleeve.iconIcePath.replaceFirst(pso2DataDirPath, lineStrikeCustomizedCacheDirPath)).copy(sleeve.iconIcePath);
+    }
+  }
 }

@@ -80,3 +80,4 @@ List<LineStrikeSleeve> masterLineStrikeSleeveList = [];
 List<File> modCustomAQMFiles = [];
 Signal<String> mainGridStatus = Signal('');
 Signal<bool> checksumAvailability = Signal(false);
+List<ItemData> masterQuickSwapItemList = [];
