@@ -240,6 +240,7 @@ extension IndexOfElements<T> on List<T> {
 }
 
 Future<void> modSwapTempDirsCreate() async {
+  await Directory(modSwapTempDirPath).create(recursive: true);
   await Directory(modSwapTempLItemDirPath).create(recursive: true);
   await Directory(modSwapTempRItemDirPath).create(recursive: true);
   await Directory(modSwapTempOutputDirPath).create(recursive: true);

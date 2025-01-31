@@ -112,7 +112,9 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
                     child: OutlinedButton(
                         onPressed: () async {
                           await modViewPopup(context, widget.item);
-                          setState(() {});
+                          if (mounted) {
+                            setState(() {});
+                          }
                         },
                         child: Text(appText.viewMods)),
                   )

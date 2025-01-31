@@ -67,8 +67,10 @@ class _PopupListTileState extends State<PopupListTile> {
                           onTap: () async {
                             await modDelete(context, widget.item, widget.mod);
                             modPopupStatus.value = '${widget.mod.modName} deleted';
-                            if (widget.mod.submods.isEmpty) {
+                            if (widget.item.mods.isEmpty) {
                               mainGridStatus.value = '"${widget.mod.modName}" in "${widget.item.itemName}" is empty and removed';
+                              // ignore: use_build_context_synchronously
+                              Navigator.of(context).pop();
                             }
                           },
                           child: MenuIconItem(icon: Icons.delete_forever_outlined, text: appText.delete)),

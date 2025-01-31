@@ -18,3 +18,10 @@ Future<List<ItemData>> quickSwapItemsFetch() async {
 
   return structureFromJson;
 }
+
+void saveMasterQuickSwapItemListToJson(List<ItemData> dataList) {
+  //Save to json
+  dataList.map((data) => data.toJson()).toList();
+  const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+  File(mainQuickSwapListJsonPath).writeAsStringSync(encoder.convert(dataList));
+}

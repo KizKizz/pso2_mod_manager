@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
+import 'package:pso2_mod_manager/quick_swap/quick_swap_functions.dart';
 import 'package:pso2_mod_manager/quick_swap/quick_swap_item_grid_layout.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
@@ -23,9 +24,9 @@ Future<void> quickSwapItemsPopup(context, String category) async {
               .where((e) =>
                   e.getName().isNotEmpty &&
                       (e.category == category ||
-                          category == defaultCategoryDirs[16] && e.category == defaultCategoryDirs[1] ||
-                          category == defaultCategoryDirs[2] && e.category == defaultCategoryDirs[11]) ||
-                  category == defaultCategoryDirs[11] && e.category == defaultCategoryDirs[2])
+                          (category == defaultCategoryDirs[16] && e.category == defaultCategoryDirs[1]) ||
+                          (category == defaultCategoryDirs[2] && e.category == defaultCategoryDirs[11])) ||
+                  (category == defaultCategoryDirs[11] && e.category == defaultCategoryDirs[2]))
               .toList();
 
           selectedItems = masterQuickSwapItemList
@@ -55,6 +56,7 @@ Future<void> quickSwapItemsPopup(context, String category) async {
                     selectedList: false,
                     onButtonPress: (selectedItem) {
                       masterQuickSwapItemList.add(selectedItem);
+                      saveMasterQuickSwapItemListToJson(masterQuickSwapItemList);
                       setState(
                         () {},
                       );
@@ -67,6 +69,7 @@ Future<void> quickSwapItemsPopup(context, String category) async {
                     selectedList: true,
                     onButtonPress: (selectedItem) {
                       masterQuickSwapItemList.removeWhere((e) => e.compare(selectedItem));
+                      saveMasterQuickSwapItemListToJson(masterQuickSwapItemList);
                       setState(
                         () {},
                       );

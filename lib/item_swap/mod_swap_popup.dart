@@ -15,6 +15,8 @@ import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
 import 'package:signals/signals_flutter.dart';
 
+Signal<bool> closeModSwapPopup = Signal(false);
+
 Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
   ScrollController lScrollController = ScrollController();
   ScrollController rScrollController = ScrollController();
@@ -32,6 +34,8 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (dialogContext, setState) {
+          
+
           displayingItems = pItemData
               .where((e) => showNoNameItems.watch(context) || (!showNoNameItems.watch(context) && e.getName().isNotEmpty))
               .where((e) => submod.category == defaultCategoryDirs[1]
@@ -208,9 +212,9 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                     children: [
                       OutlinedButton(
                           onPressed: lSelectedItemData.watch(context) != null && rSelectedItemData.watch(context) != null
-                              ? () {
+                              ? () async {
                                   itemSwapWorkingStatus.value = '';
-                                  itemSwapWorkingPopup(context, false, lSelectedItemData.value!, rSelectedItemData.value!, mod, submod);
+                                  await itemSwapWorkingPopup(context, false, lSelectedItemData.value!, rSelectedItemData.value!, mod, submod);
                                 }
                               : null,
                           child: Text(appText.next)),

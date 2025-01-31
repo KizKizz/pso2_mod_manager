@@ -4,35 +4,52 @@ import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
-import 'package:pso2_mod_manager/item_swap/item_swap_cate_select_button.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_acc_functions.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_emote_functions.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_general_functions.dart';
-import 'package:pso2_mod_manager/item_swap/mod_swap_popup.dart';
-import 'package:pso2_mod_manager/mod_add/adding_mod_class.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
+import 'package:pso2_mod_manager/mod_add/mod_add_function.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
+import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
-import 'package:pso2_mod_manager/v3_home/homepage.dart';
 import 'package:pso2_mod_manager/v3_home/mod_add.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 Signal<String> itemSwapWorkingStatus = Signal('');
 
-Future<void> itemSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, ItemData rItemData, Mod mod, SubMod submod) async {
+void quickSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, ItemData rItemData, Mod mod, SubMod submod) {
   Directory swapOutputDir = Directory('');
 
-  await showDialog(
+  showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (dialogContext, setState) {
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            swapOutputDir = Directory('');
+            if (submod.category == defaultCategoryDirs[0]) {
+              swapOutputDir = await modSwapAccessories(context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), rItemData.getItemID());
+            } else if (submod.category == defaultCategoryDirs[14] || submod.category == defaultCategoryDirs[7]) {
+              swapOutputDir = await modSwapEmotes(context, isVanillaSwap, mod, submod, rItemData.getName(), lItemData.getIceDetails(), rItemData.getIceDetails(), []);
+            } else {
+              swapOutputDir =
+                  await modSwapGeneral(context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), lItemData.getItemID(), rItemData.getItemID());
+            }
+            if (swapOutputDir.existsSync()) {
+              modAddDragDropPaths.add(swapOutputDir.path);
+              await modAddUnpack(modAddDragDropPaths.toList());
+              modAddDragDropPaths.clear();
+              modAddingList = await modAddSort();
+              await modAddToMasterList(false, ModSet('', 0, false, false, DateTime(0), DateTime(0), []));
+            }
+            // ignore: use_build_context_synchronously
+            Navigator.of(context).pop();
+          });
           return AlertDialog(
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: const BorderRadius.all(Radius.circular(5))),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
@@ -110,15 +127,6 @@ Future<void> itemSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemDat
                           visible: !isVanillaSwap,
                           child: Text(submod.submodName, style: Theme.of(context).textTheme.labelLarge),
                         )
-                        // SingleChildScrollView(
-                        //   physics: const SuperRangeMaintainingScrollPhysics(),
-                        //   child: Column(
-                        //     mainAxisAlignment: MainAxisAlignment.start,
-                        //     crossAxisAlignment: CrossAxisAlignment.start,
-                        //     mainAxisSize: MainAxisSize.min,
-                        //     children: rItemData.getDetails().map((e) => Text(e)).toList(),
-                        //   ),
-                        // )
                       ],
                     ))
               ],
@@ -131,60 +139,6 @@ Future<void> itemSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemDat
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(itemSwapWorkingStatus.watch(context)),
-                  OverflowBar(
-                    spacing: 5,
-                    overflowSpacing: 5,
-                    children: [
-                      Visibility(
-                        visible: swapOutputDir.existsSync(),
-                        child: OutlinedButton(
-                            onPressed: () async {
-                              launchUrlString(swapOutputDir.parent.path);
-                            },
-                            child: Text(appText.openInFileExplorer)),
-                      ),
-                      Visibility(
-                        visible: swapOutputDir.existsSync(),
-                        child: OutlinedButton(
-                            onPressed: () async {
-                              modAddDragDropPaths.add(swapOutputDir.path);
-                              mainSideMenuController.changePage(-1);
-                              footerSideMenuController.changePage(0);
-                              homepageCurrentWidget.value = const ModAdd();
-                              itemSwapWorkingStatus.value = '';
-                              curModAddDragDropStatus.value = ModAddDragDropState.fileInList;
-                              closeModSwapPopup.value = true;
-                              Navigator.of(context).pop();
-                            },
-                            child: Text(appText.addToModManager)),
-                      ),
-                      Visibility(
-                        visible: !swapOutputDir.existsSync(),
-                        child: OutlinedButton(
-                            onPressed: itemSwapWorkingStatus.watch(context).isEmpty
-                                ? () async {
-                                    swapOutputDir = Directory('');
-                                    if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[0]) {
-                                      swapOutputDir = await modSwapAccessories(
-                                          context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), rItemData.getItemID());
-                                    } else if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[14] || selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7]) {
-                                      swapOutputDir = await modSwapEmotes(context, isVanillaSwap, mod, submod, rItemData.getName(), lItemData.getIceDetails(), rItemData.getIceDetails(), []);
-                                    } else {
-                                      swapOutputDir = await modSwapGeneral(
-                                          context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), lItemData.getItemID(), rItemData.getItemID());
-                                    }
-                                  }
-                                : null,
-                            child: Text(appText.swap)),
-                      ),
-                      OutlinedButton(
-                          onPressed: () {
-                            itemSwapWorkingStatus.value = '';
-                            Navigator.of(context).pop();
-                          },
-                          child: Text(appText.returns))
-                    ],
-                  )
                 ],
               )
             ],

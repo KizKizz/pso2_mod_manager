@@ -178,7 +178,7 @@ Future<void> modAddToMasterList(bool addingToSet, ModSet modSet) async {
 
         await io.copyPath(modAddingItem.modDir.path, modAddingItem.modDir.path.replaceFirst(modAddTempSortedDirPath, newItemDirDestPath));
         if (Directory(newItemDirDestPath).existsSync() && Directory(newItemDirDestPath).listSync().whereType<File>().toList().indexWhere((e) => p.basename(e.path) == '$itemName.png') == -1) {
-          final response = await http.get(Uri.parse(item.iconImagePath));
+          final response = await http.get(Uri.parse(githubIconDatabaseLink + item.iconImagePath));
           if (response.statusCode == 200) File(newItemDirDestPath + p.separator + p.basename(item.iconImagePath)).writeAsBytesSync(response.bodyBytes);
         }
 

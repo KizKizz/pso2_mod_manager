@@ -15,6 +15,7 @@ import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_functions.dart';
 import 'package:pso2_mod_manager/quick_swap/quick_swap_items_popup.dart';
+import 'package:pso2_mod_manager/quick_swap/quick_swap_working_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
@@ -174,12 +175,21 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                       return [
                         for (int i = 0; i < selectedQuickSwapItems.length; i++)
                           PopupMenuItem(
-                              onTap: () {},
+                              onTap: () {
+                                List<ItemData> lItemData = pItemData
+                                    .where((e) => e.category == widget.submod.category && widget.submod.getModFileNames().indexWhere((f) => e.getIceDetailsWithoutKeys().contains(f)) != -1)
+                                    .toList();
+
+                                quickSwapWorkingPopup(context, false, lItemData.first, selectedQuickSwapItems[i], widget.mod, widget.submod);
+                              },
                               child: Row(
                                 spacing: 10,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  GenericItemIconBox(iconImagePaths: [selectedQuickSwapItems[i].iconImagePath], boxSize: const Size(60, 60), isNetwork: true),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 2),
+                                    child: GenericItemIconBox(iconImagePaths: [selectedQuickSwapItems[i].iconImagePath], boxSize: const Size(60, 60), isNetwork: true),
+                                  ),
                                   Text(selectedQuickSwapItems[i].getName())
                                 ],
                               )),
