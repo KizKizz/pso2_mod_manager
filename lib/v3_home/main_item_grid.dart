@@ -33,7 +33,7 @@ class _MainItemGridState extends State<MainItemGrid> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (selectedDisplaySort.watch(context) != selectedDisplaySort.peek()) {
+    if (selectedDisplaySort.watch(context) != selectedDisplaySort.peek() || mainGridStatus.watch(context) != mainGridStatus.peek()) {
       setState(
         () {},
       );

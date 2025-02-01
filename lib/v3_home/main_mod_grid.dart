@@ -33,12 +33,12 @@ class _MainModGridState extends State<MainModGrid> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (selectedDisplaySort.watch(context) != selectedDisplaySort.peek()) {
+    if (selectedDisplaySort.watch(context) != selectedDisplaySort.peek() || mainGridStatus.watch(context) != mainGridStatus.peek()) {
       setState(
         () {},
       );
     }
-    
+
     // Suggestions
     List<String> filteredStrings = [];
     for (var type in masterModList) {
@@ -73,7 +73,7 @@ class _MainModGridState extends State<MainModGrid> {
     } else {
       displayingCategories = categories.where((e) => e.categoryName == selectedDisplayCategory.watch(context)).toList();
     }
-    
+
     // Sort
     if (selectedDisplaySort.value == modSortingSelections[0]) {
       for (var category in displayingCategories) {
@@ -102,53 +102,53 @@ class _MainModGridState extends State<MainModGrid> {
               Expanded(
                 flex: 3,
                 child: SizedBox(
-            height: 40,
-            child: Stack(alignment: AlignmentDirectional.centerEnd, children: [
-              SearchField<String>(
-                searchInputDecoration: SearchInputDecoration(
-                    filled: true,
-                    fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-                    isDense: true,
-                    contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 30),
-                    cursorHeight: 15,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
-                    cursorColor: Theme.of(context).colorScheme.inverseSurface),
-                suggestions: filteredStrings
-                    .map(
-                      (e) => SearchFieldListItem<String>(
-                        e,
-                        item: e,
-                        child: Padding(padding: const EdgeInsets.all(8.0), child: Text(e)),
+                  height: 40,
+                  child: Stack(alignment: AlignmentDirectional.centerEnd, children: [
+                    SearchField<String>(
+                      searchInputDecoration: SearchInputDecoration(
+                          filled: true,
+                          fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                          isDense: true,
+                          contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 30),
+                          cursorHeight: 15,
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
+                          cursorColor: Theme.of(context).colorScheme.inverseSurface),
+                      suggestions: filteredStrings
+                          .map(
+                            (e) => SearchFieldListItem<String>(
+                              e,
+                              item: e,
+                              child: Padding(padding: const EdgeInsets.all(8.0), child: Text(e)),
+                            ),
+                          )
+                          .toList(),
+                      hint: appText.search,
+                      controller: searchTextController,
+                      onSuggestionTap: (p0) {
+                        searchTextController.text = p0.searchKey;
+                        setState(() {});
+                      },
+                      onSearchTextChanged: (p0) {
+                        setState(() {});
+                        return null;
+                      },
+                    ),
+                    Visibility(
+                      visible: searchTextController.value.text.isNotEmpty,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 4),
+                        child: ElevatedButton(
+                            onPressed: searchTextController.value.text.isNotEmpty
+                                ? () {
+                                    searchTextController.clear();
+                                    setState(() {});
+                                  }
+                                : null,
+                            child: const Icon(Icons.close)),
                       ),
                     )
-                    .toList(),
-                hint: appText.search,
-                controller: searchTextController,
-                onSuggestionTap: (p0) {
-                  searchTextController.text = p0.searchKey;
-                  setState(() {});
-                },
-                onSearchTextChanged: (p0) {
-                  setState(() {});
-                  return null;
-                },
-              ),
-              Visibility(
-                visible: searchTextController.value.text.isNotEmpty,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 4),
-                  child: ElevatedButton(
-                      onPressed: searchTextController.value.text.isNotEmpty
-                          ? () {
-                              searchTextController.clear();
-                              setState(() {});
-                            }
-                          : null,
-                      child: const Icon(Icons.close)),
+                  ]),
                 ),
-              )
-            ]),
-          ),
               ),
               Expanded(flex: 1, child: SortingButtons(scrollController: controller)),
               Expanded(

@@ -4,6 +4,7 @@ import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/quick_swap/quick_swap_functions.dart';
 import 'package:pso2_mod_manager/quick_swap/quick_swap_item_grid_layout.dart';
+import 'package:pso2_mod_manager/quick_swap/quick_swap_type_select_button.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:signals/signals_flutter.dart';
@@ -27,6 +28,7 @@ Future<void> quickSwapItemsPopup(context, String category) async {
                           (category == defaultCategoryDirs[16] && e.category == defaultCategoryDirs[1]) ||
                           (category == defaultCategoryDirs[2] && e.category == defaultCategoryDirs[11])) ||
                   (category == defaultCategoryDirs[11] && e.category == defaultCategoryDirs[2]))
+              .where((e) => selectedQuickSwapTypeCategory.watch(context) == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedQuickSwapTypeCategory.watch(context).toLowerCase())
               .toList();
 
           selectedItems = masterQuickSwapItemList
@@ -44,40 +46,47 @@ Future<void> quickSwapItemsPopup(context, String category) async {
             insetPadding: const EdgeInsets.only(top: 25),
             contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
             content: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Row(
-                spacing: 5,
-                children: [
-                  Expanded(
-                      child: QuickSwapItemGridLayout(
-                    itemDataList: displayingItems,
-                    scrollController: lScrollController,
-                    selectedList: false,
-                    onButtonPress: (selectedItem) {
-                      masterQuickSwapItemList.add(selectedItem);
-                      saveMasterQuickSwapItemListToJson(masterQuickSwapItemList);
-                      setState(
-                        () {},
-                      );
-                    },
-                  )),
-                  Expanded(
-                      child: QuickSwapItemGridLayout(
-                    itemDataList: selectedItems,
-                    scrollController: rScrollController,
-                    selectedList: true,
-                    onButtonPress: (selectedItem) {
-                      masterQuickSwapItemList.removeWhere((e) => e.compare(selectedItem));
-                      saveMasterQuickSwapItemListToJson(masterQuickSwapItemList);
-                      setState(
-                        () {},
-                      );
-                    },
-                  )),
-                ],
-              ),
-            ),
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: Column(
+                  spacing: 5,
+                  children: [
+                    QuickSwapTypeSelectButtons(lScrollController: lScrollController, rScrollController: rScrollController),
+                    Expanded(
+                      child: Row(
+                        spacing: 5,
+                        children: [
+                          Expanded(
+                              child: QuickSwapItemGridLayout(
+                            itemDataList: displayingItems,
+                            scrollController: lScrollController,
+                            selectedList: false,
+                            onButtonPress: (selectedItem) {
+                              masterQuickSwapItemList.add(selectedItem);
+                              saveMasterQuickSwapItemListToJson(masterQuickSwapItemList);
+                              setState(
+                                () {},
+                              );
+                            },
+                          )),
+                          Expanded(
+                              child: QuickSwapItemGridLayout(
+                            itemDataList: selectedItems,
+                            scrollController: rScrollController,
+                            selectedList: true,
+                            onButtonPress: (selectedItem) {
+                              masterQuickSwapItemList.removeWhere((e) => e.compare(selectedItem));
+                              saveMasterQuickSwapItemListToJson(masterQuickSwapItemList);
+                              setState(
+                                () {},
+                              );
+                            },
+                          )),
+                        ],
+                      ),
+                    ),
+                  ],
+                )),
             actionsPadding: const EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),
             actions: [
               const HoriDivider(),

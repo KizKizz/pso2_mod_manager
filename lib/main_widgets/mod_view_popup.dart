@@ -3,6 +3,7 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_popup.dart';
 import 'package:pso2_mod_manager/main_widgets/popup_list_tile.dart';
+import 'package:pso2_mod_manager/main_widgets/popup_menu_functions.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
@@ -80,7 +81,15 @@ Future<void> modViewPopup(context, Item item) async {
                           spacing: 5,
                           children: [
                             Expanded(child: OutlinedButton(onPressed: () => launchUrlString(item.location), child: Text(appText.openInFileExplorer))),
-                            IconButton.outlined(visualDensity: VisualDensity.adaptivePlatformDensity, onPressed: () {}, icon: const Icon(Icons.delete_forever_outlined, color: Colors.redAccent))
+                            IconButton.outlined(
+                                visualDensity: VisualDensity.adaptivePlatformDensity,
+                                onPressed: () async {
+                                  await itemDelete(context, item);
+                                  mainGridStatus.value = '"${item.itemName}" removed';
+                                  // ignore: use_build_context_synchronously
+                                  Navigator.of(context).pop();
+                                },
+                                icon: const Icon(Icons.delete_forever_outlined, color: Colors.redAccent))
                           ],
                         ),
                         const HoriDivider(),

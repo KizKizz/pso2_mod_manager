@@ -3,6 +3,7 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_popup.dart';
 import 'package:pso2_mod_manager/main_widgets/popup_list_tile.dart';
+import 'package:pso2_mod_manager/main_widgets/popup_menu_functions.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
@@ -61,12 +62,12 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
                         Row(
                           spacing: 5,
                           children: [
-                            Expanded(
-                              child: InfoBox(
-                                info: appText.dText(item.mods.length > 1 ? appText.numMods : appText.numMod, item.mods.length.toString()),
-                                borderHighlight: false,
-                              ),
-                            ),
+                            // Expanded(
+                            //   child: InfoBox(
+                            //     info: appText.dText(item.mods.length > 1 ? appText.numMods : appText.numMod, item.mods.length.toString()),
+                            //     borderHighlight: false,
+                            //   ),
+                            // ),
                             Expanded(
                               flex: 2,
                               child: InfoBox(
@@ -80,7 +81,17 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
                           spacing: 5,
                           children: [
                             Expanded(child: OutlinedButton(onPressed: () => launchUrlString(item.location), child: Text(appText.openInFileExplorer))),
-                            IconButton.outlined(visualDensity: VisualDensity.adaptivePlatformDensity, onPressed: () {}, icon: const Icon(Icons.delete_forever_outlined, color: Colors.redAccent))
+                            IconButton.outlined(
+                                visualDensity: VisualDensity.adaptivePlatformDensity,
+                                onPressed: !item.applyStatus
+                                    ? () async {
+                                        await itemDelete(context, item);
+                                        mainGridStatus.value = '"${item.itemName}" removed';
+                                        // ignore: use_build_context_synchronously
+                                        Navigator.of(context).pop();
+                                      }
+                                    : null,
+                                icon: const Icon(Icons.delete_forever_outlined, color: Colors.redAccent))
                           ],
                         ),
                         const HoriDivider(),
@@ -89,44 +100,17 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
                           SuperSliverList.builder(
                               itemCount: 1,
                               itemBuilder: (context, modIndex) {
-                                return ListTileTheme(
-                                    data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                                    child: ListTile(
-                                      contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-                                      selected: selectedMod == mod ? true : false,
-                                      title: Text(mod.modName),
-                                      subtitle: Row(
-                                        spacing: 5,
-                                        children: [
-                                          Text(appText.dText(mod.submods.length > 1 ? appText.numVariants : appText.numVariant, mod.submods.length.toString())),
-                                          // InfoBox(info: appText.dText(appText.numCurrentlyApplied, mod.getNumOfAppliedSubmods().toString()), borderHighlight: mod.applyStatus)
-                                        ],
-                                      ),
-                                      trailing: Row(
-                                        spacing: 5,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Visibility(visible: mod.applyStatus, child: Icon(Icons.turned_in, color: Theme.of(context).colorScheme.primary)),
-                                          PopupListTile(
-                                            item: item,
-                                            mod: mod,
-                                            selectedMod: selectedMod,
-                                            onSelectedMod: () {
-                                              selectedMod = mod;
-                                              setState(
-                                                () {},
-                                              );
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                      onTap: () {
-                                        selectedMod = mod;
-                                        setState(
-                                          () {},
-                                        );
-                                      },
-                                    ));
+                                return PopupListTile(
+                                  item: item,
+                                  mod: mod,
+                                  selectedMod: selectedMod,
+                                  onSelectedMod: () {
+                                    selectedMod = mod;
+                                    setState(
+                                      () {},
+                                    );
+                                  },
+                                );
                               })
                         ]))
                       ],

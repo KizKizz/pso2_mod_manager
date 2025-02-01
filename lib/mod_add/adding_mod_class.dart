@@ -29,7 +29,8 @@ enum ModAddProcessedState {
   waiting('waiting'),
   dataInList('dataInList'),
   loadingData('loadingData'),
-  addingToMasterList('addingToMasterList');
+  addingToMasterList('addingToMasterList'),
+  ;
 
   final String value;
   const ModAddProcessedState(this.value);

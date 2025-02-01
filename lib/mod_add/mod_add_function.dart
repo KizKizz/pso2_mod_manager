@@ -160,7 +160,8 @@ Future<List<AddingMod>> modAddSort() async {
   return addingModList;
 }
 
-Future<void> modAddToMasterList(bool addingToSet, ModSet modSet) async {
+Future<List<Item>> modAddToMasterList(bool addingToSet, ModSet modSet) async {
+  List<Item> addedItems = [];
   for (var modAddingItem in modAddingList) {
     for (int i = 0; i < modAddingItem.associatedItems.length; i++) {
       if (modAddingItem.aItemAddingStates[i]) {
@@ -190,6 +191,7 @@ Future<void> modAddToMasterList(bool addingToSet, ModSet modSet) async {
             int itemInListIndex = cateInList.items.indexWhere((element) => element.itemName.toLowerCase() == itemName.toLowerCase());
             if (itemInListIndex == -1) {
               Item newItem = await newItemsFetcher('$mainModDirPath${p.separator}$category', newItemDirDestPath, addingToSet, modSet.setName);
+              addedItems.add(newItem);
               if (addingToSet) modSet.addItem(newItem);
               cateInList.items.add(newItem);
             } else {
@@ -207,9 +209,10 @@ Future<void> modAddToMasterList(bool addingToSet, ModSet modSet) async {
                 itemInList.mods.addAll(
                     newModsFetcher(itemInList.location, cateInList.categoryName, [Directory(newItemDirDestPath + p.separator + p.basename(modAddingItem.modDir.path))], addingToSet, modSet.setName));
               }
-              itemInList.isNew = true;
-              if (addingToSet) modSet.addItem(itemInList);
               itemInList.setLatestCreationDate();
+              itemInList.isNew = true;
+              addedItems.add(itemInList);
+              if (addingToSet) modSet.addItem(itemInList);
               //Sort
               // itemInList.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
             }
@@ -228,6 +231,7 @@ Future<void> modAddToMasterList(bool addingToSet, ModSet modSet) async {
             int itemInListIndex = newCate.items.indexWhere((element) => element.itemName.toLowerCase() == itemName.toLowerCase());
             if (itemInListIndex == -1) {
               Item newItem = await newItemsFetcher(Uri.file('$mainModDirPath/$category').toFilePath(), newItemDirDestPath, addingToSet, modSet.setName);
+              addedItems.add(newItem);
               if (addingToSet) modSet.addItem(newItem);
               newCate.items.add(newItem);
             } else {
@@ -246,6 +250,7 @@ Future<void> modAddToMasterList(bool addingToSet, ModSet modSet) async {
                     newModsFetcher(itemInList.location, newCate.categoryName, [Directory(newItemDirDestPath + p.separator + p.basename(modAddingItem.modDir.path))], addingToSet, modSet.setName));
               }
               itemInList.isNew = true;
+              addedItems.add(itemInList);
               if (addingToSet) modSet.addItem(itemInList);
               //Sort alpha
               // itemInList.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
@@ -268,7 +273,10 @@ Future<void> modAddToMasterList(bool addingToSet, ModSet modSet) async {
     // Remove dir in sorted
     await modAddingItem.modDir.delete(recursive: true);
   }
+
+  mainGridStatus.value = '${modAddingList.map((e) => e.submodNames).join(', ')} added';
   modAddingList.removeWhere((e) => !e.modDir.existsSync());
+  return addedItems;
 }
 
 // Helpers
@@ -406,8 +414,8 @@ List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newMo
     }
 
     //add to submod
-    SubMod subModInItemDir = SubMod(p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, addingToSet ? true : false, [], false, false,
-        -1, -1, '', addingToSet ? [modSetName] : [], [], modPreviewImages, modPreviewVideos, [], modFilesInItemDir);
+    SubMod subModInItemDir = SubMod(p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, addingToSet ? true : false, [], false,
+        false, -1, -1, '', addingToSet ? [modSetName] : [], [], modPreviewImages, modPreviewVideos, [], modFilesInItemDir);
     subModInItemDir.setLatestCreationDate();
 
     //add to mod

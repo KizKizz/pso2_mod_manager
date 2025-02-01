@@ -33,83 +33,93 @@ class _ModAddGridState extends State<ModAddGrid> {
       children: [
         Visibility(
             visible: curModAddProcessedStatus.watch(context) != ModAddProcessedState.waiting,
-            child: ResponsiveGridList(
-                minItemWidth: 315,
-                verticalGridMargin: 0,
-                horizontalGridSpacing: 5,
-                verticalGridSpacing: 5,
-                children: [
-                  for (int i = 0; i < modAddingList.length; i++)
-                  CardOverlay(
-                          paddingValue: 10,
-                          child: Column(
-                            spacing: 5,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SubmodImageBox(filePaths: modAddingList[i].previewImages.map((f) => f.path).toList(), isNew: false),
-                              Text(p.basename(modAddingList[i].modDir.path), textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
-                              Row(
-                                spacing: 5,
-                                children: [
-                                  Expanded(
-                                    child: InfoBox(info: appText.dText(modAddingList[i].associatedItems.length > 1 ? appText.numMatchedItems : appText.numMatchedItem, modAddingList[i].associatedItems.length.toString()), borderHighlight: false,),
-                                  ),
-                                  Expanded(child: InfoBox(info: appText.dText(modAddingList[i].submods.length > 1 ? appText.numVariants : appText.numVariant, modAddingList[i].submods.length.toString()), borderHighlight: false,))
-                                ],
-                              ),
-                              Row(
-                                spacing: 5,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Expanded(
-                                  child: OutlinedButton(
-                                      onPressed: () async {
-                                        final editedAddingItem = await variantsEditPopup(context, modAddingList[i], i);
-                                        if (editedAddingItem != null) {
-                                          setState(() {
-                                            modAddingList[i] = editedAddingItem;
-                                          });
-                                        }
-                                      },
-                                      child: Text(appText.editItemsAndVariants, textAlign: TextAlign.center,))),
-                                  IconButton(
-                                      onPressed: () async {
-                                        final newName = await renamePopup(context, p.dirname(modAddingList[i].modDir.path), p.basename(modAddingList[i].modDir.path));
-                                        if (newName != null) {
-                                          String newPath = p.dirname(modAddingList[i].modDir.path) + p.separator + newName;
-                                          await io.copyPath(modAddingList[i].modDir.path, newPath);
-                                          await modAddingList[i].modDir.delete(recursive: true);
-                                          modAddingList[i] = await modAddRenameRefresh(Directory(newPath), modAddingList[i]);
-                                          setState(() {});
-                                        }
-                                      },
-                                      icon: const Icon(Icons.edit),
-                                      visualDensity: VisualDensity.adaptivePlatformDensity),
-                                  IconButton(
-                                      onPressed: () => setState(() {
-                                            modAddingList[i].modAddingState ? modAddingList[i].modAddingState = false : modAddingList[i].modAddingState = true;
-                                          }),
-                                      icon: Icon(modAddingList[i].modAddingState ? Icons.check_box_outlined : Icons.check_box_outline_blank, color: modAddingList[i].modAddingState ? Colors.green : Colors.red),
-                                      visualDensity: VisualDensity.adaptivePlatformDensity),
-                                  IconButton(
-                                      onPressed: () async {
-                                        await modAddingList[i].modDir.delete(recursive: true);
-                                        setState(() {
-                                          modAddingList.removeAt(i);
-                                        });
-                                      },
-                                      icon: const Icon(
-                                        Icons.delete_forever_outlined,
-                                        color: Colors.red,
-                                      ),
-                                      visualDensity: VisualDensity.adaptivePlatformDensity),
-                                ],
-                              ),
-                              
-                            ],
+            child: ResponsiveGridList(minItemWidth: 315, verticalGridMargin: 0, horizontalGridSpacing: 5, verticalGridSpacing: 5, children: [
+              for (int i = 0; i < modAddingList.length; i++)
+                CardOverlay(
+                  paddingValue: 10,
+                  child: Column(
+                    spacing: 5,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SubmodImageBox(filePaths: modAddingList[i].previewImages.map((f) => f.path).toList(), isNew: false),
+                      Text(p.basename(modAddingList[i].modDir.path), textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
+                      Row(
+                        spacing: 5,
+                        children: [
+                          Expanded(
+                            child: InfoBox(
+                              info: appText.dText(modAddingList[i].associatedItems.length > 1 ? appText.numMatchedItems : appText.numMatchedItem, modAddingList[i].associatedItems.length.toString()),
+                              borderHighlight: false,
+                            ),
                           ),
-                        )
-                ])),
+                          Expanded(
+                              child: InfoBox(
+                            info: appText.dText(modAddingList[i].submods.length > 1 ? appText.numVariants : appText.numVariant, modAddingList[i].submods.length.toString()),
+                            borderHighlight: false,
+                          ))
+                        ],
+                      ),
+                      Row(
+                        spacing: 5,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(
+                              child: OutlinedButton(
+                                  onPressed: () async {
+                                    final editedAddingItem = await variantsEditPopup(context, modAddingList[i], i);
+                                    if (editedAddingItem != null) {
+                                      setState(() {
+                                        modAddingList[i] = editedAddingItem;
+                                      });
+                                    }
+                                  },
+                                  child: Text(
+                                    appText.editItemsAndVariants,
+                                    textAlign: TextAlign.center,
+                                  ))),
+                          IconButton(
+                              onPressed: () async {
+                                final newName = await renamePopup(context, p.dirname(modAddingList[i].modDir.path), p.basename(modAddingList[i].modDir.path));
+                                if (newName != null) {
+                                  String newPath = p.dirname(modAddingList[i].modDir.path) + p.separator + newName;
+                                  await io.copyPath(modAddingList[i].modDir.path, newPath);
+                                  await modAddingList[i].modDir.delete(recursive: true);
+                                  modAddingList[i] = await modAddRenameRefresh(Directory(newPath), modAddingList[i]);
+                                  setState(() {});
+                                }
+                              },
+                              icon: const Icon(Icons.edit),
+                              visualDensity: VisualDensity.adaptivePlatformDensity),
+                          IconButton(
+                              onPressed: () => setState(() {
+                                    modAddingList[i].modAddingState ? modAddingList[i].modAddingState = false : modAddingList[i].modAddingState = true;
+                                    if (modAddingList.indexWhere((e) => e.modAddingState) == -1) {
+                                      curModAddProcessedStatus.value = ModAddProcessedState.loadingData;
+                                    } else {
+                                      curModAddProcessedStatus.value = ModAddProcessedState.dataInList;
+                                    }
+                                  }),
+                              icon:
+                                  Icon(modAddingList[i].modAddingState ? Icons.check_box_outlined : Icons.check_box_outline_blank, color: modAddingList[i].modAddingState ? Colors.green : Colors.red),
+                              visualDensity: VisualDensity.adaptivePlatformDensity),
+                          IconButton(
+                              onPressed: () async {
+                                await modAddingList[i].modDir.delete(recursive: true);
+                                setState(() {
+                                  modAddingList.removeAt(i);
+                                });
+                              },
+                              icon: const Icon(
+                                Icons.delete_forever_outlined,
+                                color: Colors.red,
+                              ),
+                              visualDensity: VisualDensity.adaptivePlatformDensity),
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+            ])),
         Visibility(
             visible: curModAddProcessedStatus.watch(context) == ModAddProcessedState.waiting || curModAddProcessedStatus.watch(context) == ModAddProcessedState.loadingData,
             child: Center(

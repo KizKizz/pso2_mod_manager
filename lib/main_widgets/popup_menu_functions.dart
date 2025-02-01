@@ -318,3 +318,20 @@ Future<void> modDelete(context, Item item, Mod mod) async {
     }
   }
 }
+
+Future<void> itemDelete(context, Item item) async {
+  final result = await deleteConfirmPopup(context, item.itemName);
+  if (result) {
+    for (var modset in masterModSetList) {
+      int iIndex = modset.setItems.indexWhere((e) => e.location == item.location);
+      if (iIndex != -1 && item.setNames.contains(modset.setName)) modset.setItems.removeAt(iIndex);
+    }
+    if (Directory(item.location).existsSync()) await Directory(item.location).delete(recursive: true);
+    int tIndex = masterModList.indexWhere((e) => e.containsCategory(item.category));
+    if (tIndex != -1) {
+      masterModList[tIndex].categories.firstWhere((e) => e.categoryName == item.category).items.remove(item);
+    }
+  }
+  saveMasterModSetListToJson();
+  saveMasterModListToJson();
+}

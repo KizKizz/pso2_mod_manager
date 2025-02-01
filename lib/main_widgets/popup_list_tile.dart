@@ -64,6 +64,7 @@ class _PopupListTileState extends State<PopupListTile> {
                             height: 5,
                           )),
                       PopupMenuItem(
+                          enabled: !widget.mod.applyStatus,
                           onTap: () async {
                             await modDelete(context, widget.item, widget.mod);
                             modPopupStatus.value = '${widget.mod.modName} deleted';

@@ -101,7 +101,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                   Visibility(
                       visible: widget.submod.hasCmx! || widget.submod.customAQMInjected! || widget.submod.boundingRemoved!,
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 0, bottom: 4),
+                        padding: const EdgeInsets.only(left: 5, bottom: 5),
                         child: Row(
                           spacing: 5,
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -175,11 +175,11 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                       return [
                         for (int i = 0; i < selectedQuickSwapItems.length; i++)
                           PopupMenuItem(
+                              enabled: selectedQuickSwapItems[i].getENName() != widget.item.itemName && selectedQuickSwapItems[i].getJPName() != widget.item.itemName,
                               onTap: () {
                                 List<ItemData> lItemData = pItemData
                                     .where((e) => e.category == widget.submod.category && widget.submod.getModFileNames().indexWhere((f) => e.getIceDetailsWithoutKeys().contains(f)) != -1)
                                     .toList();
-
                                 quickSwapWorkingPopup(context, false, lItemData.first, selectedQuickSwapItems[i], widget.mod, widget.submod);
                               },
                               child: Row(
@@ -284,11 +284,17 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                             height: 5,
                           )),
                       PopupMenuItem(
+                          enabled: !widget.submod.applyStatus,
                           onTap: () async {
                             await submodDelete(context, widget.item, widget.mod, widget.submod);
                             modPopupStatus.value = '${widget.submod.submodName} deleted';
                             if (widget.mod.submods.isEmpty) {
                               mainGridStatus.value = '"${widget.mod.modName}" in "${widget.item.itemName}" is empty and removed';
+                            }
+                            if (widget.item.mods.isEmpty) {
+                              mainGridStatus.value = '"${widget.item.itemName}" is empty and removed';
+                              // ignore: use_build_context_synchronously
+                              Navigator.of(context).pop;
                             }
                           },
                           child: MenuIconItem(icon: Icons.delete_forever_outlined, text: appText.delete)),
