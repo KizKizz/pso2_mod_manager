@@ -202,7 +202,11 @@ class AppText {
       restoringFile = 'Restoring "%p%"',
       successfullyRestoredFile = 'Successfully restored "%p%"',
       failedToRestoredFile = 'Failed to restore "%p%"',
-      reapplyingFile = 'Re-Applying "%p%"';
+      reapplyingFile = 'Re-Applying "%p%"',
+      extensionFile = '%p% File',
+      applyThisSet = 'Apply This Set',
+      restoreThisSet = 'Restore This Set',
+      launchPSO2 = 'Launch PSO2';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -278,7 +282,8 @@ class AppText {
       exportToPngImage = 'Export to png image',
       checkingAppliedLineStrikeItems = 'Checking Applied Line Strike Items',
       loadingQuickSwapItems = 'Loading Quick Swap Items',
-      selecteMoreItems = 'Select More Items';
+      selecteMoreItems = 'Select More Items',
+      selectSetsToAdd = 'Select Set(s) to add';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',
@@ -295,7 +300,9 @@ class AppText {
       failedToReplaceBoard = 'Failed to replace board',
       failedToReplaceBoardIcon = 'Failed to replace board icon',
       failedToReplaceSleeve = 'Failed to replace sleeve',
-      failedToReplaceSleeveIcon = 'Failed to replace sleeve icon';
+      failedToReplaceSleeveIcon = 'Failed to replace sleeve icon',
+      anticheatLoaderFileNotFound = '"ucldr_PSO2_JP_loader_x64.exe" not found\nRun the game at least once then try again',
+      couldntCreateCustomLauncher = 'Cound not create custom launcher';
 
   // Infos
   String pso2binDirPathInfo = 'PSO2 game data folder, this folder located inside the game installation directory',

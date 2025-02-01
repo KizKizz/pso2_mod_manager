@@ -94,7 +94,7 @@ class _ModAddGridState extends State<ModAddGrid> {
                               onPressed: () => setState(() {
                                     modAddingList[i].modAddingState ? modAddingList[i].modAddingState = false : modAddingList[i].modAddingState = true;
                                     if (modAddingList.indexWhere((e) => e.modAddingState) == -1) {
-                                      curModAddProcessedStatus.value = ModAddProcessedState.loadingData;
+                                      curModAddProcessedStatus.value = ModAddProcessedState.noSelectedData;
                                     } else {
                                       curModAddProcessedStatus.value = ModAddProcessedState.dataInList;
                                     }
@@ -108,6 +108,9 @@ class _ModAddGridState extends State<ModAddGrid> {
                                 setState(() {
                                   modAddingList.removeAt(i);
                                 });
+                                if (modAddingList.isEmpty) {
+                                  curModAddProcessedStatus.value = ModAddProcessedState.waiting;
+                                }
                               },
                               icon: const Icon(
                                 Icons.delete_forever_outlined,

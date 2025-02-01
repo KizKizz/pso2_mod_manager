@@ -59,7 +59,7 @@ class _DragDropBoxLayoutState extends State<DragDropBoxLayout> {
                             style: Theme.of(context).textTheme.titleSmall,
                           ),
                           subtitle: Text(
-                            FileSystemEntity.isFileSync(modAddDragDropPaths[index]) ? appText.file : appText.folder,
+                            FileSystemEntity.isFileSync(modAddDragDropPaths[index]) ? appText.dText(appText.extensionFile, p.extension(modAddDragDropPaths[index])) : appText.folder,
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                           trailing: IconButton(

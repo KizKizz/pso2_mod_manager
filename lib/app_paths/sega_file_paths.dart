@@ -83,12 +83,17 @@ Future<(List<OfficialIceFile>, List<OfficialIceFile>, String, String, String, St
           }
           // File('${Directory.current.path}/$patchListFile').createSync();
           // File('${Directory.current.path}/$patchListFile').writeAsStringSync(officialList.map((e) => e.path).join('\n'));
+
           // _na bundle
-          for (var path in Directory('$pso2DataDirPath${p.separator}win32_na').listSync(recursive: true).whereType<File>().map((e) => e.path).toList()) {
-            officialListNA.add(OfficialIceFile(path, '', 0, 'm'));
+          if (Directory('$pso2DataDirPath${p.separator}win32_na').existsSync()) {
+            for (var path in Directory('$pso2DataDirPath${p.separator}win32_na').listSync(recursive: true).whereType<File>().map((e) => e.path).toList()) {
+              officialListNA.add(OfficialIceFile(path, '', 0, 'm'));
+            }
           }
-          for (var path in Directory('$pso2DataDirPath${p.separator}win32reboot_na').listSync(recursive: true).whereType<File>().map((e) => e.path).toList()) {
-            officialListNA.add(OfficialIceFile(path, '', 0, 'm'));
+          if (Directory('$pso2DataDirPath${p.separator}win32reboot_na').existsSync()) {
+            for (var path in Directory('$pso2DataDirPath${p.separator}win32reboot_na').listSync(recursive: true).whereType<File>().map((e) => e.path).toList()) {
+              officialListNA.add(OfficialIceFile(path, '', 0, 'm'));
+            }
           }
 
           return (officialList, officialListNA, masterURL.toString(), masterBackupURL, patchURL, patchBackupURL);

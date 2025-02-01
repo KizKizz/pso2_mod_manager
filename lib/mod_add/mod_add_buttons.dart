@@ -4,6 +4,7 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_add/adding_mod_class.dart';
 import 'package:pso2_mod_manager/mod_add/mod_add_function.dart';
+import 'package:pso2_mod_manager/mod_add/mod_add_to_set_popup.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
 import 'package:pso2_mod_manager/v3_home/mod_add.dart';
 import 'package:signals/signals_flutter.dart';
@@ -108,22 +109,38 @@ class ModAddProcessedButtons extends StatefulWidget {
 }
 
 class _ModAddProcessedButtonsState extends State<ModAddProcessedButtons> {
+  List<ModSet> modSetsToAdd = [];
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-          onPressed: curModAddProcessedStatus.watch(context) == ModAddProcessedState.dataInList
-              ? () async {
-                  curModAddProcessedStatus.value = ModAddProcessedState.addingToMasterList;
-                  await modAddToMasterList(false, ModSet('', 0, false, false, DateTime(0), DateTime(0), []));
-                  modAddingList.isNotEmpty ? curModAddProcessedStatus.value = ModAddProcessedState.dataInList : curModAddProcessedStatus.value = ModAddProcessedState.waiting;
-                }
-              : null,
-          child: Text(
-            appText.add,
-            textAlign: TextAlign.center,
-          )),
+    return Row(
+      spacing: 5,
+      children: [
+        Expanded(
+            child: ElevatedButton.icon(
+                onPressed: curModAddProcessedStatus.watch(context) == ModAddProcessedState.dataInList
+                    ? () async {
+                        modSetsToAdd = await modAddToSetPopup(context);
+                      }
+                    : null,
+                icon: modSetsToAdd.isNotEmpty ? Icon(Icons.check, color: Theme.of(context).colorScheme.primary) : null,
+                label: Text(appText.addToSet))),
+        Expanded(
+          flex: 2,
+          child: ElevatedButton(
+              onPressed: curModAddProcessedStatus.watch(context) == ModAddProcessedState.dataInList
+                  ? () async {
+                      curModAddProcessedStatus.value = ModAddProcessedState.addingToMasterList;
+                      await modAddToMasterList(modSetsToAdd.isEmpty ? false : true, modSetsToAdd);
+                      modAddingList.isNotEmpty ? curModAddProcessedStatus.value = ModAddProcessedState.dataInList : curModAddProcessedStatus.value = ModAddProcessedState.waiting;
+                      modSetsToAdd.clear();
+                    }
+                  : null,
+              child: Text(
+                appText.add,
+                textAlign: TextAlign.center,
+              )),
+        )
+      ],
     );
   }
 }

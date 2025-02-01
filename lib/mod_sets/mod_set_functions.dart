@@ -16,12 +16,15 @@ List<Item> modSetItemsFromMasterList = [];
 Future<List<ModSet>> modSetLoader() async {
   List<ModSet> newModSets = [];
   // Load list from json
-  var jsonData = jsonDecode(File(mainModSetListJsonPath).readAsStringSync());
-  for (var set in jsonData) {
-    newModSets.add(ModSet.fromJson(set));
-    newModSets.last.setItems = modSetItemsFromMasterList.where((e) => e.setNames.contains(newModSets.last.setName)).toList();
-    modsetLoadingStatus.value = newModSets.last.setName;
-    await Future.delayed(const Duration(microseconds: 1000));
+  String dataFromFile = File(mainModSetListJsonPath).readAsStringSync();
+  if (dataFromFile.isNotEmpty) {
+    var jsonData = jsonDecode(dataFromFile);
+    for (var set in jsonData) {
+      newModSets.add(ModSet.fromJson(set));
+      newModSets.last.setItems = modSetItemsFromMasterList.where((e) => e.setNames.contains(newModSets.last.setName)).toList();
+      modsetLoadingStatus.value = newModSets.last.setName;
+      await Future.delayed(const Duration(microseconds: 1000));
+    }
   }
 
   //remove nonexistence set name

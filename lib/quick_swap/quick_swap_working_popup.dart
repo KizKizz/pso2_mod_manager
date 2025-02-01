@@ -14,7 +14,6 @@ import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
-import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/mod_add.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
@@ -51,7 +50,7 @@ void quickSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, Item
                 await modAddUnpack(modAddDragDropPaths.toList());
                 modAddDragDropPaths.clear();
                 modAddingList = await modAddSort();
-                List<Item> addedItems = await modAddToMasterList(false, ModSet('', 0, false, false, DateTime(0), DateTime(0), []));
+                List<Item> addedItems = await modAddToMasterList(false, []);
                 // Apply
                 Item applyItem = addedItems.firstWhere((e) => e.itemName == rItemData.getENName() || e.itemName == rItemData.getJPName());
                 Mod applyMod = applyItem.mods.firstWhere((e) => e.modName == mod.modName);

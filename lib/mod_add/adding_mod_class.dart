@@ -30,7 +30,7 @@ enum ModAddProcessedState {
   dataInList('dataInList'),
   loadingData('loadingData'),
   addingToMasterList('addingToMasterList'),
-  ;
+  noSelectedData('noSelectedData');
 
   final String value;
   const ModAddProcessedState(this.value);

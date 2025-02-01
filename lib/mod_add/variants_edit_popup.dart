@@ -61,7 +61,7 @@ Future<AddingMod?> variantsEditPopup(context, AddingMod addingMod, int curIndex)
                                   GenericItemIconBox(iconImagePaths: [addingMod.associatedItems[i].iconImagePath], boxSize: const Size(140, 140), isNetwork: true),
                                   Text(p.basename(addingMod.associatedItems[i].getName()), textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
                                   IconButton(
-                                      onPressed: addingMod.associatedItems.length > 1
+                                      onPressed: addingMod.associatedItems.length > 1 && addingMod.aItemAddingStates.where((e) => e == true).length > 1 || !addingMod.aItemAddingStates[i]
                                           ? () => setState(() {
                                                 addingMod.aItemAddingStates[i] ? addingMod.aItemAddingStates[i] = false : addingMod.aItemAddingStates[i] = true;
                                               })
@@ -104,34 +104,39 @@ Future<AddingMod?> variantsEditPopup(context, AddingMod addingMod, int curIndex)
                                       child: ModManTooltip(
                                         message: addingMod.submods[i].listSync().whereType<File>().where((e) => p.extension(e.path) == '').map((e) => p.basename(e.path)).join('\n'),
                                         child: InfoBox(
-                                        info: appText.dText(
-                                            addingMod.submods[i].listSync().whereType<File>().where((e) => p.extension(e.path) == '').length > 1 ? appText.numFiles : appText.numFile,
-                                            addingMod.submods[i]
-                                                .listSync(recursive: addingMod.submods.indexWhere((e) => e.parent == addingMod.submods[i]) != -1)
-                                                .whereType<File>()
-                                                .where((e) => p.extension(e.path) == '')
-                                                .length
-                                                .toString()), borderHighlight: false,),
+                                          info: appText.dText(
+                                              addingMod.submods[i].listSync().whereType<File>().where((e) => p.extension(e.path) == '').length > 1 ? appText.numFiles : appText.numFile,
+                                              addingMod.submods[i]
+                                                  .listSync(recursive: addingMod.submods.indexWhere((e) => e.parent == addingMod.submods[i]) != -1)
+                                                  .whereType<File>()
+                                                  .where((e) => p.extension(e.path) == '')
+                                                  .length
+                                                  .toString()),
+                                          borderHighlight: false,
+                                        ),
                                       ),
                                     ),
                                     IconButton(
-                                        onPressed: addingMod.submods[i] != addingMod.modDir ? () async {
-                                          final newName = await renamePopup(context, p.dirname(addingMod.submods[i].path), p.basename(addingMod.submods[i].path));
-                                          if (newName != null) {
-                                            String newPath = p.dirname(addingMod.submods[i].path) + p.separator + newName;
-                                            await io.copyPath(addingMod.submods[i].path, newPath);
-                                            await addingMod.submods[i].delete(recursive: true);
-                                            addingMod = await modAddRenameRefresh(addingMod.modDir, addingMod);
-                                            modAddingList[curIndex] = addingMod;
-                                            setState(() {});
-                                          }
-                                        } : null,
+                                        onPressed: addingMod.submods[i] != addingMod.modDir
+                                            ? () async {
+                                                final newName = await renamePopup(context, p.dirname(addingMod.submods[i].path), p.basename(addingMod.submods[i].path));
+                                                if (newName != null) {
+                                                  String newPath = p.dirname(addingMod.submods[i].path) + p.separator + newName;
+                                                  await io.copyPath(addingMod.submods[i].path, newPath);
+                                                  await addingMod.submods[i].delete(recursive: true);
+                                                  addingMod = await modAddRenameRefresh(addingMod.modDir, addingMod);
+                                                  modAddingList[curIndex] = addingMod;
+                                                  setState(() {});
+                                                }
+                                              }
+                                            : null,
                                         icon: const Icon(Icons.edit),
                                         visualDensity: VisualDensity.adaptivePlatformDensity),
                                     IconButton(
-                                        onPressed: () => setState(() {
+                                        onPressed: addingMod.submods.length > 1 && addingMod.submodAddingStates.where((e) => e == true).length > 1 || !addingMod.submodAddingStates[i]
+                                        ? () => setState(() {
                                               addingMod.submodAddingStates[i] ? addingMod.submodAddingStates[i] = false : addingMod.submodAddingStates[i] = true;
-                                            }),
+                                            }) : null,
                                         icon: Icon(addingMod.submodAddingStates[i] ? Icons.check_box_outlined : Icons.check_box_outline_blank,
                                             color: addingMod.submodAddingStates[i] ? Colors.green : Colors.red),
                                         visualDensity: VisualDensity.adaptivePlatformDensity),

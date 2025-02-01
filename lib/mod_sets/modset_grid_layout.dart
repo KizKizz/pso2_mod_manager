@@ -51,6 +51,52 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
                       spacing: 5,
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        Visibility(
+                          visible: widget.modSet.setItems.indexWhere((e) => !e.applyStatus) != -1,
+                          child: SizedBox(
+                              height: 25,
+                              child: OutlinedButton(
+                                  onPressed: () async {
+                                    for (var item in widget.modSet.setItems.where((e) => !e.applyStatus)) {
+                                      int modIndex = item.mods.indexWhere(
+                                          (e) => e.isSet && e.setNames.contains(widget.modSet.setName) && e.submods.indexWhere((s) => s.activeInSets!.contains(widget.modSet.setName)) != -1);
+                                      if (modIndex != -1) {
+                                        Mod mod = item.mods[modIndex];
+                                        int submodIndex = mod.submods.indexWhere((e) => e.isSet && e.setNames.contains(widget.modSet.setName) && e.activeInSets!.contains(widget.modSet.setName));
+                                        if (submodIndex != -1) {
+                                          await modToGameData(context, true, item, mod, mod.submods[submodIndex]);
+                                          setState(() {
+                                            modSetRefreshSignal.value = 'Applied ${mod.submods[submodIndex].submodName} in ${widget.modSet.setName} Set';
+                                          });
+                                        }
+                                      }
+                                    }
+                                  },
+                                  child: Text(appText.applyThisSet))),
+                        ),
+                        Visibility(
+                          visible: widget.modSet.setItems.indexWhere((e) => e.applyStatus) != -1,
+                          child: SizedBox(
+                              height: 25,
+                              child: OutlinedButton(
+                                  onPressed: () async {
+                                    for (var item in widget.modSet.setItems.where((e) => e.applyStatus)) {
+                                      int modIndex = item.mods.indexWhere(
+                                          (e) => e.isSet && e.setNames.contains(widget.modSet.setName) && e.submods.indexWhere((s) => s.activeInSets!.contains(widget.modSet.setName)) != -1);
+                                      if (modIndex != -1) {
+                                        Mod mod = item.mods[modIndex];
+                                        int submodIndex = mod.submods.indexWhere((e) => e.isSet && e.setNames.contains(widget.modSet.setName) && e.activeInSets!.contains(widget.modSet.setName));
+                                        if (submodIndex != -1) {
+                                          await modToGameData(context, false, item, mod, mod.submods[submodIndex]);
+                                          setState(() {
+                                            modSetRefreshSignal.value = 'Restored ${mod.submods[submodIndex].submodName} in ${widget.modSet.setName} Set';
+                                          });
+                                        }
+                                      }
+                                    }
+                                  },
+                                  child: Text(appText.restoreThisSet))),
+                        ),
                         HeaderInfoBox(info: appText.dText(widget.modSet.setItems.length > 1 ? appText.numItems : appText.numItem, widget.modSet.setItems.length.toString()), borderHighlight: false),
                         SizedBox(
                           width: 25,
