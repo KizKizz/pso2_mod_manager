@@ -19,11 +19,11 @@ class ItemData {
   Map<String, String> infos = {};
 
   String getJPName() {
-    return infos.entries.firstWhere((element) => element.key.contains('JP Name') || element.key.contains('Japanese Name')).value;
+    return infos.entries.firstWhere((element) => element.key.contains('JP Name') || element.key.contains('Japanese Name')).value.replaceAll(RegExp(charToReplace), '_').trim();
   }
 
   String getENName() {
-    return infos.entries.firstWhere((element) => element.key.contains('EN Name') || element.key.contains('English Name')).value;
+    return infos.entries.firstWhere((element) => element.key.contains('EN Name') || element.key.contains('English Name')).value.replaceAll(RegExp(charToReplace), '_').trim();
   }
 
   String getName() {
@@ -97,7 +97,7 @@ class ItemData {
   // }
 
   String getIconIceName() {
-    return infos.entries.firstWhere((element) => element.key.contains('Icon')).value;
+    return infos.entries.firstWhere((element) => element.key.contains('Icon'), orElse: () => const MapEntry('', ''),).value;
   }
 
   String getImageIceName() {

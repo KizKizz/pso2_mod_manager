@@ -332,7 +332,12 @@ class AppText {
       customAQMFiles = 'Custom AQM Files',
       originalFilesRestorePriority = 'Original Files Restore Priority',
       segaServers = 'Sega Servers',
-      localBackups = 'Local Backups';
+      localBackups = 'Local Backups',
+      removeProfanityFilter = 'Remove Profanity Filter',
+      markModdedItemInGame = 'Mark Modded Items In Game',
+      sideBar = 'Side Bar',
+      minimal = 'Minimal',
+      alwaysExpanded = 'Always Expand';
 
   factory AppText.fromJson(Map<String, dynamic> json) => _$AppTextFromJson(json);
   Map<String, dynamic> toJson() => _$AppTextToJson(this);

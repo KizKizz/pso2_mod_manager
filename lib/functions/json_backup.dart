@@ -4,7 +4,6 @@ import 'package:archive/archive_io.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
-// ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 
 Future<void> jsonAutoBackup() async {
@@ -16,8 +15,8 @@ Future<void> jsonAutoBackup() async {
     await newBackupDir.create(recursive: true);
     if (newBackupDir.existsSync()) {
       //delete oldest of 7
-      List<File> backupFiles = Directory(modManJsonAutoSaveDir).listSync().whereType<File>().where((element) => p.extension(element.path) == '.zip').toList()
-        ..sort((l, r) => r.statSync().modified.compareTo(l.statSync().modified));
+      List<File> backupFiles = Directory(modManJsonAutoSaveDir).listSync().whereType<File>().where((element) => p.extension(element.path) == '.zip').toList();
+      // ..sort((l, r) => r.statSync().modified.compareTo(l.statSync().modified));
       if (backupFiles.length >= 7) {
         try {
           backupFiles.last.deleteSync();
@@ -97,4 +96,3 @@ Future<void> jsonManualBackup() async {
     }
   }
 }
-

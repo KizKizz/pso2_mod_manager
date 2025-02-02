@@ -13,6 +13,7 @@ import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_functions/item_icon_mark.dart';
 
 Future<void> modUnapplySequence(context, bool applying, Item item, Mod mod, SubMod submod) async {
   await applyingPopup(context, applying, item, mod, submod);
@@ -42,6 +43,10 @@ Future<void> modUnapplyRestore(Item item, Mod mod, SubMod submod) async {
         await Future.delayed(const Duration(microseconds: 10));
       }
     }
+  }
+
+  if (!item.applyStatus && item.isOverlayedIconApplied!) {
+    await markedItemIconRestore(item);
   }
 
   saveMasterModListToJson();

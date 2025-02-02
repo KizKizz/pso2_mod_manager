@@ -101,7 +101,7 @@ class _BackgroundSlideshowState extends State<BackgroundSlideshow> {
                             visible: backgroundImageFiles.watch(context).isNotEmpty,
                             child: Padding(
                               padding: const EdgeInsets.all(3),
-                              child: TextButton.icon(
+                              child: OutlinedButton.icon(
                                 onLongPress: () async {
                                   await backgroundImageFiles.value[currentFileIndex].delete();
                                   backgroundImageFiles.value = backgroundImageFetch();
@@ -112,7 +112,7 @@ class _BackgroundSlideshowState extends State<BackgroundSlideshow> {
                                 ),
                                 onPressed: () {},
                                 label: Text(appText.remove, style: const TextStyle(color: Colors.red)),
-                                style: ButtonStyle(visualDensity: VisualDensity.compact, backgroundColor: WidgetStateProperty.all(Colors.black.withAlpha(100))),
+                                style: ButtonStyle(visualDensity: VisualDensity.compact, backgroundColor: WidgetStateProperty.all(Colors.black.withAlpha(150))),
                               ),
                             )),
                       ],

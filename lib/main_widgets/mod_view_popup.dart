@@ -56,7 +56,7 @@ Future<void> modViewPopup(context, Item item) async {
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         Text(
-                          item.itemName,
+                          item.itemName.replaceFirst('_', '/').trim(),
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                         Row(

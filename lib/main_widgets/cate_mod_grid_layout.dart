@@ -77,7 +77,7 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
     } else {
       for (var item in widget.itemCate.items) {
         for (var mod in item.mods) {
-          if (mod.itemName.toLowerCase().contains(widget.searchString.toLowerCase()) ||
+          if (mod.itemName.replaceFirst('_', '/').trim().toLowerCase().contains(widget.searchString.toLowerCase()) ||
               mod.modName.toLowerCase().contains(widget.searchString.toLowerCase()) ||
               mod.getDistinctNames().where((e) => e.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty) {
             modCardList.add(ModCardLayout(item: item, mod: mod));

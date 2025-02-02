@@ -4,7 +4,7 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
 import 'package:pso2_mod_manager/mod_apply/applying_popup.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
-import 'package:pso2_mod_manager/mod_data/load_applied_mods.dart';
+import 'package:pso2_mod_manager/mod_apply/load_applied_mods.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';

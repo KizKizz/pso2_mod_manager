@@ -6,7 +6,7 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:path/path.dart' as p;
 import 'package:image/image.dart' as img;
-import 'package:pso2_mod_manager/app_paths/original_ice_download.dart';
+import 'package:pso2_mod_manager/v3_functions/original_ice_download.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_board_class.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_card_functions.dart';

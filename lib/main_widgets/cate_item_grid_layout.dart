@@ -95,7 +95,7 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
             spacing: 5,
             children: [
               ItemIconBox(item: widget.item),
-              Text(widget.item.itemName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+              Text(widget.item.itemName.replaceFirst('_', '/').trim(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
               Column(
                 spacing: 5,
                 children: [

@@ -4,6 +4,7 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
+import 'package:pso2_mod_manager/v3_functions/profanity_remove.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
 import 'package:signals/signals_flutter.dart';
@@ -67,6 +68,7 @@ class _AppModLoadPageState extends State<AppModLoadPage> {
         } else {
           masterModList = snapshot.data;
           saveMasterModListToJson();
+          profanityRemove();
           pageIndex++;
           curPage.value = appPages[pageIndex];
           return const SizedBox();

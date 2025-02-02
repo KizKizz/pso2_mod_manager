@@ -2,6 +2,7 @@ import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_functions/json_backup.dart';
 import 'package:pso2_mod_manager/v3_home/main_applied_mod_grid.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_aqm_inject_grid.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_swap_grid.dart';
@@ -16,7 +17,7 @@ import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:signals/signals_flutter.dart';
 
 Signal<Widget> homepageCurrentWidget = Signal(const MainItemGrid());
-bool sideBarCollapse = true;
+Signal<bool> sideBarCollapse = Signal<bool>(true);
 SideMenuController mainSideMenuController = SideMenuController();
 SideMenuController footerSideMenuController = SideMenuController();
 List<Widget> homepageWidgets = [
@@ -42,7 +43,9 @@ class _HomepageState extends State<Homepage> {
   @override
   void initState() {
     footerSideMenuController.changePage(-1);
+    sideMenuAlwaysExpanded ? sideBarCollapse.value = false : sideBarCollapse.value = true;
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async => await jsonAutoBackup());
   }
 
   @override
@@ -94,7 +97,7 @@ class _HomepageState extends State<Homepage> {
                         height: MediaQuery.of(context).size.height - 251,
                         child: SideMenu(
                           style: SideMenuStyle(
-                            displayMode: sideBarCollapse ? SideMenuDisplayMode.compact : SideMenuDisplayMode.open,
+                            displayMode: sideBarCollapse.watch(context) ? SideMenuDisplayMode.compact : SideMenuDisplayMode.open,
                             openSideMenuWidth: 140,
                             compactSideMenuWidth: 60,
                             hoverColor: Theme.of(context).hoverColor,
@@ -143,7 +146,7 @@ class _HomepageState extends State<Homepage> {
                         height: 105,
                         child: SideMenu(
                             style: SideMenuStyle(
-                              displayMode: sideBarCollapse ? SideMenuDisplayMode.compact : SideMenuDisplayMode.open,
+                              displayMode: sideBarCollapse.watch(context) ? SideMenuDisplayMode.compact : SideMenuDisplayMode.open,
                               openSideMenuWidth: 140,
                               compactSideMenuWidth: 60,
                               hoverColor: Theme.of(context).hoverColor,
@@ -193,10 +196,10 @@ class _HomepageState extends State<Homepage> {
                               borderRadius: BorderRadius.circular(5),
                             ))),
                             onPressed: () {
-                              sideBarCollapse ? sideBarCollapse = false : sideBarCollapse = true;
+                              sideBarCollapse.watch(context) ? sideBarCollapse.value = false : sideBarCollapse.value = true;
                               setState(() {});
                             },
-                            icon: Icon(sideBarCollapse ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new)),
+                            icon: Icon(sideBarCollapse.watch(context) ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new)),
                       )
                     ],
                   ))),

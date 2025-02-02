@@ -1,29 +1,24 @@
-// ignore_for_file: use_build_context_synchronously, unused_import
+// ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pso2_mod_manager/app_colorscheme.dart';
 import 'package:pso2_mod_manager/app_localization/app_locale.dart';
-import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
-import 'package:pso2_mod_manager/app_paths/main_paths.dart';
+import 'package:pso2_mod_manager/v3_functions/pso2_version_check.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/jp_game_start_btn.dart';
 import 'package:pso2_mod_manager/mod_checksum/checksum_functions.dart';
 import 'package:pso2_mod_manager/settings/other_settings.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
-import 'package:pso2_mod_manager/system_loads/app_locale_page.dart';
 import 'package:pso2_mod_manager/v3_widgets/background_slideshow.dart';
 import 'package:pso2_mod_manager/mod_checksum/checksum_indicator.dart';
-import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
-import 'package:path/path.dart' as p;
 
 Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,6 +34,7 @@ Future<void> main(List<String> args) async {
   await prefsLoad();
   await AppLocale().localeInit();
   checksumAvailability.value = await checksumFileFetch();
+  pso2RegionVersion.value = await pso2RegionCheck();
 
   WindowOptions windowOptions = WindowOptions(
       size: Size(prefs.getDouble('windowWidth') ?? 1280, prefs.getDouble('windowHeight') ?? 720),
@@ -124,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
           child: AppBar(
             title: DragToMoveArea(
                 child: Row(
-                  crossAxisAlignment:CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -143,15 +139,11 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                     ),
                   ],
                 ),
-                const Row(
+                Row(
                   spacing: 5,
                   mainAxisSize: MainAxisSize.min,
-                  children: [
-                    JpGameStartButtton(),
-                    ChecksumIndicator()
-                  ],
+                  children: [Visibility(visible: pso2RegionVersion.watch(context) == PSO2RegionVersion.jp, child: const JpGameStartButtton()), const ChecksumIndicator()],
                 )
-                
               ],
             )),
             titleSpacing: 5,

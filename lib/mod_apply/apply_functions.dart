@@ -19,6 +19,7 @@ import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_functions/item_icon_mark.dart';
 
 Future<void> modToGameData(context, bool applying, Item item, Mod mod, SubMod submod) async {
   applying ? modPopupStatus.value = 'Applying files from "${submod.submodName}" to the game' : modPopupStatus.value = 'Removing files from "${submod.submodName}" to the game';
@@ -86,6 +87,13 @@ Future<void> modBackupApply(Item item, Mod mod, SubMod submod) async {
 
       await Future.delayed(const Duration(microseconds: 10));
     }
+  }
+
+  // Mark item icon
+  if (replaceItemIconOnApplied && item.applyStatus && !item.isOverlayedIconApplied!) {
+    await markedItemIconApply(item);
+  } else if (replaceItemIconOnApplied && item.applyStatus && item.overlayedIconPath!.isNotEmpty && await File(item.overlayedIconPath!).getMd5Hash() != await File(item.iconPath!).getMd5Hash()) {
+    await markedItemIconApply(item);
   }
 
   saveMasterModListToJson();

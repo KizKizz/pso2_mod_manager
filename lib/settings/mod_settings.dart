@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/custom_aqm_file_select_button.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_functions/profanity_remove.dart';
 import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:pso2_mod_manager/v3_widgets/animated_hori_toggle_layout.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
@@ -117,6 +119,32 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
                           child: Text(appText.addCustomAqmFiles)),
                     ),
                     SizedBox(width: double.infinity, child: CustomAqmSelectButtons(aqmFilePaths: modCustomAQMFiles.map((e) => e.path).toList())),
+                    // Mark modded items
+                    SettingsHeader(icon: Icons.image_search_rounded, text: appText.markModdedItemInGame),
+                    AnimatedHorizontalToggleLayout(
+                      taps: [appText.on, appText.off],
+                      initialIndex: replaceItemIconOnApplied ? 0 : 1,
+                      width: constraints.maxWidth,
+                      onChange: (currentIndex, targetIndex) async {
+                        final prefs = await SharedPreferences.getInstance();
+                        targetIndex == 0 ? replaceItemIconOnApplied = true : replaceItemIconOnApplied = false;
+                        prefs.setBool('replaceItemIconOnApplied', replaceItemIconOnApplied);
+                        // Isolate.run(() => profanityRemove);
+                      },
+                    ),
+                    // Remove profanity filter
+                    SettingsHeader(icon: Icons.abc, text: appText.removeProfanityFilter),
+                    AnimatedHorizontalToggleLayout(
+                      taps: [appText.on, appText.off],
+                      initialIndex: removeProfanityFilter ? 0 : 1,
+                      width: constraints.maxWidth,
+                      onChange: (currentIndex, targetIndex) async {
+                        final prefs = await SharedPreferences.getInstance();
+                        targetIndex == 0 ? removeProfanityFilter = true : removeProfanityFilter = false;
+                        prefs.setBool('removeProfanityFilter', removeProfanityFilter);
+                        Isolate.run(() => profanityRemove);
+                      },
+                    ),
                   ],
                 ),
               ),

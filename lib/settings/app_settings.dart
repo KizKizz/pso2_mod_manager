@@ -3,7 +3,10 @@ import 'package:pso2_mod_manager/app_localization/app_locale.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_localization/item_locale.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
+import 'package:pso2_mod_manager/v3_functions/pso2_version_check.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_home/homepage.dart';
 import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:pso2_mod_manager/v3_widgets/animated_hori_toggle_layout.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
@@ -75,6 +78,7 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             prefs.setString('itemNameLanguage', itemNameLanguage.value);
                           },
                         ),
+
                         // Profile
                         SettingsHeader(icon: modManCurActiveProfile == 1 ? Icons.filter_1 : Icons.filter_2, text: appText.profiles),
                         AnimatedHorizontalToggleLayout(
@@ -95,13 +99,27 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             child: SizedBox(
                               width: double.infinity,
                               child: OutlinedButton(
-                                  onPressed: () {
+                                  onPressed: () async {
                                     reloadButtonVisible = false;
+                                    pso2RegionVersion.value = await pso2RegionCheck();
                                     pageIndex = 6;
                                     curPage.value = appPages[pageIndex];
                                   },
                                   child: Text(appText.reload)),
                             )),
+                        // Side menu
+                        SettingsHeader(icon: Icons.view_sidebar, text: appText.sideBar),
+                        AnimatedHorizontalToggleLayout(
+                          taps: [appText.minimal, appText.alwaysExpanded],
+                          initialIndex: sideMenuAlwaysExpanded ? 1 : 0,
+                          width: constraints.maxWidth,
+                          onChange: (currentIndex, targetIndex) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            targetIndex == 1 ? sideMenuAlwaysExpanded = true : sideMenuAlwaysExpanded = false;
+                            sideMenuAlwaysExpanded ? sideBarCollapse.value = false : sideBarCollapse.value = true;
+                            prefs.setBool('sideMenuAlwaysExpanded', sideMenuAlwaysExpanded);
+                          },
+                        ),
                         // Item icon slides
                         SettingsHeader(icon: Icons.slideshow, text: appText.itemIconSlides),
                         AnimatedHorizontalToggleLayout(

@@ -23,6 +23,9 @@ Signal<String> selectedDisplaySortModSet = Signal<String>('Name (Alphabetical)')
 bool originalFilesBackupsFromSega = true;
 double boundingRadiusRemovalValue = -10;
 Signal<String> selectedCustomAQMFilePath = Signal('');
+bool removeProfanityFilter = false;
+bool replaceItemIconOnApplied = true;
+bool sideMenuAlwaysExpanded = false;
 
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
@@ -104,4 +107,13 @@ Future<void> prefsLoad() async {
 
   // Auto inject custom aqm
   autoInjectCustomAqm = prefs.getBool('autoInjectCustomAqm') ?? false;
+
+  // Remove profanity
+  removeProfanityFilter = prefs.getBool('removeProfanityFilter') ?? false;
+
+  // Mark modded items
+  replaceItemIconOnApplied = prefs.getBool('replaceItemIconOnApplied') ?? true;
+
+  // Mark modded items
+  sideMenuAlwaysExpanded = prefs.getBool('sideMenuAlwaysExpanded') ?? false;
 }

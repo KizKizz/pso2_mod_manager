@@ -56,7 +56,7 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         Text(
-                          item.itemName,
+                          item.itemName.replaceFirst('_', '/').trim(),
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                         Row(

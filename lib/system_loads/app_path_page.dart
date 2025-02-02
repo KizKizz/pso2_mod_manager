@@ -152,7 +152,6 @@ class _AppPathPageState extends State<AppPathPage> {
                                   mainDataDirPath = mainDirPathText.text;
                                   prefs.setString('mainDataDirPath', mainDataDirPath);
                                 }
-                                
                                 createMainDirs();
                                 pageIndex++;
                                 curPage.value = appPages[pageIndex];
