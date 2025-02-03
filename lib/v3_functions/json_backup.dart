@@ -10,7 +10,7 @@ import 'package:path/path.dart' as p;
 Future<void> jsonAutoBackup() async {
   DateTime now = DateTime.now();
   String formattedDate = DateFormat('MM-dd-yyyy').format(now);
-  Directory autoSaveDir = Directory('$jsonBackupDirPath${p.separator}auto');
+  Directory autoSaveDir = Directory(jsonBackupDirPath);
   autoSaveDir.createSync(recursive: true);
 
   Directory newBackupDir = Directory(Uri.file('${autoSaveDir.path}/$formattedDate').toFilePath());
@@ -35,7 +35,7 @@ Future<void> jsonAutoBackup() async {
 Future<void> jsonManualBackup() async {
   DateTime now = DateTime.now();
   String formattedDate = DateFormat('MM-dd-yyyy-kk-mm-ss').format(now);
-  Directory manualSaveDir = Directory('$jsonBackupDirPath${p.separator}manual');
+  Directory manualSaveDir = Directory(jsonBackupDirPath);
   manualSaveDir.createSync(recursive: true);
 
   Directory newBackupDir = Directory(Uri.file('${manualSaveDir.path}/$formattedDate').toFilePath());
@@ -82,4 +82,16 @@ Future<void> createNewBackupFile(Directory newBackupDir) async {
   var encoder = ZipFileEncoder();
   await encoder.zipDirectory(newBackupDir);
   newBackupDir.deleteSync(recursive: true);
+}
+
+String getLatestBackupDate() {
+  Directory saveDir = Directory(jsonBackupDirPath);
+  DateTime lastest = DateTime(0);
+  List<File> savedFiles = saveDir.listSync().whereType<File>().where((e) => p.extension(e.path) == '.zip').toList();
+  if (savedFiles.isNotEmpty) {
+    savedFiles.sort((a, b) => b.statSync().modified.compareTo(a.statSync().modified));
+    lastest = savedFiles.first.statSync().modified;
+  }
+  String formattedDate = DateFormat('MM-dd-yyyy kk:mm:ss').format(lastest);
+  return formattedDate;
 }

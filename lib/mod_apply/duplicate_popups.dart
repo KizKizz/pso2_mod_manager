@@ -55,7 +55,7 @@ Future<bool> duplicateAppliedModPopup(context, Item dupItem, Mod dupMod, SubMod 
                           ),
                           Expanded(
                             flex: 3,
-                            child: SubmodImageBox(filePaths: dupSubmod.previewImages, isNew: dupSubmod.isNew),
+                            child: SubmodImageBox(imageFilePaths: dupSubmod.previewImages, videoFilePaths: dupSubmod.previewVideos, isNew: dupSubmod.isNew),
                           )
                         ],
                       ),

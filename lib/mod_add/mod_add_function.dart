@@ -168,7 +168,7 @@ Future<List<Item>> modAddToMasterList(bool addingToSet, List<ModSet> modSets) as
         final item = modAddingItem.associatedItems[i];
 
         String category = item.category;
-        String itemName = item.getName();
+        String itemName = item.getName().replaceAll(RegExp(charToReplace), '_');
         String newItemDirDestPath = mainModDirPath + p.separator + category + p.separator + itemName;
 
         for (int j = 0; j < modAddingItem.submods.length; j++) {

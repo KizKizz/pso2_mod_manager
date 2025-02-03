@@ -182,7 +182,7 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
               ),
               Expanded(
                 flex: 3,
-                child: SubmodImageBox(filePaths: widget.activeSubmod.previewImages, isNew: widget.activeSubmod.isNew),
+                child: SubmodImageBox(imageFilePaths: widget.activeSubmod.previewImages, videoFilePaths: widget.activeSubmod.previewVideos, isNew: widget.activeSubmod.isNew),
               )
             ],
           ),

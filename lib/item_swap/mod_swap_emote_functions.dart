@@ -263,6 +263,29 @@ Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, Su
     }
     //}
 
+    // copy files in .fig hash
+    String figHashLItemIceName = lItemAvailableIces
+        .firstWhere(
+          (element) => element.split(': ').first == '.fig Hash',
+          orElse: () => '',
+        )
+        .split(': ')
+        .last;
+    String figHashRItemIceName = rItemAvailableIces
+        .firstWhere(
+          (element) => element.split(': ').first == '.fig Hash',
+          orElse: () => '',
+        )
+        .split(': ')
+        .last;
+    Directory lItemFigHashExtractedDir = Directory(Uri.file('$tempSubmodPathF/${figHashLItemIceName}_ext/group2').toFilePath());
+    Directory rItemFigHashExtractedDir = Directory(Uri.file('$tempSubmodPathT/${figHashRItemIceName}_ext/group2').toFilePath());
+    if (lItemFigHashExtractedDir.existsSync() && rItemFigHashExtractedDir.existsSync()) {
+      for (var file in lItemFigHashExtractedDir.listSync(recursive: true).whereType<File>()) {
+        await file.copy(file.path.replaceFirst(lItemFigHashExtractedDir.path, rItemFigHashExtractedDir.path));
+      }
+    }
+
     //pack
     newToSelectedItemName = newToSelectedItemName.replaceAll(RegExp(charToReplace), '_');
     String packDirPath = '';

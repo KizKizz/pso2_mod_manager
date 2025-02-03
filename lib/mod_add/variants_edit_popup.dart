@@ -59,7 +59,7 @@ Future<AddingMod?> variantsEditPopup(context, AddingMod addingMod, int curIndex)
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   GenericItemIconBox(iconImagePaths: [addingMod.associatedItems[i].iconImagePath], boxSize: const Size(140, 140), isNetwork: true),
-                                  Text(p.basename(addingMod.associatedItems[i].getName()), textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
+                                  Text(addingMod.associatedItems[i].getName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
                                   IconButton(
                                       onPressed: addingMod.associatedItems.length > 1 && addingMod.aItemAddingStates.where((e) => e == true).length > 1 || !addingMod.aItemAddingStates[i]
                                           ? () => setState(() {
@@ -88,10 +88,16 @@ Future<AddingMod?> variantsEditPopup(context, AddingMod addingMod, int curIndex)
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 SubmodImageBox(
-                                    filePaths: addingMod.submods[i]
+                                    imageFilePaths: addingMod.submods[i]
                                         .listSync(recursive: addingMod.submods[i] != addingMod.modDir)
                                         .whereType<File>()
                                         .where((e) => p.extension(e.path) == '.png' || p.extension(e.path) == '.jpg')
+                                        .map((e) => e.path)
+                                        .toList(),
+                                    videoFilePaths: addingMod.submods[i]
+                                        .listSync(recursive: addingMod.submods[i] != addingMod.modDir)
+                                        .whereType<File>()
+                                        .where((e) => p.extension(e.path) == '.mp4' || p.extension(e.path) == '.webm')
                                         .map((e) => e.path)
                                         .toList(),
                                     isNew: false),
@@ -134,9 +140,10 @@ Future<AddingMod?> variantsEditPopup(context, AddingMod addingMod, int curIndex)
                                         visualDensity: VisualDensity.adaptivePlatformDensity),
                                     IconButton(
                                         onPressed: addingMod.submods.length > 1 && addingMod.submodAddingStates.where((e) => e == true).length > 1 || !addingMod.submodAddingStates[i]
-                                        ? () => setState(() {
-                                              addingMod.submodAddingStates[i] ? addingMod.submodAddingStates[i] = false : addingMod.submodAddingStates[i] = true;
-                                            }) : null,
+                                            ? () => setState(() {
+                                                  addingMod.submodAddingStates[i] ? addingMod.submodAddingStates[i] = false : addingMod.submodAddingStates[i] = true;
+                                                })
+                                            : null,
                                         icon: Icon(addingMod.submodAddingStates[i] ? Icons.check_box_outlined : Icons.check_box_outline_blank,
                                             color: addingMod.submodAddingStates[i] ? Colors.green : Colors.red),
                                         visualDensity: VisualDensity.adaptivePlatformDensity),

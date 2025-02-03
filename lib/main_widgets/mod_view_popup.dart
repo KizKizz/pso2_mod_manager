@@ -109,6 +109,17 @@ Future<void> modViewPopup(context, Item item) async {
                                       () {},
                                     );
                                   },
+                                  onDelete: () async {
+                                    await modDelete(context, item, mod);
+                                    modPopupStatus.value = '${mod.modName} deleted';
+                                    item.isNew = item.getModsIsNewState();
+                                    selectedMod = null;
+                                    if (item.mods.isEmpty) {
+                                      mainGridStatus.value = '"${mod.modName}" in "${item.itemName}" is empty and removed';
+                                      // ignore: use_build_context_synchronously
+                                      Navigator.of(context).pop();
+                                    }
+                                  },
                                 );
                               })
                         ]))

@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pso2_mod_manager/app_colorscheme.dart';
 import 'package:pso2_mod_manager/app_localization/app_locale.dart';
@@ -26,6 +27,7 @@ Future<void> main(List<String> args) async {
     debugPrint(args.toString());
   });
   await windowManager.ensureInitialized();
+  MediaKit.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
 
   PackageInfo packageInfo = await PackageInfo.fromPlatform();

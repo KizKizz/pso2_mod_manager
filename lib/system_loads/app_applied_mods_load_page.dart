@@ -168,7 +168,7 @@ class _AppAppliedModsLoadPageState extends State<AppAppliedModsLoadPage> {
                       ),
                       Expanded(
                         flex: 3,
-                        child: SubmodImageBox(filePaths: submod.previewImages, isNew: submod.isNew),
+                        child: SubmodImageBox(imageFilePaths: submod.previewImages, videoFilePaths: submod.previewVideos, isNew: submod.isNew),
                       )
                     ],
                   ),

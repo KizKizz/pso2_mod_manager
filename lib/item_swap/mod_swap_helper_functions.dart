@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:background_downloader/background_downloader.dart';
+import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/app_paths/sega_file_paths.dart';
@@ -247,7 +248,13 @@ Future<void> modSwapTempDirsCreate() async {
 }
 
 Future<void> modSwapTempDirsRemove() async {
-  if (Directory(modSwapTempDirPath).existsSync()) await Directory(modSwapTempDirPath).delete(recursive: true);
+  if (Directory(modSwapTempDirPath).existsSync()) {
+    try {
+      await Directory(modSwapTempDirPath).delete(recursive: true);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
 }
 
 Future<File> modSwapOriginalFileDownload(String networkFilePath, String server, String saveLocation) async {
@@ -296,7 +303,8 @@ SubMod lItemSubmodGet(ItemData lItemData) {
     }
   }
 
-  return SubMod(fromItemNameSwap, fromItemNameSwap, lItemData.getName(), lItemData.category, '', false, DateTime(0), 0, false, false, false, [], false, false, -1, -1, '', [], [], [], [], [], modFileList);
+  return SubMod(
+      fromItemNameSwap, fromItemNameSwap, lItemData.getName(), lItemData.category, '', false, DateTime(0), 0, false, false, false, [], false, false, -1, -1, '', [], [], [], [], [], modFileList);
 }
 
 Mod lItemModGet() {

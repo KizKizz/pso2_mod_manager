@@ -206,7 +206,8 @@ class AppText {
       extensionFile = '%p% File',
       applyThisSet = 'Apply This Set',
       restoreThisSet = 'Restore This Set',
-      launchPSO2 = 'Launch PSO2';
+      launchPSO2 = 'Launch PSO2',
+      swapAll = 'Swap All';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -337,7 +338,20 @@ class AppText {
       markModdedItemInGame = 'Mark Modded Items In Game',
       sideBar = 'Side Bar',
       minimal = 'Minimal',
-      alwaysExpanded = 'Always Expand';
+      alwaysExpanded = 'Always Expand',
+      modConfigsLastSaveDate = 'Mod Configs (Latest Backup: %p%)',
+      backupNow = 'Backup Now',
+      mainPaths = 'Main Paths',
+      currentPathFolder = 'Current path: %p%',
+      selectPso2BinFolder = 'Select pso2_bin Folder',
+      selectModManagerDataFolder = 'Select Mod Manager Data Folder',
+      locations = 'Locations',
+      pso2binFolder = 'pso2_bin Folder',
+      modManagerMainFolder = 'Mod Manager Main Data Folder',
+      modDataFolder = 'Mod Data Folder',
+      modBackupFolder = 'Mod Backup Folder',
+      checksumFolder = 'Checksum Folder',
+      modConfigsBackupFolder = 'Mod Configs Backup Folder';
 
   factory AppText.fromJson(Map<String, dynamic> json) => _$AppTextFromJson(json);
   Map<String, dynamic> toJson() => _$AppTextToJson(this);

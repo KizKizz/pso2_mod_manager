@@ -133,7 +133,7 @@ class _ModCardLayoutState extends State<ModCardLayout> {
               ),
               Expanded(
                 flex: 3,
-                child: SubmodImageBox(filePaths: widget.submod.previewImages, isNew: widget.mod.isNew),
+                child: SubmodImageBox(imageFilePaths: widget.submod.previewImages, videoFilePaths: widget.submod.previewVideos, isNew: widget.mod.isNew),
               )
             ],
           ),

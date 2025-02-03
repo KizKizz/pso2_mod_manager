@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/settings/color_picker.dart';
+import 'package:pso2_mod_manager/settings/location_button.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:pso2_mod_manager/v3_widgets/animated_hori_toggle_layout.dart';
@@ -9,6 +11,7 @@ import 'package:pso2_mod_manager/v3_widgets/background_slideshow.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
+import 'package:path/path.dart' as p;
 
 class OtherSettingsLayout extends StatefulWidget {
   const OtherSettingsLayout({super.key});
@@ -116,7 +119,21 @@ class _OtherSettingsLayoutState extends State<OtherSettingsLayout> {
                       child: BackgroundSlideshow(
                         isMini: true,
                       ),
-                    )
+                    ),
+                    // Locations
+                        SettingsHeader(icon: Icons.folder_open, text: appText.locations),
+                        Column(
+                          spacing: 5,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            LocationButton(label: appText.pso2binFolder, folderPath: pso2binDirPath),
+                            LocationButton(label: appText.modManagerMainFolder, folderPath: mainDataDirPath),
+                            LocationButton(label: appText.checksumFolder, folderPath: p.dirname(modChecksumFilePath)),
+                            LocationButton(label: appText.modDataFolder, folderPath: mainModDirPath),
+                            LocationButton(label: appText.modBackupFolder, folderPath: backupDirPath),
+                            LocationButton(label: appText.modConfigsBackupFolder, folderPath: jsonBackupDirPath),
+                          ],
+                        )
                   ],
                 ),
               ),

@@ -41,7 +41,7 @@ class _ModAddGridState extends State<ModAddGrid> {
                     spacing: 5,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      SubmodImageBox(filePaths: modAddingList[i].previewImages.map((f) => f.path).toList(), isNew: false),
+                      SubmodImageBox(imageFilePaths: modAddingList[i].previewImages.map((f) => f.path).toList(), videoFilePaths: modAddingList[i].previewVideos.map((f) => f.path).toList(), isNew: false),
                       Text(p.basename(modAddingList[i].modDir.path), textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
                       Row(
                         spacing: 5,

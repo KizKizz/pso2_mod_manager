@@ -65,7 +65,7 @@ Future<Directory> modSwapGeneral(
       }
     }
     //extract F ice to
-    if (lItemIceFileInTemp.existsSync()) {
+    if (lItemIceFileInTemp.path.isNotEmpty && lItemIceFileInTemp.existsSync()) {
       await Process.run('$zamboniExePath -outdir "$tempSubmodPathF"', [lItemIceFileInTemp.path]);
       String extractedGroup1PathF = Uri.file('$tempSubmodPathF/${lItemIceName}_ext/group1').toFilePath();
       if (Directory(extractedGroup1PathF).existsSync()) {

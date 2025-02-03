@@ -2,23 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_grid_layout.dart';
-import 'package:pso2_mod_manager/item_swap/item_swap_motions_select_button.dart';
-import 'package:pso2_mod_manager/item_swap/item_swap_type_select_button.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_working_popup.dart';
+import 'package:pso2_mod_manager/item_swap/mod_swap_all_motions_select_button.dart';
+import 'package:pso2_mod_manager/item_swap/mod_swap_all_type_select_button.dart';
+import 'package:pso2_mod_manager/item_swap/mod_swap_all_working_popup.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
-import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_swap_grid.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
-import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
 import 'package:signals/signals_flutter.dart';
 
-Signal<bool> closeModSwapPopup = Signal(false);
-
-Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
-  ScrollController lScrollController = ScrollController();
+Future<void> modSwapAllPopup(context, Item item, Mod mod) async {
   ScrollController rScrollController = ScrollController();
   Signal<ItemData?> lSelectedItemData = Signal<ItemData?>(null);
   Signal<ItemData?> rSelectedItemData = Signal<ItemData?>(null);
@@ -26,7 +22,7 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
   List<ItemData> rDisplayingItemsExtra = [];
   String extraCategory = '';
   List<ItemData> displayingItems = [];
-  List<ItemData> lDisplayingItems = [];
+  // List<ItemData> lDisplayingItems = [];
 
   await showDialog(
       barrierDismissible: false,
@@ -34,23 +30,21 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (dialogContext, setState) {
-          
-
           displayingItems = pItemData
               .where((e) => showNoNameItems.watch(context) || (!showNoNameItems.watch(context) && e.getName().isNotEmpty))
-              .where((e) => submod.category == defaultCategoryDirs[1]
+              .where((e) => mod.category == defaultCategoryDirs[1]
                   ? e.subCategory == 'Basewear'
-                  : submod.category == defaultCategoryDirs[16]
+                  : mod.category == defaultCategoryDirs[16]
                       ? e.subCategory == 'Setwear'
-                      : submod.category == defaultCategoryDirs[14]
-                          ? e.category == submod.category && (e.subCategory == selectedItemSwapMotionType.watch(context) || selectedItemSwapMotionType.watch(context) == appText.all)
-                          : e.category == submod.category)
-              .where((e) => selectedItemSwapTypeCategory.watch(context) == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.watch(context).toLowerCase())
+                      : mod.category == defaultCategoryDirs[14]
+                          ? e.category == mod.category && (e.subCategory == selectedModSwapAllMotionType.watch(context) || selectedModSwapAllMotionType.watch(context) == appText.all)
+                          : e.category == mod.category)
+              .where((e) => selectedModSwapAllTypeCategory.watch(context) == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedModSwapAllTypeCategory.watch(context).toLowerCase())
               .toList();
           displayingItems.sort((a, b) => a.getName().compareTo(b.getName()));
 
           // Extra item data
-          if (extraCategory.isNotEmpty && extraCategory == submod.category) {
+          if (extraCategory.isNotEmpty && extraCategory == mod.category) {
             rDisplayingItemsExtra = pItemData
                 .where((e) => showNoNameItems.watch(context) || (!showNoNameItems.watch(context) && e.getName().isNotEmpty))
                 .where((e) => extraCategory == defaultCategoryDirs[7]
@@ -64,7 +58,8 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                                 : extraCategory == defaultCategoryDirs[11]
                                     ? e.category == defaultCategoryDirs[2]
                                     : true)
-                .where((e) => selectedItemSwapTypeCategory.watch(context) == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.watch(context).toLowerCase())
+                .where(
+                    (e) => selectedModSwapAllTypeCategory.watch(context) == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedModSwapAllTypeCategory.watch(context).toLowerCase())
                 .toList();
             rDisplayingItemsExtra.sort((a, b) => a.getName().compareTo(b.getName()));
           } else {
@@ -73,7 +68,7 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
           }
 
           // Data from mod
-          lDisplayingItems = pItemData.where((e) => e.category == submod.category && submod.getModFileNames().indexWhere((f) => e.getIceDetailsWithoutKeys().contains(f)) != -1).toList();
+          // lDisplayingItems = pItemData.where((e) => e.category == mod.category && submod.getModFileNames().indexWhere((f) => e.getIceDetailsWithoutKeys().contains(f)) != -1).toList();
 
           return AlertDialog(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
@@ -102,58 +97,21 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                             },
                             child: Text(showNoNameItems.watch(context) ? appText.hideNoNameItems : appText.showNoNameItems)),
                       )),
-                      Visibility(
-                          visible: submod.category == defaultCategoryDirs[14],
-                          child: Expanded(child: ItemSwapMotionTypeSelectButtons(lScrollController: lScrollController, rScrollController: rScrollController))),
-                      Expanded(child: Padding(padding: const EdgeInsets.only(top: 1), child: ItemSwapTypeSelectButtons(lScrollController: lScrollController, rScrollController: rScrollController))),
+                      Visibility(visible: mod.category == defaultCategoryDirs[14], child: Expanded(child: ModSwapAllMotionsSelectButton(rScrollController: rScrollController))),
+                      Expanded(child: Padding(padding: const EdgeInsets.only(top: 1), child: ModSwapAllTypeSelectButton(rScrollController: rScrollController))),
                     ],
                   ),
                   Expanded(
-                      child: Row(
-                    spacing: 5,
-                    children: [
-                      Expanded(
-                          child: Column(
-                        spacing: 5,
-                        children: [
-                          Expanded(
-                              child: ItemSwapGridLayout(
-                            itemDataList: lDisplayingItems,
-                            scrollController: lScrollController,
-                            selectedItemData: lSelectedItemData,
-                          )),
-                          Row(
-                            spacing: 5,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(width: 300, height: 170, child: SubmodImageBox(imageFilePaths: submod.previewImages, videoFilePaths: submod.previewVideos, isNew: submod.isNew)),
-                              Expanded(
-                                child: Column(
-                                  spacing: 5,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(submod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleLarge),
-                                    Text(submod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ],
-                      )),
-                      Expanded(
-                          child: ItemSwapGridLayout(
-                        itemDataList: extraCategory == defaultCategoryDirs[1] ||
-                                extraCategory == defaultCategoryDirs[2] ||
-                                extraCategory == defaultCategoryDirs[7] ||
-                                extraCategory == defaultCategoryDirs[11] ||
-                                extraCategory == defaultCategoryDirs[16]
-                            ? rDisplayingItemsExtra
-                            : displayingItems,
-                        scrollController: rScrollController,
-                        selectedItemData: rSelectedItemData,
-                      )),
-                    ],
+                      child: ItemSwapGridLayout(
+                    itemDataList: extraCategory == defaultCategoryDirs[1] ||
+                            extraCategory == defaultCategoryDirs[2] ||
+                            extraCategory == defaultCategoryDirs[7] ||
+                            extraCategory == defaultCategoryDirs[11] ||
+                            extraCategory == defaultCategoryDirs[16]
+                        ? rDisplayingItemsExtra
+                        : displayingItems,
+                    scrollController: rScrollController,
+                    selectedItemData: rSelectedItemData,
                   )),
                 ],
               ),
@@ -180,28 +138,28 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                           },
                           child: Text(appText.replaceLQTexturesWithHQ)),
                       Visibility(
-                          visible: submod.category == defaultCategoryDirs[1] ||
-                              submod.category == defaultCategoryDirs[2] ||
-                              submod.category == defaultCategoryDirs[7] ||
-                              submod.category == defaultCategoryDirs[11] ||
-                              submod.category == defaultCategoryDirs[16],
+                          visible: mod.category == defaultCategoryDirs[1] ||
+                              mod.category == defaultCategoryDirs[2] ||
+                              mod.category == defaultCategoryDirs[7] ||
+                              mod.category == defaultCategoryDirs[11] ||
+                              mod.category == defaultCategoryDirs[16],
                           child: ElevatedButton(
                               onPressed: () {
                                 setState(() {
-                                  extraCategory.isEmpty ? extraCategory = submod.category : extraCategory = '';
-                                  submod.category == defaultCategoryDirs[11] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
+                                  extraCategory.isEmpty ? extraCategory = mod.category : extraCategory = '';
+                                  mod.category == defaultCategoryDirs[11] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
                                   rScrollController.jumpTo(0);
                                 });
                               },
-                              child: submod.category == defaultCategoryDirs[1]
+                              child: mod.category == defaultCategoryDirs[1]
                                   ? Text(extraCategory == defaultCategoryDirs[1] ? appText.swapToBasewears : appText.swapToSetwears)
-                                  : submod.category == defaultCategoryDirs[2]
+                                  : mod.category == defaultCategoryDirs[2]
                                       ? Text(extraCategory == defaultCategoryDirs[2] ? appText.swapToBodyPaints : appText.swapToInnerwears)
-                                      : submod.category == defaultCategoryDirs[7]
+                                      : mod.category == defaultCategoryDirs[7]
                                           ? Text(extraCategory == defaultCategoryDirs[7] ? appText.swapToEmotes : appText.swapToIdleMotions)
-                                          : submod.category == defaultCategoryDirs[11]
+                                          : mod.category == defaultCategoryDirs[11]
                                               ? Text(extraCategory == defaultCategoryDirs[11] ? appText.swapToInnerwears : appText.swapToBodyPaints)
-                                              : submod.category == defaultCategoryDirs[16]
+                                              : mod.category == defaultCategoryDirs[16]
                                                   ? Text(extraCategory == defaultCategoryDirs[16] ? appText.swapToSetwears : appText.swapToBasewears)
                                                   : null)),
                     ],
@@ -211,13 +169,20 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                     overflowSpacing: 5,
                     children: [
                       OutlinedButton(
-                          onPressed: lSelectedItemData.watch(context) != null && rSelectedItemData.watch(context) != null
+                          onPressed: rSelectedItemData.watch(context) != null
                               ? () async {
                                   itemSwapWorkingStatus.value = '';
-                                  await itemSwapWorkingPopup(context, false, lSelectedItemData.value!, rSelectedItemData.value!, mod, submod);
+                                  for (var submod in mod.submods) {
+                                    lSelectedItemData.value = pItemData
+                                        .where((e) => e.category == mod.category && submod.getModFileNames().indexWhere((f) => e.getIceDetailsWithoutKeys().contains(f)) != -1)
+                                        .toList()
+                                        .firstWhere((e) => e.getENName() == item.itemName || e.getJPName() == item.itemName);
+                  
+                                    await modSwapAllWorkingPopup(context, false, lSelectedItemData.value!, rSelectedItemData.value!, mod, submod);
+                                  }
                                 }
                               : null,
-                          child: Text(appText.next)),
+                          child: Text(appText.swapAll)),
                       OutlinedButton(
                           onPressed: () {
                             Navigator.of(context).pop();

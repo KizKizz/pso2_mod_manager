@@ -97,7 +97,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
               Stack(
                 alignment: AlignmentDirectional.bottomStart,
                 children: [
-                  SubmodImageBox(filePaths: widget.submod.previewImages, isNew: widget.submod.isNew),
+                  SubmodImageBox(imageFilePaths: widget.submod.previewImages, videoFilePaths: widget.submod.previewVideos, isNew: widget.submod.isNew),
                   Visibility(
                       visible: widget.submod.hasCmx! || widget.submod.customAQMInjected! || widget.submod.boundingRemoved!,
                       child: Padding(
@@ -176,11 +176,12 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                         for (int i = 0; i < selectedQuickSwapItems.length; i++)
                           PopupMenuItem(
                               enabled: selectedQuickSwapItems[i].getENName() != widget.item.itemName && selectedQuickSwapItems[i].getJPName() != widget.item.itemName,
-                              onTap: () {
+                              onTap: () async {
                                 List<ItemData> lItemData = pItemData
                                     .where((e) => e.category == widget.submod.category && widget.submod.getModFileNames().indexWhere((f) => e.getIceDetailsWithoutKeys().contains(f)) != -1)
                                     .toList();
                                 quickSwapWorkingPopup(context, false, lItemData.first, selectedQuickSwapItems[i], widget.mod, widget.submod);
+                                closeModSwapPopup.value = true;
                               },
                               child: Row(
                                 spacing: 10,
@@ -232,7 +233,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                       PopupMenuItem(
                           onTap: () async => await modSwapPopup(context, widget.item, widget.mod, widget.submod),
                           child: MenuIconItem(icon: Icons.swap_horizontal_circle_outlined, text: appText.swapToAnotherItem)),
-                      PopupMenuItem(child: MenuIconItem(icon: Icons.file_present, text: appText.cmx)),
+                      PopupMenuItem(enabled: false, child: MenuIconItem(icon: Icons.file_present, text: appText.cmx)),
                       PopupMenuItem(
                           enabled: boundingRadiusCategoryDirs.contains(widget.submod.category) && !widget.submod.applyStatus,
                           onTap: () async {
@@ -287,6 +288,8 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                           enabled: !widget.submod.applyStatus,
                           onTap: () async {
                             await submodDelete(context, widget.item, widget.mod, widget.submod);
+                            widget.mod.isNew = widget.mod.getSubmodsIsNewState();
+                            widget.item.isNew = widget.item.getModsIsNewState();
                             modPopupStatus.value = '${widget.submod.submodName} deleted';
                             if (widget.mod.submods.isEmpty) {
                               mainGridStatus.value = '"${widget.mod.modName}" in "${widget.item.itemName}" is empty and removed';

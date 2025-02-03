@@ -3,6 +3,7 @@ import 'package:pso2_mod_manager/app_localization/app_locale.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_localization/item_locale.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
+import 'package:pso2_mod_manager/v3_functions/json_backup.dart';
 import 'package:pso2_mod_manager/v3_functions/pso2_version_check.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
@@ -10,6 +11,7 @@ import 'package:pso2_mod_manager/v3_home/homepage.dart';
 import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:pso2_mod_manager/v3_widgets/animated_hori_toggle_layout.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
+import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
@@ -24,11 +26,13 @@ class AppSettingsLayout extends StatefulWidget {
 class _AppSettingsLayoutState extends State<AppSettingsLayout> {
   late List<AppLocale> appLocales;
   bool reloadButtonVisible = false;
+  String latestJsonBackupDate = '';
 
   @override
   void initState() {
     // Load app locales
     appLocales = AppLocale().loadLocales();
+    latestJsonBackupDate = getLatestBackupDate();
     super.initState();
   }
 
@@ -51,34 +55,6 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                     child: Column(
                       spacing: 5,
                       children: [
-                        // Language
-                        SettingsHeader(icon: Icons.language, text: appText.uiLanguage),
-                        AnimatedHorizontalToggleLayout(
-                          taps: appLocales.map((e) => e.language).toList(),
-                          initialIndex: appLocales.indexWhere((e) => e.isActive),
-                          width: constraints.maxWidth,
-                          onChange: (currentIndex, targetIndex) {
-                            for (var e in appLocales) {
-                              e.isActive = false;
-                            }
-                            appLocales[targetIndex].isActive = true;
-                            appLocales[targetIndex].saveSettings(appLocales);
-                          },
-                        ),
-
-                        // Item name language
-                        SettingsHeader(icon: Icons.language, text: appText.itemNameLanguage),
-                        AnimatedHorizontalToggleLayout(
-                          taps: const ['EN', 'JP'],
-                          initialIndex: itemNameLanguage == ItemNameLanguage.en ? 0 : 1,
-                          width: constraints.maxWidth,
-                          onChange: (currentIndex, targetIndex) async {
-                            final prefs = await SharedPreferences.getInstance();
-                            targetIndex == 0 ? itemNameLanguage = ItemNameLanguage.en : itemNameLanguage = ItemNameLanguage.jp;
-                            prefs.setString('itemNameLanguage', itemNameLanguage.value);
-                          },
-                        ),
-
                         // Profile
                         SettingsHeader(icon: modManCurActiveProfile == 1 ? Icons.filter_1 : Icons.filter_2, text: appText.profiles),
                         AnimatedHorizontalToggleLayout(
@@ -107,6 +83,32 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                                   },
                                   child: Text(appText.reload)),
                             )),
+                        // Language
+                        SettingsHeader(icon: Icons.language, text: appText.uiLanguage),
+                        AnimatedHorizontalToggleLayout(
+                          taps: appLocales.map((e) => e.language).toList(),
+                          initialIndex: appLocales.indexWhere((e) => e.isActive),
+                          width: constraints.maxWidth,
+                          onChange: (currentIndex, targetIndex) {
+                            for (var e in appLocales) {
+                              e.isActive = false;
+                            }
+                            appLocales[targetIndex].isActive = true;
+                            appLocales[targetIndex].saveSettings(appLocales);
+                          },
+                        ),
+                        // Item name language
+                        SettingsHeader(icon: Icons.language, text: appText.itemNameLanguage),
+                        AnimatedHorizontalToggleLayout(
+                          taps: const ['EN', 'JP'],
+                          initialIndex: itemNameLanguage == ItemNameLanguage.en ? 0 : 1,
+                          width: constraints.maxWidth,
+                          onChange: (currentIndex, targetIndex) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            targetIndex == 0 ? itemNameLanguage = ItemNameLanguage.en : itemNameLanguage = ItemNameLanguage.jp;
+                            prefs.setString('itemNameLanguage', itemNameLanguage.value);
+                          },
+                        ),
                         // Side menu
                         SettingsHeader(icon: Icons.view_sidebar, text: appText.sideBar),
                         AnimatedHorizontalToggleLayout(
@@ -131,7 +133,58 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             targetIndex == 0 ? itemIconSlides.value = true : itemIconSlides.value = false;
                             prefs.setBool('itemIconSlides', itemIconSlides.value);
                           },
-                        )
+                        ),
+                        // jsons backup
+                        SettingsHeader(icon: Icons.backup_table_sharp, text: appText.dText(appText.modConfigsLastSaveDate, latestJsonBackupDate)),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton(
+                              onPressed: () async {
+                                await jsonManualBackup();
+                                latestJsonBackupDate = getLatestBackupDate();
+                                setState(() {});
+                              },
+                              child: Text(appText.backupNow)),
+                        ),
+                        // Main paths reselect
+                        SettingsHeader(icon: Icons.folder, text: appText.mainPaths),
+                        Column(
+                          spacing: 5,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ModManTooltip(
+                              message: appText.dText(appText.currentPathFolder, pso2binDirPath),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: OutlinedButton(
+                                    onPressed: () async {
+                                      final prefs = await SharedPreferences.getInstance();
+                                      pso2binDirPath = '';
+                                      modManCurActiveProfile == 1 ? prefs.setString('pso2binDirPath', pso2binDirPath) : prefs.setString('pso2binDirPath_profile2', pso2binDirPath);
+                                      pageIndex = 6;
+                                      curPage.value = appPages[pageIndex];
+                                    },
+                                    child: Text(appText.selectPso2BinFolder)),
+                              ),
+                            ),
+                            ModManTooltip(
+                              message: appText.dText(appText.currentPathFolder, mainDataDirPath),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: OutlinedButton(
+                                    onPressed: () async {
+                                      final prefs = await SharedPreferences.getInstance();
+                                      mainDataDirPath = '';
+                                      prefs.setString('mainDataDirPath', mainDataDirPath);
+                                      pageIndex = 6;
+                                      curPage.value = appPages[pageIndex];
+                                    },
+                                    child: Text(appText.selectModManagerDataFolder)),
+                              ),
+                            ),
+                          ],
+                        ),
+                        
                       ],
                     )))
           ],
