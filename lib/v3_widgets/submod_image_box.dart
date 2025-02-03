@@ -60,7 +60,7 @@ class _SubmodImageBoxState extends State<SubmodImageBox> {
       videoPlayer.setVolume(0);
       videoPlayer.stream.completed.listen((event) {
         if (event) {
-          videoPlayer!.play();
+          videoPlayer.play();
         }
       });
     }
