@@ -9,7 +9,7 @@ import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
-import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:signals/signals_flutter.dart';
 
 Future<bool> duplicateAppliedModPopup(context, Item dupItem, Mod dupMod, SubMod dupSubmod, String newSubmodName) async {
@@ -55,7 +55,7 @@ Future<bool> duplicateAppliedModPopup(context, Item dupItem, Mod dupMod, SubMod 
                           ),
                           Expanded(
                             flex: 3,
-                            child: SubmodImageBox(imageFilePaths: dupSubmod.previewImages, videoFilePaths: dupSubmod.previewVideos, isNew: dupSubmod.isNew),
+                            child: SubmodPreviewBox(imageFilePaths: dupSubmod.previewImages, videoFilePaths: dupSubmod.previewVideos, isNew: dupSubmod.isNew),
                           )
                         ],
                       ),

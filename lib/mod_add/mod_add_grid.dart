@@ -10,7 +10,7 @@ import 'package:pso2_mod_manager/v3_home/mod_add.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/rename_popup.dart';
-import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:path/path.dart' as p;
@@ -41,7 +41,7 @@ class _ModAddGridState extends State<ModAddGrid> {
                     spacing: 5,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      SubmodImageBox(imageFilePaths: modAddingList[i].previewImages.map((f) => f.path).toList(), videoFilePaths: modAddingList[i].previewVideos.map((f) => f.path).toList(), isNew: false),
+                      SubmodPreviewBox(imageFilePaths: modAddingList[i].previewImages.map((f) => f.path).toList(), videoFilePaths: modAddingList[i].previewVideos.map((f) => f.path).toList(), isNew: false),
                       Text(p.basename(modAddingList[i].modDir.path), textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
                       Row(
                         spacing: 5,

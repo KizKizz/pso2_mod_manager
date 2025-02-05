@@ -8,7 +8,7 @@ import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
-import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_view_popup.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:signals/signals_flutter.dart';
@@ -115,7 +115,7 @@ class _ModCardLayoutState extends State<ModCardLayout> {
             mainAxisSize: MainAxisSize.min,
             spacing: 5,
             children: [
-              SubmodImageBox(imageFilePaths: widget.mod.previewImages, videoFilePaths: widget.mod.previewVideos, isNew: widget.mod.isNew),
+              SubmodPreviewBox(imageFilePaths: widget.mod.previewImages, videoFilePaths: widget.mod.previewVideos, isNew: widget.mod.isNew),
               Text(widget.mod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
               Column(
                 spacing: 5,

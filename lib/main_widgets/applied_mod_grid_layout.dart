@@ -10,7 +10,7 @@ import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
-import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -133,7 +133,7 @@ class _ModCardLayoutState extends State<ModCardLayout> {
               ),
               Expanded(
                 flex: 3,
-                child: SubmodImageBox(imageFilePaths: widget.submod.previewImages, videoFilePaths: widget.submod.previewVideos, isNew: widget.mod.isNew),
+                child: SubmodPreviewBox(imageFilePaths: widget.submod.previewImages, videoFilePaths: widget.submod.previewVideos, isNew: widget.mod.isNew),
               )
             ],
           ),

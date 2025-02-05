@@ -12,7 +12,7 @@ import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_swap_grid.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
-import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:signals/signals_flutter.dart';
 
 Signal<bool> closeModSwapPopup = Signal(false);
@@ -126,7 +126,7 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                             spacing: 5,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              SizedBox(width: 300, height: 170, child: SubmodImageBox(imageFilePaths: submod.previewImages, videoFilePaths: submod.previewVideos, isNew: submod.isNew)),
+                              SizedBox(width: 300, height: 170, child: SubmodPreviewBox(imageFilePaths: submod.previewImages, videoFilePaths: submod.previewVideos, isNew: submod.isNew)),
                               Expanded(
                                 child: Column(
                                   spacing: 5,

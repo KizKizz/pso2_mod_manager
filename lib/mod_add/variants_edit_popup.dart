@@ -11,7 +11,7 @@ import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/rename_popup.dart';
-import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:pso2_mod_manager/v3_widgets/vertical_divider.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
@@ -87,7 +87,7 @@ Future<AddingMod?> variantsEditPopup(context, AddingMod addingMod, int curIndex)
                               spacing: 5,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                SubmodImageBox(
+                                SubmodPreviewBox(
                                     imageFilePaths: addingMod.submods[i]
                                         .listSync(recursive: addingMod.submods[i] != addingMod.modDir)
                                         .whereType<File>()

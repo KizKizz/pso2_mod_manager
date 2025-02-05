@@ -10,7 +10,7 @@ import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
-import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -168,7 +168,7 @@ class _AppAppliedModsLoadPageState extends State<AppAppliedModsLoadPage> {
                       ),
                       Expanded(
                         flex: 3,
-                        child: SubmodImageBox(imageFilePaths: submod.previewImages, videoFilePaths: submod.previewVideos, isNew: submod.isNew),
+                        child: SubmodPreviewBox(imageFilePaths: submod.previewImages, videoFilePaths: submod.previewVideos, isNew: submod.isNew),
                       )
                     ],
                   ),

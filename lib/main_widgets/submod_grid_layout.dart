@@ -18,7 +18,7 @@ import 'package:pso2_mod_manager/quick_swap/quick_swap_items_popup.dart';
 import 'package:pso2_mod_manager/quick_swap/quick_swap_working_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
-import 'package:pso2_mod_manager/v3_widgets/submod_image_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:signals/signals_flutter.dart';
@@ -97,7 +97,8 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
               Stack(
                 alignment: AlignmentDirectional.bottomStart,
                 children: [
-                  SubmodImageBox(imageFilePaths: widget.submod.previewImages, videoFilePaths: widget.submod.previewVideos, isNew: widget.submod.isNew),
+                  
+                  SubmodPreviewBox(imageFilePaths: widget.submod.previewImages, videoFilePaths: widget.submod.previewVideos, isNew: widget.submod.isNew),
                   Visibility(
                       visible: widget.submod.hasCmx! || widget.submod.customAQMInjected! || widget.submod.boundingRemoved!,
                       child: Padding(
