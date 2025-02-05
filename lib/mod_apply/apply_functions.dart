@@ -20,6 +20,7 @@ import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_functions/item_icon_mark.dart';
+import 'package:pso2_mod_manager/v3_functions/modified_ice_file_save.dart';
 import 'package:pso2_mod_manager/v3_widgets/notifications.dart';
 
 Future<void> modToGameData(context, bool applying, Item item, Mod mod, SubMod submod) async {
@@ -153,6 +154,7 @@ Future<void> modApply(Item item, Mod mod, SubMod submod, ModFile modFile, Offici
       modFile.md5 = await modFile.getMd5Hash();
       modFile.applyDate = appliedDate;
       modFile.isNew = false;
+      modifiedIceAdd(modFile.modFileName);
 
       submod.applyStatus = true;
       submod.applyDate = appliedDate;

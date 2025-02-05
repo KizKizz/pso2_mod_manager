@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
+import 'package:pso2_mod_manager/v3_functions/modified_ice_file_save.dart';
 import 'package:pso2_mod_manager/v3_functions/original_ice_download.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_card_functions.dart';
@@ -110,6 +111,7 @@ Future<bool> customSleeveImageApply(String imgPath, LineStrikeSleeve sleeveDataF
           File(cachePath).parent.createSync(recursive: true);
           renamedFile.copySync(cachePath);
           sleeveDataFile.replacedIconIceMd5 = await copiedFile.getMd5Hash();
+          modifiedIceAdd(p.basenameWithoutExtension(copiedFile.path));
           i = 10;
         } catch (e) {
           i++;

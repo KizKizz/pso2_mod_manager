@@ -8,6 +8,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pso2_mod_manager/app_colorscheme.dart';
 import 'package:pso2_mod_manager/app_localization/app_locale.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
+import 'package:pso2_mod_manager/v3_functions/modified_ice_file_save.dart';
 import 'package:pso2_mod_manager/v3_functions/pso2_version_check.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/jp_game_start_btn.dart';
@@ -37,6 +38,7 @@ Future<void> main(List<String> args) async {
   await AppLocale().localeInit();
   checksumAvailability.value = await checksumFileFetch();
   pso2RegionVersion.value = await pso2RegionCheck();
+  await modifiedIceFetch();
 
   WindowOptions windowOptions = WindowOptions(
       size: Size(prefs.getDouble('windowWidth') ?? 1280, prefs.getDouble('windowHeight') ?? 720),

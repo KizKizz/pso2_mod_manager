@@ -7,6 +7,7 @@ import 'package:pso2_mod_manager/item_bounding_radius/bits_convert.dart';
 import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_functions/modified_ice_file_save.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:path/path.dart' as p;
 
@@ -75,6 +76,8 @@ Future<void> itemBoundingRadiusRemove(context, SubMod submod) async {
               try {
                 File renamedFile = await File(Uri.file('${p.dirname(aqpFile.parent.path)}.ice').toFilePath()).rename(Uri.file(p.dirname(aqpFile.parent.path).replaceAll('_ext', '')).toFilePath());
                 await renamedFile.copy(modFile.location);
+                // Add to modified
+                modifiedIceAdd(p.basenameWithoutExtension(renamedFile.path));
                 modRemovingBoundingStatus.value = appText.successful;
                 await Future.delayed(const Duration(milliseconds: 100));
               } catch (e) {

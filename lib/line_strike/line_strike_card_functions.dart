@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
+import 'package:pso2_mod_manager/v3_functions/modified_ice_file_save.dart';
 import 'package:pso2_mod_manager/v3_functions/original_ice_download.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_board_class.dart';
@@ -155,6 +156,7 @@ Future<bool> customImageApply(context, String imgPath, LineStrikeCard cardDataFi
             File(cachePath).parent.createSync(recursive: true);
             await replacedCardZeroIce.copy(cachePath);
             cardDataFile.cardZeroReplacedIceMd5 = await copiedFile.getMd5Hash();
+            modifiedIceAdd(p.basenameWithoutExtension(copiedFile.path));
             i = 10;
           } catch (e) {
             i++;
@@ -675,7 +677,7 @@ Future<void> unappliedLineStrikeCheck() async {
       await File(board.iconIcePath.replaceFirst(pso2DataDirPath, lineStrikeCustomizedCacheDirPath)).copy(board.iconIcePath);
     }
   }
-  
+
   // Sleeves
   List<LineStrikeSleeve> replacedSleeves = masterLineStrikeSleeveList.where((e) => e.isReplaced).toList();
   for (var sleeve in replacedSleeves) {

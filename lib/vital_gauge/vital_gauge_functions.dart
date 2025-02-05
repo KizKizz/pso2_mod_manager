@@ -8,6 +8,7 @@ import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_checksum/checksum_functions.dart';
 import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_functions/modified_ice_file_save.dart';
 import 'package:pso2_mod_manager/vital_gauge/vital_gauge_class.dart';
 import 'package:path/path.dart' as p;
 import 'package:signals/signals_flutter.dart';
@@ -81,6 +82,8 @@ Future<bool> customVgBackgroundApply(context, String imgPath, VitalGaugeBackgrou
           File copiedFile = await renamedFile.copy(vgDataFile.icePath);
           vgDataFile.replacedMd5 = await copiedFile.getMd5Hash();
           i = 10;
+          // Add to modified
+          modifiedIceAdd(p.basenameWithoutExtension(copiedFile.path));
           vitalGaugeStatus.value = appText.dText(appText.copyingModFileToGameData, p.basename(vgDataFile.iceName));
           Future.delayed(const Duration(microseconds: 10));
           // logs += 'Copy: ${copied.path.toString()}\n';

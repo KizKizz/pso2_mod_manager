@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
+import 'package:pso2_mod_manager/v3_functions/modified_ice_file_save.dart';
 import 'package:pso2_mod_manager/v3_functions/original_ice_download.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_item_class.dart';
@@ -121,6 +122,8 @@ Future<bool> itemCustomAqmInject(context, String hqIcePath, String lqIcePath, bo
             } else if (p.basenameWithoutExtension(file.path) == p.basenameWithoutExtension(lqIcePath)) {
               await renamedFile.copy(localLQIce.path);
             }
+            // Add to modifiedFileList
+            modifiedIceAdd(p.basenameWithoutExtension(renamedFile.path));
             aqmInjectedFiles.add('${p.basename(copiedFile.path)} -> ${p.basenameWithoutExtension(file.path)}');
           } catch (e) {
             modAqmInjectingStatus.value = e.toString();

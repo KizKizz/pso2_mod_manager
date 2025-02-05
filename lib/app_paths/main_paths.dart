@@ -30,6 +30,7 @@ String pso2DataDirPath = '$pso2binDirPath${p.separator}data';
 String modCustomAqmsDirPath = '$mainDataDirPath${p.separator}Custom AQMs';
 String vitalGaugeDirPath = '$mainDataDirPath${p.separator}Vital Gauge';
 String modChecksumFilePath = '$mainDataDirPath${p.separator}Checksum${p.separator}d4455ebc2bef618f29106da7692ebc1a';
+String modifiedIceListFilePath = '$mainDataDirPath${p.separator}modifiedIceList.txt';
 
 String lineStrikeExportedCardsDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}ExportedCards';
 String lineStrikeCardsDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}Cards';
