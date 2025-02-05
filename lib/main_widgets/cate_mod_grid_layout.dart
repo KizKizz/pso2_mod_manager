@@ -40,6 +40,27 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
       modAppliedNum += item.mods.where((e) => e.applyStatus).length;
     }
 
+    List<ModCardLayout> modCardFetch() {
+      List<ModCardLayout> modCardList = [];
+      if (widget.searchString.isEmpty) {
+        for (var item in widget.itemCate.items) {
+          modCardList.addAll(item.mods.map((m) => ModCardLayout(item: item, mod: m)));
+        }
+      } else {
+        for (var item in widget.itemCate.items) {
+          for (var mod in item.mods) {
+            if (mod.itemName.replaceFirst('_', '/').trim().toLowerCase().contains(widget.searchString.toLowerCase()) ||
+                mod.modName.toLowerCase().contains(widget.searchString.toLowerCase()) ||
+                mod.getDistinctNames().where((e) => e.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty) {
+              modCardList.add(ModCardLayout(item: item, mod: mod));
+            }
+          }
+        }
+      }
+
+      return modCardList;
+    }
+
     return SliverStickyHeader.builder(
         builder: (context, state) => Card(
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
@@ -66,27 +87,6 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
                   ],
                 ))),
         sliver: ResponsiveSliverGridList(minItemWidth: 260, verticalGridMargin: 5, horizontalGridSpacing: 5, verticalGridSpacing: 5, children: modCardFetch()));
-  }
-
-  List<ModCardLayout> modCardFetch() {
-    List<ModCardLayout> modCardList = [];
-    if (widget.searchString.isEmpty) {
-      for (var item in widget.itemCate.items) {
-        modCardList.addAll(item.mods.map((m) => ModCardLayout(item: item, mod: m)));
-      }
-    } else {
-      for (var item in widget.itemCate.items) {
-        for (var mod in item.mods) {
-          if (mod.itemName.replaceFirst('_', '/').trim().toLowerCase().contains(widget.searchString.toLowerCase()) ||
-              mod.modName.toLowerCase().contains(widget.searchString.toLowerCase()) ||
-              mod.getDistinctNames().where((e) => e.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty) {
-            modCardList.add(ModCardLayout(item: item, mod: mod));
-          }
-        }
-      }
-    }
-
-    return modCardList;
   }
 }
 
