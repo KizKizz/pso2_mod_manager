@@ -200,6 +200,8 @@ class AppText {
       exportingFile = 'Exporting "%p%',
       convertingFileToPng = 'Converting "%p%" to png',
       restoringFile = 'Restoring "%p%"',
+      successfullyAppliedFile = 'Successfully applied "%p%"',
+      failedToApplyFile = 'Failed to apply "%p%"',
       successfullyRestoredFile = 'Successfully restored "%p%"',
       failedToRestoredFile = 'Failed to restore "%p%"',
       reapplyingFile = 'Re-Applying "%p%"',

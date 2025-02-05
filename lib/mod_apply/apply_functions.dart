@@ -20,10 +20,17 @@ import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_functions/item_icon_mark.dart';
+import 'package:pso2_mod_manager/v3_widgets/notifications.dart';
 
 Future<void> modToGameData(context, bool applying, Item item, Mod mod, SubMod submod) async {
   applying ? modPopupStatus.value = 'Applying files from "${submod.submodName}" to the game' : modPopupStatus.value = 'Removing files from "${submod.submodName}" to the game';
-  applying ? await modApplySequence(context, applying, item, mod, submod) : await modUnapplySequence(context, applying, item, mod, submod);
+  if (applying) {
+    await modApplySequence(context, applying, item, mod, submod);
+    submod.applyStatus ? applySuccessNotification(context, submod.submodName) : applyFailedNotification(context, submod.submodName);
+  } else {
+    await modUnapplySequence(context, applying, item, mod, submod);
+    !submod.applyStatus ? restoreSuccessNotification(context, submod.submodName) : restoreFailedNotification(context, submod.submodName);
+  }
   modPopupStatus.value = 'Done!';
 }
 
