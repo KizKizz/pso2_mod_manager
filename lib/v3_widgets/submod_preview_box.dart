@@ -26,21 +26,31 @@ class _SubmodPreviewBoxState extends State<SubmodPreviewBox> {
   bool showVideoBox = false;
 
   @override
+  void initState() {
+    widget.videoFilePaths.isEmpty ? showVideoBox = false : showVideoBox = true;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       alignment: AlignmentDirectional.bottomEnd,
       children: [
-        Visibility(visible: widget.videoFilePaths.isNotEmpty || showVideoBox, child: SubmodVideoBox(videoFilePaths: widget.videoFilePaths, isNew: widget.isNew)),
+        Visibility(visible: widget.videoFilePaths.isNotEmpty || !showVideoBox, child: SubmodVideoBox(videoFilePaths: widget.videoFilePaths, isNew: widget.isNew)),
         Visibility(visible: !showVideoBox, child: SubmodImageBox(imageFilePaths: widget.imageFilePaths, isNew: widget.isNew)),
         Visibility(
           visible: widget.imageFilePaths.isNotEmpty && widget.videoFilePaths.isNotEmpty,
           child: Padding(
-            padding: EdgeInsets.only(bottom: widget.imageFilePaths.isNotEmpty ? 35 : 3, right: 3),
+            padding: EdgeInsets.only(bottom: !showVideoBox ? 38 : 3, right: 3),
             child: IconButton.outlined(
                 visualDensity: VisualDensity.adaptivePlatformDensity,
                 style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(150))),
                 onPressed: () {
-                  showVideoBox ? showVideoBox = false : showVideoBox = true;
+                  if (showVideoBox) {
+                    showVideoBox = false;
+                  } else {
+                    showVideoBox = true;
+                  }
                   setState(() {});
                 },
                 icon: Icon(!showVideoBox ? Icons.video_camera_back : Icons.image)),
@@ -86,11 +96,11 @@ class _SubmodVideoBOxState extends State<SubmodVideoBox> {
     if ((videoPaths.isNotEmpty)) {
       videoPlayer.open(Playlist(videoPaths.map((e) => Media(e)).toList()));
       videoPlayer.setVolume(0);
-      videoPlayer.stream.completed.listen((event) {
-        if (event) {
-          videoPlayer.play();
-        }
-      });
+      // videoPlayer.stream.completed.listen((event) {
+      //   if (event) {
+      //     videoPlayer.play();
+      //   }
+      // });
     }
 
     return Container(
