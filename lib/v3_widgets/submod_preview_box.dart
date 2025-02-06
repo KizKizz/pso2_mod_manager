@@ -35,45 +35,103 @@ class _SubmodPreviewBoxState extends State<SubmodPreviewBox> {
   @override
   Widget build(BuildContext context) {
     if (showVideoBox) {
-      return SubmodVideoBox(
-        videoFilePaths: widget.videoFilePaths,
-        isNew: widget.isNew,
-        videoCompleted: (finished) {
-          if (finished) {
-            showVideoBox = false;
-            setState(() {});
-          }
-        },
+      return Stack(
+        alignment: AlignmentDirectional.bottomEnd,
+        children: [
+          SubmodVideoBox(
+            videoFilePaths: widget.videoFilePaths,
+            isNew: widget.isNew,
+            videoCompleted: (finished) {
+              if (finished) {
+                showVideoBox = false;
+                setState(() {});
+              }
+            },
+          ),
+          Visibility(
+            visible: widget.imageFilePaths.isNotEmpty,
+            child: Padding(
+              padding: const EdgeInsets.all(3),
+              child: IconButton.outlined(
+                  style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(150))),
+                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                  onPressed: () {
+                    showVideoBox = false;
+                    showPlayButton = false;
+                    setState(() {});
+                  },
+                  icon: const Icon(Icons.image)),
+            ),
+          )
+        ],
       );
     }
     if (showPlayButton) {
-      return Container(
-        foregroundDecoration: widget.isNew
-            ? RotatedCornerDecoration.withColor(
-                color: Colors.redAccent.withAlpha(220),
-                badgeSize: const Size(40, 55),
-                textSpan: TextSpan(
-                  text: appText.xnew,
-                  style: Theme.of(context).textTheme.labelLarge,
-                ))
-            : null,
-        width: double.infinity,
-        height: 200,
-        child: Card(
-            shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(0))),
-            color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-            margin: EdgeInsets.zero,
-            elevation: 5,
-            child: InkWell(
-              onTap: () {
-                showVideoBox = true;
-                setState(() {});
-              },
-              child: const Icon(Icons.play_arrow, size: 50),
-            )),
+      return Stack(
+        alignment: AlignmentDirectional.bottomEnd,
+        children: [
+          Container(
+              foregroundDecoration: widget.isNew
+                  ? RotatedCornerDecoration.withColor(
+                      color: Colors.redAccent.withAlpha(220),
+                      badgeSize: const Size(40, 55),
+                      textSpan: TextSpan(
+                        text: appText.xnew,
+                        style: Theme.of(context).textTheme.labelLarge,
+                      ))
+                  : null,
+              width: double.infinity,
+              height: 200,
+              child: Card(
+                  shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(0))),
+                  color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                  margin: EdgeInsets.zero,
+                  elevation: 5,
+                  child: InkWell(
+                    onTap: () {
+                      showVideoBox = true;
+                      setState(() {});
+                    },
+                    child: const Icon(Icons.play_arrow, size: 50),
+                  ))),
+          Visibility(
+            visible: widget.imageFilePaths.isNotEmpty,
+            child: Padding(
+              padding: const EdgeInsets.all(3),
+              child: IconButton.outlined(
+                  style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(150))),
+                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                  onPressed: () {
+                    showVideoBox = false;
+                    showPlayButton = false;
+                    setState(() {});
+                  },
+                  icon: const Icon(Icons.image)),
+            ),
+          )
+        ],
       );
     } else {
-      return SubmodImageBox(imageFilePaths: widget.imageFilePaths, isNew: widget.isNew);
+      return Stack(
+        alignment: AlignmentDirectional.bottomEnd,
+        children: [
+          SubmodImageBox(imageFilePaths: widget.imageFilePaths, isNew: widget.isNew),
+          Visibility(
+            visible: widget.videoFilePaths.isNotEmpty,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 3, right: 46),
+              child: IconButton.outlined(
+                  style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(150))),
+                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                  onPressed: () {
+                    showPlayButton = true;
+                    setState(() {});
+                  },
+                  icon: const Icon(Icons.video_camera_back_outlined)),
+            ),
+          )
+        ],
+      );
     }
   }
 }
