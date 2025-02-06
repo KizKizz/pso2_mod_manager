@@ -115,6 +115,7 @@ class _SubmodVideoBOxState extends State<SubmodVideoBox> {
     if ((playlist.medias.isNotEmpty)) {
       videoPlayer.open(playlist);
       videoPlayer.setVolume(0);
+      videoPlayer.play();
     }
     videoPlayer.stream.completed.listen((event) {
       if (event) {
