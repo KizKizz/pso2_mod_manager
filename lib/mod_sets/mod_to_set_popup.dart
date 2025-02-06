@@ -40,33 +40,35 @@ Future<(List<ModSet>, List<ModSet>)> modToSetPopup(context, SubMod submod) async
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(appText.selectSetsToAddToOrRemoveFrom, style: Theme.of(context).textTheme.labelLarge),
-                    SuperListView.builder(
-                      physics: const SuperRangeMaintainingScrollPhysics(),
-                      itemCount: masterModSetList.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return CheckboxListTile(
-                          value: modsetsToAdd.contains(masterModSetList[index]),
-                          title: Text(masterModSetList[index].setName),
-                          subtitle: Row(
-                            spacing: 5,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [Text(appText.dText(masterModSetList[index].setItems.length > 1 ? appText.numItems : appText.numItem, masterModSetList[index].setItems.length.toString()))],
-                          ),
-                          onChanged: (value) {
-                            if (modsetsToAdd.contains(masterModSetList[index])) {
-                              final result = modsetsToAdd.remove(masterModSetList[index]);
-                              if (result) modsetsToRemove.add(masterModSetList[index]);
-                            } else {
-                              modsetsToAdd.add(masterModSetList[index]);
-                              modsetsToRemove.remove(masterModSetList[index]);
-                            }
-                            setState(
-                              () {},
-                            );
-                          },
-                        );
-                      },
+                    Flexible(
+                      child: SuperListView.builder(
+                        physics: const SuperRangeMaintainingScrollPhysics(),
+                        itemCount: masterModSetList.length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return CheckboxListTile(
+                            value: modsetsToAdd.contains(masterModSetList[index]),
+                            title: Text(masterModSetList[index].setName),
+                            subtitle: Row(
+                              spacing: 5,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [Text(appText.dText(masterModSetList[index].setItems.length > 1 ? appText.numItems : appText.numItem, masterModSetList[index].setItems.length.toString()))],
+                            ),
+                            onChanged: (value) {
+                              if (modsetsToAdd.contains(masterModSetList[index])) {
+                                final result = modsetsToAdd.remove(masterModSetList[index]);
+                                if (result) modsetsToRemove.add(masterModSetList[index]);
+                              } else {
+                                modsetsToAdd.add(masterModSetList[index]);
+                                modsetsToRemove.remove(masterModSetList[index]);
+                              }
+                              setState(
+                                () {},
+                              );
+                            },
+                          );
+                        },
+                      ),
                     ),
                   ],
                 )),
