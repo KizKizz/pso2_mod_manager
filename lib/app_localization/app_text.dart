@@ -209,7 +209,9 @@ class AppText {
       applyThisSet = 'Apply This Set',
       restoreThisSet = 'Restore This Set',
       launchPSO2 = 'Launch PSO2',
-      swapAll = 'Swap All';
+      swapAll = 'Swap All',
+      modExport = 'Mod Export',
+      enterANameToExport = 'Enter a name to export';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',

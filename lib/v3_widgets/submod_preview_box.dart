@@ -25,6 +25,7 @@ class SubmodPreviewBox extends StatefulWidget {
 class _SubmodPreviewBoxState extends State<SubmodPreviewBox> {
   bool showPlayButton = false;
   bool showVideoBox = false;
+  Playlist videoPlaylist = const Playlist([]);
 
   @override
   void initState() {
@@ -39,7 +40,7 @@ class _SubmodPreviewBoxState extends State<SubmodPreviewBox> {
         alignment: AlignmentDirectional.bottomEnd,
         children: [
           SubmodVideoBox(
-            videoFilePaths: widget.videoFilePaths,
+            videoPlaylist: videoPlaylist,
             isNew: widget.isNew,
             videoCompleted: (finished) {
               if (finished) {
@@ -89,6 +90,11 @@ class _SubmodPreviewBoxState extends State<SubmodPreviewBox> {
                   elevation: 5,
                   child: InkWell(
                     onTap: () {
+                      List<String> videoPaths = [];
+                      for (var path in widget.videoFilePaths) {
+                        if (videoPaths.indexWhere((e) => p.basename(e) == p.basename(path)) == -1) videoPaths.add(path);
+                      }
+                      videoPlaylist = Playlist(videoPaths.map((e) => Media(e)).toList());
                       showVideoBox = true;
                       setState(() {});
                     },
@@ -137,9 +143,9 @@ class _SubmodPreviewBoxState extends State<SubmodPreviewBox> {
 }
 
 class SubmodVideoBox extends StatefulWidget {
-  const SubmodVideoBox({super.key, required this.videoFilePaths, required this.isNew, required this.videoCompleted});
+  const SubmodVideoBox({super.key, required this.videoPlaylist, required this.isNew, required this.videoCompleted});
 
-  final List<String> videoFilePaths;
+  final Playlist videoPlaylist;
   final bool isNew;
   final Function(bool finished) videoCompleted;
 
@@ -149,16 +155,10 @@ class SubmodVideoBox extends StatefulWidget {
 
 class _SubmodVideoBOxState extends State<SubmodVideoBox> {
   late final Player videoPlayer;
-  late final Playlist playlist;
 
   @override
   void initState() {
     videoPlayer = Player();
-    List<String> videoPaths = [];
-    for (var path in widget.videoFilePaths) {
-      if (videoPaths.indexWhere((e) => p.basename(e) == p.basename(path)) == -1) videoPaths.add(path);
-    }
-    playlist = Playlist(videoPaths.map((e) => Media(e)).toList());
     super.initState();
   }
 
@@ -170,15 +170,17 @@ class _SubmodVideoBOxState extends State<SubmodVideoBox> {
 
   @override
   Widget build(BuildContext context) {
-    if ((playlist.medias.isNotEmpty)) {
-      videoPlayer.open(playlist);
-      videoPlayer.setVolume(0);
-      videoPlayer.play();
-    }
+    videoPlayer.open(widget.videoPlaylist);
+    videoPlayer.setVolume(0);
+    videoPlayer.play();
     videoPlayer.stream.completed.listen((event) {
       if (event) {
-        if (playlist.index == playlist.medias.indexOf(playlist.medias.last)) {
+        if (widget.videoPlaylist.index == widget.videoPlaylist.medias.indexOf(widget.videoPlaylist.medias.last)) {
           widget.videoCompleted(true);
+        } else {
+          setState(() {
+            videoPlayer.play();
+          });
         }
       }
     });

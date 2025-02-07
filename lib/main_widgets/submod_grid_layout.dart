@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/export_import/export_import_functions.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_bounding_radius/bounding_radius_popup.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_popup.dart';
@@ -97,7 +98,6 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
               Stack(
                 alignment: AlignmentDirectional.bottomStart,
                 children: [
-                  
                   SubmodPreviewBox(imageFilePaths: widget.submod.previewImages, videoFilePaths: widget.submod.previewVideos, isNew: widget.submod.isNew),
                   Visibility(
                       visible: widget.submod.hasCmx! || widget.submod.customAQMInjected! || widget.submod.boundingRemoved!,
@@ -276,7 +276,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                             setState(() {});
                           },
                           child: MenuIconItem(icon: Icons.preview_outlined, text: appText.addPreviews)),
-                      PopupMenuItem(child: MenuIconItem(icon: Icons.import_export, text: appText.export)),
+                      PopupMenuItem(onTap: () => singleModExportSequence(context, widget.item.category, widget.item, widget.mod, widget.submod), child: MenuIconItem(icon: Icons.import_export, text: appText.export)),
                       PopupMenuItem(onTap: () async => await submodRename(context, widget.mod, widget.submod), child: MenuIconItem(icon: Icons.edit, text: appText.rename)),
                       PopupMenuItem(onTap: () => launchUrlString(widget.submod.location), child: MenuIconItem(icon: Icons.folder_open, text: appText.openInFileExplorer)),
                       const PopupMenuItem(
