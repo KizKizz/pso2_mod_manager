@@ -112,7 +112,8 @@ class AppText {
       overwrite = 'Overwrite',
       images = 'Images',
       videos = 'Videos',
-      select = 'Select';
+      select = 'Select',
+      continues = 'Continue';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -211,7 +212,10 @@ class AppText {
       launchPSO2 = 'Launch PSO2',
       swapAll = 'Swap All',
       modExport = 'Mod Export',
-      enterANameToExport = 'Enter a name to export';
+      enterANameToExport = 'Enter a name to export',
+      exportingMods = 'Exporting Mods',
+      unknownMod = 'Unknown Mod',
+      enterModName = 'Enter mod name';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -315,7 +319,8 @@ class AppText {
       restoredModInfo = 'These mods had been restored by game update or file check',
       duplicateAppliedInfo = 'This mod was found using the same files as "%p%"',
       duplicateAqmInjectInfo = 'This mod was found using the same files as "%p%" in AQM Inject',
-      selectSetsToAddToOrRemoveFrom = 'Select Set(s) to add to or to remove from';
+      selectSetsToAddToOrRemoveFrom = 'Select Set(s) to add to or to remove from',
+      jpGameStartInfo = 'If the game is not starting, try to run the Mod Manager as admin and try again';
 
   // Settings Text
   String appSettings = 'App Settings',

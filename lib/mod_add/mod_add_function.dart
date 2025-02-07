@@ -12,6 +12,7 @@ import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_add/adding_mod_class.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_add/mod_add_grid.dart';
+import 'package:pso2_mod_manager/mod_add/new_mod_name_popup.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
@@ -26,7 +27,7 @@ import 'package:http/http.dart' as http;
 String modAddTempUnpackedDirPath = '$modAddTempDirPath${p.separator}unpacked';
 String modAddTempSortedDirPath = '$modAddTempDirPath${p.separator}sorted';
 
-Future<void> modAddUnpack(List<String> addedPaths) async {
+Future<void> modAddUnpack(context, List<String> addedPaths) async {
   for (var path in addedPaths) {
     String unpackedDirPath = modAddTempUnpackedDirPath + p.separator + p.basenameWithoutExtension(path);
     if (await FileSystemEntity.isFile(path)) {
@@ -42,7 +43,7 @@ Future<void> modAddUnpack(List<String> addedPaths) async {
       } else if (p.extension(path) == '.7z') {
         await Process.run(sevenZipExePath, ['x', path, '-o$unpackedDirPath', '-r']);
       } else {
-        String tempParentDirPath = modAddTempUnpackedDirPath + p.separator + p.basenameWithoutExtension(p.dirname(path));
+        String tempParentDirPath = modAddTempUnpackedDirPath + p.separator + p.basenameWithoutExtension(await newModNamePopup(context));
         if (Directory(modAddTempUnpackedDirPath).existsSync() && Directory(tempParentDirPath).existsSync()) {
           tempParentDirPath.renameDuplicate();
         }

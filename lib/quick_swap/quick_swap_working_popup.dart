@@ -47,7 +47,8 @@ void quickSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, Item
               if (swapOutputDir.existsSync()) {
                 // Add to mod manager
                 modAddDragDropPaths.add(swapOutputDir.path);
-                await modAddUnpack(modAddDragDropPaths.toList());
+                // ignore: use_build_context_synchronously
+                await modAddUnpack(context, modAddDragDropPaths.toList());
                 modAddDragDropPaths.clear();
                 modAddingList = await modAddSort();
                 List<Item> addedItems = await modAddToMasterList(false, []);

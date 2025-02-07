@@ -85,7 +85,7 @@ class _ModAddDragDropButtonsState extends State<ModAddDragDropButtons> {
                 ? () async {
                     curModAddDragDropStatus.value = ModAddDragDropState.unpackingFiles;
                     curModAddProcessedStatus.value = ModAddProcessedState.loadingData;
-                    await modAddUnpack(modAddDragDropPaths.toList());
+                    await modAddUnpack(context, modAddDragDropPaths.toList());
                     modAddDragDropPaths.clear();
                     modAddingList = await modAddSort();
                     curModAddDragDropStatus.value = ModAddDragDropState.waitingForFiles;

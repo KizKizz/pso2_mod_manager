@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/export_import/export_import_functions.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_all_popup.dart';
 import 'package:pso2_mod_manager/main_widgets/popup_menu_functions.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_grid_layout.dart';
@@ -66,7 +67,9 @@ class _PopupListTileState extends State<PopupListTile> {
                             RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1), borderRadius: const BorderRadius.all(Radius.circular(20))))),
                     itemBuilder: (BuildContext context) {
                       return [
-                        PopupMenuItem(child: MenuIconItem(icon: Icons.import_export, text: appText.export)),
+                        PopupMenuItem(
+                            onTap: () => modExportSequence(context, ExportType.mods, widget.item.category, widget.item, [widget.mod], []),
+                            child: MenuIconItem(icon: Icons.import_export, text: appText.export)),
                         PopupMenuItem(onTap: () => modSwapAllPopup(context, widget.item, widget.mod), child: MenuIconItem(icon: Icons.swap_horizontal_circle_outlined, text: appText.swapAll)),
                         PopupMenuItem(onTap: () async => await modRename(context, widget.mod), child: MenuIconItem(icon: Icons.edit, text: appText.rename)),
                         PopupMenuItem(onTap: () => launchUrlString(widget.mod.location), child: MenuIconItem(icon: Icons.folder_open, text: appText.openInFileExplorer)),
