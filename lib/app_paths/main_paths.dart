@@ -31,6 +31,7 @@ String modCustomAqmsDirPath = '$mainDataDirPath${p.separator}Custom AQMs';
 String vitalGaugeDirPath = '$mainDataDirPath${p.separator}Vital Gauge';
 String modChecksumFilePath = '$mainDataDirPath${p.separator}Checksum${p.separator}d4455ebc2bef618f29106da7692ebc1a';
 String modifiedIceListFilePath = '$mainDataDirPath${p.separator}modifiedIceList.txt';
+String modAddFilterListFilePath = '$mainDataDirPath${p.separator}modAddFilterList.txt';
 String exportedModsDirPath = '$mainDataDirPath${p.separator}Exported Mods';
 
 String lineStrikeExportedCardsDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}ExportedCards';

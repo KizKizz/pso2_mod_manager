@@ -18,7 +18,7 @@ class ModAdd extends StatefulWidget {
 
 class _ModAddState extends State<ModAdd> {
   double fadeInOpacity = 0;
-  List<String> dragDropSupportedExts = ['.7z', '.zip', '.rar'];
+  List<String> dragDropSupportedExts = ['.7z', '.zip', '.rar', '.pmm'];
 
   @override
   void initState() {

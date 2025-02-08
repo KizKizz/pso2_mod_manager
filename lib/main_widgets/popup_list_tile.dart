@@ -68,7 +68,7 @@ class _PopupListTileState extends State<PopupListTile> {
                     itemBuilder: (BuildContext context) {
                       return [
                         PopupMenuItem(
-                            onTap: () => modExportSequence(context, ExportType.mods, widget.item.category, widget.item, [widget.mod], []),
+                            onTap: () => modExportSequence(context, ExportType.mods, widget.item, widget.mod, null),
                             child: MenuIconItem(icon: Icons.import_export, text: appText.export)),
                         PopupMenuItem(onTap: () => modSwapAllPopup(context, widget.item, widget.mod), child: MenuIconItem(icon: Icons.swap_horizontal_circle_outlined, text: appText.swapAll)),
                         PopupMenuItem(onTap: () async => await modRename(context, widget.mod), child: MenuIconItem(icon: Icons.edit, text: appText.rename)),

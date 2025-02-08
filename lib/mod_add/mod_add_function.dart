@@ -42,6 +42,12 @@ Future<void> modAddUnpack(context, List<String> addedPaths) async {
         }
       } else if (p.extension(path) == '.7z') {
         await Process.run(sevenZipExePath, ['x', path, '-o$unpackedDirPath', '-r']);
+      } else if (p.extension(path) == '.pmm') {
+        await Directory(modAddTempUnpackedDirPath).create(recursive: true);
+        File copiedFile = await File(path).copy('$modAddTempUnpackedDirPath${p.separator}${p.basenameWithoutExtension(path)}.zip');
+        File renamedFile = await copiedFile.rename('${p.withoutExtension(copiedFile.path)}.zip');
+        await extractFileToDisk(renamedFile.path, modAddTempUnpackedDirPath);
+        await renamedFile.delete();
       } else {
         String tempParentDirPath = modAddTempUnpackedDirPath + p.separator + p.basenameWithoutExtension(await newModNamePopup(context));
         if (Directory(modAddTempUnpackedDirPath).existsSync() && Directory(tempParentDirPath).existsSync()) {
@@ -381,6 +387,10 @@ Future<AddingMod> modAddRenameRefresh(Directory modDir, AddingMod currentAddingM
   }
 
   return AddingMod(modDir, true, submods, submodNames, currentAddingMod.submodAddingStates, currentAddingMod.associatedItems, currentAddingMod.aItemAddingStates, previewImages, previewVideos);
+}
+
+Future<List<String>> modAddFilterListFetch() async {
+  return (await File(modAddFilterListFilePath).readAsString()).split(', ');
 }
 
 // Add to master list helpers

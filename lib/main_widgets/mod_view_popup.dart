@@ -2,19 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_popup.dart';
+import 'package:pso2_mod_manager/main_widgets/popup_item_info.dart';
 import 'package:pso2_mod_manager/main_widgets/popup_list_tile.dart';
 import 'package:pso2_mod_manager/main_widgets/popup_menu_functions.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
-import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
-import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_grid_layout.dart';
 import 'package:pso2_mod_manager/v3_widgets/vertical_divider.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 Future<void> modViewPopup(context, Item item) async {
   Mod? selectedMod = item.mods.first;
@@ -50,48 +48,7 @@ Future<void> modViewPopup(context, Item item) async {
                     child: Column(
                       spacing: 5,
                       children: [
-                        ItemIconBox(item: item),
-                        Text(
-                          appText.categoryName(item.category),
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        Text(
-                          item.itemName.replaceFirst('_', '/').trim(),
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        Row(
-                          spacing: 5,
-                          children: [
-                            Expanded(
-                              child: InfoBox(
-                                info: appText.dText(item.mods.length > 1 ? appText.numMods : appText.numMod, item.mods.length.toString()),
-                                borderHighlight: false,
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: InfoBox(
-                                info: appText.dText(appText.numCurrentlyApplied, item.getNumOfAppliedMods().toString()),
-                                borderHighlight: item.applyStatus,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          spacing: 5,
-                          children: [
-                            Expanded(child: OutlinedButton(onPressed: () => launchUrlString(item.location), child: Text(appText.openInFileExplorer))),
-                            IconButton.outlined(
-                                visualDensity: VisualDensity.adaptivePlatformDensity,
-                                onPressed: () async {
-                                  await itemDelete(context, item);
-                                  mainGridStatus.value = '"${item.itemName}" removed';
-                                  // ignore: use_build_context_synchronously
-                                  Navigator.of(context).pop();
-                                },
-                                icon: const Icon(Icons.delete_forever_outlined, color: Colors.redAccent))
-                          ],
-                        ),
+                        PopupItemInfo(item: item, showModInfo: true),
                         const HoriDivider(),
                         Expanded(
                             child: CustomScrollView(physics: const SuperRangeMaintainingScrollPhysics(), slivers: [

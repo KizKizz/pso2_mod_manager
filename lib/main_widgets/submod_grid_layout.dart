@@ -276,7 +276,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                             setState(() {});
                           },
                           child: MenuIconItem(icon: Icons.preview_outlined, text: appText.addPreviews)),
-                      PopupMenuItem(onTap: () => modExportSequence(context, ExportType.submods, widget.item.category, widget.item, [widget.mod], [widget.submod]), child: MenuIconItem(icon: Icons.import_export, text: appText.export)),
+                      PopupMenuItem(onTap: () => modExportSequence(context, ExportType.submods, widget.item, widget.mod, widget.submod), child: MenuIconItem(icon: Icons.import_export, text: appText.export)),
                       PopupMenuItem(onTap: () async => await submodRename(context, widget.mod, widget.submod), child: MenuIconItem(icon: Icons.edit, text: appText.rename)),
                       PopupMenuItem(onTap: () => launchUrlString(widget.submod.location), child: MenuIconItem(icon: Icons.folder_open, text: appText.openInFileExplorer)),
                       const PopupMenuItem(

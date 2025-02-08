@@ -26,6 +26,7 @@ Signal<String> selectedCustomAQMFilePath = Signal('');
 bool removeProfanityFilter = false;
 bool replaceItemIconOnApplied = true;
 bool sideMenuAlwaysExpanded = false;
+bool enableModAddFilters = false;
 
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
@@ -116,4 +117,7 @@ Future<void> prefsLoad() async {
 
   // Mark modded items
   sideMenuAlwaysExpanded = prefs.getBool('sideMenuAlwaysExpanded') ?? false;
+
+  // Mod add filter
+  enableModAddFilters = prefs.getBool('enableModAddFilters') ?? false;
 }

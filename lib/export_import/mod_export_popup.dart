@@ -13,7 +13,7 @@ import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-Future<void> modExportPopup(context, ExportType exportType, String exportFileName, String categoryName, Item item, List<Mod> mods, List<SubMod> submods) async {
+Future<void> modExportPopup(context, ExportType exportType, String exportFileName, Item item, Mod? mod, SubMod? submod) async {
   await showDialog(
       barrierDismissible: false,
       context: context,
@@ -25,10 +25,10 @@ Future<void> modExportPopup(context, ExportType exportType, String exportFileNam
               contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               content: FutureBuilder(
                 future: exportType == ExportType.submods
-                    ? submodExportFunction(exportFileName, categoryName, item, mods.first, submods)
+                    ? submodExportFunction(exportFileName, mod, submod)
                     : exportType == ExportType.mods
-                        ? modExportFunction(exportFileName, categoryName, item, mods)
-                        : itemExportFunction(exportFileName, categoryName, item),
+                        ? modExportFunction(exportFileName, mod)
+                        : itemExportFunction(exportFileName, item),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return Center(

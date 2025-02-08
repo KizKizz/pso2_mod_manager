@@ -8,9 +8,7 @@ import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
-Future<List<ModSet>> modAddToSetPopup(context) async {
-  List<ModSet> modsetsToAdd = [];
-
+Future<List<ModSet>> modAddToSetPopup(context, List<ModSet> modsetsToAdd) async {
   return await showDialog(
       barrierDismissible: false,
       context: context,

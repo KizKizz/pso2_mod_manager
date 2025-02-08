@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_add/adding_mod_class.dart';
 import 'package:pso2_mod_manager/mod_add/mod_add_function.dart';
 import 'package:pso2_mod_manager/mod_add/variants_edit_popup.dart';
+import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/mod_add.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
@@ -28,6 +30,15 @@ class ModAddGrid extends StatefulWidget {
 class _ModAddGridState extends State<ModAddGrid> {
   @override
   Widget build(BuildContext context) {
+    if (enableModAddFilters) {
+      for (var mod in modAddingList) {
+        if (modAddFilterList.contains(p.basenameWithoutExtension(mod.modDir.path))) mod.modAddingState = false;
+      }
+    } else {
+      for (var mod in modAddingList) {
+        mod.modAddingState = true;
+      }
+    }
     return Stack(
       alignment: AlignmentDirectional.center,
       children: [
@@ -41,7 +52,8 @@ class _ModAddGridState extends State<ModAddGrid> {
                     spacing: 5,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      SubmodPreviewBox(imageFilePaths: modAddingList[i].previewImages.map((f) => f.path).toList(), videoFilePaths: modAddingList[i].previewVideos.map((f) => f.path).toList(), isNew: false),
+                      SubmodPreviewBox(
+                          imageFilePaths: modAddingList[i].previewImages.map((f) => f.path).toList(), videoFilePaths: modAddingList[i].previewVideos.map((f) => f.path).toList(), isNew: false),
                       Text(p.basename(modAddingList[i].modDir.path), textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
                       Row(
                         spacing: 5,
@@ -104,7 +116,9 @@ class _ModAddGridState extends State<ModAddGrid> {
                               visualDensity: VisualDensity.adaptivePlatformDensity),
                           IconButton(
                               onPressed: () async {
-                                await modAddingList[i].modDir.delete(recursive: true);
+                                if (modAddingList[i].modDir.existsSync()) {
+                                  await modAddingList[i].modDir.delete(recursive: true);
+                                }
                                 setState(() {
                                   modAddingList.removeAt(i);
                                 });

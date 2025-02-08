@@ -113,7 +113,9 @@ class AppText {
       images = 'Images',
       videos = 'Videos',
       select = 'Select',
-      continues = 'Continue';
+      continues = 'Continue',
+      imported = 'Imported',
+      filters = 'Filters';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -215,7 +217,8 @@ class AppText {
       enterANameToExport = 'Enter a name to export',
       exportingMods = 'Exporting Mods',
       unknownMod = 'Unknown Mod',
-      enterModName = 'Enter mod name';
+      enterModName = 'Enter mod name',
+      clearAll = 'Clear All';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -239,7 +242,7 @@ class AppText {
       returnWithoutSaving = 'Return Without Saving',
       resetToDefaultColor = 'Reset To Default Theme Color',
       dragdropBoxMessage = 'Drag and drop files or folders here',
-      dragdropBoxMessage2 = 'Only .zip, .rar, .7z, and ice files are supported',
+      dragdropBoxMessage2 = 'Only .zip, .rar, .7z, .pmm and ice files are supported',
       checkingGitHubAccess = 'Checking GitHub Access',
       accessToGitHubIsLimited = 'Access to GitHub is limited',
       itemDataManualDownloadMessage = 'Please download Item Data directly from the provided link, then browse its location\nSkip if you already have the latest Item Data',
@@ -292,7 +295,10 @@ class AppText {
       checkingAppliedLineStrikeItems = 'Checking Applied Line Strike Items',
       loadingQuickSwapItems = 'Loading Quick Swap Items',
       selecteMoreItems = 'Select More Items',
-      selectSetsToAdd = 'Select Set(s) to add';
+      selectSetsToAdd = 'Select Set(s) to add',
+      enterFilterText = 'Enter filter text (Case sensitive)',
+      currentFilters = 'Current Filters',
+      addFilter = 'Add Filter';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',
@@ -320,7 +326,8 @@ class AppText {
       duplicateAppliedInfo = 'This mod was found using the same files as "%p%"',
       duplicateAqmInjectInfo = 'This mod was found using the same files as "%p%" in AQM Inject',
       selectSetsToAddToOrRemoveFrom = 'Select Set(s) to add to or to remove from',
-      jpGameStartInfo = 'If the game is not starting, try to run the Mod Manager as admin and try again';
+      jpGameStartInfo = 'If the game is not starting, try to run the Mod Manager as admin and try again',
+      filterRemoveInfo = 'Click and hold on the filters to remove';
 
   // Settings Text
   String appSettings = 'App Settings',

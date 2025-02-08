@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_add/adding_mod_class.dart';
 import 'package:pso2_mod_manager/mod_add/mod_add_function.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
@@ -25,6 +26,15 @@ Future<AddingMod?> variantsEditPopup(context, AddingMod addingMod, int curIndex)
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (dialogContext, setState) {
+          if (enableModAddFilters) {
+            final filteredSubmods = addingMod.submods.where((e) => modAddFilterList.contains(p.basenameWithoutExtension(e.path)));
+            for (var submod in filteredSubmods) {
+              int i = addingMod.submods.indexWhere((e) => e.path == submod.path);
+              if (i != -1) addingMod.submodAddingStates[i] = false;
+            }
+          } else {
+            addingMod.submodAddingStates = List.filled(addingMod.submodAddingStates.length, true);
+          }
           return AlertDialog(
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: const BorderRadius.all(Radius.circular(5))),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),

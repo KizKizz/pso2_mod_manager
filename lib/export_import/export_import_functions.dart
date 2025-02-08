@@ -16,45 +16,20 @@ Signal<String> exportStatus = Signal('');
 
 enum ExportType { item, mods, submods }
 
-Future<void> modExportSequence(context, ExportType exportType, String categoryName, Item item, List<Mod> mods, List<SubMod> submods) async {
+Future<void> modExportSequence(context, ExportType exportType, Item item, Mod? mod, SubMod? submod) async {
   String exportFileName = await exportModNamePopup(context);
   if (exportFileName.isNotEmpty) {
     exportStatus.value = '';
-    await modExportPopup(context, exportType, exportFileName, categoryName, item, mods, submods);
+    await modExportPopup(context, exportType, exportFileName, item, mod, submod);
   }
 }
 
-Future<File?> itemExportFunction(String exportFileName, String categoryName, Item item) async {
+Future<File?> itemExportFunction(String exportFileName, Item item) async {
   String exportedPath = exportedModsDirPath + p.separator + exportFileName;
 
-  exportStatus.value = appText.dText(appText.exportingFile, item.itemName);
-
-  String subPath = exportedPath + p.separator + categoryName + p.separator + p.basenameWithoutExtension(item.location);
-
-  await io.copyPath(item.location, subPath);
-
-  if (Directory(exportedPath).existsSync()) {
-    //zip
-    var encoder = ZipFileEncoder();
-    await encoder.zipDirectory(Directory(exportedPath));
-    String zipFilePath = '$exportedPath.zip';
-    if (File(zipFilePath).existsSync()) {
-      Directory(exportedPath).deleteSync(recursive: true);
-      File renamedFile = await File(zipFilePath).rename('${p.withoutExtension(zipFilePath)}.pmm');
-      return renamedFile;
-    }
-  }
-
-  return null;
-}
-
-Future<File?> modExportFunction(String exportFileName, String categoryName, Item item, List<Mod> mods) async {
-  String exportedPath = exportedModsDirPath + p.separator + exportFileName;
-  for (var mod in mods) {
+  for (var mod in item.mods) {
     exportStatus.value = appText.dText(appText.exportingFile, mod.modName);
-    String subPath = exportedPath + p.separator + categoryName + p.separator + p.basenameWithoutExtension(item.location) + p.separator + p.basenameWithoutExtension(mod.location);
-
-    await io.copyPath(mod.location, subPath);
+    await io.copyPath(mod.location, exportedPath + p.separator + p.basenameWithoutExtension(mod.location));
   }
 
   if (Directory(exportedPath).existsSync()) {
@@ -72,22 +47,33 @@ Future<File?> modExportFunction(String exportFileName, String categoryName, Item
   return null;
 }
 
-Future<File?> submodExportFunction(String exportFileName, String categoryName, Item item, Mod mod, List<SubMod> submods) async {
+Future<File?> modExportFunction(String exportFileName, Mod? mod) async {
   String exportedPath = exportedModsDirPath + p.separator + exportFileName;
-  for (var submod in submods) {
-    exportStatus.value = appText.dText(appText.exportingFile, submod.submodName);
-    String subPath = exportedPath +
-        p.separator +
-        categoryName +
-        p.separator +
-        p.basenameWithoutExtension(item.location) +
-        p.separator +
-        p.basenameWithoutExtension(mod.location) +
-        p.separator +
-        p.basenameWithoutExtension(submod.location);
+  exportStatus.value = appText.dText(appText.exportingFile, mod!.modName);
+  await io.copyPath(mod.location, exportedPath + p.separator + p.basenameWithoutExtension(mod.location));
 
-    await io.copyPath(submod.location, subPath);
+  if (Directory(exportedPath).existsSync()) {
+    //zip
+    var encoder = ZipFileEncoder();
+    await encoder.zipDirectory(Directory(exportedPath));
+    String zipFilePath = '$exportedPath.zip';
+    if (File(zipFilePath).existsSync()) {
+      Directory(exportedPath).deleteSync(recursive: true);
+      File renamedFile = await File(zipFilePath).rename('${p.withoutExtension(zipFilePath)}.pmm');
+      return renamedFile;
+    }
   }
+
+  return null;
+}
+
+Future<File?> submodExportFunction(String exportFileName, Mod? mod, SubMod? submod) async {
+  String exportedPath = exportedModsDirPath + p.separator + exportFileName;
+
+  exportStatus.value = appText.dText(appText.exportingFile, submod!.submodName);
+  String subPath = exportedPath + p.separator + p.basenameWithoutExtension(mod!.location) + p.separator + p.basenameWithoutExtension(submod.location);
+
+  await io.copyPath(submod.location, subPath);
 
   if (Directory(exportedPath).existsSync()) {
     //zip
