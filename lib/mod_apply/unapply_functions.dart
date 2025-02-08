@@ -60,7 +60,7 @@ Future<void> restoreFromLocalBackups(Item item, Mod mod, SubMod submod, ModFile 
       final copiedFile = await backedupFile.copy(backedupFile.path.replaceFirst(backupDirPath, pso2DataDirPath));
       modApplyStatus.value = appText.dText(appText.restoringBackupFileToGameData, modFile.modFileName);
       if (await copiedFile.getMd5Hash() != modFile.md5) {
-        await backedupFile.delete(recursive: true);
+        if (await backedupFile.exists()) await backedupFile.delete(recursive: true);
         modFile.ogLocations.remove(copiedFile.path);
         modFile.applyStatus = false;
         modApplyStatus.value = appText.successful;
@@ -83,8 +83,8 @@ Future<void> restoreFromSegaServers(Item item, Mod mod, SubMod submod, ModFile m
     if (oData.path.replaceAll('/', p.separator).isNotEmpty) {
       final downloadedFile = await restoreOriginalFileDownload(oData.path, oData.server, p.dirname(backupPath.replaceFirst(backupDirPath, pso2DataDirPath)));
       modApplyStatus.value = appText.dText(appText.restoringBackupFileToGameData, modFile.modFileName);
-      if (downloadedFile.existsSync()) {
-        await File(backupPath).delete(recursive: true);
+      if (downloadedFile.path.isNotEmpty && downloadedFile.existsSync()) {
+        if (await File(backupPath).exists()) await File(backupPath).delete(recursive: true);
         modFile.ogLocations.remove(downloadedFile.path);
         modFile.applyStatus = false;
         modApplyStatus.value = appText.successful;
@@ -122,6 +122,7 @@ Future<File> restoreOriginalFileDownload(String networkFilePath, String server, 
           return File(saveLocation + p.separator + p.basenameWithoutExtension(networkFilePath));
         default:
           modApplyStatus.value = appText.fileDownloadFailed;
+          return File('');
       }
     }
   }

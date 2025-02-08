@@ -27,6 +27,7 @@ bool removeProfanityFilter = false;
 bool replaceItemIconOnApplied = true;
 bool sideMenuAlwaysExpanded = false;
 bool enableModAddFilters = false;
+int defaultHomepageIndex = 0;
 
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
@@ -120,4 +121,7 @@ Future<void> prefsLoad() async {
 
   // Mod add filter
   enableModAddFilters = prefs.getBool('enableModAddFilters') ?? false;
+  
+  // Default homepage
+  defaultHomepageIndex = prefs.getInt('defaultHomepageIndex') ?? 0;
 }

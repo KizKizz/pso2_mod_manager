@@ -218,7 +218,13 @@ class AppText {
       exportingMods = 'Exporting Mods',
       unknownMod = 'Unknown Mod',
       enterModName = 'Enter mod name',
-      clearAll = 'Clear All';
+      clearAll = 'Clear All',
+      backupSuccess = 'Backup success',
+      applyLocations = 'Apply Locations',
+      applyToAllLocations = 'Apply To All Locations',
+      currentlyApplyingToLocations = 'Currently applying to: %p%',
+      allLocations = 'All locations',
+      defaultHomepage = 'Default Homepage';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',

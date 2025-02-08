@@ -122,6 +122,18 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             prefs.setBool('sideMenuAlwaysExpanded', sideMenuAlwaysExpanded);
                           },
                         ),
+                        // Default Homepage
+                        SettingsHeader(icon: Icons.home, text: appText.defaultHomepage),
+                        AnimatedHorizontalToggleLayout(
+                          taps: [appText.itemList, appText.modList, appText.modSets],
+                          initialIndex: defaultHomepageIndex,
+                          width: constraints.maxWidth,
+                          onChange: (currentIndex, targetIndex) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            defaultHomepageIndex = targetIndex;
+                            prefs.setInt('defaultHomepageIndex', defaultHomepageIndex);
+                          },
+                        ),
                         // Item icon slides
                         SettingsHeader(icon: Icons.slideshow, text: appText.itemIconSlides),
                         AnimatedHorizontalToggleLayout(

@@ -23,8 +23,8 @@ SideMenuController footerSideMenuController = SideMenuController();
 List<Widget> homepageWidgets = [
   const MainItemGrid(),
   const MainModGrid(),
-  const MainAppliedModGrid(),
   const MainModSetGrid(),
+  const MainAppliedModGrid(),
   const MainItemSwapGrid(),
   const MainItemAqmInjectGrid(),
   const MainVitalGaugeGrid(),
@@ -40,22 +40,26 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  
+  
   @override
   void initState() {
     footerSideMenuController.changePage(-1);
     sideMenuAlwaysExpanded ? sideBarCollapse.value = false : sideBarCollapse.value = true;
+    mainSideMenuController.changePage(defaultHomepageIndex);
+    homepageCurrentWidget.value = homepageWidgets[defaultHomepageIndex];
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async => await jsonAutoBackup());
   }
 
   @override
   Widget build(BuildContext context) {
-    List<String> homepageWidgetNames = [appText.itemList, appText.modList, appText.appliedList, appText.modSets, appText.itemSwap, appText.aqmInject, appText.vitalGauge, appText.lineStrike];
+    List<String> homepageWidgetNames = [appText.itemList, appText.modList, appText.modSets, appText.appliedList, appText.itemSwap, appText.aqmInject, appText.vitalGauge, appText.lineStrike];
     List<Icon> homepageWidgetIcons = [
       const Icon(Icons.list_alt),
       const Icon(Icons.grid_view),
-      const Icon(Icons.turned_in),
       const Icon(Icons.library_books_outlined),
+      const Icon(Icons.turned_in),
       const Icon(Icons.swap_horizontal_circle_outlined),
       const Icon(Icons.auto_fix_high),
       const Icon(Icons.calendar_view_day_rounded),

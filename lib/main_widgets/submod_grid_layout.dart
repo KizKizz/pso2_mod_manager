@@ -10,6 +10,7 @@ import 'package:pso2_mod_manager/main_widgets/info_tag.dart';
 import 'package:pso2_mod_manager/main_widgets/popup_menu_functions.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
+import 'package:pso2_mod_manager/mod_apply/apply_location_popup.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
@@ -224,7 +225,16 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                             setState(() {});
                           },
                           child: MenuIconItem(icon: Icons.list_alt_outlined, text: appText.modSets)),
-                      PopupMenuItem(child: MenuIconItem(icon: Icons.add_location_alt_outlined, text: appText.setApplyLocations)),
+                      PopupMenuItem(
+                          onTap: () async {
+                            widget.submod.applyLocations = await modApplyLocationPopup(context, widget.submod);
+                            setState(() {});
+                          },
+                          child: ModManTooltip(
+                              message: widget.submod.applyLocations!.isNotEmpty
+                                  ? appText.dText(appText.currentlyApplyingToLocations, widget.submod.applyLocations!.join(', '))
+                                  : appText.dText(appText.currentlyApplyingToLocations, appText.allLocations),
+                              child: MenuIconItem(icon: Icons.add_location_alt_outlined, text: appText.setApplyLocations))),
                       const PopupMenuItem(
                           height: 0,
                           enabled: false,
@@ -276,7 +286,8 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                             setState(() {});
                           },
                           child: MenuIconItem(icon: Icons.preview_outlined, text: appText.addPreviews)),
-                      PopupMenuItem(onTap: () => modExportSequence(context, ExportType.submods, widget.item, widget.mod, widget.submod), child: MenuIconItem(icon: Icons.import_export, text: appText.export)),
+                      PopupMenuItem(
+                          onTap: () => modExportSequence(context, ExportType.submods, widget.item, widget.mod, widget.submod), child: MenuIconItem(icon: Icons.import_export, text: appText.export)),
                       PopupMenuItem(onTap: () async => await submodRename(context, widget.mod, widget.submod), child: MenuIconItem(icon: Icons.edit, text: appText.rename)),
                       PopupMenuItem(onTap: () => launchUrlString(widget.submod.location), child: MenuIconItem(icon: Icons.folder_open, text: appText.openInFileExplorer)),
                       const PopupMenuItem(

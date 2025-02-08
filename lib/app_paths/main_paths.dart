@@ -93,13 +93,13 @@ void createMainDirs() {
 
     // Main line strike card list
     mainLineStrikeCardListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManLSCardList.json';
-    
+
     // Main line strike board list
     mainLineStrikeBoardListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManLSBoardList.json';
-    
+
     // Main line strike sleeve list
     mainLineStrikeSleeveListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManLSSleeveList.json';
-    
+
     // Main quick swap list
     mainQuickSwapListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManQuickSwapApplyItemList.json';
   }
@@ -128,14 +128,25 @@ void createMainDirs() {
 
     // Main line strike card list
     mainLineStrikeCardListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManLSCardList_profile2.json';
-    
+
     // Main line strike board list
     mainLineStrikeBoardListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManLSBoardList_profile2.json';
-    
+
     // Main line strike sleeve list
     mainLineStrikeSleeveListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManLSSleeveList_profile2.json';
-    
+
     // Main quick swap list
     mainQuickSwapListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManQuickSwapApplyItemList_profile2.json';
   }
+
+
+  // Creates files
+  if (!File(mainModListJsonPath).existsSync()) File(mainModListJsonPath).createSync(recursive: true);
+  if (!File(mainModSetListJsonPath).existsSync()) File(mainModSetListJsonPath).createSync(recursive: true);
+  if (!File(mainAqmInjectListJsonPath).existsSync()) File(mainAqmInjectListJsonPath).createSync(recursive: true);
+  if (!File(mainVitalGaugeListJsonPath).existsSync()) File(mainVitalGaugeListJsonPath).createSync(recursive: true);
+  if (!File(mainLineStrikeBoardListJsonPath).existsSync()) File(mainLineStrikeBoardListJsonPath).createSync(recursive: true);
+  if (!File(mainLineStrikeCardListJsonPath).existsSync()) File(mainLineStrikeCardListJsonPath).createSync(recursive: true);
+  if (!File(mainLineStrikeSleeveListJsonPath).existsSync()) File(mainLineStrikeSleeveListJsonPath).createSync(recursive: true);
+  if (!File(mainQuickSwapListJsonPath).existsSync()) File(mainQuickSwapListJsonPath).createSync(recursive: true);
 }

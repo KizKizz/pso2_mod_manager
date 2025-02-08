@@ -88,12 +88,15 @@ Future<void> modBackupApply(Item item, Mod mod, SubMod submod) async {
     oDataList.addAll(oItemDataNA.where((e) => p.basenameWithoutExtension(e.path) == modFile.modFileName).toList());
 
     for (var oData in oDataList) {
-      // Backup
-      await modFileLocalBackup(modFile, oData);
-      // Apply
-      await modApply(item, mod, submod, modFile, oData);
+      final oDataPaths = p.split(oData.path.replaceAll('/', p.separator));
+      if (submod.applyLocations!.isEmpty || submod.applyLocations!.contains(oDataPaths[1])) {
+        // Backup
+        await modFileLocalBackup(modFile, oData);
+        // Apply
+        await modApply(item, mod, submod, modFile, oData);
 
-      await Future.delayed(const Duration(microseconds: 10));
+        await Future.delayed(const Duration(microseconds: 10));
+      }
     }
   }
 
@@ -117,7 +120,7 @@ Future<void> modFileLocalBackup(ModFile modFile, OfficialIceFile oData) async {
         await Directory(p.dirname(backupFilePath)).create(recursive: true);
         final backedFile = await oFile.copy(backupFilePath);
         if (backedFile.existsSync()) modFile.bkLocations.add(backedFile.path);
-        modApplyStatus.value = appText.successful;
+        modApplyStatus.value = appText.backupSuccess;
       }
     }
   } else {

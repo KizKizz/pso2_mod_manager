@@ -390,6 +390,9 @@ Future<AddingMod> modAddRenameRefresh(Directory modDir, AddingMod currentAddingM
 }
 
 Future<List<String>> modAddFilterListFetch() async {
+  if (!File(modAddFilterListFilePath).existsSync()) {
+    await File(modAddFilterListFilePath).create(recursive: true);
+  }
   return (await File(modAddFilterListFilePath).readAsString()).split(', ');
 }
 
