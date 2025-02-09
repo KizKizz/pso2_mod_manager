@@ -3,9 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
-import 'package:pso2_mod_manager/widgets/preview_image_stack.dart';
-import 'package:path/path.dart' as p;
-import 'package:pso2_mod_manager/widgets/preview_video_stack.dart';
 
 part 'mod_class.g.dart';
 
@@ -44,17 +41,6 @@ class Mod with ChangeNotifier {
       names.addAll(submod.getModFileNames().where((e) => !names.contains(e)));
     }
     return names;
-  }
-
-  List<Widget> getPreviewWidgets() {
-    List<Widget> widgets = [];
-    if (previewImages.isNotEmpty) {
-      widgets.addAll(previewImages.toSet().map((path) => PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(itemName).last)));
-    }
-    if (previewVideos.isNotEmpty) {
-      widgets.addAll(previewVideos.toSet().map((path) => PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(itemName).last)));
-    }
-    return widgets;
   }
 
   List<String> getModFileNames() {

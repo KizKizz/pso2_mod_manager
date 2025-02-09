@@ -2,9 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:pso2_mod_manager/widgets/preview_image_stack.dart';
-import 'package:pso2_mod_manager/widgets/preview_video_stack.dart';
-import 'package:path/path.dart' as p;
 import 'package:crypto/crypto.dart';
 
 part 'mod_file_class.g.dart';
@@ -37,17 +34,6 @@ class ModFile with ChangeNotifier {
   void setApplyState(bool state) {
     applyStatus = state;
     notifyListeners();
-  }
-
-  List<Widget> getPreviewWidgets() {
-    List<Widget> widgets = [];
-    if (previewImages!.isNotEmpty) {
-      widgets.addAll(previewImages!.toSet().map((path) => PreviewImageStack(imagePath: path, overlayText: p.dirname(path).split(itemName).last)));
-    }
-    if (previewVideos!.isNotEmpty) {
-      widgets.addAll(previewVideos!.toSet().map((path) => PreviewVideoStack(videoPath: path, overlayText: p.dirname(path).split(itemName).last)));
-    }
-    return widgets;
   }
 
   factory ModFile.fromJson(Map<String, dynamic> json) => _$ModFileFromJson(json);
