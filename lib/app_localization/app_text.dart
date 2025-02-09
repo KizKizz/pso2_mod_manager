@@ -224,7 +224,8 @@ class AppText {
       applyToAllLocations = 'Apply To All Locations',
       currentlyApplyingToLocations = 'Currently applying to: %p%',
       allLocations = 'All locations',
-      defaultHomepage = 'Default Homepage';
+      defaultHomepage = 'Default Homepage',
+      madeBy = 'Made by %p%';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -333,7 +334,8 @@ class AppText {
       duplicateAqmInjectInfo = 'This mod was found using the same files as "%p%" in AQM Inject',
       selectSetsToAddToOrRemoveFrom = 'Select Set(s) to add to or to remove from',
       jpGameStartInfo = 'If the game is not starting, try to run the Mod Manager as admin and try again',
-      filterRemoveInfo = 'Click and hold on the filters to remove';
+      filterRemoveInfo = 'Click and hold on the filters to remove',
+      firstTimeInfo = 'If this is your first time using PSO2NGS Mod Manager and your game currently contains mods, please remove them first';
 
   // Settings Text
   String appSettings = 'App Settings',

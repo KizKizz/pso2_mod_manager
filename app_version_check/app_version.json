@@ -1,9 +1,14 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.8.23",
+    "version": "3.0.0",
     "description": [
-        "Added Bounding Radius value selection in Settings. Range from -10 to -60",
-        "設定でバウンディング半径の値を選択できるようにしました。範囲は-10~-60"
+        "PSO2NGS Mod Manager v3 release",
+        "Some settings might reset",
+        "Complete UI overhaul",
+        "Features and code rewrite",
+        "Removed Favorite List",
+        "Disabled CMX until it get fixed",
+        "Bug fixes"
     ],
     "windows_file": "",
     "linux_file": ""

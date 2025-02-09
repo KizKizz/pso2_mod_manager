@@ -1,8 +1,11 @@
 import 'dart:io';
 
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/mod_add/mod_add_function.dart';
+import 'package:pso2_mod_manager/mod_checksum/checksum_functions.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:path/path.dart' as p;
+import 'package:pso2_mod_manager/v3_functions/modified_ice_file_save.dart';
 
 String mainModDirPath = '$mainDataDirPath${p.separator}Mods';
 String backupDirPath = '';
@@ -59,7 +62,7 @@ Future<(bool, bool)> appMainPathsCheck() async {
   return (pso2bin, mainDir);
 }
 
-void createMainDirs() {
+Future<void> createMainDirs() async {
   // Create Mods folder and default categories
   Directory(mainModDirPath).createSync(recursive: true);
   for (var dirName in defaultCategoryDirs) {
@@ -139,7 +142,6 @@ void createMainDirs() {
     mainQuickSwapListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManQuickSwapApplyItemList_profile2.json';
   }
 
-
   // Creates files
   if (!File(mainModListJsonPath).existsSync()) File(mainModListJsonPath).createSync(recursive: true);
   if (!File(mainModSetListJsonPath).existsSync()) File(mainModSetListJsonPath).createSync(recursive: true);
@@ -149,4 +151,20 @@ void createMainDirs() {
   if (!File(mainLineStrikeCardListJsonPath).existsSync()) File(mainLineStrikeCardListJsonPath).createSync(recursive: true);
   if (!File(mainLineStrikeSleeveListJsonPath).existsSync()) File(mainLineStrikeSleeveListJsonPath).createSync(recursive: true);
   if (!File(mainQuickSwapListJsonPath).existsSync()) File(mainQuickSwapListJsonPath).createSync(recursive: true);
+
+  // Create folders
+  if (!File(backgroundDirPath).existsSync()) File(backgroundDirPath).createSync(recursive: true);
+  if (!File(markedItemIconsDirPath).existsSync()) File(markedItemIconsDirPath).createSync(recursive: true);
+  if (!File(modCustomAqmsDirPath).existsSync()) File(modCustomAqmsDirPath).createSync(recursive: true);
+  if (!File(vitalGaugeDirPath).existsSync()) File(vitalGaugeDirPath).createSync(recursive: true);
+  if (!File(exportedModsDirPath).existsSync()) File(exportedModsDirPath).createSync(recursive: true);
+  if (!File(lineStrikeExportedCardsDirPath).existsSync()) File(lineStrikeExportedCardsDirPath).createSync(recursive: true);
+  if (!File(lineStrikeCardsDirPath).existsSync()) File(lineStrikeCardsDirPath).createSync(recursive: true);
+  if (!File(lineStrikeBoardsDirPath).existsSync()) File(lineStrikeBoardsDirPath).createSync(recursive: true);
+  if (!File(lineStrikeSleevesDirPath).existsSync()) File(lineStrikeSleevesDirPath).createSync(recursive: true);
+
+  // Other checks
+  checksumAvailability.value = await checksumFileFetch();
+  modAddFilterList = await modAddFilterListFetch();
+  await modifiedIceFetch();
 }

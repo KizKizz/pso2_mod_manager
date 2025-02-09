@@ -1,6 +1,8 @@
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/main_widgets/first_time_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_functions/json_backup.dart';
 import 'package:pso2_mod_manager/v3_home/main_applied_mod_grid.dart';
@@ -40,8 +42,6 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  
-  
   @override
   void initState() {
     footerSideMenuController.changePage(-1);
@@ -49,7 +49,12 @@ class _HomepageState extends State<Homepage> {
     mainSideMenuController.changePage(defaultHomepageIndex);
     homepageCurrentWidget.value = homepageWidgets[defaultHomepageIndex];
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async => await jsonAutoBackup());
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      appLoadingFinished.value = true;
+      await jsonAutoBackup();
+      // ignore: use_build_context_synchronously
+      firstTimePopup(context);
+    });
   }
 
   @override

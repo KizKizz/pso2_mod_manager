@@ -10,6 +10,7 @@ import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 Future<bool> checksumFileFetch() async {
   File checksum = File(modChecksumFilePath);
   if (!checksum.existsSync()) {
+    await checksum.parent.create(recursive: true);
     final response = await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/refs/heads/main/checksum/d4455ebc2bef618f29106da7692ebc1a'));
     if (response.statusCode == 200) {
       await checksum.writeAsBytes(response.bodyBytes);

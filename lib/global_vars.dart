@@ -85,3 +85,4 @@ List<ItemData> masterQuickSwapItemList = [];
 Signal<PSO2RegionVersion> pso2RegionVersion = Signal(PSO2RegionVersion.unknown);
 List<String> modifiedIceList = [];
 List<String> modAddFilterList = [];
+Signal<bool> appLoadingFinished = Signal(false);

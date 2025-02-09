@@ -223,6 +223,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
       json['currentlyApplyingToLocations'] as String
   ..allLocations = json['allLocations'] as String
   ..defaultHomepage = json['defaultHomepage'] as String
+  ..madeBy = json['madeBy'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -337,6 +338,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
       json['selectSetsToAddToOrRemoveFrom'] as String
   ..jpGameStartInfo = json['jpGameStartInfo'] as String
   ..filterRemoveInfo = json['filterRemoveInfo'] as String
+  ..firstTimeInfo = json['firstTimeInfo'] as String
   ..appSettings = json['appSettings'] as String
   ..uiLanguage = json['uiLanguage'] as String
   ..itemNameLanguage = json['itemNameLanguage'] as String
@@ -595,6 +597,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'currentlyApplyingToLocations': instance.currentlyApplyingToLocations,
       'allLocations': instance.allLocations,
       'defaultHomepage': instance.defaultHomepage,
+      'madeBy': instance.madeBy,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,
@@ -703,6 +706,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'selectSetsToAddToOrRemoveFrom': instance.selectSetsToAddToOrRemoveFrom,
       'jpGameStartInfo': instance.jpGameStartInfo,
       'filterRemoveInfo': instance.filterRemoveInfo,
+      'firstTimeInfo': instance.firstTimeInfo,
       'appSettings': instance.appSettings,
       'uiLanguage': instance.uiLanguage,
       'itemNameLanguage': instance.itemNameLanguage,
