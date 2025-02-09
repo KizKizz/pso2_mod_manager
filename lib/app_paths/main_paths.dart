@@ -29,7 +29,6 @@ String modVitalGaugeTempDirPath = '$mainDataDirPath${p.separator}VitalGaugeTemp'
 String modItemIconTempDirPath = '$mainDataDirPath${p.separator}ItemIconTemp';
 String markedItemIconsDirPath = '$mainDataDirPath${p.separator}Marked Item Icons';
 String jsonBackupDirPath = '$mainDataDirPath${p.separator}Json Backup';
-String pso2DataDirPath = '$pso2binDirPath${p.separator}data';
 String modCustomAqmsDirPath = '$mainDataDirPath${p.separator}Custom AQMs';
 String vitalGaugeDirPath = '$mainDataDirPath${p.separator}Vital Gauge';
 String modChecksumFilePath = '$mainDataDirPath${p.separator}Checksum${p.separator}d4455ebc2bef618f29106da7692ebc1a';
@@ -45,6 +44,8 @@ String lineStrikeBoardsDirPath = '$mainDataDirPath${p.separator}Line Strike${p.s
 String lineStrikeBoardTempDirPath = '$mainDataDirPath${p.separator}LineStrikeTemp${p.separator}Board';
 String lineStrikeSleevesDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}Sleeves';
 String lineStrikeSleeveTempDirPath = '$mainDataDirPath${p.separator}LineStrikeTemp${p.separator}Sleeve';
+
+String pso2DataDirPath = '$pso2binDirPath${p.separator}data';
 
 // External programs
 String sevenZipExePath = '${Directory.current.path}${p.separator}7zip-x64${p.separator}7z.exe';
@@ -68,9 +69,6 @@ Future<void> createMainDirs() async {
   for (var dirName in defaultCategoryDirs) {
     Directory(mainModDirPath + p.separator + dirName).createSync(recursive: true);
   }
-
-  // Create background folder
-  Directory(backgroundDirPath).createSync(recursive: true);
 
   // Profile 1
   if (modManCurActiveProfile == 1) {
@@ -153,15 +151,15 @@ Future<void> createMainDirs() async {
   if (!File(mainQuickSwapListJsonPath).existsSync()) File(mainQuickSwapListJsonPath).createSync(recursive: true);
 
   // Create folders
-  if (!File(backgroundDirPath).existsSync()) File(backgroundDirPath).createSync(recursive: true);
-  if (!File(markedItemIconsDirPath).existsSync()) File(markedItemIconsDirPath).createSync(recursive: true);
-  if (!File(modCustomAqmsDirPath).existsSync()) File(modCustomAqmsDirPath).createSync(recursive: true);
-  if (!File(vitalGaugeDirPath).existsSync()) File(vitalGaugeDirPath).createSync(recursive: true);
-  if (!File(exportedModsDirPath).existsSync()) File(exportedModsDirPath).createSync(recursive: true);
-  if (!File(lineStrikeExportedCardsDirPath).existsSync()) File(lineStrikeExportedCardsDirPath).createSync(recursive: true);
-  if (!File(lineStrikeCardsDirPath).existsSync()) File(lineStrikeCardsDirPath).createSync(recursive: true);
-  if (!File(lineStrikeBoardsDirPath).existsSync()) File(lineStrikeBoardsDirPath).createSync(recursive: true);
-  if (!File(lineStrikeSleevesDirPath).existsSync()) File(lineStrikeSleevesDirPath).createSync(recursive: true);
+  if (!Directory(backgroundDirPath).existsSync()) Directory(backgroundDirPath).createSync(recursive: true);
+  if (!Directory(markedItemIconsDirPath).existsSync()) Directory(markedItemIconsDirPath).createSync(recursive: true);
+  if (!Directory(modCustomAqmsDirPath).existsSync()) Directory(modCustomAqmsDirPath).createSync(recursive: true);
+  if (!Directory(vitalGaugeDirPath).existsSync()) Directory(vitalGaugeDirPath).createSync(recursive: true);
+  if (!Directory(exportedModsDirPath).existsSync()) Directory(exportedModsDirPath).createSync(recursive: true);
+  if (!Directory(lineStrikeExportedCardsDirPath).existsSync()) Directory(lineStrikeExportedCardsDirPath).createSync(recursive: true);
+  if (!Directory(lineStrikeCardsDirPath).existsSync()) Directory(lineStrikeCardsDirPath).createSync(recursive: true);
+  if (!Directory(lineStrikeBoardsDirPath).existsSync()) Directory(lineStrikeBoardsDirPath).createSync(recursive: true);
+  if (!Directory(lineStrikeSleevesDirPath).existsSync()) Directory(lineStrikeSleevesDirPath).createSync(recursive: true);
 
   // Other checks
   checksumAvailability.value = await checksumFileFetch();

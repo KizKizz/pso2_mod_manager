@@ -53,7 +53,7 @@ class _HomepageState extends State<Homepage> {
       appLoadingFinished.value = true;
       await jsonAutoBackup();
       // ignore: use_build_context_synchronously
-      firstTimePopup(context);
+      if (firstBootUp) firstTimePopup(context);
     });
   }
 

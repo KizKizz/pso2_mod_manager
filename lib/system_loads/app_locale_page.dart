@@ -7,7 +7,6 @@ import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/loading_future_builder.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalePage extends StatefulWidget {
   const LocalePage({super.key});
@@ -101,9 +100,9 @@ class _LanguageSelectorState extends State<LanguageSelector> {
         const SizedBox(width: 150, child: Divider(height: 30, thickness: 2)),
         ElevatedButton(
             onPressed: () async {
-              final prefs = await SharedPreferences.getInstance();
-              firstBootUp = false;
-              prefs.setBool('firstBootUp', firstBootUp);
+              // final prefs = await SharedPreferences.getInstance();
+              // firstBootUp = false;
+              // prefs.setBool('firstBootUp', firstBootUp);
               AppLocale().saveSettings(locales);
               pageIndex++;
               curPage.value = appPages[pageIndex];
