@@ -87,8 +87,12 @@ class AppLocale {
         List<String> curLocaleContent = File(locale.translationFilePath).readAsLinesSync();
         enLocaleContent.removeWhere((e) => curLocaleContent.indexWhere((f) => f.contains(e.split('": "').first)) != -1);
         if (enLocaleContent.isNotEmpty) {
-          if (!enLocaleContent.last.endsWith(',')) '${enLocaleContent.last},';
-          curLocaleContent.insertAll(1, enLocaleContent);
+          if (curLocaleContent.isEmpty) {
+            curLocaleContent = enLocaleContent;
+          } else {
+            if (!enLocaleContent.last.endsWith(',')) '${enLocaleContent.last},';
+            curLocaleContent.insertAll(1, enLocaleContent);
+          }
           await File(locale.translationFilePath).writeAsString(curLocaleContent.join('\n'));
         }
       }
@@ -149,6 +153,8 @@ class AppLocale {
         locales.add(newLocale);
         appText = AppText.fromJson(jsonDecode(File(newLocale.translationFilePath).readAsStringSync()));
       }
+    } else {
+      appText = AppText.fromJson(jsonDecode(File(locales[locales.indexWhere((e) => e.isActive)].translationFilePath).readAsStringSync()));
     }
 
     saveSettings(locales);
@@ -170,6 +176,8 @@ class AppLocale {
         locales.add(newLocale);
         appText = AppText.fromJson(jsonDecode(File(newLocale.translationFilePath).readAsStringSync()));
       }
+    } else {
+      appText = AppText.fromJson(jsonDecode(File(locales[locales.indexWhere((e) => e.isActive)].translationFilePath).readAsStringSync()));
     }
 
     saveSettings(locales);

@@ -42,6 +42,11 @@ Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, Su
     }
   }
 
+  if (iceSwappingList.isEmpty) {
+    itemSwapWorkingStatus.value = appText.noMatchingFilesBetweenItemsToSwap;
+    return Directory(Uri.file('$modSwapTempOutputDirPath/$newToSelectedItemName').toFilePath());
+  }
+
   for (var pair in iceSwappingList) {
     //F ice prep
     String lItemIceName = pair[0];

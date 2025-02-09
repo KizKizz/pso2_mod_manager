@@ -10,6 +10,7 @@ import 'package:pso2_mod_manager/v3_widgets/animated_hori_toggle_layout.dart';
 import 'package:pso2_mod_manager/v3_widgets/background_slideshow.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:path/path.dart' as p;
 
@@ -23,6 +24,12 @@ class OtherSettingsLayout extends StatefulWidget {
 class _OtherSettingsLayoutState extends State<OtherSettingsLayout> {
   @override
   Widget build(BuildContext context) {
+    // Refresh
+    if (settingChangeStatus.watch(context) != settingChangeStatus.peek()) {
+      setState(
+        () {},
+      );
+    }
     return LayoutBuilder(
       builder: (context, constraints) {
         return Column(

@@ -373,7 +373,11 @@ class AppText {
       modDataFolder = 'Mod Data Folder',
       modBackupFolder = 'Mod Backup Folder',
       checksumFolder = 'Checksum Folder',
-      modConfigsBackupFolder = 'Mod Configs Backup Folder';
+      modConfigsBackupFolder = 'Mod Configs Backup Folder',
+      reselectpso2binPath = 'Re-Select pso2_bin path?',
+      reselectMainModManagerPath = 'Re-Select main Mod Manager path?',
+      currentPathLocation = 'Current path: %p%',
+      reselectPath = 'Re-Select Path';
 
   factory AppText.fromJson(Map<String, dynamic> json) => _$AppTextFromJson(json);
   Map<String, dynamic> toJson() => _$AppTextToJson(this);

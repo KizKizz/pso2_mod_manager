@@ -25,27 +25,30 @@ class SubmodPreviewBox extends StatefulWidget {
 class _SubmodPreviewBoxState extends State<SubmodPreviewBox> {
   bool showPlayButton = false;
   bool showVideoBox = false;
-  Playlist videoPlaylist = const Playlist([]);
-
-  @override
-  void initState() {
-    widget.videoFilePaths.isEmpty ? showPlayButton = false : showPlayButton = true;
-    super.initState();
-  }
-
+  bool overrideShow = false;
+  bool videoRefreshed = false;
   @override
   Widget build(BuildContext context) {
-    if (showVideoBox) {
+    widget.videoFilePaths.isEmpty ? showPlayButton = false : showPlayButton = true;
+    if (widget.videoFilePaths.isEmpty) showVideoBox = false;
+    if (showVideoBox && !overrideShow) {
       return Stack(
         alignment: AlignmentDirectional.bottomEnd,
         children: [
           SubmodVideoBox(
-            videoPlaylist: videoPlaylist,
+            videoFilePaths: widget.videoFilePaths,
             isNew: widget.isNew,
             videoCompleted: (finished) {
               if (finished) {
                 showVideoBox = false;
                 setState(() {});
+              }
+            },
+            reloadVideo: (bool reload) async {
+              if (reload && !videoRefreshed) {
+                await Future.delayed(const Duration(milliseconds: 250));
+                setState(() {});
+                videoRefreshed = true;
               }
             },
           ),
@@ -59,6 +62,7 @@ class _SubmodPreviewBoxState extends State<SubmodPreviewBox> {
                   onPressed: () {
                     showVideoBox = false;
                     showPlayButton = false;
+                    overrideShow = true;
                     setState(() {});
                   },
                   icon: const Icon(Icons.image)),
@@ -67,7 +71,7 @@ class _SubmodPreviewBoxState extends State<SubmodPreviewBox> {
         ],
       );
     }
-    if (showPlayButton) {
+    if (showPlayButton && !overrideShow) {
       return Stack(
         alignment: AlignmentDirectional.bottomEnd,
         children: [
@@ -90,12 +94,8 @@ class _SubmodPreviewBoxState extends State<SubmodPreviewBox> {
                   elevation: 5,
                   child: InkWell(
                     onTap: () {
-                      List<String> videoPaths = [];
-                      for (var path in widget.videoFilePaths) {
-                        if (videoPaths.indexWhere((e) => p.basename(e) == p.basename(path)) == -1) videoPaths.add(path);
-                      }
-                      videoPlaylist = Playlist(videoPaths.map((e) => Media(e)).toList());
                       showVideoBox = true;
+                      overrideShow = false;
                       setState(() {});
                     },
                     child: const Icon(Icons.play_arrow, size: 50),
@@ -110,6 +110,7 @@ class _SubmodPreviewBoxState extends State<SubmodPreviewBox> {
                   onPressed: () {
                     showVideoBox = false;
                     showPlayButton = false;
+                    overrideShow = true;
                     setState(() {});
                   },
                   icon: const Icon(Icons.image)),
@@ -131,6 +132,7 @@ class _SubmodPreviewBoxState extends State<SubmodPreviewBox> {
                   visualDensity: VisualDensity.adaptivePlatformDensity,
                   onPressed: () {
                     showPlayButton = true;
+                    overrideShow = false;
                     setState(() {});
                   },
                   icon: const Icon(Icons.video_camera_back_outlined)),
@@ -143,10 +145,11 @@ class _SubmodPreviewBoxState extends State<SubmodPreviewBox> {
 }
 
 class SubmodVideoBox extends StatefulWidget {
-  const SubmodVideoBox({super.key, required this.videoPlaylist, required this.isNew, required this.videoCompleted});
+  const SubmodVideoBox({super.key, required this.videoFilePaths, required this.isNew, required this.reloadVideo, required this.videoCompleted});
 
-  final Playlist videoPlaylist;
+  final List<String> videoFilePaths;
   final bool isNew;
+  final Function(bool reload) reloadVideo;
   final Function(bool finished) videoCompleted;
 
   @override
@@ -170,17 +173,25 @@ class _SubmodVideoBOxState extends State<SubmodVideoBox> {
 
   @override
   Widget build(BuildContext context) {
-    videoPlayer.open(widget.videoPlaylist);
+    List<String> videoPaths = [];
+    for (var path in widget.videoFilePaths) {
+      if (videoPaths.indexWhere((e) => p.basename(e) == p.basename(path)) == -1) videoPaths.add(path);
+    }
+    Playlist videoPlaylist = Playlist(videoPaths.map((e) => Media(e)).toList());
+    videoPlayer.open(videoPlaylist);
     videoPlayer.setVolume(0);
     videoPlayer.play();
+    videoPlayer.stream.duration.listen(
+      (event) {
+        if (event.inMilliseconds < 1) {
+          widget.reloadVideo(true);
+        }
+      },
+    );
     videoPlayer.stream.completed.listen((event) {
       if (event) {
-        if (widget.videoPlaylist.index == widget.videoPlaylist.medias.indexOf(widget.videoPlaylist.medias.last)) {
+        if (videoPlaylist.index == videoPlaylist.medias.indexOf(videoPlaylist.medias.last)) {
           widget.videoCompleted(true);
-        } else {
-          setState(() {
-            videoPlayer.play();
-          });
         }
       }
     });

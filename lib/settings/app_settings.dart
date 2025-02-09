@@ -1,8 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_locale.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_localization/item_locale.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
+import 'package:pso2_mod_manager/settings/repath_confirm_popup.dart';
 import 'package:pso2_mod_manager/v3_functions/json_backup.dart';
 import 'package:pso2_mod_manager/v3_functions/pso2_version_check.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
@@ -38,6 +42,12 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
 
   @override
   Widget build(BuildContext context) {
+    // Refresh
+    if (settingChangeStatus.watch(context) != settingChangeStatus.peek()) {
+      setState(
+        () {},
+      );
+    }
     return LayoutBuilder(
       builder: (context, constraints) {
         return Column(
@@ -95,6 +105,8 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             }
                             appLocales[targetIndex].isActive = true;
                             appLocales[targetIndex].saveSettings(appLocales);
+                            appText = AppText.fromJson(jsonDecode(File(appLocales[targetIndex].translationFilePath).readAsStringSync()));
+                            settingChangeStatus.value = 'Changed UI langage to ${appLocales[targetIndex].language}';
                           },
                         ),
                         // Item name language
@@ -170,11 +182,14 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                                 width: double.infinity,
                                 child: OutlinedButton(
                                     onPressed: () async {
-                                      final prefs = await SharedPreferences.getInstance();
-                                      pso2binDirPath = '';
-                                      modManCurActiveProfile == 1 ? prefs.setString('pso2binDirPath', pso2binDirPath) : prefs.setString('pso2binDirPath_profile2', pso2binDirPath);
-                                      pageIndex = 6;
-                                      curPage.value = appPages[pageIndex];
+                                      final result = await repathConfirmPopup(context, true, pso2binDirPath);
+                                      if (result) {
+                                        final prefs = await SharedPreferences.getInstance();
+                                        pso2binDirPath = '';
+                                        modManCurActiveProfile == 1 ? prefs.setString('pso2binDirPath', pso2binDirPath) : prefs.setString('pso2binDirPath_profile2', pso2binDirPath);
+                                        pageIndex = 6;
+                                        curPage.value = appPages[pageIndex];
+                                      }
                                     },
                                     child: Text(appText.selectPso2BinFolder)),
                               ),
@@ -185,18 +200,20 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                                 width: double.infinity,
                                 child: OutlinedButton(
                                     onPressed: () async {
-                                      final prefs = await SharedPreferences.getInstance();
-                                      mainDataDirPath = '';
-                                      prefs.setString('mainDataDirPath', mainDataDirPath);
-                                      pageIndex = 6;
-                                      curPage.value = appPages[pageIndex];
+                                      final result = await repathConfirmPopup(context, false, mainDataDirPath);
+                                      if (result) {
+                                        final prefs = await SharedPreferences.getInstance();
+                                        mainDataDirPath = '';
+                                        prefs.setString('mainDataDirPath', mainDataDirPath);
+                                        pageIndex = 6;
+                                        curPage.value = appPages[pageIndex];
+                                      }
                                     },
                                     child: Text(appText.selectModManagerDataFolder)),
                               ),
                             ),
                           ],
                         ),
-                        
                       ],
                     )))
           ],

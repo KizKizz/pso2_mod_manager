@@ -38,6 +38,9 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..nameAlphabetical = json['nameAlphabetical'] as String
   ..recentlyAdded = json['recentlyAdded'] as String
   ..recentlyApplied = json['recentlyApplied'] as String
+  ..cards = json['cards'] as String
+  ..boards = json['boards'] as String
+  ..sleeves = json['sleeves'] as String
   ..cardDarkElement = json['cardDarkElement'] as String
   ..cardLightElement = json['cardLightElement'] as String
   ..cardFireElement = json['cardFireElement'] as String
@@ -106,6 +109,9 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..images = json['images'] as String
   ..videos = json['videos'] as String
   ..select = json['select'] as String
+  ..continues = json['continues'] as String
+  ..imported = json['imported'] as String
+  ..filters = json['filters'] as String
   ..patchNotes = json['patchNotes'] as String
   ..appUpdate = json['appUpdate'] as String
   ..tryAgain = json['tryAgain'] as String
@@ -191,6 +197,32 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..imageName = json['imageName'] as String
   ..showAll = json['showAll'] as String
   ..lineStrike = json['lineStrike'] as String
+  ..exportingFile = json['exportingFile'] as String
+  ..convertingFileToPng = json['convertingFileToPng'] as String
+  ..restoringFile = json['restoringFile'] as String
+  ..successfullyAppliedFile = json['successfullyAppliedFile'] as String
+  ..failedToApplyFile = json['failedToApplyFile'] as String
+  ..successfullyRestoredFile = json['successfullyRestoredFile'] as String
+  ..failedToRestoredFile = json['failedToRestoredFile'] as String
+  ..reapplyingFile = json['reapplyingFile'] as String
+  ..extensionFile = json['extensionFile'] as String
+  ..applyThisSet = json['applyThisSet'] as String
+  ..restoreThisSet = json['restoreThisSet'] as String
+  ..launchPSO2 = json['launchPSO2'] as String
+  ..swapAll = json['swapAll'] as String
+  ..modExport = json['modExport'] as String
+  ..enterANameToExport = json['enterANameToExport'] as String
+  ..exportingMods = json['exportingMods'] as String
+  ..unknownMod = json['unknownMod'] as String
+  ..enterModName = json['enterModName'] as String
+  ..clearAll = json['clearAll'] as String
+  ..backupSuccess = json['backupSuccess'] as String
+  ..applyLocations = json['applyLocations'] as String
+  ..applyToAllLocations = json['applyToAllLocations'] as String
+  ..currentlyApplyingToLocations =
+      json['currentlyApplyingToLocations'] as String
+  ..allLocations = json['allLocations'] as String
+  ..defaultHomepage = json['defaultHomepage'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -263,8 +295,18 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..showAppliedOnly = json['showAppliedOnly'] as String
   ..checkingAppliedVitalGauges = json['checkingAppliedVitalGauges'] as String
   ..loadingLineStrikeCards = json['loadingLineStrikeCards'] as String
+  ..loadingLineStrikeBoards = json['loadingLineStrikeBoards'] as String
+  ..loadingLineStrikeSleeves = json['loadingLineStrikeSleeves'] as String
   ..selectCardElement = json['selectCardElement'] as String
   ..exportToPngImage = json['exportToPngImage'] as String
+  ..checkingAppliedLineStrikeItems =
+      json['checkingAppliedLineStrikeItems'] as String
+  ..loadingQuickSwapItems = json['loadingQuickSwapItems'] as String
+  ..selecteMoreItems = json['selecteMoreItems'] as String
+  ..selectSetsToAdd = json['selectSetsToAdd'] as String
+  ..enterFilterText = json['enterFilterText'] as String
+  ..currentFilters = json['currentFilters'] as String
+  ..addFilter = json['addFilter'] as String
   ..failedToFetchRemoteLocaleData =
       json['failedToFetchRemoteLocaleData'] as String
   ..unableToUpdateFile = json['unableToUpdateFile'] as String
@@ -280,6 +322,12 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..nameCannotBeEmpty = json['nameCannotBeEmpty'] as String
   ..failedToReplaceCard = json['failedToReplaceCard'] as String
   ..failedToReplaceCardIcon = json['failedToReplaceCardIcon'] as String
+  ..failedToReplaceBoard = json['failedToReplaceBoard'] as String
+  ..failedToReplaceBoardIcon = json['failedToReplaceBoardIcon'] as String
+  ..failedToReplaceSleeve = json['failedToReplaceSleeve'] as String
+  ..failedToReplaceSleeveIcon = json['failedToReplaceSleeveIcon'] as String
+  ..anticheatLoaderFileNotFound = json['anticheatLoaderFileNotFound'] as String
+  ..couldntCreateCustomLauncher = json['couldntCreateCustomLauncher'] as String
   ..pso2binDirPathInfo = json['pso2binDirPathInfo'] as String
   ..mainDirPathInfo = json['mainDirPathInfo'] as String
   ..restoredModInfo = json['restoredModInfo'] as String
@@ -287,6 +335,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..duplicateAqmInjectInfo = json['duplicateAqmInjectInfo'] as String
   ..selectSetsToAddToOrRemoveFrom =
       json['selectSetsToAddToOrRemoveFrom'] as String
+  ..jpGameStartInfo = json['jpGameStartInfo'] as String
+  ..filterRemoveInfo = json['filterRemoveInfo'] as String
   ..appSettings = json['appSettings'] as String
   ..uiLanguage = json['uiLanguage'] as String
   ..itemNameLanguage = json['itemNameLanguage'] as String
@@ -307,7 +357,29 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..originalFilesRestorePriority =
       json['originalFilesRestorePriority'] as String
   ..segaServers = json['segaServers'] as String
-  ..localBackups = json['localBackups'] as String;
+  ..localBackups = json['localBackups'] as String
+  ..removeProfanityFilter = json['removeProfanityFilter'] as String
+  ..markModdedItemInGame = json['markModdedItemInGame'] as String
+  ..sideBar = json['sideBar'] as String
+  ..minimal = json['minimal'] as String
+  ..alwaysExpanded = json['alwaysExpanded'] as String
+  ..modConfigsLastSaveDate = json['modConfigsLastSaveDate'] as String
+  ..backupNow = json['backupNow'] as String
+  ..mainPaths = json['mainPaths'] as String
+  ..currentPathFolder = json['currentPathFolder'] as String
+  ..selectPso2BinFolder = json['selectPso2BinFolder'] as String
+  ..selectModManagerDataFolder = json['selectModManagerDataFolder'] as String
+  ..locations = json['locations'] as String
+  ..pso2binFolder = json['pso2binFolder'] as String
+  ..modManagerMainFolder = json['modManagerMainFolder'] as String
+  ..modDataFolder = json['modDataFolder'] as String
+  ..modBackupFolder = json['modBackupFolder'] as String
+  ..checksumFolder = json['checksumFolder'] as String
+  ..modConfigsBackupFolder = json['modConfigsBackupFolder'] as String
+  ..reselectpso2binPath = json['reselectpso2binPath'] as String
+  ..reselectMainModManagerPath = json['reselectMainModManagerPath'] as String
+  ..currentPathLocation = json['currentPathLocation'] as String
+  ..reselectPath = json['reselectPath'] as String;
 
 Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'dfCastParts': instance.dfCastParts,
@@ -341,6 +413,9 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'nameAlphabetical': instance.nameAlphabetical,
       'recentlyAdded': instance.recentlyAdded,
       'recentlyApplied': instance.recentlyApplied,
+      'cards': instance.cards,
+      'boards': instance.boards,
+      'sleeves': instance.sleeves,
       'cardDarkElement': instance.cardDarkElement,
       'cardLightElement': instance.cardLightElement,
       'cardFireElement': instance.cardFireElement,
@@ -409,6 +484,9 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'images': instance.images,
       'videos': instance.videos,
       'select': instance.select,
+      'continues': instance.continues,
+      'imported': instance.imported,
+      'filters': instance.filters,
       'patchNotes': instance.patchNotes,
       'appUpdate': instance.appUpdate,
       'tryAgain': instance.tryAgain,
@@ -492,6 +570,31 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'imageName': instance.imageName,
       'showAll': instance.showAll,
       'lineStrike': instance.lineStrike,
+      'exportingFile': instance.exportingFile,
+      'convertingFileToPng': instance.convertingFileToPng,
+      'restoringFile': instance.restoringFile,
+      'successfullyAppliedFile': instance.successfullyAppliedFile,
+      'failedToApplyFile': instance.failedToApplyFile,
+      'successfullyRestoredFile': instance.successfullyRestoredFile,
+      'failedToRestoredFile': instance.failedToRestoredFile,
+      'reapplyingFile': instance.reapplyingFile,
+      'extensionFile': instance.extensionFile,
+      'applyThisSet': instance.applyThisSet,
+      'restoreThisSet': instance.restoreThisSet,
+      'launchPSO2': instance.launchPSO2,
+      'swapAll': instance.swapAll,
+      'modExport': instance.modExport,
+      'enterANameToExport': instance.enterANameToExport,
+      'exportingMods': instance.exportingMods,
+      'unknownMod': instance.unknownMod,
+      'enterModName': instance.enterModName,
+      'clearAll': instance.clearAll,
+      'backupSuccess': instance.backupSuccess,
+      'applyLocations': instance.applyLocations,
+      'applyToAllLocations': instance.applyToAllLocations,
+      'currentlyApplyingToLocations': instance.currentlyApplyingToLocations,
+      'allLocations': instance.allLocations,
+      'defaultHomepage': instance.defaultHomepage,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,
@@ -561,8 +664,17 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'showAppliedOnly': instance.showAppliedOnly,
       'checkingAppliedVitalGauges': instance.checkingAppliedVitalGauges,
       'loadingLineStrikeCards': instance.loadingLineStrikeCards,
+      'loadingLineStrikeBoards': instance.loadingLineStrikeBoards,
+      'loadingLineStrikeSleeves': instance.loadingLineStrikeSleeves,
       'selectCardElement': instance.selectCardElement,
       'exportToPngImage': instance.exportToPngImage,
+      'checkingAppliedLineStrikeItems': instance.checkingAppliedLineStrikeItems,
+      'loadingQuickSwapItems': instance.loadingQuickSwapItems,
+      'selecteMoreItems': instance.selecteMoreItems,
+      'selectSetsToAdd': instance.selectSetsToAdd,
+      'enterFilterText': instance.enterFilterText,
+      'currentFilters': instance.currentFilters,
+      'addFilter': instance.addFilter,
       'failedToFetchRemoteLocaleData': instance.failedToFetchRemoteLocaleData,
       'unableToUpdateFile': instance.unableToUpdateFile,
       'unableToGetAppVersionDataFromGitHub':
@@ -577,12 +689,20 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'nameCannotBeEmpty': instance.nameCannotBeEmpty,
       'failedToReplaceCard': instance.failedToReplaceCard,
       'failedToReplaceCardIcon': instance.failedToReplaceCardIcon,
+      'failedToReplaceBoard': instance.failedToReplaceBoard,
+      'failedToReplaceBoardIcon': instance.failedToReplaceBoardIcon,
+      'failedToReplaceSleeve': instance.failedToReplaceSleeve,
+      'failedToReplaceSleeveIcon': instance.failedToReplaceSleeveIcon,
+      'anticheatLoaderFileNotFound': instance.anticheatLoaderFileNotFound,
+      'couldntCreateCustomLauncher': instance.couldntCreateCustomLauncher,
       'pso2binDirPathInfo': instance.pso2binDirPathInfo,
       'mainDirPathInfo': instance.mainDirPathInfo,
       'restoredModInfo': instance.restoredModInfo,
       'duplicateAppliedInfo': instance.duplicateAppliedInfo,
       'duplicateAqmInjectInfo': instance.duplicateAqmInjectInfo,
       'selectSetsToAddToOrRemoveFrom': instance.selectSetsToAddToOrRemoveFrom,
+      'jpGameStartInfo': instance.jpGameStartInfo,
+      'filterRemoveInfo': instance.filterRemoveInfo,
       'appSettings': instance.appSettings,
       'uiLanguage': instance.uiLanguage,
       'itemNameLanguage': instance.itemNameLanguage,
@@ -603,4 +723,26 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'originalFilesRestorePriority': instance.originalFilesRestorePriority,
       'segaServers': instance.segaServers,
       'localBackups': instance.localBackups,
+      'removeProfanityFilter': instance.removeProfanityFilter,
+      'markModdedItemInGame': instance.markModdedItemInGame,
+      'sideBar': instance.sideBar,
+      'minimal': instance.minimal,
+      'alwaysExpanded': instance.alwaysExpanded,
+      'modConfigsLastSaveDate': instance.modConfigsLastSaveDate,
+      'backupNow': instance.backupNow,
+      'mainPaths': instance.mainPaths,
+      'currentPathFolder': instance.currentPathFolder,
+      'selectPso2BinFolder': instance.selectPso2BinFolder,
+      'selectModManagerDataFolder': instance.selectModManagerDataFolder,
+      'locations': instance.locations,
+      'pso2binFolder': instance.pso2binFolder,
+      'modManagerMainFolder': instance.modManagerMainFolder,
+      'modDataFolder': instance.modDataFolder,
+      'modBackupFolder': instance.modBackupFolder,
+      'checksumFolder': instance.checksumFolder,
+      'modConfigsBackupFolder': instance.modConfigsBackupFolder,
+      'reselectpso2binPath': instance.reselectpso2binPath,
+      'reselectMainModManagerPath': instance.reselectMainModManagerPath,
+      'currentPathLocation': instance.currentPathLocation,
+      'reselectPath': instance.reselectPath,
     };

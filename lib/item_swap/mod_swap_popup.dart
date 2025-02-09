@@ -5,6 +5,7 @@ import 'package:pso2_mod_manager/item_swap/item_swap_grid_layout.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_motions_select_button.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_type_select_button.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_working_popup.dart';
+import 'package:pso2_mod_manager/item_swap/mod_swap_grid_layout.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
@@ -35,7 +36,6 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (dialogContext, setState) {
           
-
           displayingItems = pItemData
               .where((e) => showNoNameItems.watch(context) || (!showNoNameItems.watch(context) && e.getName().isNotEmpty))
               .where((e) => submod.category == defaultCategoryDirs[1]
@@ -117,8 +117,9 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                         spacing: 5,
                         children: [
                           Expanded(
-                              child: ItemSwapGridLayout(
+                              child: ModSwapGridLayout(
                             itemDataList: lDisplayingItems,
+                            submod: submod,
                             scrollController: lScrollController,
                             selectedItemData: lSelectedItemData,
                           )),

@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pso2_mod_manager/app_localization/item_locale.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 part 'item_data_class.g.dart';
 
@@ -97,7 +98,12 @@ class ItemData {
   // }
 
   String getIconIceName() {
-    return infos.entries.firstWhere((element) => element.key.contains('Icon'), orElse: () => const MapEntry('', ''),).value;
+    return infos.entries
+        .firstWhere(
+          (element) => element.key.contains('Icon'),
+          orElse: () => const MapEntry('', ''),
+        )
+        .value;
   }
 
   String getImageIceName() {
@@ -228,6 +234,27 @@ class ItemData {
             e.key != 'Reboot VFX' &&
             e.key != 'PSO2 VFX' &&
             e.key != 'PSO2 File')
+        .map((e) => '${e.key}: ${e.value}'.trim())
+        .toList();
+  }
+
+  List<String> getModSwapDetails(SubMod submod) {
+    return infos.entries
+        .where((e) =>
+            e.value.isNotEmpty &&
+            e.key != 'Japanese Name' &&
+            e.key != 'English Name' &&
+            !e.key.contains('Bone') &&
+            e.key != 'JP Name' &&
+            e.key != 'EN Name' &&
+            e.key != 'Reboot Human' &&
+            e.key != 'Reboot Cast Male' &&
+            e.key != 'Reboot Cast Female' &&
+            e.key != 'Reboot Fig' &&
+            e.key != 'Reboot VFX' &&
+            e.key != 'PSO2 VFX' &&
+            e.key != 'PSO2 File')
+        .where((e) => !e.key.contains('Hash') || (e.key.contains('Hash') && submod.getModFileNames().contains(e.value.split('\\').last)))
         .map((e) => '${e.key}: ${e.value}'.trim())
         .toList();
   }

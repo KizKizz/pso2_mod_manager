@@ -51,7 +51,7 @@ class _LineStrikeTypeSelectButtonState extends State<LineStrikeTypeSelectButton>
               title: ChoiceText(
                 appText.categoryName(typeList[i]),
                 highlight: state.search?.value,
-                style: TextStyle(color: selectedLineStrikeType.watch(context) == typeList[i] ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.bodyMedium!.color),
+                style: TextStyle(color: selectedLineStrikeType.watch(context).value == typeList[i] ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.bodyMedium!.color),
               ),
             );
           },
