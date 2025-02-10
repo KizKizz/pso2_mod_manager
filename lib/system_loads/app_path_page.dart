@@ -147,7 +147,6 @@ class _AppPathPageState extends State<AppPathPage> {
                                         if (pso2binPathText.text.isNotEmpty) {
                                           pso2binDirPath = pso2binPathText.text;
                                           modManCurActiveProfile == 1 ? prefs.setString('pso2binDirPath', pso2binDirPath) : prefs.setString('pso2binDirPath_profile2', pso2binDirPath);
-                                          pso2DataDirPath = '$pso2binDirPath${p.separator}data';
                                         }
                                         if (mainDirPathText.text.isNotEmpty) {
                                           mainDataDirPath = mainDirPathText.text;

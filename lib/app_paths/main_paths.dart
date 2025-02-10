@@ -6,6 +6,7 @@ import 'package:pso2_mod_manager/mod_checksum/checksum_functions.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/v3_functions/modified_ice_file_save.dart';
+import 'package:pso2_mod_manager/v3_widgets/background_slideshow.dart';
 
 String mainModDirPath = '$mainDataDirPath${p.separator}Mods';
 String backupDirPath = '';
@@ -69,6 +70,10 @@ Future<void> createMainDirs() async {
   for (var dirName in defaultCategoryDirs) {
     Directory(mainModDirPath + p.separator + dirName).createSync(recursive: true);
   }
+
+  pso2DataDirPath = '$pso2binDirPath${p.separator}data';
+  backgroundDirPath = '$mainDataDirPath${p.separator}Background Images';
+
 
   // Profile 1
   if (modManCurActiveProfile == 1) {
@@ -165,8 +170,9 @@ Future<void> createMainDirs() async {
   checksumAvailability.value = await checksumFileFetch();
   modAddFilterList = await modAddFilterListFetch();
   await modifiedIceFetch();
+  if (backgroundImageFiles.value.isEmpty) backgroundImageFiles.value = backgroundImageFetch();
 
   // Clear Temps
-  if (Directory(modAddTempSortedDirPath).existsSync()) Directory(modAddTempDirPath).deleteSync(recursive: true);
+  if (Directory(modAddTempDirPath).existsSync()) Directory(modAddTempDirPath).deleteSync(recursive: true);
   if (Directory(modSwapTempDirPath).existsSync()) Directory(modSwapTempDirPath).deleteSync(recursive: true);
 }

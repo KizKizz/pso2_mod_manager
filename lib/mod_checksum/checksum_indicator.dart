@@ -24,6 +24,7 @@ class _ChecksumIndicatorState extends State<ChecksumIndicator> {
               child: Card(
                   shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
                   color: Colors.transparent,
+                  shadowColor: Colors.transparent,
                   margin: EdgeInsets.zero,
                   elevation: 5,
                   child: Padding(
@@ -40,6 +41,7 @@ class _ChecksumIndicatorState extends State<ChecksumIndicator> {
                   child: Card(
                       shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
                       color: Colors.transparent,
+                      shadowColor: Colors.transparent,
                       margin: EdgeInsets.zero,
                       elevation: 5,
                       child: Padding(

@@ -127,10 +127,11 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
               children: [
                 Tooltip(
                   decoration: BoxDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor.withAlpha(200),
+                      color: Theme.of(context).scaffoldBackgroundColor,
                       border: Border.all(color: Theme.of(context).colorScheme.outline, width: 1),
                       borderRadius: const BorderRadius.all(Radius.circular(5))),
                   message: appText.dText(appText.madeBy, 'キス★ (KizKizz)'),
+                  textStyle: Theme.of(context).textTheme.titleSmall,
                   child: Row(
                     children: [
                       Text(

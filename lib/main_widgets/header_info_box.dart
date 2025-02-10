@@ -11,6 +11,7 @@ class HeaderInfoBox extends StatelessWidget {
     return Card(
         shape: RoundedRectangleBorder(side: BorderSide(color: borderHighlight? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
         color: Colors.transparent,
+        shadowColor: Colors.transparent,
         margin: EdgeInsets.zero,
         elevation: 5,
         child: Padding(
