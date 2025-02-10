@@ -25,7 +25,7 @@ Future<void> firstTimePopup(context) async {
                   OutlinedButton(
                       onPressed: () async {
                         final prefs = await SharedPreferences.getInstance();
-                        firstBootUp = true;
+                        firstBootUp = false;
                         prefs.setBool('firstBootUp', firstBootUp);
                         // ignore: use_build_context_synchronously
                         Navigator.of(context).pop();

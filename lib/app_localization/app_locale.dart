@@ -90,7 +90,7 @@ class AppLocale {
           if (curLocaleContent.isEmpty) {
             curLocaleContent = enLocaleContent;
           } else {
-            if (!enLocaleContent.last.endsWith(',')) '${enLocaleContent.last},';
+            if (!enLocaleContent.last.endsWith(',')) enLocaleContent.last = '${enLocaleContent.last},';
             curLocaleContent.insertAll(1, enLocaleContent);
           }
           await File(locale.translationFilePath).writeAsString(curLocaleContent.join('\n'));

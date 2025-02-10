@@ -16,7 +16,6 @@ import 'package:pso2_mod_manager/settings/other_settings.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/background_slideshow.dart';
 import 'package:pso2_mod_manager/mod_checksum/checksum_indicator.dart';
-import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:window_manager/window_manager.dart';
@@ -126,7 +125,11 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ModManTooltip(
+                Tooltip(
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor.withAlpha(200),
+                      border: Border.all(color: Theme.of(context).colorScheme.outline, width: 1),
+                      borderRadius: const BorderRadius.all(Radius.circular(5))),
                   message: appText.dText(appText.madeBy, 'キス★ (KizKizz)'),
                   child: Row(
                     children: [

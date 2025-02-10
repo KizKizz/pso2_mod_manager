@@ -139,6 +139,7 @@ class _OtherSettingsLayoutState extends State<OtherSettingsLayout> {
                             LocationButton(label: appText.modDataFolder, folderPath: mainModDirPath),
                             LocationButton(label: appText.modBackupFolder, folderPath: backupDirPath),
                             LocationButton(label: appText.modConfigsBackupFolder, folderPath: jsonBackupDirPath),
+                            LocationButton(label: appText.backgroundImageFolder, folderPath: backgroundDirPath),
                           ],
                         )
                   ],

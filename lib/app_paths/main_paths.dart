@@ -165,4 +165,8 @@ Future<void> createMainDirs() async {
   checksumAvailability.value = await checksumFileFetch();
   modAddFilterList = await modAddFilterListFetch();
   await modifiedIceFetch();
+
+  // Clear Temps
+  if (Directory(modAddTempSortedDirPath).existsSync()) Directory(modAddTempDirPath).deleteSync(recursive: true);
+  if (Directory(modSwapTempDirPath).existsSync()) Directory(modSwapTempDirPath).deleteSync(recursive: true);
 }

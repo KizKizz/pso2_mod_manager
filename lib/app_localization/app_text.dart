@@ -379,7 +379,8 @@ class AppText {
       reselectpso2binPath = 'Re-Select pso2_bin path?',
       reselectMainModManagerPath = 'Re-Select main Mod Manager path?',
       currentPathLocation = 'Current path: %p%',
-      reselectPath = 'Re-Select Path';
+      reselectPath = 'Re-Select Path',
+      backgroundImageFolder = 'Background Image Folder';
 
   factory AppText.fromJson(Map<String, dynamic> json) => _$AppTextFromJson(json);
   Map<String, dynamic> toJson() => _$AppTextToJson(this);

@@ -18,7 +18,7 @@ class ModManTooltip extends StatelessWidget {
             color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
             border: Border.all(color: Theme.of(context).colorScheme.outline, width: 1),
             borderRadius: const BorderRadius.all(Radius.circular(5))),
-        waitDuration: const Duration(milliseconds: 500),
+        waitDuration: const Duration(milliseconds: 0),
         child: child);
   }
 }
