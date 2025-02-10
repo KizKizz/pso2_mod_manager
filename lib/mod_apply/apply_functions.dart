@@ -134,7 +134,7 @@ Future<void> modApply(Item item, Mod mod, SubMod submod, ModFile modFile, Offici
     if (oData.path.replaceAll('/', p.separator).isNotEmpty) {
       modApplyStatus.value = appText.dText(appText.copyingModFileToGameData, modFile.modFileName);
       final copiedFile = await file.copy(pso2binDirPath + p.separator + p.withoutExtension(oData.path.replaceAll('/', p.separator)));
-      modFile.ogLocations.add(copiedFile.path);
+      if (!modFile.ogLocations.contains(copiedFile.path)) modFile.ogLocations.add(copiedFile.path);
     } else {
       final oFilePath = Directory(pso2DataDirPath)
           .listSync(recursive: true)
@@ -147,7 +147,7 @@ Future<void> modApply(Item item, Mod mod, SubMod submod, ModFile modFile, Offici
       if (oFilePath.isNotEmpty) {
         modApplyStatus.value = appText.dText(appText.copyingModFileToGameData, modFile.modFileName);
         final copiedFile = await file.copy(pso2binDirPath + p.separator + p.withoutExtension(oData.path.replaceAll('/', p.separator)));
-        modFile.ogLocations.add(copiedFile.path);
+        if (!modFile.ogLocations.contains(copiedFile.path)) modFile.ogLocations.add(copiedFile.path);
       }
     }
     if (modFile.ogLocations.isNotEmpty) {

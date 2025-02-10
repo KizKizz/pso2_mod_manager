@@ -61,7 +61,7 @@ Future<void> restoreFromLocalBackups(Item item, Mod mod, SubMod submod, ModFile 
       modApplyStatus.value = appText.dText(appText.restoringBackupFileToGameData, modFile.modFileName);
       if (await copiedFile.getMd5Hash() != modFile.md5) {
         if (await backedupFile.exists()) await backedupFile.delete(recursive: true);
-        modFile.ogLocations.remove(copiedFile.path);
+        modFile.ogLocations.removeWhere((e) => e == copiedFile.path);
         modFile.applyStatus = false;
         modApplyStatus.value = appText.successful;
       }
@@ -85,7 +85,7 @@ Future<void> restoreFromSegaServers(Item item, Mod mod, SubMod submod, ModFile m
       modApplyStatus.value = appText.dText(appText.restoringBackupFileToGameData, modFile.modFileName);
       if (downloadedFile.path.isNotEmpty && downloadedFile.existsSync()) {
         if (await File(backupPath).exists()) await File(backupPath).delete(recursive: true);
-        modFile.ogLocations.remove(downloadedFile.path);
+        modFile.ogLocations.removeWhere((e) => e == downloadedFile.path);
         modFile.applyStatus = false;
         modApplyStatus.value = appText.successful;
       }
