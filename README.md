@@ -18,9 +18,9 @@ Check back for latest releases
 - Swap mods to other items
 - Quick apply any mod to any selected item
 - Swap original items (costumes, emotes, ...)
-- Inject custom AQM file to items and mods
-- Remove bounding radius from items and mods (prevent disappearance on closeup camera)
-- Profanity filter removal
+- Inject custom AQM file to items and mods (Auto)
+- Remove bounding radius from items and mods (prevent disappearance on closeup camera - Auto)
+- Profanity filter removal (Auto)
 - Custom images on Vital Gauges
 - Custom images on Line Strike (Cards, Boards, Sleeves)
 - Two different profiles can be used separatedly on different versions of the game
