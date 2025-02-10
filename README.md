@@ -23,6 +23,7 @@ Check back for latest releases
 - Custom images on Vital Gauges
 - Custom images on Line Strike (Cards, Boards, Sleeves)
 - Start game bypassing official launcher (JP version only, might need to run as admin)
+  
 and more..
 
 # Usage
