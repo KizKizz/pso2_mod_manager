@@ -91,8 +91,8 @@ class _DataUpdatePageState extends State<DataUpdatePage> {
             String desc = snapshot.data.$2;
             File itemDataLocalVersionFile = File('${Directory.current.path}${p.separator}itemData${p.separator}itemDataLocalVersion.json');
             Map<String, dynamic> curItemDataVersion = jsonDecode(itemDataLocalVersionFile.readAsStringSync());
-            if (remoteVersion.isNotEmpty &&
-                int.parse(remoteVersion) > int.parse(curItemDataVersion.entries.firstWhere((e) => e.key == 'version', orElse: () => const MapEntry('version', '0')).value)) {
+            if (!File('${Directory.current.path}${p.separator}itemData${p.separator}playerItemData.json').existsSync() || (remoteVersion.isNotEmpty &&
+                int.parse(remoteVersion) > int.parse(curItemDataVersion.entries.firstWhere((e) => e.key == 'version', orElse: () => const MapEntry('version', '0')).value))) {
               return Center(
                   child: CardOverlay(
                       paddingValue: 15,
