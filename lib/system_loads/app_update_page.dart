@@ -79,7 +79,7 @@ class _AppUpdatePageState extends State<AppUpdatePage> {
                                         // Unpack and apply
                                         downloadStatus.value = appText.extractingDownloadedZipFile;
                                         await extractFileToDisk('${Directory.current.path}${p.separator}appUpdate${p.separator}PSO2NGSModManager_v$remoteVersion.zip',
-                                            '${Directory.current.path}appUpdate${p.separator}PSO2NGSModManager_v$remoteVersion');
+                                            '${Directory.current.path}${p.separator}appUpdate${p.separator}PSO2NGSModManager_v$remoteVersion');
                                         // Create launcher
                                         patchLauncher = await patchFileLauncherGenerate(remoteVersion);
                                         patchLauncher != null && patchLauncher!.existsSync()
