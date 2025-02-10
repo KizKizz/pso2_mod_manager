@@ -14,6 +14,7 @@ Check back for latest releases
 - Auto sort and categorize mods by associated items upon adding
 - Mods can be added to Mod Sets to be applied together
 - Keep track of available mods and mods that are in the game
+- Custom mod applying locations (win32, win32reboot, win32_na, win32reboot_na or all)
 - Swap mods to other items
 - Quick apply any mod to any selected item
 - Swap original items (costumes, emotes, ...)
@@ -22,6 +23,7 @@ Check back for latest releases
 - Profanity filter removal
 - Custom images on Vital Gauges
 - Custom images on Line Strike (Cards, Boards, Sleeves)
+- Two different profiles 
 - Start game bypassing official launcher (JP version only, might need to run as admin)
   
 and more..
