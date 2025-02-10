@@ -10,15 +10,19 @@ Check back for latest releases
 
 # Features
 
-- Organize, keep track of available and applied mods
-- Add, remove single/multiple items or mods
-- Swapping mods to another items
-- Mod sets, save mods into sets to apply later 
-- Backup original files and restore when unapplying mods
-- Auto apply checksum and reapply mods if they are being unapply after game update
-- Preview mods by hovering mouse cursor on them, and right click to zoom on an image (if there are images [.jpg, .png] or videos [.mp4, .webm] included inside the mod)
-- Organize mods into Favorites, Sets
-
+- Auto replace checksum on startup and when applying mods
+- Auto sort and categorize mods by associated items upon adding
+- Mods can be added to Mod Sets to be applied together
+- Keep track of available mods and mods that are in the game
+- Swap mods to other items
+- Quick apply any mod to any selected item
+- Swap original items (costumes, emotes, ...)
+- Inject custom AQM file to items and mods
+- Remove bounding radius from items and mods (prevent disappearance on closeup camera)
+- Profanity filter removal
+- Custom images on Vital Gauges
+- Custom images on Line Strike (Cards, Boards, Sleeves)
+- Start game bypassing official launcher (JP version only, might need to run as admin)
 and more..
 
 # Usage
