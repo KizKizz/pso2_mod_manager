@@ -23,7 +23,7 @@ Check back for latest releases
 - Profanity filter removal
 - Custom images on Vital Gauges
 - Custom images on Line Strike (Cards, Boards, Sleeves)
-- Two different profiles 
+- Two different profiles can be used separatedly on different versions of the game
 - Start game bypassing official launcher (JP version only, might need to run as admin)
   
 and more..
