@@ -1,7 +1,7 @@
 # PSO2NGS Mod Manager ver.2
- An app to manage, swapping, backup and apply mods to Phantasy Star Online 2 New Genesis  
+ **An app to manage, swapping mods and items for Phantasy Star Online 2 New Genesis**
  
-![image](https://github.com/user-attachments/assets/87024ae4-6785-4a23-bb31-df0370a2e376)
+![image](https://github.com/user-attachments/assets/b5d76de9-54e5-4277-abda-12ffc1e17d9b)
 
 # Download
 
@@ -26,60 +26,6 @@ and more..
 - Restore the game files to their originals before using the app
 - App's settings (light\dark mode, pso2_bin path, ect) are stored in:  
   ```C:\Users\YourUserName\AppData\Roaming\PSO2NGS Mod Manager\shared_preferences.json```
-- Mod files settings are stored in:  
-  ```...\PSO2 Mod Manager\PSO2ModManModsList.json```
-- If the app started as a blank white screen, resizing it would fix this issue.
-- If the app wont start or crashing on start:
-
-  ```Right click on PSO2NGSModManager.exe > Properties > Compatibility tab > Check the box under Compatibility mode > Apply```
-  
-**First time setup:**
-
-- Locate pso2_bin folder
-
-   ![Screenshot 2022-06-26 143014](https://user-images.githubusercontent.com/101075148/175836232-f62b8484-c4a5-4815-a7b0-66d54b8f6332.png)
-   ![Screenshot 2022-06-26 143139-crop](https://user-images.githubusercontent.com/101075148/175836300-1d3462b6-57e1-4418-b2ab-12bf66f7bcd8.png)
-
-- Click to auto download checksum, or hold to manually select 
-
-   ![Screenshot 2022-06-26 143206-crop](https://user-images.githubusercontent.com/101075148/175836423-3b2b0ed6-b6b1-401c-9b71-2c7cb911db82.png)
-   
-
-***Guides***
-
-**Export mods:**
-
-https://github.com/KizKizz/pso2_mod_manager/assets/101075148/81239572-7548-4efb-83f0-4584143fd549
-
-https://github.com/KizKizz/pso2_mod_manager/assets/101075148/8a822b3e-90e3-45ae-9bb5-e515728a55fc
-
-**Import mods:**
-
-https://github.com/KizKizz/pso2_mod_manager/assets/101075148/d6efe6fe-4c69-472e-abf5-72642b414967
-
-**Adding mods:**
-
-**Note**: 
-- Supporting .zip files (.rar and .7z in v2.6.0), folders, .ice files, drag and drop to add
-- Mods can also be added by copying your mod folders into each category folder in ```...\PSO2 Mod Manager\Mods``` then refresh or restart the app
-
-[addmods.webm](https://github.com/KizKizz/pso2_mod_manager/assets/101075148/16846f2e-f631-4323-8358-4dfb0b4635c6)
-
-**Applying - unapplying mod(s):**
-
-https://github.com/KizKizz/pso2_mod_manager/assets/101075148/5b5ffe32-3699-4033-901d-aeccdff65818
-   
-**Add Mods to Sets:**
-
-[addsets.webm](https://github.com/KizKizz/pso2_mod_manager/assets/101075148/3d49c2c1-452e-4779-802b-f07cd6061d11)
-
-**Add Mods from 1 item to another:**
-
-[swapmods.webm](https://github.com/KizKizz/pso2_mod_manager/assets/101075148/1f273e73-f5b6-4179-bc4a-9f4a8f1529e8)
-
-**Vital Gauge backgrounds change:**
-
-https://github.com/KizKizz/pso2_mod_manager/assets/101075148/f8d16fc4-0660-4673-a709-0822fc516452
 
 # Known Issues
 Drag & drop won't work if app is running with Administrator
