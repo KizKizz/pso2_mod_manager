@@ -1,4 +1,8 @@
 {
+  "holdToRestoreNumAppliedMods": "ホールドして適用された%p%つのMODを元に戻す",
+  "holdToRestoreNumAppliedMod": "ホールドして適用された%p%つのMODを元に戻す",
+  "restoredVitalGauges": "修復されたバイタルゲージ",
+  "restoredVitalGaugeInfo": "これらのバイタルゲージの背景は、ゲームのアップデートまたはファイルチェックによって復元されました",
   "verTwoMainDataPathLocation": "Ver.2 Mod Manager メインデータフォルダの場所:",
   "backgroundImageFolder": "背景画像フォルダー",
   "madeBy": "%p%によって作成されました",

@@ -6,6 +6,7 @@ import 'package:pso2_mod_manager/mod_checksum/checksum_functions.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/v3_functions/modified_ice_file_save.dart';
+import 'package:pso2_mod_manager/v3_functions/pso2_version_check.dart';
 import 'package:pso2_mod_manager/v3_widgets/background_slideshow.dart';
 
 String mainModDirPath = '$mainDataDirPath${p.separator}Mods';
@@ -74,6 +75,33 @@ Future<void> createMainDirs() async {
   pso2DataDirPath = '$pso2binDirPath${p.separator}data';
   backgroundDirPath = '$mainDataDirPath${p.separator}Background Images';
 
+  // Shared
+  mainModDirPath = '$mainDataDirPath${p.separator}Mods';
+  modAddTempDirPath = '$mainDataDirPath${p.separator}AddTemp';
+  modSwapTempDirPath = '$mainDataDirPath${p.separator}SwapTemp';
+  modBoundingRadiusTempDirPath = '$mainDataDirPath${p.separator}BoundingRadiusTemp';
+  modAqmInjectTempDirPath = '$mainDataDirPath${p.separator}AQMInjectTemp';
+  modSwapTempLItemDirPath = '$mainDataDirPath${p.separator}SwapTemp${p.separator}lItem';
+  modSwapTempRItemDirPath = '$mainDataDirPath${p.separator}SwapTemp${p.separator}rItem';
+  modSwapTempOutputDirPath = '$mainDataDirPath${p.separator}SwapTemp${p.separator}output';
+  modVitalGaugeTempDirPath = '$mainDataDirPath${p.separator}VitalGaugeTemp';
+  modItemIconTempDirPath = '$mainDataDirPath${p.separator}ItemIconTemp';
+  markedItemIconsDirPath = '$mainDataDirPath${p.separator}Marked Item Icons';
+  jsonBackupDirPath = '$mainDataDirPath${p.separator}Json Backup';
+  modCustomAqmsDirPath = '$mainDataDirPath${p.separator}Custom AQMs';
+  vitalGaugeDirPath = '$mainDataDirPath${p.separator}Vital Gauge';
+  modChecksumFilePath = '$mainDataDirPath${p.separator}Checksum${p.separator}d4455ebc2bef618f29106da7692ebc1a';
+  modifiedIceListFilePath = '$mainDataDirPath${p.separator}modifiedIceList.txt';
+  modAddFilterListFilePath = '$mainDataDirPath${p.separator}modAddFilterList.txt';
+  exportedModsDirPath = '$mainDataDirPath${p.separator}Exported Mods';
+  lineStrikeExportedCardsDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}ExportedCards';
+  lineStrikeCardsDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}Cards';
+  lineStrikeCardTempDirPath = '$mainDataDirPath${p.separator}LineStrikeTemp${p.separator}Card';
+  lineStrikeCustomizedCacheDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}CustomizedCache';
+  lineStrikeBoardsDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}Boards';
+  lineStrikeBoardTempDirPath = '$mainDataDirPath${p.separator}LineStrikeTemp${p.separator}Board';
+  lineStrikeSleevesDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}Sleeves';
+  lineStrikeSleeveTempDirPath = '$mainDataDirPath${p.separator}LineStrikeTemp${p.separator}Sleeve';
 
   // Profile 1
   if (modManCurActiveProfile == 1) {
@@ -169,8 +197,9 @@ Future<void> createMainDirs() async {
   // Other checks
   checksumAvailability.value = await checksumFileFetch();
   modAddFilterList = await modAddFilterListFetch();
+  pso2RegionVersion.value = await pso2RegionCheck();
   await modifiedIceFetch();
-  if (backgroundImageFiles.value.isEmpty) backgroundImageFiles.value = backgroundImageFetch();
+  if (backgroundImageFiles.value.isEmpty || !backgroundImageFiles.value.first.path.contains(mainModDirPath)) backgroundImageFiles.value = backgroundImageFetch();
 
   // Clear Temps
   if (Directory(modAddTempDirPath).existsSync()) Directory(modAddTempDirPath).deleteSync(recursive: true);

@@ -32,10 +32,10 @@ class JpGameStartButtton extends StatelessWidget {
                 await Process.run(startBatch.path, []);
                 startBatch.deleteSync();
               } else {
-                errorNotification(context, appText.anticheatLoaderFileNotFound);
+                errorNotification(appText.anticheatLoaderFileNotFound);
               }
             } else {
-              errorNotification(context, appText.couldntCreateCustomLauncher);
+              errorNotification(appText.couldntCreateCustomLauncher);
             }
           },
           icon: const Icon(Icons.play_arrow_rounded, size: 18,),

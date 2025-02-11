@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/applied_mod_category_select_buttons.dart';
+import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
+import 'package:pso2_mod_manager/mod_apply/load_applied_mods.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
+import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/main_widgets/applied_mod_grid_layout.dart';
 import 'package:searchfield/searchfield.dart';
@@ -37,6 +40,7 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
         () {},
       );
     }
+    int numOfAppliedMods = 0;
     // Suggestions
     List<String> filteredStrings = [];
     for (var type in masterModList) {
@@ -44,6 +48,7 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
         for (var item in cate.items.where((e) => e.applyStatus)) {
           for (var mod in item.mods.where((e) => e.applyStatus)) {
             for (var submod in mod.submods.where((e) => e.applyStatus)) {
+              numOfAppliedMods++;
               if (searchTextController.value.text.isEmpty) {
                 filteredStrings.addAll(submod.getModFileNames());
               } else {
@@ -151,6 +156,30 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                   ]),
                 ),
               ),
+              Expanded(
+                  flex: 2,
+                  child: SizedBox(
+                    height: 40,
+                    child: OutlinedButton(
+                        style: ButtonStyle(
+                            backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                            side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                        onPressed: numOfAppliedMods > 0 ? () {} : null,
+                        onLongPress: numOfAppliedMods > 0
+                            ? () async {
+                                List<Item> appliedItems = await appliedModsFetch();
+                                for (var item in appliedItems) {
+                                  for (var mod in item.mods.where((e) => e.applyStatus)) {
+                                    for (var submod in mod.submods.where((e) => e.applyStatus)) {
+                                      // ignore: use_build_context_synchronously
+                                      await modToGameData(context, false, item, mod, submod);
+                                    }
+                                  }
+                                }
+                              }
+                            : null,
+                        child: Text(appText.dText(numOfAppliedMods > 1 ? appText.holdToRestoreNumAppliedMods : appText.holdToRestoreNumAppliedMod, numOfAppliedMods.toString()))),
+                  )),
               Expanded(
                   flex: 1,
                   child: Padding(

@@ -66,7 +66,7 @@ class _LineStrikeBoardOriginalTileState extends State<LineStrikeBoardOriginalTil
                             onPressed: () async {
                               bool result = await lineStrikeBoardRestorePopup(context, widget.board, widget.lineStrikeBoardList);
                               // ignore: use_build_context_synchronously
-                              result ? restoreSuccessNotification(context, widget.board.iceDdsName) : restoreFailedNotification(context, widget.board.iceDdsName);
+                              result ? restoreSuccessNotification(widget.board.iceDdsName) : restoreFailedNotification(widget.board.iceDdsName);
                             },
                             child: Text(appText.restore)),
                         

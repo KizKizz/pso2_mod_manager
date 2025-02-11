@@ -3,8 +3,11 @@ import 'package:elegant_notification/resources/arrays.dart';
 import 'package:elegant_notification/resources/stacked_options.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/material_app_service.dart';
 
-void errorNotification(context, message) {
+dynamic _context = MaterialAppService.navigatorKey.currentContext!;
+
+void errorNotification(message) {
   ElegantNotification.error(
     width: 360,
     stackedOptions: StackedOptions(
@@ -12,19 +15,25 @@ void errorNotification(context, message) {
       type: StackedType.below,
       itemOffset: const Offset(0, 5),
     ),
-    background: Theme.of(context).scaffoldBackgroundColor.withAlpha(50),
+    background: Theme.of(_context).scaffoldBackgroundColor.withAlpha(50),
     notificationMargin: 1,
-    border: Border.all(width: 1, color: Theme.of(context).colorScheme.outline),
+    border: Border.all(width: 1, color: Theme.of(_context).colorScheme.outline),
     position: Alignment.bottomRight,
     animation: AnimationType.fromRight,
-    title: Text(appText.error, style: Theme.of(context).textTheme.titleMedium,),
-    description: Text(message, style: Theme.of(context).textTheme.bodyMedium,),
-    shadow: BoxShadow(color: Theme.of(context).shadowColor),
+    title: Text(
+      appText.error,
+      style: Theme.of(_context).textTheme.titleMedium,
+    ),
+    description: Text(
+      message,
+      style: Theme.of(_context).textTheme.bodyMedium,
+    ),
+    shadow: BoxShadow(color: Theme.of(_context).shadowColor),
     onDismiss: () {},
-  ).show(context);
+  ).show(_context);
 }
 
-void deletedNotification(context, name) {
+void deletedNotification(name) {
   ElegantNotification.success(
     width: 360,
     stackedOptions: StackedOptions(
@@ -32,19 +41,25 @@ void deletedNotification(context, name) {
       type: StackedType.below,
       itemOffset: const Offset(0, 5),
     ),
-    background: Theme.of(context).scaffoldBackgroundColor.withAlpha(50),
+    background: Theme.of(_context).scaffoldBackgroundColor.withAlpha(50),
     notificationMargin: 1,
-    border: Border.all(width: 1, color: Theme.of(context).colorScheme.outline),
+    border: Border.all(width: 1, color: Theme.of(_context).colorScheme.outline),
     position: Alignment.bottomRight,
     animation: AnimationType.fromRight,
-    title: Text(appText.success, style: Theme.of(context).textTheme.titleMedium,),
-    description: Text(appText.dText(appText.successfullyDeletedItem, name), style: Theme.of(context).textTheme.bodyMedium,),
-    shadow: BoxShadow(color: Theme.of(context).shadowColor),
+    title: Text(
+      appText.success,
+      style: Theme.of(_context).textTheme.titleMedium,
+    ),
+    description: Text(
+      appText.dText(appText.successfullyDeletedItem, name),
+      style: Theme.of(_context).textTheme.bodyMedium,
+    ),
+    shadow: BoxShadow(color: Theme.of(_context).shadowColor),
     onDismiss: () {},
-  ).show(context);
+  ).show(_context);
 }
 
-void restoreSuccessNotification(context, name) {
+void restoreSuccessNotification(name) {
   ElegantNotification.success(
     width: 360,
     stackedOptions: StackedOptions(
@@ -52,19 +67,25 @@ void restoreSuccessNotification(context, name) {
       type: StackedType.below,
       itemOffset: const Offset(0, 5),
     ),
-    background: Theme.of(context).scaffoldBackgroundColor.withAlpha(50),
+    background: Theme.of(_context).scaffoldBackgroundColor.withAlpha(50),
     notificationMargin: 1,
-    border: Border.all(width: 1, color: Theme.of(context).colorScheme.outline),
+    border: Border.all(width: 1, color: Theme.of(_context).colorScheme.outline),
     position: Alignment.bottomRight,
     animation: AnimationType.fromRight,
-    title: Text(appText.success, style: Theme.of(context).textTheme.titleMedium,),
-    description: Text(appText.dText(appText.successfullyRestoredFile, name), style: Theme.of(context).textTheme.bodyMedium,),
-    shadow: BoxShadow(color: Theme.of(context).shadowColor),
+    title: Text(
+      appText.success,
+      style: Theme.of(_context).textTheme.titleMedium,
+    ),
+    description: Text(
+      appText.dText(appText.successfullyRestoredFile, name),
+      style: Theme.of(_context).textTheme.bodyMedium,
+    ),
+    shadow: BoxShadow(color: Theme.of(_context).shadowColor),
     onDismiss: () {},
-  ).show(context);
+  ).show(_context);
 }
 
-void restoreFailedNotification(context, name) {
+void restoreFailedNotification(name) {
   ElegantNotification.error(
     width: 360,
     stackedOptions: StackedOptions(
@@ -72,19 +93,25 @@ void restoreFailedNotification(context, name) {
       type: StackedType.below,
       itemOffset: const Offset(0, 5),
     ),
-    background: Theme.of(context).scaffoldBackgroundColor.withAlpha(50),
+    background: Theme.of(_context).scaffoldBackgroundColor.withAlpha(50),
     notificationMargin: 1,
-    border: Border.all(width: 1, color: Theme.of(context).colorScheme.outline),
+    border: Border.all(width: 1, color: Theme.of(_context).colorScheme.outline),
     position: Alignment.bottomRight,
     animation: AnimationType.fromRight,
-    title: Text(appText.success, style: Theme.of(context).textTheme.titleMedium,),
-    description: Text(appText.dText(appText.failedToRestoredFile, name), style: Theme.of(context).textTheme.bodyMedium,),
-    shadow: BoxShadow(color: Theme.of(context).shadowColor),
+    title: Text(
+      appText.success,
+      style: Theme.of(_context).textTheme.titleMedium,
+    ),
+    description: Text(
+      appText.dText(appText.failedToRestoredFile, name),
+      style: Theme.of(_context).textTheme.bodyMedium,
+    ),
+    shadow: BoxShadow(color: Theme.of(_context).shadowColor),
     onDismiss: () {},
-  ).show(context);
+  ).show(_context);
 }
 
-void applySuccessNotification(context, name) {
+void applySuccessNotification(name) {
   ElegantNotification.success(
     width: 360,
     stackedOptions: StackedOptions(
@@ -92,19 +119,25 @@ void applySuccessNotification(context, name) {
       type: StackedType.below,
       itemOffset: const Offset(0, 5),
     ),
-    background: Theme.of(context).scaffoldBackgroundColor.withAlpha(50),
+    background: Theme.of(_context).scaffoldBackgroundColor.withAlpha(50),
     notificationMargin: 1,
-    border: Border.all(width: 1, color: Theme.of(context).colorScheme.outline),
+    border: Border.all(width: 1, color: Theme.of(_context).colorScheme.outline),
     position: Alignment.bottomRight,
     animation: AnimationType.fromRight,
-    title: Text(appText.success, style: Theme.of(context).textTheme.titleMedium,),
-    description: Text(appText.dText(appText.successfullyAppliedFile, name), style: Theme.of(context).textTheme.bodyMedium,),
-    shadow: BoxShadow(color: Theme.of(context).shadowColor),
+    title: Text(
+      appText.success,
+      style: Theme.of(_context).textTheme.titleMedium,
+    ),
+    description: Text(
+      appText.dText(appText.successfullyAppliedFile, name),
+      style: Theme.of(_context).textTheme.bodyMedium,
+    ),
+    shadow: BoxShadow(color: Theme.of(_context).shadowColor),
     onDismiss: () {},
-  ).show(context);
+  ).show(_context);
 }
 
-void applyFailedNotification(context, name) {
+void applyFailedNotification(name) {
   ElegantNotification.error(
     width: 360,
     stackedOptions: StackedOptions(
@@ -112,14 +145,20 @@ void applyFailedNotification(context, name) {
       type: StackedType.below,
       itemOffset: const Offset(0, 5),
     ),
-    background: Theme.of(context).scaffoldBackgroundColor.withAlpha(50),
+    background: Theme.of(_context).scaffoldBackgroundColor.withAlpha(50),
     notificationMargin: 1,
-    border: Border.all(width: 1, color: Theme.of(context).colorScheme.outline),
+    border: Border.all(width: 1, color: Theme.of(_context).colorScheme.outline),
     position: Alignment.bottomRight,
     animation: AnimationType.fromRight,
-    title: Text(appText.success, style: Theme.of(context).textTheme.titleMedium,),
-    description: Text(appText.dText(appText.failedToApplyFile, name), style: Theme.of(context).textTheme.bodyMedium,),
-    shadow: BoxShadow(color: Theme.of(context).shadowColor),
+    title: Text(
+      appText.failed,
+      style: Theme.of(_context).textTheme.titleMedium,
+    ),
+    description: Text(
+      appText.dText(appText.failedToApplyFile, name),
+      style: Theme.of(_context).textTheme.bodyMedium,
+    ),
+    shadow: BoxShadow(color: Theme.of(_context).shadowColor),
     onDismiss: () {},
-  ).show(context);
+  ).show(_context);
 }

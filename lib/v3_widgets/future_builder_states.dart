@@ -67,6 +67,10 @@ class FutureBuilderError extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 10),
               child: Text(snapshotError, style: Theme.of(context).textTheme.bodyMedium),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: OutlinedButton(onPressed: () => Navigator.of(context).pop(), child: Text(appText.returns)),
             )
           ],
         ),

@@ -71,7 +71,7 @@ class _AppVitalGaugeAppliedCheckPageState extends State<AppVitalGaugeAppliedChec
               titlePadding: const EdgeInsets.only(top: 10, left: 10, right: 10),
               title: Center(
                 child: Text(
-                  appText.restoredMods,
+                  appText.restoredVitalGauges,
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
               ),
@@ -80,9 +80,12 @@ class _AppVitalGaugeAppliedCheckPageState extends State<AppVitalGaugeAppliedChec
                 mainAxisSize: MainAxisSize.min,
                 spacing: 10,
                 children: [
-                  Text(appText.restoredModInfo),
+                  Text(appText.restoredVitalGaugeInfo),
                   const HoriDivider(),
-                  SizedBox(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height - 183, child: VitalGaugeBackgroundGridLayout(backgrounds: unappliedVitalGaugeList)),
+                  SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      height: MediaQuery.of(context).size.height - 183,
+                      child: VitalGaugeBackgroundGridLayout(backgrounds: unappliedVitalGaugeList, showButtons: false)),
                 ],
               ),
               actionsPadding: const EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),

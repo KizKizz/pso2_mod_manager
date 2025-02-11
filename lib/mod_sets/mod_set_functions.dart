@@ -86,7 +86,7 @@ Future<void> modSetDelete(context, ModSet modset) async {
     masterModSetList.remove(modset);
     saveMasterModSetListToJson();
     saveMasterModListToJson();
-    deletedNotification(context, modset.setName);
+    deletedNotification(modset.setName);
   }
 }
 

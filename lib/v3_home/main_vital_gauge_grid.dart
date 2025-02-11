@@ -117,7 +117,11 @@ class _MainVitalGaugeGridState extends State<MainVitalGaugeGrid> {
             spacing: 5,
             children: [
               VitalGaugeCustomImageGridLayout(customImageFiles: customBackgroundImages),
-              VitalGaugeBackgroundGridLayout(backgrounds: vitalGaugeShowAppliedOnly ? masterVitalGaugeBackgroundList.where((e) => e.isReplaced).toList() : masterVitalGaugeBackgroundList)
+              Expanded(
+                  child: VitalGaugeBackgroundGridLayout(
+                backgrounds: vitalGaugeShowAppliedOnly ? masterVitalGaugeBackgroundList.where((e) => e.isReplaced).toList() : masterVitalGaugeBackgroundList,
+                showButtons: true,
+              ))
             ],
           )),
         ],

@@ -8,8 +8,6 @@ import 'package:pso2_mod_manager/app_localization/item_locale.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
 import 'package:pso2_mod_manager/settings/repath_confirm_popup.dart';
 import 'package:pso2_mod_manager/v3_functions/json_backup.dart';
-import 'package:pso2_mod_manager/v3_functions/pso2_version_check.dart';
-import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/homepage.dart';
 import 'package:pso2_mod_manager/v3_home/settings.dart';
@@ -87,7 +85,7 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                               child: OutlinedButton(
                                   onPressed: () async {
                                     reloadButtonVisible = false;
-                                    pso2RegionVersion.value = await pso2RegionCheck();
+                                    // pso2RegionVersion.value = await pso2RegionCheck();
                                     pageIndex = 6;
                                     curPage.value = appPages[pageIndex];
                                   },
