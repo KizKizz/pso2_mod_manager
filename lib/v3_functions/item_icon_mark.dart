@@ -6,6 +6,7 @@ import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_functions.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
@@ -130,3 +131,12 @@ Future<bool> markedItemIconRestore(Item item) async {
   }
   return false;
 }
+
+Future<bool> markedAqmItemIconRestore(String gameDataIconIcePath) async {
+  String iconWebPath = ('${p.withoutExtension(gameDataIconIcePath).replaceFirst(pso2binDirPath + p.separator, '')}.pat').replaceAll(p.separator, '/');
+  File downloadedFile = await originalIceDownload(iconWebPath, p.dirname(gameDataIconIcePath), modApplyStatus);
+  modAqmInjectingStatus.value = appText.dText(appText.copyingModFileToGameData, p.basenameWithoutExtension(downloadedFile.path));
+  Future.delayed(const Duration(microseconds: 10));
+  return false;
+}
+

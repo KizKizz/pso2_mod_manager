@@ -5,6 +5,7 @@ import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_functions.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_popup.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_item_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_functions/item_icon_mark.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
@@ -156,11 +157,15 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                               bool result = await aqmInjectPopup(context, displayingAqmInjectedItem[index].hqIcePath, displayingAqmInjectedItem[index].lqIcePath,
                                                   displayingAqmInjectedItem[index].getName(), true, false, false, displayingAqmInjectedItem[index].isAqmReplaced!, false);
                                               if (result && !displayingAqmInjectedItem[index].isBoundingRemoved!) {
+                                                if (displayingAqmInjectedItem[index].isIconReplaced) {
+                                                  await markedAqmItemIconRestore(displayingAqmInjectedItem[index].iconIcePath);
+                                                }
                                                 masterAqmInjectedItemList.removeAt(index);
                                               } else if (result && displayingAqmInjectedItem[index].isBoundingRemoved!) {
                                                 displayingAqmInjectedItem[index].isAqmReplaced = false;
                                               }
                                               saveMasterAqmInjectListToJson();
+                                              setState(() {});
                                             },
                                             child: Text(appText.removeCustomAQM)),
                                       ),
@@ -171,11 +176,15 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                               bool result = await aqmInjectPopup(context, displayingAqmInjectedItem[index].hqIcePath, displayingAqmInjectedItem[index].lqIcePath,
                                                   displayingAqmInjectedItem[index].getName(), false, true, false, displayingAqmInjectedItem[index].isAqmReplaced!, false);
                                               if (result && !displayingAqmInjectedItem[index].isAqmReplaced!) {
+                                                if (displayingAqmInjectedItem[index].isIconReplaced) {
+                                                  await markedAqmItemIconRestore(displayingAqmInjectedItem[index].iconIcePath);
+                                                }
                                                 masterAqmInjectedItemList.removeAt(index);
                                               } else if (result && displayingAqmInjectedItem[index].isAqmReplaced!) {
                                                 displayingAqmInjectedItem[index].isBoundingRemoved = false;
                                               }
                                               saveMasterAqmInjectListToJson();
+                                              setState(() {});
                                             },
                                             child: Text(appText.restoreBounding)),
                                       ),
@@ -185,8 +194,14 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                             onPressed: () async {
                                               bool result = await aqmInjectPopup(context, displayingAqmInjectedItem[index].hqIcePath, displayingAqmInjectedItem[index].lqIcePath,
                                                   displayingAqmInjectedItem[index].getName(), false, false, true, displayingAqmInjectedItem[index].isAqmReplaced!, false);
-                                              if (result) masterAqmInjectedItemList.removeAt(index);
+                                              if (result) {
+                                                if (displayingAqmInjectedItem[index].isIconReplaced) {
+                                                  await markedAqmItemIconRestore(displayingAqmInjectedItem[index].iconIcePath);
+                                                }
+                                                masterAqmInjectedItemList.removeAt(index);
+                                              }
                                               saveMasterAqmInjectListToJson();
+                                              setState(() {});
                                             },
                                             child: Text(appText.restoreAll)),
                                       )

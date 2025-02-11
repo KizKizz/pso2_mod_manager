@@ -25,7 +25,25 @@ Future<List<AqmInjectedItem>> aqmInjectedItemsFetch() async {
   if (dataFromJson.isNotEmpty) {
     var jsonData = await jsonDecode(dataFromJson);
     for (var item in jsonData) {
-      structureFromJson.add(AqmInjectedItem.fromJson(item));
+      AqmInjectedItem newAqmItem = AqmInjectedItem.fromJson(item);
+      if (newAqmItem.isBoundingRemoved == null) {
+        if (newAqmItem.isApplied) {
+          newAqmItem.isBoundingRemoved ??= true;
+        } else {
+          newAqmItem.isBoundingRemoved ??= false;
+        }
+      }
+      if (newAqmItem.isAqmReplaced == null) {
+        if (newAqmItem.isApplied) {
+          newAqmItem.isAqmReplaced ??= true;
+        } else {
+          newAqmItem.isAqmReplaced ??= false;
+        }
+      }
+      newAqmItem.hqIcePath = newAqmItem.hqIcePath.replaceFirst(pso2binDirPath + p.separator, '').replaceAll(p.separator, '/');
+      newAqmItem.lqIcePath = newAqmItem.lqIcePath.replaceFirst(pso2binDirPath + p.separator, '').replaceAll(p.separator, '/');
+      newAqmItem.iconIcePath = newAqmItem.iconIcePath.replaceFirst(pso2binDirPath + p.separator, '').replaceAll(p.separator, '/');
+      structureFromJson.add(newAqmItem);
     }
   }
 
@@ -170,6 +188,7 @@ Future<bool> itemCustomAqmRestoreAll(String hqIcePath, String lqIcePath) async {
       if (downloadedFile.existsSync()) restoredCheck[filePaths.indexOf(filePath)] = true;
     }
   }
+
   if (restoredCheck.where((e) => !e).isEmpty) {
     return true;
   } else {
