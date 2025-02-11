@@ -190,7 +190,7 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                               onPressed: () {
                                 setState(() {
                                   extraCategory.isEmpty ? extraCategory = submod.category : extraCategory = '';
-                                  submod.category == defaultCategoryDirs[11] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
+                                  submod.category == defaultCategoryDirs[7] && !emoteToIdleMotion ? emoteToIdleMotion = true : emoteToIdleMotion = false;
                                   rScrollController.jumpTo(0);
                                 });
                               },
