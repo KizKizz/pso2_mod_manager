@@ -76,6 +76,14 @@ class _AppUpdatePageState extends State<AppUpdatePage> {
                                           retries: 2,
                                         );
                                         await FileDownloader().download(task, onProgress: (progress) => downloadProgress.value = progress, onStatus: (status) => downloadStatus.value = status.name);
+                                        final updaterTask = DownloadTask(
+                                          url: 'https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/refs/heads/main/updater/updater.exe',
+                                          filename: 'updater.exe',
+                                          directory: '${Directory.current.path}${p.separator}appUpdate',
+                                          updates: Updates.statusAndProgress,
+                                          retries: 2,
+                                        );
+                                        await FileDownloader().download(updaterTask, onProgress: (progress) => downloadProgress.value = progress, onStatus: (status) => downloadStatus.value = status.name);
                                         // Unpack and apply
                                         downloadStatus.value = appText.extractingDownloadedZipFile;
                                         await extractFileToDisk('${Directory.current.path}${p.separator}appUpdate${p.separator}PSO2NGSModManager_v$remoteVersion.zip',
