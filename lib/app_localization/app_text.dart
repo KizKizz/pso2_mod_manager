@@ -225,7 +225,9 @@ class AppText {
       currentlyApplyingToLocations = 'Currently applying to: %p%',
       allLocations = 'All locations',
       defaultHomepage = 'Default Homepage',
-      madeBy = 'Made by %p%';
+      madeBy = 'Made by %p%',
+      holdToRestoreNumAppliedMods = 'Hold To Restore %p% Applied Mods',
+      holdToRestoreNumAppliedMod = 'Hold To Restore %p% Applied Mod';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -324,12 +326,14 @@ class AppText {
       failedToReplaceSleeve = 'Failed to replace sleeve',
       failedToReplaceSleeveIcon = 'Failed to replace sleeve icon',
       anticheatLoaderFileNotFound = '"ucldr_PSO2_JP_loader_x64.exe" not found\nRun the game at least once then try again',
-      couldntCreateCustomLauncher = 'Cound not create custom launcher';
+      couldntCreateCustomLauncher = 'Cound not create custom launcher',
+      restoredVitalGauges = 'Restored Vital Gauges';
 
   // Infos
   String pso2binDirPathInfo = 'PSO2 game data folder, this folder located inside the game installation directory',
       mainDirPathInfo = 'This folder stores your mods and other Mod Manager related stuff\nPreferably outside of pso2 installation directory and nested folders',
       restoredModInfo = 'These mods had been restored by game update or file check',
+      restoredVitalGaugeInfo = 'These Vital Gauge backgrounds had been restored by game update or file check',
       duplicateAppliedInfo = 'This mod was found using the same files as "%p%"',
       duplicateAqmInjectInfo = 'This mod was found using the same files as "%p%" in AQM Inject',
       selectSetsToAddToOrRemoveFrom = 'Select Set(s) to add to or to remove from',

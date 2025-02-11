@@ -9,6 +9,7 @@ import 'package:pso2_mod_manager/app_colorscheme.dart';
 import 'package:pso2_mod_manager/app_localization/app_locale.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
+import 'package:pso2_mod_manager/material_app_service.dart';
 import 'package:pso2_mod_manager/v3_functions/pso2_version_check.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/jp_game_start_btn.dart';
@@ -66,6 +67,7 @@ class MyApp extends StatelessWidget {
         valueListenable: MyApp.themeNotifier,
         builder: (_, ThemeMode currentMode, __) {
           return MaterialApp(
+            navigatorKey: MaterialAppService.navigatorKey,
             debugShowCheckedModeBanner: false,
             theme: lightModeSeedColor == lightColorScheme.primary ? ThemeData.from(colorScheme: lightColorScheme) : ThemeData.from(colorScheme: ColorScheme.fromSeed(seedColor: lightModeSeedColor)),
             darkTheme: darkModeSeedColor == darkColorScheme.primary

@@ -224,6 +224,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..allLocations = json['allLocations'] as String
   ..defaultHomepage = json['defaultHomepage'] as String
   ..madeBy = json['madeBy'] as String
+  ..holdToRestoreNumAppliedMods = json['holdToRestoreNumAppliedMods'] as String
+  ..holdToRestoreNumAppliedMod = json['holdToRestoreNumAppliedMod'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -329,9 +331,11 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..failedToReplaceSleeveIcon = json['failedToReplaceSleeveIcon'] as String
   ..anticheatLoaderFileNotFound = json['anticheatLoaderFileNotFound'] as String
   ..couldntCreateCustomLauncher = json['couldntCreateCustomLauncher'] as String
+  ..restoredVitalGauges = json['restoredVitalGauges'] as String
   ..pso2binDirPathInfo = json['pso2binDirPathInfo'] as String
   ..mainDirPathInfo = json['mainDirPathInfo'] as String
   ..restoredModInfo = json['restoredModInfo'] as String
+  ..restoredVitalGaugeInfo = json['restoredVitalGaugeInfo'] as String
   ..duplicateAppliedInfo = json['duplicateAppliedInfo'] as String
   ..duplicateAqmInjectInfo = json['duplicateAqmInjectInfo'] as String
   ..selectSetsToAddToOrRemoveFrom =
@@ -600,6 +604,8 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'allLocations': instance.allLocations,
       'defaultHomepage': instance.defaultHomepage,
       'madeBy': instance.madeBy,
+      'holdToRestoreNumAppliedMods': instance.holdToRestoreNumAppliedMods,
+      'holdToRestoreNumAppliedMod': instance.holdToRestoreNumAppliedMod,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,
@@ -700,9 +706,11 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'failedToReplaceSleeveIcon': instance.failedToReplaceSleeveIcon,
       'anticheatLoaderFileNotFound': instance.anticheatLoaderFileNotFound,
       'couldntCreateCustomLauncher': instance.couldntCreateCustomLauncher,
+      'restoredVitalGauges': instance.restoredVitalGauges,
       'pso2binDirPathInfo': instance.pso2binDirPathInfo,
       'mainDirPathInfo': instance.mainDirPathInfo,
       'restoredModInfo': instance.restoredModInfo,
+      'restoredVitalGaugeInfo': instance.restoredVitalGaugeInfo,
       'duplicateAppliedInfo': instance.duplicateAppliedInfo,
       'duplicateAqmInjectInfo': instance.duplicateAqmInjectInfo,
       'selectSetsToAddToOrRemoveFrom': instance.selectSetsToAddToOrRemoveFrom,

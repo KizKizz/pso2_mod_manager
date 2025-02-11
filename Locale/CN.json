@@ -1,4 +1,8 @@
 {
+  "holdToRestoreNumAppliedMods": "Hold To Restore %p% Applied Mods",
+  "holdToRestoreNumAppliedMod": "Hold To Restore %p% Applied Mod",
+  "restoredVitalGauges": "Restored Vital Gauges",
+  "restoredVitalGaugeInfo": "These Vital Gauge backgrounds had been restored by game update or file check",
   "verTwoMainDataPathLocation": "Ver.2 Mod Manager Main Data Folder Location:",
   "backgroundImageFolder": "Background Image Folder",
   "madeBy": "Made by %p%",

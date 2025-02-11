@@ -34,10 +34,10 @@ class _DragDropBoxLayoutState extends State<DragDropBoxLayout> {
                   modAddDragDropPaths.add(file.path);
                   if (curModAddDragDropStatus.value != ModAddDragDropState.unpackingFiles) curModAddDragDropStatus.value = ModAddDragDropState.fileInList;
                 } else {
-                  errorNotification(context, appText.dText(appText.fileAlreadyOnTheList, file.name));
+                  errorNotification(appText.dText(appText.fileAlreadyOnTheList, file.name));
                 }
               } else {
-                errorNotification(context, appText.dText(appText.fileIsNotSupported, file.name));
+                errorNotification(appText.dText(appText.fileIsNotSupported, file.name));
               }
             }
           });

@@ -64,7 +64,7 @@ class _LineStrikeSleeveOriginalTileState extends State<LineStrikeSleeveOriginalT
                               bool result = await lineStrikeSleeveRestorePopup(context, widget.sleeve, widget.lineStrikeSleeveList);
                               if (mounted) {
                                 // ignore: use_build_context_synchronously
-                                result ? restoreSuccessNotification(context, widget.sleeve.iceDdsName) : restoreFailedNotification(context, widget.sleeve.iceDdsName);
+                                result ? restoreSuccessNotification(widget.sleeve.iceDdsName) : restoreFailedNotification(widget.sleeve.iceDdsName);
                               }
                             },
                             child: Text(appText.restore)),

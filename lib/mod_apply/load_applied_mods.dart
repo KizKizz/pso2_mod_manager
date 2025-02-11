@@ -35,3 +35,21 @@ Future<List<Item>> appliedModsCheck() async {
     return unappliedItems;
   }
 }
+
+Future<List<Item>> appliedModsFetch() async {
+  if (masterModList.isEmpty) {
+    return [];
+  } else {
+    List<Item> unappliedItems = [];
+    for (var cateType in masterModList) {
+      for (var cate in cateType.categories) {
+        for (var item in cate.items.where((e) => e.applyStatus)) {
+          if (item.getModsAppliedState()) {
+            unappliedItems.add(item);
+          }
+        }
+      }
+    }
+    return unappliedItems;
+  }
+}

@@ -8,10 +8,11 @@ import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/vital_gauge/vital_gauge_functions.dart';
 
 class VitalGaugeBackgroundTile extends StatefulWidget {
-  const VitalGaugeBackgroundTile({super.key, required this.background, required this.vitalGaugeBackgroundList});
+  const VitalGaugeBackgroundTile({super.key, required this.background, required this.vitalGaugeBackgroundList, required this.showButtons});
 
   final List<VitalGaugeBackground> vitalGaugeBackgroundList;
   final VitalGaugeBackground background;
+  final bool showButtons;
 
   @override
   State<VitalGaugeBackgroundTile> createState() => _VitalGaugeBackgroundTileState();
@@ -54,22 +55,25 @@ class _VitalGaugeBackgroundTileState extends State<VitalGaugeBackgroundTile> {
                             ),
                           ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(2.5),
-                          child: OutlinedButton(
-                              style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(150))),
-                              onPressed: () async {
-                                bool result = await vitalGaugeRestorePopup(context, widget.background);
-                                if (result) {
-                                  widget.background.replacedMd5 = '';
-                                  widget.background.replacedImagePath = '';
-                                  widget.background.replacedImageName = '';
-                                  widget.background.isReplaced = false;
-                                  saveMasterVitalGaugeToJson(widget.vitalGaugeBackgroundList);
-                                  setState(() {});
-                                }
-                              },
-                              child: Text(appText.restore)),
+                        Visibility(
+                          visible: widget.showButtons,
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.5),
+                            child: OutlinedButton(
+                                style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(150))),
+                                onPressed: () async {
+                                  bool result = await vitalGaugeRestorePopup(context, widget.background);
+                                  if (result) {
+                                    widget.background.replacedMd5 = '';
+                                    widget.background.replacedImagePath = '';
+                                    widget.background.replacedImageName = '';
+                                    widget.background.isReplaced = false;
+                                    saveMasterVitalGaugeToJson(widget.vitalGaugeBackgroundList);
+                                    setState(() {});
+                                  }
+                                },
+                                child: Text(appText.restore)),
+                          ),
                         )
                       ],
                     ),

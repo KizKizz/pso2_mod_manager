@@ -27,10 +27,10 @@ Future<void> modToGameData(context, bool applying, Item item, Mod mod, SubMod su
   applying ? modPopupStatus.value = 'Applying files from "${submod.submodName}" to the game' : modPopupStatus.value = 'Removing files from "${submod.submodName}" to the game';
   if (applying) {
     await modApplySequence(context, applying, item, mod, submod);
-    submod.applyStatus ? applySuccessNotification(context, submod.submodName) : applyFailedNotification(context, submod.submodName);
+    submod.applyStatus ? applySuccessNotification(submod.submodName) : applyFailedNotification(submod.submodName);
   } else {
     await modUnapplySequence(context, applying, item, mod, submod);
-    !submod.applyStatus ? restoreSuccessNotification(context, submod.submodName) : restoreFailedNotification(context, submod.submodName);
+    !submod.applyStatus ? restoreSuccessNotification(submod.submodName) : restoreFailedNotification(submod.submodName);
   }
   modPopupStatus.value = 'Done!';
 }

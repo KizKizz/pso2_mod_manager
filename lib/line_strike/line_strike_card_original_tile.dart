@@ -66,7 +66,7 @@ class _LineStrikeCardOriginalTileState extends State<LineStrikeCardOriginalTile>
                               bool result = await lineStrikeCardRestorePopup(context, widget.card, widget.lineStrikeCardList);
                               if (mounted) {
                                 // ignore: use_build_context_synchronously
-                                result ? restoreSuccessNotification(context, widget.card.cardZeroDdsName) : restoreFailedNotification(context, widget.card.cardZeroDdsName);
+                                result ? restoreSuccessNotification(widget.card.cardZeroDdsName) : restoreFailedNotification(widget.card.cardZeroDdsName);
                               }
                             },
                             child: Text(appText.restore)),
