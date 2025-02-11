@@ -382,7 +382,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..reselectMainModManagerPath = json['reselectMainModManagerPath'] as String
   ..currentPathLocation = json['currentPathLocation'] as String
   ..reselectPath = json['reselectPath'] as String
-  ..backgroundImageFolder = json['backgroundImageFolder'] as String;
+  ..backgroundImageFolder = json['backgroundImageFolder'] as String
+  ..verTwoMainDataPathLocation = json['verTwoMainDataPathLocation'] as String;
 
 Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'dfCastParts': instance.dfCastParts,
@@ -751,4 +752,5 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'currentPathLocation': instance.currentPathLocation,
       'reselectPath': instance.reselectPath,
       'backgroundImageFolder': instance.backgroundImageFolder,
+      'verTwoMainDataPathLocation': instance.verTwoMainDataPathLocation,
     };
