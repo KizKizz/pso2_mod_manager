@@ -380,7 +380,8 @@ class AppText {
       reselectMainModManagerPath = 'Re-Select main Mod Manager path?',
       currentPathLocation = 'Current path: %p%',
       reselectPath = 'Re-Select Path',
-      backgroundImageFolder = 'Background Image Folder';
+      backgroundImageFolder = 'Background Image Folder',
+      verTwoMainDataPathLocation = 'Ver.2 Mod Manager Main Data Folder Location:';
 
   factory AppText.fromJson(Map<String, dynamic> json) => _$AppTextFromJson(json);
   Map<String, dynamic> toJson() => _$AppTextToJson(this);

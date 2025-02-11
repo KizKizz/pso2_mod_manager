@@ -133,6 +133,19 @@ class _AppPathPageState extends State<AppPathPage> {
                             ),
                           ),
                         ),
+
+                        Visibility(
+                            visible: verTwoMainDataDirPath.isNotEmpty,
+                            child: Column(
+                              spacing: 5,
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 5),
+                                Text(appText.verTwoMainDataPathLocation, style: Theme.of(context).textTheme.labelLarge),
+                                Text(p.join(verTwoMainDataDirPath, 'PSO2 Mod Manager'))
+                              ],
+                            )),
                         const SizedBox(height: 30),
                         Wrap(
                           spacing: 10,

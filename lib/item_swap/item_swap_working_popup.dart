@@ -153,6 +153,10 @@ Future<void> itemSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemDat
                               itemSwapWorkingStatus.value = '';
                               curModAddDragDropStatus.value = ModAddDragDropState.fileInList;
                               Navigator.of(context).pop();
+                              if (!isVanillaSwap) {
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pop();
+                              }
                             },
                             child: Text(appText.addToModManager)),
                       ),
@@ -162,14 +166,27 @@ Future<void> itemSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemDat
                             onPressed: itemSwapWorkingStatus.watch(context).isEmpty
                                 ? () async {
                                     swapOutputDir = Directory('');
-                                    if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[0]) {
-                                      swapOutputDir = await modSwapAccessories(
-                                          context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), rItemData.getItemID());
-                                    } else if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[14] || selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7]) {
-                                      swapOutputDir = await modSwapEmotes(context, isVanillaSwap, mod, submod, rItemData.getName(), lItemData.getIceDetails(), rItemData.getIceDetails(), []);
+                                    if (isVanillaSwap) {
+                                      if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[0]) {
+                                        swapOutputDir = await modSwapAccessories(
+                                            context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), rItemData.getItemID());
+                                      } else if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[14] ||
+                                          selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7]) {
+                                        swapOutputDir = await modSwapEmotes(context, isVanillaSwap, mod, submod, rItemData.getName(), lItemData.getIceDetails(), rItemData.getIceDetails(), []);
+                                      } else {
+                                        swapOutputDir = await modSwapGeneral(context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(),
+                                            lItemData.getItemID(), rItemData.getItemID());
+                                      }
                                     } else {
-                                      swapOutputDir = await modSwapGeneral(
-                                          context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), lItemData.getItemID(), rItemData.getItemID());
+                                      if (submod.category == defaultCategoryDirs[0]) {
+                                        swapOutputDir = await modSwapAccessories(
+                                            context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), rItemData.getItemID());
+                                      } else if (submod.category == defaultCategoryDirs[14] || submod.category == defaultCategoryDirs[7]) {
+                                        swapOutputDir = await modSwapEmotes(context, isVanillaSwap, mod, submod, rItemData.getName(), lItemData.getIceDetails(), rItemData.getIceDetails(), []);
+                                      } else {
+                                        swapOutputDir = await modSwapGeneral(context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(),
+                                            lItemData.getItemID(), rItemData.getItemID());
+                                      }
                                     }
                                   }
                                 : null,

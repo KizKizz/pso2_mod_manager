@@ -32,6 +32,7 @@ int defaultHomepageIndex = 0;
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
 String mainDataDirPath = '';
+String verTwoMainDataDirPath = '';
 
 // Auto features
 bool autoBoundingRadiusRemoval = false;
@@ -42,6 +43,10 @@ Future<void> prefsLoad() async {
 
   // First time boot
   firstBootUp = prefs.getBool('firstBootUp') ?? true;
+
+  // ver 2 main data dir path
+  verTwoMainDataDirPath = prefs.getString('mainModManDirPath') ?? '';
+
 
   // Item Name Language
   itemNameLanguage = ItemNameLanguage.values.firstWhere((e) => e.value == prefs.getString('itemNameLanguage'), orElse: () => ItemNameLanguage.en);
@@ -121,7 +126,7 @@ Future<void> prefsLoad() async {
 
   // Mod add filter
   enableModAddFilters = prefs.getBool('enableModAddFilters') ?? false;
-  
+
   // Default homepage
   defaultHomepageIndex = prefs.getInt('defaultHomepageIndex') ?? 0;
 }
