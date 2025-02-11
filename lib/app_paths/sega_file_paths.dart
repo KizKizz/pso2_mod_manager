@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:path/path.dart' as p;
+import 'package:pso2_mod_manager/shared_prefs.dart';
 
 class OfficialIceFile {
   OfficialIceFile(this.path, this.md5, this.size, this.server);
@@ -87,12 +88,12 @@ Future<(List<OfficialIceFile>, List<OfficialIceFile>, String, String, String, St
           // _na bundle
           if (Directory('$pso2DataDirPath${p.separator}win32_na').existsSync()) {
             for (var path in Directory('$pso2DataDirPath${p.separator}win32_na').listSync(recursive: true).whereType<File>().map((e) => e.path).toList()) {
-              officialListNA.add(OfficialIceFile(path, '', 0, 'm'));
+              officialListNA.add(OfficialIceFile(path.replaceFirst(pso2binDirPath, ''), '', 0, 'm'));
             }
           }
           if (Directory('$pso2DataDirPath${p.separator}win32reboot_na').existsSync()) {
             for (var path in Directory('$pso2DataDirPath${p.separator}win32reboot_na').listSync(recursive: true).whereType<File>().map((e) => e.path).toList()) {
-              officialListNA.add(OfficialIceFile(path, '', 0, 'm'));
+              officialListNA.add(OfficialIceFile(path.replaceFirst(pso2binDirPath, ''), '', 0, 'm'));
             }
           }
 

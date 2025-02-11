@@ -111,22 +111,29 @@ Future<List<AddingMod>> modAddSort() async {
     List<ItemData> associatedItems = [];
     List<File> previewImages = [];
     List<File> previewVideos = [];
+    ItemData unknownItem = ItemData('', '', '', ['Misc'], 'Misc', '', 13, '', Map.fromEntries([const MapEntry('Japanese Name', '不明項目'), const MapEntry('English Name', 'Unknown Item')]));
     // mod dir
     List<File> modDirFiles = modDir.listSync().whereType<File>().toList();
     if (modDirFiles.isNotEmpty && modDirFiles.indexWhere((e) => p.extension(e.path) == '') != -1) {
       submods.add(modDir);
       submodNames.add(p.basename(modDir.path));
       associatedItems.addAll(await matchItemData(associatedItems, modDirFiles.map((e) => e.path).toList()));
+      if (associatedItems.isEmpty) {
+        associatedItems.add(unknownItem);
+      }
     }
     previewImages.addAll(modDirFiles.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png'));
     previewVideos.addAll(modDirFiles.where((e) => p.extension(e.path) == '.webm' || p.extension(e.path) == '.mp4'));
     // sub dirs
     for (var subdir in modDir.listSync(recursive: true).whereType<Directory>().toSet()) {
       List<File> files = subdir.listSync(recursive: true).whereType<File>().toList();
-      if (files.isNotEmpty && files.indexWhere((e) => p.extension(e.path) == '') != -1) {
+      if (files.isNotEmpty && subdir.listSync().whereType<File>().where((e) => p.extension(e.path) == '').isNotEmpty && files.indexWhere((e) => p.extension(e.path) == '') != -1) {
         submods.add(subdir);
         submodNames.add(subdir.path.replaceFirst(modDir.path + p.separator, '').trim().replaceAll(p.separator, ' > '));
         associatedItems.addAll(await matchItemData(associatedItems, files.map((e) => e.path).toList()));
+        if (associatedItems.isEmpty && !associatedItems.contains(unknownItem)) {
+          associatedItems.add(unknownItem);
+        }
         final previewImageFiles = files.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png');
         final previewVideoFiles = files.where((e) => p.extension(e.path) == '.webm' || p.extension(e.path) == '.mp4');
         previewImages.addAll(previewImageFiles);
@@ -149,16 +156,25 @@ Future<List<AddingMod>> modAddSort() async {
 
     // Rename duplicates
     for (var aItem in associatedItems) {
-      String newItemDirDestPath = mainModDirPath + p.separator + aItem.category + p.separator + aItem.getName();
-      bool renamed = false;
-      for (var submod in newAddingModItem.submods.reversed) {
-        if (submod != modDir && Directory(submod.path.replaceFirst(modAddTempSortedDirPath, newItemDirDestPath)).existsSync()) {
-          await io.copyPath(submod.path, submod.path.renameDuplicate());
-          await submod.delete(recursive: true);
-          renamed = true;
+      String newItemDirDestPath = mainModDirPath + p.separator + aItem.category + p.separator + aItem.getName().replaceAll(RegExp(charToReplace), '_');
+      if (newAddingModItem.submods.indexWhere((e) => e == modDir) == -1) {
+        bool renamed = false;
+        for (var submod in newAddingModItem.submods.reversed) {
+          if (Directory(submod.path.replaceFirst(modAddTempSortedDirPath, newItemDirDestPath)).existsSync()) {
+            await io.copyPath(submod.path, submod.path.renameDuplicate());
+            await submod.delete(recursive: true);
+            renamed = true;
+          }
+        }
+        if (renamed) newAddingModItem = await modAddRenameRefresh(modDir, newAddingModItem);
+      } else {
+        if (Directory(modDir.path.replaceFirst(modAddTempSortedDirPath, newItemDirDestPath)).existsSync()) {
+          String newModDirPath = modDir.path.renameDuplicate();
+          await io.copyPath(modDir.path, newModDirPath);
+          if (modDir.existsSync()) await modDir.delete(recursive: true);
+          newAddingModItem = await modAddRenameRefresh(Directory(newModDirPath), newAddingModItem);
         }
       }
-      if (renamed) newAddingModItem = await modAddRenameRefresh(modDir, newAddingModItem);
     }
 
     addingModList.add(newAddingModItem);

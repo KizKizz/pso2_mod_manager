@@ -82,8 +82,8 @@ Future<void> restoreFromSegaServers(Item item, Mod mod, SubMod submod, ModFile m
     final oData = oItemData.firstWhere((e) => p.basenameWithoutExtension(e.path) == modFile.modFileName, orElse: () => OfficialIceFile.empty());
     if (oData.path.replaceAll('/', p.separator).isNotEmpty) {
       final downloadedFile = await restoreOriginalFileDownload(oData.path, oData.server, p.dirname(backupPath.replaceFirst(backupDirPath, pso2DataDirPath)));
-      modApplyStatus.value = appText.dText(appText.restoringBackupFileToGameData, modFile.modFileName);
       if (downloadedFile.path.isNotEmpty && downloadedFile.existsSync()) {
+        modApplyStatus.value = appText.dText(appText.restoringBackupFileToGameData, modFile.modFileName);
         if (await File(backupPath).exists()) await File(backupPath).delete(recursive: true);
         modFile.ogLocations.removeWhere((e) => e == downloadedFile.path);
         modFile.applyStatus = false;
@@ -110,6 +110,7 @@ Future<File> restoreOriginalFileDownload(String networkFilePath, String server, 
           filename: p.basenameWithoutExtension(networkFilePath),
           headers: {"User-Agent": "AQUA_HTTP"},
           directory: saveLocation,
+          retries: 0,
           updates: Updates.statusAndProgress,
           allowPause: false);
 
@@ -120,9 +121,9 @@ Future<File> restoreOriginalFileDownload(String networkFilePath, String server, 
         case TaskStatus.complete:
           modApplyStatus.value = appText.fileDownloadSuccessful;
           return File(saveLocation + p.separator + p.basenameWithoutExtension(networkFilePath));
+          
         default:
           modApplyStatus.value = appText.fileDownloadFailed;
-          return File('');
       }
     }
   }

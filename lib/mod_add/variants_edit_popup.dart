@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_add/adding_mod_class.dart';
+import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_add/mod_add_function.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/mod_add.dart';
@@ -70,15 +72,35 @@ Future<AddingMod?> variantsEditPopup(context, AddingMod addingMod, int curIndex)
                                 children: [
                                   GenericItemIconBox(iconImagePaths: [addingMod.associatedItems[i].iconImagePath], boxSize: const Size(140, 140), isNetwork: true),
                                   Text(addingMod.associatedItems[i].getName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
-                                  IconButton(
-                                      onPressed: addingMod.associatedItems.length > 1 && addingMod.aItemAddingStates.where((e) => e == true).length > 1 || !addingMod.aItemAddingStates[i]
-                                          ? () => setState(() {
-                                                addingMod.aItemAddingStates[i] ? addingMod.aItemAddingStates[i] = false : addingMod.aItemAddingStates[i] = true;
-                                              })
-                                          : null,
-                                      icon: Icon(addingMod.aItemAddingStates[i] ? Icons.check_box_outlined : Icons.check_box_outline_blank,
-                                          color: addingMod.aItemAddingStates[i] ? Colors.green : Colors.red),
-                                      visualDensity: VisualDensity.adaptivePlatformDensity),
+                                  Row(
+                                    spacing: 5,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                          onPressed: addingMod.associatedItems.length > 1 && addingMod.aItemAddingStates.where((e) => e == true).length > 1 || !addingMod.aItemAddingStates[i]
+                                              ? () => setState(() {
+                                                    addingMod.aItemAddingStates[i] ? addingMod.aItemAddingStates[i] = false : addingMod.aItemAddingStates[i] = true;
+                                                  })
+                                              : null,
+                                          icon: Icon(addingMod.aItemAddingStates[i] ? Icons.check_box_outlined : Icons.check_box_outline_blank,
+                                              color: addingMod.aItemAddingStates[i] ? Colors.green : Colors.red),
+                                          visualDensity: VisualDensity.adaptivePlatformDensity),
+                                      Visibility(
+                                        visible: addingMod.associatedItems[i].category == 'Misc',
+                                        child: IconButton(
+                                            onPressed: () async {
+                                              final newName = await renamePopup(context, '$mainModDirPath${p.separator}Misc', addingMod.associatedItems[i].getName());
+                                              if (newName != null) {
+                                                addingMod.associatedItems[i] =
+                                                    ItemData('', '', '', ['Misc'], 'Misc', '', 13, '', Map.fromEntries([MapEntry('Japanese Name', newName), MapEntry('English Name', newName)]));
+                                                setState(() {});
+                                              }
+                                            },
+                                            icon: const Icon(Icons.edit),
+                                            visualDensity: VisualDensity.adaptivePlatformDensity),
+                                      )
+                                    ],
+                                  )
                                 ],
                               ),
                             )
