@@ -36,7 +36,7 @@ Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, Su
     // } else {
     curIceType = itemT.split(': ').first;
     // }
-    int matchingItemFIndex = lItemAvailableIces.indexWhere((element) => element.split(': ').first == curIceType);
+    int matchingItemFIndex = lItemAvailableIces.indexWhere((element) => element.split(': ').first.contains(curIceType));
     if (matchingItemFIndex != -1) {
       iceSwappingList.add([p.basename(lItemAvailableIces[matchingItemFIndex].split(': ').last), p.basename(itemT.split(': ').last)]);
     }
