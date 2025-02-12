@@ -50,6 +50,25 @@ class AppText {
   // Card Elements
   String cardDarkElement = 'Dark', cardLightElement = 'Light', cardFireElement = 'Fire', cardIceElement = 'Ice', cardLightningElement = 'Lightning', cardWindElement = 'Wind';
 
+  // Weapon types
+  String wpSwords = 'Swords',
+      wpWiredLances = 'Wired Lances',
+      wpPartisans = 'Partisans',
+      wpTwinDaggers = 'Twin Daggers',
+      wpKnuckles = 'Knuckles',
+      wpKatanas = 'Katanas',
+      wpSoaringBlades = 'Soaring Blades',
+      wpAssaultRifles = 'Assault Rifles',
+      wpLaunchers = 'Launchers',
+      wpTwinMachineGuns = 'Twin Machine Guns',
+      wpBows = 'Bows',
+      wpGunblades = 'Gunblades',
+      wpRods = 'Rods',
+      wpTalises = 'Talises',
+      wpWands = 'Wands',
+      wpJetBoots = 'Jet Boots',
+      wpHarmonizers = 'Harmonizers';
+
   // One word Strings
   String ok = 'OK',
       cancel = 'Cancel',
@@ -307,7 +326,10 @@ class AppText {
       selectSetsToAdd = 'Select Set(s) to add',
       enterFilterText = 'Enter filter text (Case sensitive)',
       currentFilters = 'Current Filters',
-      addFilter = 'Add Filter';
+      addFilter = 'Add Filter',
+      collapseAll = 'Collapse All',
+      expandAll = 'Expand All',
+      weaponTypes = 'Weapon Types';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',
@@ -385,7 +407,8 @@ class AppText {
       currentPathLocation = 'Current path: %p%',
       reselectPath = 'Re-Select Path',
       backgroundImageFolder = 'Background Image Folder',
-      verTwoMainDataPathLocation = 'Ver.2 Mod Manager Main Data Folder Location:';
+      verTwoMainDataPathLocation = 'Ver.2 Mod Manager Main Data Folder Location:',
+      hideEmptyCategories = 'Hide Empty Categories';
 
   factory AppText.fromJson(Map<String, dynamic> json) => _$AppTextFromJson(json);
   Map<String, dynamic> toJson() => _$AppTextToJson(this);
@@ -499,6 +522,50 @@ class AppText {
         return recentlyAdded;
       case 2:
         return recentlyApplied;
+      default:
+        return name;
+    }
+  }
+
+  String weaponTypeName(String name) {
+    if (name == 'All') return all;
+    int index = defaultWeaponTypes.indexOf(name);
+
+    switch (index) {
+      case 0:
+        return wpSwords;
+      case 1:
+        return wpWiredLances;
+      case 2:
+        return wpPartisans;
+      case 3:
+        return wpTwinDaggers;
+      case 4:
+        return wpKnuckles;
+      case 5:
+        return wpKatanas;
+      case 6:
+        return wpSoaringBlades;
+      case 7:
+        return wpAssaultRifles;
+      case 8:
+        return wpLaunchers;
+      case 9:
+        return wpTwinMachineGuns;
+      case 10:
+        return wpBows;
+      case 11:
+        return wpGunblades;
+      case 12:
+        return wpRods;
+      case 13:
+        return wpTalises;
+      case 14:
+        return wpWands;
+      case 15:
+        return wpJetBoots;
+      case 16:
+        return wpHarmonizers;
       default:
         return name;
     }

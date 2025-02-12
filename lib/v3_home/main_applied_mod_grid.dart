@@ -6,6 +6,7 @@ import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
 import 'package:pso2_mod_manager/mod_apply/load_applied_mods.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
+import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/main_widgets/applied_mod_grid_layout.dart';
 import 'package:searchfield/searchfield.dart';
@@ -157,6 +158,31 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                 ),
               ),
               Expanded(
+                  flex: 1,
+                  child: SizedBox(
+                    height: 40,
+                    child: OutlinedButton(
+                        style: ButtonStyle(
+                            backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                            side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                        onPressed: numOfAppliedMods > 0
+                            ? () async {
+                                if (categories.indexWhere((e) => e.visible) != -1) {
+                                  for (var cate in categories) {
+                                    cate.visible = false;
+                                  }
+                                } else {
+                                  for (var cate in categories) {
+                                    cate.visible = true;
+                                  }
+                                }
+                                setState(() {});
+                                saveMasterModListToJson();
+                              }
+                            : null,
+                        child: Text(categories.indexWhere((e) => e.visible) != -1 ? appText.collapseAll : appText.expandAll)),
+                  )),
+              Expanded(
                   flex: 2,
                   child: SizedBox(
                     height: 40,
@@ -184,7 +210,7 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                   flex: 1,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 1),
-                    child: AppliedModCategorySelectButtons(categories: categories, scrollController: controller),
+                    child: AppliedModCategorySelectButtons(categories: categories.where((e) => e.getNumOfAppliedItems() > 0).toList(), scrollController: controller),
                   )),
             ],
           ),

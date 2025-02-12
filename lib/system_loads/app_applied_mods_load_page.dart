@@ -5,16 +5,12 @@ import 'package:pso2_mod_manager/app_pages_index.dart';
 import 'package:pso2_mod_manager/mod_apply/applying_popup.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_apply/load_applied_mods.dart';
-import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
-import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
-import 'package:signals/signals_flutter.dart';
-
-Signal<String> modsetLoadingStatus = Signal('');
 
 class AppAppliedModsLoadPage extends StatefulWidget {
   const AppAppliedModsLoadPage({super.key});
@@ -63,76 +59,85 @@ class _AppAppliedModsLoadPageState extends State<AppAppliedModsLoadPage> {
         } else {
           List<Item> unappliedItemList = snapshot.data;
           if (unappliedItemList.isEmpty) {
+            saveMasterModListToJson();
             pageIndex++;
             curPage.value = appPages[pageIndex];
             return const SizedBox();
           } else {
-            return AlertDialog(
-              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: const BorderRadius.all(Radius.circular(5))),
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
-              insetPadding: const EdgeInsets.all(5),
-              titlePadding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-              title: Center(
-                child: Text(
-                  appText.restoredMods,
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
+            return SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: Padding(
+                padding: const EdgeInsets.all(5),
+                child: CardOverlay(
+                    paddingValue: 10,
+                    child: Column(
+                      spacing: 10,
+                      children: [
+                        Center(
+                          child: Text(
+                            appText.restoredMods,
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
+                        ),
+                        const Divider(
+                          height: 0,
+                          thickness: 1.5,
+                          indent: 10,
+                          endIndent: 10,
+                        ),
+                        Text(appText.restoredModInfo),
+                        Expanded(
+                            child: ResponsiveGridList(
+                          minItemWidth: 320,
+                          children: unappliedItemsGet(unappliedItemList),
+                        )),
+                        const Divider(
+                          height: 0,
+                          thickness: 1.5,
+                          indent: 10,
+                          endIndent: 10,
+                        ),
+                        OverflowBar(
+                          spacing: 5,
+                          overflowSpacing: 5,
+                          alignment: MainAxisAlignment.end,
+                          children: [
+                            OutlinedButton(
+                                onPressed: () async {
+                                  for (var item in unappliedItemList) {
+                                    for (var mod in item.mods.where((e) => e.applyStatus)) {
+                                      for (var submod in mod.submods.where((e) => e.applyStatus)) {
+                                        if (submod.modFiles.indexWhere((e) => e.ogMd5s.first.isNotEmpty && e.ogMd5s.first != e.md5) != -1) {
+                                          await applyingPopup(context, true, item, mod, submod);
+                                        }
+                                      }
+                                    }
+                                  }
+                                  pageIndex++;
+                                  curPage.value = appPages[pageIndex];
+                                },
+                                child: Text(appText.reApplyAll)),
+                            OutlinedButton(
+                                onPressed: () async {
+                                  for (var item in unappliedItemList) {
+                                    for (var mod in item.mods.where((e) => e.applyStatus)) {
+                                      for (var submod in mod.submods.where((e) => e.applyStatus)) {
+                                        if (submod.modFiles.indexWhere((e) => e.ogMd5s.first.isNotEmpty && e.ogMd5s.first != e.md5) != -1) {
+                                          await applyingPopup(context, false, item, mod, submod);
+                                        }
+                                      }
+                                    }
+                                  }
+                                  pageIndex++;
+                                  curPage.value = appPages[pageIndex];
+                                },
+                                child: Text(appText.removeAll))
+                          ],
+                        )
+                      ],
+                    )),
               ),
-              contentPadding: const EdgeInsets.only(top: 00, bottom: 0, left: 10, right: 10),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                spacing: 10,
-                children: [
-                  Text(appText.restoredModInfo),
-                  const HoriDivider(),
-                  SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height - 183,
-                      child: ResponsiveGridList(
-                        minItemWidth: 320,
-                        children: unappliedItemsGet(unappliedItemList),
-                      )),
-                ],
-              ),
-              actionsPadding: const EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),
-              actions: [
-                OverflowBar(
-                  spacing: 5,
-                  overflowSpacing: 5,
-                  children: [
-                    OutlinedButton(
-                        onPressed: () async {
-                          for (var item in unappliedItemList) {
-                            for (var mod in item.mods.where((e) => e.applyStatus)) {
-                              for (var submod in mod.submods.where((e) => e.applyStatus)) {
-                                if (submod.modFiles.indexWhere((e) => e.ogMd5s.first.isNotEmpty && e.ogMd5s.first != e.md5) != -1) {
-                                  await applyingPopup(context, true, item, mod, submod);
-                                }
-                              }
-                            }
-                          }
-                          pageIndex++;
-                          curPage.value = appPages[pageIndex];
-                        },
-                        child: Text(appText.reApplyAll)),
-                    OutlinedButton(
-                        onPressed: () async {
-                          for (var item in unappliedItemList) {
-                            for (var mod in item.mods.where((e) => e.applyStatus)) {
-                              for (var submod in mod.submods.where((e) => e.applyStatus)) {
-                                if (submod.modFiles.indexWhere((e) => e.ogMd5s.first.isNotEmpty && e.ogMd5s.first != e.md5) != -1) {
-                                  await applyingPopup(context, false, item, mod, submod);
-                                }
-                              }
-                            }
-                          }
-                          pageIndex++;
-                          curPage.value = appPages[pageIndex];
-                        },
-                        child: Text(appText.removeAll))
-                  ],
-                )
-              ],
             );
           }
         }
@@ -145,7 +150,7 @@ class _AppAppliedModsLoadPageState extends State<AppAppliedModsLoadPage> {
     for (var item in items) {
       for (var mod in item.mods.where((e) => e.applyStatus)) {
         for (var submod in mod.submods.where((e) => e.applyStatus)) {
-          if (submod.modFiles.indexWhere((e) => e.ogMd5s.first.isNotEmpty && e.ogMd5s.first != e.md5) != -1) {
+          if (submod.modFiles.indexWhere((e) => e.applyStatus && e.ogMd5s.isNotEmpty && e.ogMd5s.first.isNotEmpty && e.ogMd5s.first != e.md5) != -1) {
             widgets.add(
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,

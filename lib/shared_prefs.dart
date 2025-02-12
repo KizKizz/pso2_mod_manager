@@ -28,6 +28,7 @@ bool replaceItemIconOnApplied = true;
 bool sideMenuAlwaysExpanded = false;
 bool enableModAddFilters = false;
 int defaultHomepageIndex = 0;
+bool hideEmptyCategories = true;
 
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
@@ -46,7 +47,6 @@ Future<void> prefsLoad() async {
 
   // ver 2 main data dir path
   verTwoMainDataDirPath = prefs.getString('mainModManDirPath') ?? '';
-
 
   // Item Name Language
   itemNameLanguage = ItemNameLanguage.values.firstWhere((e) => e.value == prefs.getString('itemNameLanguage'), orElse: () => ItemNameLanguage.en);
@@ -129,4 +129,7 @@ Future<void> prefsLoad() async {
 
   // Default homepage
   defaultHomepageIndex = prefs.getInt('defaultHomepageIndex') ?? 0;
+  
+  // Hide empty categories
+  hideEmptyCategories = prefs.getBool('hideEmptyCategories') ?? true;
 }

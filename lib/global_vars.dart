@@ -51,6 +51,26 @@ List<String> aqmInjectCategoryDirs = [
   'Outerwears', //15
   'Setwears', //16
 ];
+final defaultWeaponTypes = [
+  'Swords',
+  'Wired Lances',
+  'Partisans',
+  'Twin Daggers',
+  'Knuckles',
+  'Katanas',
+  'Soaring Blades',
+  'Assault Rifles',
+  'Launchers',
+  'Twin Machine Guns',
+  'Bows',
+  'Gunblades',
+  'Rods',
+  'Talises',
+  'Wands',
+  'Jet Boots',
+  'Harmonizers'
+];
+
 final defaultMotionTypes = ['Glide Motion', 'Jump Motion', 'Landing Motion', 'Dash Motion', 'Run Motion', 'Standby Motion', 'Swim Motion'];
 final modSortingSelections = ['Name (Alphabetical)', 'Recently Added', 'Recently Applied'];
 String charToReplace = '[\\/:*?"<>|]';

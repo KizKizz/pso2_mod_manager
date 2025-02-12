@@ -1,49 +1,61 @@
 import 'package:choice/choice.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/main_widgets/category_select_buttons.dart';
 import 'package:signals/signals_flutter.dart';
 
-Signal<String> selectedItemSwapTypeCategory = Signal<String>('Both');
+Signal<String> selectedWeaponType = Signal<String>('All');
 
-class ItemSwapTypeSelectButtons extends StatefulWidget {
-  const ItemSwapTypeSelectButtons({super.key, required this.lScrollController, required this.rScrollController});
+class ItemSwapWeaponTypeSelectButton extends StatefulWidget {
+  const ItemSwapWeaponTypeSelectButton(
+      {super.key, required this.weaponTypeName, required this.lSelectedItemData, required this.rSelectedItemData, required this.lScrollController, required this.rScrollController});
 
+  final List<String> weaponTypeName;
   final ScrollController lScrollController;
   final ScrollController rScrollController;
+  final Signal<ItemData?> lSelectedItemData;
+  final Signal<ItemData?> rSelectedItemData;
 
   @override
-  State<ItemSwapTypeSelectButtons> createState() => _ItemSwapTypeSelectButtonsState();
+  State<ItemSwapWeaponTypeSelectButton> createState() => _ItemSwapWeaponTypeSelectButtonState();
 }
 
-class _ItemSwapTypeSelectButtonsState extends State<ItemSwapTypeSelectButtons> {
-  final itemTypes = ['Both', 'PSO2', 'NGS'];
+class _ItemSwapWeaponTypeSelectButtonState extends State<ItemSwapWeaponTypeSelectButton> {
+  List<String> weaponTypeNames = ['All'];
+  @override
+  void initState() {
+    weaponTypeNames.addAll(widget.weaponTypeName);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 40,
       child: PromptedChoice<String>.single(
-          title: appText.types,
-          value: selectedItemSwapTypeCategory.value == itemTypes.first ? appText.both : selectedItemSwapTypeCategory.value,
+          title: appText.weaponTypes,
+          value: appText.weaponTypeName(selectedWeaponType.value),
           modalFit: FlexFit.tight,
           onChanged: (value) async {
-            selectedItemSwapTypeCategory.value = value!;
+            selectedWeaponType.value = value!;
             widget.lScrollController.jumpTo(0);
             widget.rScrollController.jumpTo(0);
           },
-          itemCount: itemTypes.length,
+          itemCount: weaponTypeNames.length,
           itemBuilder: (state, i) {
             return RadioListTile(
-              value: itemTypes[i],
+              value: weaponTypeNames[i],
               groupValue: state.single,
               onChanged: (value) {
-                state.select(itemTypes[i]);
+                state.select(weaponTypeNames[i]);
+                widget.lSelectedItemData.value = null;
+                widget.rSelectedItemData.value = null;
               },
               title: ChoiceText(
-                i == 0 ? appText.both : itemTypes[i],
+                appText.weaponTypeName(weaponTypeNames[i]),
                 highlight: state.search?.value,
-                style: TextStyle(color: selectedItemSwapTypeCategory.watch(context) == itemTypes[i] ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.bodyMedium!.color),
+                style: TextStyle(color: selectedWeaponType.watch(context) == weaponTypeNames[i] ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.bodyMedium!.color),
               ),
             );
           },

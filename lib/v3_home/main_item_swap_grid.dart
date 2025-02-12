@@ -5,6 +5,7 @@ import 'package:pso2_mod_manager/item_swap/item_swap_cate_select_button.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_grid_layout.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_motions_select_button.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_type_select_button.dart';
+import 'package:pso2_mod_manager/item_swap/item_swap_weapon_type_select_button.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_working_popup.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_helper_functions.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
@@ -50,9 +51,10 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
             : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[16]
                 ? e.subCategory == 'Setwear'
                 : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[14]
-                    ? e.category == selectedDisplayItemSwapCategory.watch(context) &&
-                        (e.subCategory == selectedItemSwapMotionType.watch(context) || selectedItemSwapMotionType.watch(context) == 'All')
-                    : e.category == selectedDisplayItemSwapCategory.watch(context))
+                    ? e.category == selectedDisplayItemSwapCategory.watch(context) && (e.subCategory == selectedItemSwapMotionType.watch(context) || selectedItemSwapMotionType.watch(context) == 'All')
+                    : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[17]
+                        ? e.category == defaultCategoryDirs[17] && (e.subCategory.contains(selectedWeaponType.watch(context)) || selectedWeaponType.watch(context) == 'All')
+                        : e.category == selectedDisplayItemSwapCategory.watch(context))
         .where((e) => selectedItemSwapTypeCategory.watch(context) == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.watch(context).toLowerCase())
         .toList();
     displayingItems.sort((a, b) => a.getName().compareTo(b.getName()));
@@ -105,6 +107,15 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
               Visibility(
                   visible: selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[14],
                   child: Expanded(child: ItemSwapMotionTypeSelectButtons(lScrollController: lScrollController, rScrollController: rScrollController))),
+              Visibility(
+                  visible: selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[17],
+                  child: Expanded(
+                      child: ItemSwapWeaponTypeSelectButton(
+                          weaponTypeName: defaultWeaponTypes,
+                          lSelectedItemData: lSelectedItemData,
+                          rSelectedItemData: rSelectedItemData,
+                          lScrollController: lScrollController,
+                          rScrollController: rScrollController))),
               Expanded(child: Padding(padding: const EdgeInsets.only(top: 1), child: ItemSwapTypeSelectButtons(lScrollController: lScrollController, rScrollController: rScrollController))),
               Expanded(
                   child: Padding(

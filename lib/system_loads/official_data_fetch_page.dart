@@ -6,9 +6,6 @@ import 'package:pso2_mod_manager/app_paths/sega_file_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
-import 'package:signals/signals_flutter.dart';
-
-Signal<String> modLoadingStatus = Signal('');
 
 class OfficialDataFetchPage extends StatefulWidget {
   const OfficialDataFetchPage({super.key});
