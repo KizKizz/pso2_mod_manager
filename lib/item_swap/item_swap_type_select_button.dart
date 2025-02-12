@@ -4,7 +4,7 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/main_widgets/category_select_buttons.dart';
 import 'package:signals/signals_flutter.dart';
 
-Signal<String> selectedItemSwapTypeCategory = Signal<String>(appText.both);
+Signal<String> selectedItemSwapTypeCategory = Signal<String>('Both');
 
 class ItemSwapTypeSelectButtons extends StatefulWidget {
   const ItemSwapTypeSelectButtons({super.key, required this.lScrollController, required this.rScrollController});
@@ -17,7 +17,7 @@ class ItemSwapTypeSelectButtons extends StatefulWidget {
 }
 
 class _ItemSwapTypeSelectButtonsState extends State<ItemSwapTypeSelectButtons> {
-  final itemTypes = [appText.both, 'PSO2', 'NGS'];
+  final itemTypes = ['Both', 'PSO2', 'NGS'];
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class _ItemSwapTypeSelectButtonsState extends State<ItemSwapTypeSelectButtons> {
       height: 40,
       child: PromptedChoice<String>.single(
           title: appText.types,
-          value: appText.categoryName(selectedItemSwapTypeCategory.value),
+          value: selectedItemSwapTypeCategory.value == itemTypes.first ? appText.both : selectedItemSwapTypeCategory.value,
           modalFit: FlexFit.tight,
           onChanged: (value) async {
             selectedItemSwapTypeCategory.value = value!;
@@ -35,13 +35,14 @@ class _ItemSwapTypeSelectButtonsState extends State<ItemSwapTypeSelectButtons> {
           itemCount: itemTypes.length,
           itemBuilder: (state, i) {
             return RadioListTile(
-              value: itemTypes[i],
+              value: i == 0 ? appText.both : itemTypes[i],
               groupValue: state.single,
               onChanged: (value) {
                 state.select(itemTypes[i]);
+                debugPrint(value);
               },
               title: ChoiceText(
-                itemTypes[i],
+                i == 0 ? appText.both : itemTypes[i],
                 highlight: state.search?.value,
                 style: TextStyle(color: selectedItemSwapTypeCategory.watch(context) == itemTypes[i] ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.bodyMedium!.color),
               ),

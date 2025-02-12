@@ -39,7 +39,7 @@ class _ModSwapAllMotionsSelectButtonState extends State<ModSwapAllMotionsSelectB
                 state.select(motionTypes[i]);
               },
               title: ChoiceText(
-                motionTypes[i],
+                appText.motionTypeName(motionTypes[i]),
                 highlight: state.search?.value,
                 style: TextStyle(color: selectedModSwapAllMotionType.watch(context) == motionTypes[i] ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.bodyMedium!.color),
               ),

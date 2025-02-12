@@ -105,6 +105,7 @@ class _AppUpdatePageState extends State<AppUpdatePage> {
                                   ElevatedButton(
                                       onPressed: () {
                                         pageIndex++;
+                                        curPage.value = appPages[pageIndex];
                                       },
                                       child: Text(appText.later))
                                 ],

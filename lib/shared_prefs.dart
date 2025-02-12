@@ -17,6 +17,7 @@ Signal<bool> hideAppBackgroundSlides = Signal<bool>(false);
 Signal<int> backgroundImageSlideInterval = Signal<int>(10);
 Signal<bool> itemIconSlides = Signal<bool>(false);
 Signal<String> selectedDisplayCategory = Signal<String>('All');
+Signal<String> selectedModDisplayCategory = Signal<String>('All');
 Signal<String> selectedDisplayCategoryAppliedList = Signal<String>('All');
 Signal<String> selectedDisplaySort = Signal<String>('Name (Alphabetical)');
 Signal<String> selectedDisplaySortModSet = Signal<String>('Name (Alphabetical)');
@@ -28,6 +29,7 @@ bool replaceItemIconOnApplied = true;
 bool sideMenuAlwaysExpanded = false;
 bool enableModAddFilters = false;
 int defaultHomepageIndex = 0;
+bool hideEmptyCategories = true;
 
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
@@ -46,7 +48,6 @@ Future<void> prefsLoad() async {
 
   // ver 2 main data dir path
   verTwoMainDataDirPath = prefs.getString('mainModManDirPath') ?? '';
-
 
   // Item Name Language
   itemNameLanguage = ItemNameLanguage.values.firstWhere((e) => e.value == prefs.getString('itemNameLanguage'), orElse: () => ItemNameLanguage.en);
@@ -80,6 +81,9 @@ Future<void> prefsLoad() async {
 
   // Main list filter
   selectedDisplayCategory.value = prefs.getString('selectedDisplayCategory') ?? 'All';
+
+  // Main Mod list filter
+  selectedModDisplayCategory.value = prefs.getString('selectedModDisplayCategory') ?? 'All';
 
   // Main list applied list filter
   selectedDisplayCategoryAppliedList.value = prefs.getString('selectedDisplayCategoryAppliedList') ?? 'All';
@@ -129,4 +133,7 @@ Future<void> prefsLoad() async {
 
   // Default homepage
   defaultHomepageIndex = prefs.getInt('defaultHomepageIndex') ?? 0;
+  
+  // Hide empty categories
+  hideEmptyCategories = prefs.getBool('hideEmptyCategories') ?? true;
 }

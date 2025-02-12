@@ -43,7 +43,7 @@ class _LineStrikeTypeSelectButtonState extends State<LineStrikeTypeSelectButton>
           itemCount: typeList.length,
           itemBuilder: (state, i) {
             return RadioListTile(
-              value: typeList[i],
+              value: appText.categoryName(typeList[i]),
               groupValue: state.single,
               onChanged: (value) {
                 state.select(typeList[i]);

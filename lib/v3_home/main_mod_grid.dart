@@ -4,6 +4,7 @@ import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/cate_mod_category_select_buttons.dart';
 import 'package:pso2_mod_manager/main_widgets/sorting_buttons.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
+import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/main_widgets/cate_mod_grid_layout.dart';
 import 'package:searchfield/searchfield.dart';
@@ -63,15 +64,15 @@ class _MainModGridState extends State<MainModGrid> {
       }
     } else {
       for (var type in masterModList) {
-        categories.addAll(type.categories);
+        hideEmptyCategories ? categories.addAll(type.categories.where((e) => e.items.isNotEmpty)) : categories.addAll(type.categories);
       }
     }
 
     List<Category> displayingCategories = [];
-    if (selectedDisplayCategory.watch(context) == 'All') {
+    if (selectedModDisplayCategory.watch(context) == 'All') {
       displayingCategories = categories;
     } else {
-      displayingCategories = categories.where((e) => e.categoryName == selectedDisplayCategory.watch(context)).toList();
+      displayingCategories = categories.where((e) => e.categoryName == selectedModDisplayCategory.watch(context)).toList();
     }
 
     // Sort
@@ -150,9 +151,32 @@ class _MainModGridState extends State<MainModGrid> {
                   ]),
                 ),
               ),
-              Expanded(flex: 1, child: SortingButtons(scrollController: controller)),
               Expanded(
                   flex: 1,
+                  child: SizedBox(
+                    height: 40,
+                    child: OutlinedButton(
+                        style: ButtonStyle(
+                            backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                            side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                        onPressed: () async {
+                          if (categories.indexWhere((e) => e.visible) != -1) {
+                            for (var cate in categories) {
+                              cate.visible = false;
+                            }
+                          } else {
+                            for (var cate in categories) {
+                              cate.visible = true;
+                            }
+                          }
+                          setState(() {});
+                          saveMasterModListToJson();
+                        },
+                        child: Text(categories.indexWhere((e) => e.visible) != -1 ? appText.collapseAll : appText.expandAll)),
+                  )),
+              Expanded(flex: 2, child: SortingButtons(scrollController: controller)),
+              Expanded(
+                  flex: 2,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 1),
                     child: CateModCategorySelectButtons(categories: categories, scrollController: controller),

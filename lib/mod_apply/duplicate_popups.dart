@@ -4,6 +4,7 @@ import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_item_class.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
+import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
@@ -12,12 +13,15 @@ import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:signals/signals_flutter.dart';
 
-Future<bool> duplicateAppliedModPopup(context, Item dupItem, Mod dupMod, SubMod dupSubmod, String newSubmodName) async {
+Future<(bool, List<ModFile>)> duplicateAppliedModPopup(context, Item dupItem, Mod dupMod, SubMod dupSubmod, SubMod applyingSubmod) async {
   return await showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (dialogContext, setState) {
+          List conflictingIceFileNames = applyingSubmod.getModFileNames();
+          conflictingIceFileNames.retainWhere((e) => dupSubmod.getModFileNames().contains(e));
+
           return AlertDialog(
             backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
@@ -25,16 +29,16 @@ Future<bool> duplicateAppliedModPopup(context, Item dupItem, Mod dupMod, SubMod 
             titlePadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
             title: Center(child: Text(appText.duplicatesInAppliedMods)),
             contentPadding: const EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 10),
-            content: Column(
-              spacing: 5,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(appText.dText(appText.duplicateAppliedInfo, newSubmodName)),
-                const HoriDivider(),
-                SizedBox(
-                  width: 400,
-                  height: 250,
-                  child: Column(
+            content: SizedBox(
+              width: 400,
+              height: 325,
+              child: Column(
+                spacing: 5,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Text(appText.dText(appText.duplicateAppliedInfo, applyingSubmod.submodName)),
+                  const HoriDivider(),
+                  Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     spacing: 5,
@@ -61,11 +65,20 @@ Future<bool> duplicateAppliedModPopup(context, Item dupItem, Mod dupMod, SubMod 
                       ),
                       Text(dupSubmod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
                       Visibility(visible: dupSubmod.submodName != dupSubmod.modName, child: Text(dupSubmod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
+                      // SingleChildScrollView(
+                      //   physics: const SuperRangeMaintainingScrollPhysics(),
+                      //   child: Column(
+                      //     spacing: 5,
+                      //     crossAxisAlignment: CrossAxisAlignment.start,
+                      //     mainAxisSize: MainAxisSize.max,
+                      //     children: [Text(appText.conflictingFiles, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelMedium), Text(conflictingIceFileNames.join('\n'))],
+                      //   ),
+                      // ),
                     ],
                   ),
-                ),
-                const HoriDivider(),
-              ],
+                  const HoriDivider(),
+                ],
+              ),
             ),
             actionsPadding: const EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),
             actions: [
@@ -73,8 +86,24 @@ Future<bool> duplicateAppliedModPopup(context, Item dupItem, Mod dupMod, SubMod 
                 spacing: 5,
                 overflowSpacing: 5,
                 children: [
-                  OutlinedButton(onPressed: () => Navigator.of(context).pop(true), child: Text(appText.replace)),
-                  OutlinedButton(onPressed: () => Navigator.of(context).pop(false), child: Text(appText.returns))
+                  OutlinedButton(
+                      onPressed: () {
+                        List<ModFile> emptyList = [];
+                        Navigator.of(context).pop((true, emptyList));
+                      },
+                      child: Text(appText.replaceTheEntireMod)),
+                  OutlinedButton(
+                      onPressed: () {
+                        List<ModFile> conflictingFileList = dupSubmod.modFiles.where((e) => conflictingIceFileNames.contains(e.modFileName)).toList();
+                        Navigator.of(context).pop((true, conflictingFileList));
+                      },
+                      child: Text(appText.replaceConflictingFilesOnly)),
+                  OutlinedButton(
+                      onPressed: () {
+                        List<ModFile> emptyList = [];
+                        Navigator.of(context).pop((false, emptyList));
+                      },
+                      child: Text(appText.returns))
                 ],
               )
             ],

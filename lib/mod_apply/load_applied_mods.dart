@@ -18,6 +18,7 @@ Future<List<Item>> appliedModsCheck() async {
                 for (var path in modFile.ogLocations) {
                   modFile.ogMd5s.clear();
                   modFile.ogMd5s.add(await File(path).getMd5Hash());
+                  if (modFile.md5.isEmpty) modFile.md5 = await File(modFile.location).getMd5Hash();
                   if (modFile.ogMd5s.first != modFile.md5) {
                     unappliedItems.add(item);
                     break;

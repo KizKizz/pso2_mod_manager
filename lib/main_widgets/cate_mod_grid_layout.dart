@@ -5,6 +5,7 @@ import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
+import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
@@ -81,12 +82,20 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         HeaderInfoBox(info: appText.dText(modNum > 1 ? appText.numMods : appText.numMod, modNum.toString()), borderHighlight: false),
-                        HeaderInfoBox(info: appText.dText(appText.numCurrentlyApplied, modAppliedNum.toString()), borderHighlight: false)
+                        HeaderInfoBox(info: appText.dText(appText.numCurrentlyApplied, modAppliedNum.toString()), borderHighlight: false),
+                        IconButton(
+                          visualDensity: VisualDensity.adaptivePlatformDensity,
+                            onPressed: () {
+                              widget.itemCate.visible ? widget.itemCate.visible = false : widget.itemCate.visible = true;
+                              saveMasterModListToJson();
+                              setState(() {});
+                            },
+                            icon: Icon(widget.itemCate.visible ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down))
                       ],
                     )
                   ],
                 ))),
-        sliver: ResponsiveSliverGridList(minItemWidth: 260, verticalGridMargin: 5, horizontalGridSpacing: 5, verticalGridSpacing: 5, children: modCardFetch()));
+        sliver: ResponsiveSliverGridList(minItemWidth: 260, verticalGridMargin: 5, horizontalGridSpacing: 5, verticalGridSpacing: 5, children: widget.itemCate.visible ? modCardFetch() : []));
   }
 }
 

@@ -47,6 +47,23 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..cardIceElement = json['cardIceElement'] as String
   ..cardLightningElement = json['cardLightningElement'] as String
   ..cardWindElement = json['cardWindElement'] as String
+  ..wpSwords = json['wpSwords'] as String
+  ..wpWiredLances = json['wpWiredLances'] as String
+  ..wpPartisans = json['wpPartisans'] as String
+  ..wpTwinDaggers = json['wpTwinDaggers'] as String
+  ..wpKnuckles = json['wpKnuckles'] as String
+  ..wpKatanas = json['wpKatanas'] as String
+  ..wpSoaringBlades = json['wpSoaringBlades'] as String
+  ..wpAssaultRifles = json['wpAssaultRifles'] as String
+  ..wpLaunchers = json['wpLaunchers'] as String
+  ..wpTwinMachineGuns = json['wpTwinMachineGuns'] as String
+  ..wpBows = json['wpBows'] as String
+  ..wpGunblades = json['wpGunblades'] as String
+  ..wpRods = json['wpRods'] as String
+  ..wpTalises = json['wpTalises'] as String
+  ..wpWands = json['wpWands'] as String
+  ..wpJetBoots = json['wpJetBoots'] as String
+  ..wpHarmonizers = json['wpHarmonizers'] as String
   ..ok = json['ok'] as String
   ..cancel = json['cancel'] as String
   ..cont = json['cont'] as String
@@ -310,6 +327,12 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..enterFilterText = json['enterFilterText'] as String
   ..currentFilters = json['currentFilters'] as String
   ..addFilter = json['addFilter'] as String
+  ..collapseAll = json['collapseAll'] as String
+  ..expandAll = json['expandAll'] as String
+  ..weaponTypes = json['weaponTypes'] as String
+  ..replaceTheEntireMod = json['replaceTheEntireMod'] as String
+  ..replaceConflictingFilesOnly = json['replaceConflictingFilesOnly'] as String
+  ..conflictingFiles = json['conflictingFiles'] as String
   ..failedToFetchRemoteLocaleData =
       json['failedToFetchRemoteLocaleData'] as String
   ..unableToUpdateFile = json['unableToUpdateFile'] as String
@@ -387,7 +410,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..currentPathLocation = json['currentPathLocation'] as String
   ..reselectPath = json['reselectPath'] as String
   ..backgroundImageFolder = json['backgroundImageFolder'] as String
-  ..verTwoMainDataPathLocation = json['verTwoMainDataPathLocation'] as String;
+  ..verTwoMainDataPathLocation = json['verTwoMainDataPathLocation'] as String
+  ..hideEmptyCategories = json['hideEmptyCategories'] as String;
 
 Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'dfCastParts': instance.dfCastParts,
@@ -430,6 +454,23 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'cardIceElement': instance.cardIceElement,
       'cardLightningElement': instance.cardLightningElement,
       'cardWindElement': instance.cardWindElement,
+      'wpSwords': instance.wpSwords,
+      'wpWiredLances': instance.wpWiredLances,
+      'wpPartisans': instance.wpPartisans,
+      'wpTwinDaggers': instance.wpTwinDaggers,
+      'wpKnuckles': instance.wpKnuckles,
+      'wpKatanas': instance.wpKatanas,
+      'wpSoaringBlades': instance.wpSoaringBlades,
+      'wpAssaultRifles': instance.wpAssaultRifles,
+      'wpLaunchers': instance.wpLaunchers,
+      'wpTwinMachineGuns': instance.wpTwinMachineGuns,
+      'wpBows': instance.wpBows,
+      'wpGunblades': instance.wpGunblades,
+      'wpRods': instance.wpRods,
+      'wpTalises': instance.wpTalises,
+      'wpWands': instance.wpWands,
+      'wpJetBoots': instance.wpJetBoots,
+      'wpHarmonizers': instance.wpHarmonizers,
       'ok': instance.ok,
       'cancel': instance.cancel,
       'cont': instance.cont,
@@ -686,6 +727,12 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'enterFilterText': instance.enterFilterText,
       'currentFilters': instance.currentFilters,
       'addFilter': instance.addFilter,
+      'collapseAll': instance.collapseAll,
+      'expandAll': instance.expandAll,
+      'weaponTypes': instance.weaponTypes,
+      'replaceTheEntireMod': instance.replaceTheEntireMod,
+      'replaceConflictingFilesOnly': instance.replaceConflictingFilesOnly,
+      'conflictingFiles': instance.conflictingFiles,
       'failedToFetchRemoteLocaleData': instance.failedToFetchRemoteLocaleData,
       'unableToUpdateFile': instance.unableToUpdateFile,
       'unableToGetAppVersionDataFromGitHub':
@@ -761,4 +808,5 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'reselectPath': instance.reselectPath,
       'backgroundImageFolder': instance.backgroundImageFolder,
       'verTwoMainDataPathLocation': instance.verTwoMainDataPathLocation,
+      'hideEmptyCategories': instance.hideEmptyCategories,
     };

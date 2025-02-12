@@ -5,6 +5,7 @@ import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
 import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
+import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
@@ -53,11 +54,21 @@ class _AppliedModGridLayoutState extends State<AppliedModGridLayout> {
                     Row(
                       spacing: 5,
                       mainAxisSize: MainAxisSize.min,
-                      children: [HeaderInfoBox(info: appText.dText(applyingSubmodCount > 1 ? appText.numMods : appText.numMod, applyingSubmodCount.toString()), borderHighlight: false)],
+                      children: [
+                        HeaderInfoBox(info: appText.dText(applyingSubmodCount > 1 ? appText.numMods : appText.numMod, applyingSubmodCount.toString()), borderHighlight: false),
+                        IconButton(
+                            visualDensity: VisualDensity.adaptivePlatformDensity,
+                            onPressed: () {
+                              widget.category.visible ? widget.category.visible = false : widget.category.visible = true;
+                              saveMasterModListToJson();
+                              setState(() {});
+                            },
+                            icon: Icon(widget.category.visible ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down))
+                      ],
                     )
                   ],
                 ))),
-        sliver: ResponsiveSliverGridList(minItemWidth: 350, verticalGridMargin: 5, horizontalGridSpacing: 5, verticalGridSpacing: 5, children: modCardFetch()));
+        sliver: ResponsiveSliverGridList(minItemWidth: 350, verticalGridMargin: 5, horizontalGridSpacing: 5, verticalGridSpacing: 5, children: widget.category.visible ? modCardFetch() : []));
   }
 
   List<ModCardLayout> modCardFetch() {

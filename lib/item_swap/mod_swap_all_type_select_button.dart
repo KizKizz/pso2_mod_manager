@@ -4,7 +4,7 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/main_widgets/category_select_buttons.dart';
 import 'package:signals/signals_flutter.dart';
 
-Signal<String> selectedModSwapAllTypeCategory = Signal<String>(appText.both);
+Signal<String> selectedModSwapAllTypeCategory = Signal<String>('Both');
 
 class ModSwapAllTypeSelectButton extends StatefulWidget {
   const ModSwapAllTypeSelectButton({super.key, required this.rScrollController});
@@ -16,7 +16,7 @@ class ModSwapAllTypeSelectButton extends StatefulWidget {
 }
 
 class _ModSwapAllTypeSelectButtonState extends State<ModSwapAllTypeSelectButton> {
-  final itemTypes = [appText.both, 'PSO2', 'NGS'];
+  final itemTypes = ['Both', 'PSO2', 'NGS'];
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class _ModSwapAllTypeSelectButtonState extends State<ModSwapAllTypeSelectButton>
       height: 40,
       child: PromptedChoice<String>.single(
           title: appText.types,
-          value: appText.categoryName(selectedModSwapAllTypeCategory.value),
+          value: selectedModSwapAllTypeCategory.value == itemTypes.first ? appText.both : selectedModSwapAllTypeCategory.value,
           modalFit: FlexFit.tight,
           onChanged: (value) async {
             selectedModSwapAllTypeCategory.value = value!;
@@ -33,13 +33,13 @@ class _ModSwapAllTypeSelectButtonState extends State<ModSwapAllTypeSelectButton>
           itemCount: itemTypes.length,
           itemBuilder: (state, i) {
             return RadioListTile(
-              value: itemTypes[i],
+              value: i == 0 ? appText.both : itemTypes[i],
               groupValue: state.single,
               onChanged: (value) {
                 state.select(itemTypes[i]);
               },
               title: ChoiceText(
-                itemTypes[i],
+                i == 0 ? appText.both : itemTypes[i],
                 highlight: state.search?.value,
                 style: TextStyle(color: selectedModSwapAllTypeCategory.watch(context) == itemTypes[i] ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.bodyMedium!.color),
               ),
@@ -50,4 +50,3 @@ class _ModSwapAllTypeSelectButtonState extends State<ModSwapAllTypeSelectButton>
     );
   }
 }
-

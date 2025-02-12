@@ -156,6 +156,18 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             prefs.setBool('itemIconSlides', itemIconSlides.value);
                           },
                         ),
+                        // Hide empty cate
+                        SettingsHeader(icon: Icons.slideshow, text: appText.hideEmptyCategories),
+                        AnimatedHorizontalToggleLayout(
+                          taps: [appText.on, appText.off],
+                          initialIndex: hideEmptyCategories ? 0 : 1,
+                          width: constraints.maxWidth,
+                          onChange: (currentIndex, targetIndex) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            targetIndex == 0 ? hideEmptyCategories = true : hideEmptyCategories = false;
+                            prefs.setBool('hideEmptyCategories', hideEmptyCategories);
+                          },
+                        ),
                         // jsons backup
                         SettingsHeader(icon: Icons.backup_table_sharp, text: appText.dText(appText.modConfigsLastSaveDate, latestJsonBackupDate)),
                         SizedBox(

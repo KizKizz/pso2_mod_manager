@@ -29,7 +29,7 @@ class _AppliedModCategorySelectButtonsState extends State<AppliedModCategorySele
 
   @override
   Widget build(BuildContext context) {
-    cateItemAmount = widget.categories.map((e) => e.items.length).toList();
+    cateItemAmount = widget.categories.map((e) => e.getNumOfAppliedItems()).toList();
     if (!categoryNames.contains('All')) {
       categoryNames.insert(0, 'All');
       int totalItems = 0;
@@ -60,7 +60,7 @@ class _AppliedModCategorySelectButtonsState extends State<AppliedModCategorySele
           itemCount: categoryNames.length,
           itemBuilder: (state, i) {
             return RadioListTile(
-                value: categoryNames[i],
+                value: appText.categoryName(categoryNames[i]),
                 groupValue: state.single,
                 onChanged: (value) {
                   state.select(categoryNames[i]);
