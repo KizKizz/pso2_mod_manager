@@ -38,7 +38,7 @@ class _ItemSwapCateSelectButtonsState extends State<ItemSwapCateSelectButtons> {
           itemCount: widget.categoryNames.length,
           itemBuilder: (state, i) {
             return RadioListTile(
-              value: widget.categoryNames[i],
+              value: appText.categoryName(widget.categoryNames[i]),
               groupValue: state.single,
               onChanged: (value) {
                 state.select(widget.categoryNames[i]);

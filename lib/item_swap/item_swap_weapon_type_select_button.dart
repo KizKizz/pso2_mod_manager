@@ -45,7 +45,7 @@ class _ItemSwapWeaponTypeSelectButtonState extends State<ItemSwapWeaponTypeSelec
           itemCount: weaponTypeNames.length,
           itemBuilder: (state, i) {
             return RadioListTile(
-              value: weaponTypeNames[i],
+              value: appText.weaponTypeName(weaponTypeNames[i]),
               groupValue: state.single,
               onChanged: (value) {
                 state.select(weaponTypeNames[i]);

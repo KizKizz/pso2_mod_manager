@@ -109,7 +109,7 @@ class _AppAppliedModsLoadPageState extends State<AppAppliedModsLoadPage> {
                                     for (var mod in item.mods.where((e) => e.applyStatus)) {
                                       for (var submod in mod.submods.where((e) => e.applyStatus)) {
                                         if (submod.modFiles.indexWhere((e) => e.ogMd5s.first.isNotEmpty && e.ogMd5s.first != e.md5) != -1) {
-                                          await applyingPopup(context, true, item, mod, submod);
+                                          await applyingPopup(context, true, item, mod, submod, []);
                                         }
                                       }
                                     }
@@ -124,7 +124,7 @@ class _AppAppliedModsLoadPageState extends State<AppAppliedModsLoadPage> {
                                     for (var mod in item.mods.where((e) => e.applyStatus)) {
                                       for (var submod in mod.submods.where((e) => e.applyStatus)) {
                                         if (submod.modFiles.indexWhere((e) => e.ogMd5s.first.isNotEmpty && e.ogMd5s.first != e.md5) != -1) {
-                                          await applyingPopup(context, false, item, mod, submod);
+                                          await applyingPopup(context, false, item, mod, submod, []);
                                         }
                                       }
                                     }

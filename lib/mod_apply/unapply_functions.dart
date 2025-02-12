@@ -15,32 +15,58 @@ import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_functions/item_icon_mark.dart';
 
-Future<void> modUnapplySequence(context, bool applying, Item item, Mod mod, SubMod submod) async {
-  await applyingPopup(context, applying, item, mod, submod);
+Future<void> modUnapplySequence(context, bool applying, Item item, Mod mod, SubMod submod, List<ModFile> modFilesToRestore) async {
+  await applyingPopup(context, applying, item, mod, submod, modFilesToRestore);
 }
 
-Future<void> modUnapplyRestore(Item item, Mod mod, SubMod submod) async {
+Future<void> modUnapplyRestore(Item item, Mod mod, SubMod submod, List<ModFile> modFilesToRestore) async {
   modApplyStatus.value = '';
   if (originalFilesBackupsFromSega) {
-    for (var modFile in submod.modFiles) {
-      await restoreFromSegaServers(item, mod, submod, modFile);
-      await Future.delayed(const Duration(microseconds: 10));
-    }
-    if (submod.getModFilesAppliedState()) {
-      for (var modFile in submod.modFiles.where((e) => e.applyStatus)) {
-        await restoreFromLocalBackups(item, mod, submod, modFile);
+    if (modFilesToRestore.isEmpty) {
+      for (var modFile in submod.modFiles) {
+        await restoreFromSegaServers(item, mod, submod, modFile);
         await Future.delayed(const Duration(microseconds: 10));
+      }
+      if (submod.getModFilesAppliedState()) {
+        for (var modFile in submod.modFiles.where((e) => e.applyStatus)) {
+          await restoreFromLocalBackups(item, mod, submod, modFile);
+          await Future.delayed(const Duration(microseconds: 10));
+        }
+      }
+    } else {
+      for (var modFile in modFilesToRestore) {
+        await restoreFromSegaServers(item, mod, submod, modFile);
+        await Future.delayed(const Duration(microseconds: 10));
+      }
+      if (modFilesToRestore.indexWhere((e) => e.applyStatus) != -1) {
+        for (var modFile in modFilesToRestore.where((e) => e.applyStatus)) {
+          await restoreFromLocalBackups(item, mod, submod, modFile);
+          await Future.delayed(const Duration(microseconds: 10));
+        }
       }
     }
   } else {
-    for (var modFile in submod.modFiles) {
-      await restoreFromLocalBackups(item, mod, submod, modFile);
-      await Future.delayed(const Duration(microseconds: 10));
-    }
-    if (submod.getModFilesAppliedState()) {
-      for (var modFile in submod.modFiles.where((e) => e.applyStatus)) {
-        await restoreFromSegaServers(item, mod, submod, modFile);
+    if (modFilesToRestore.isEmpty) {
+      for (var modFile in submod.modFiles) {
+        await restoreFromLocalBackups(item, mod, submod, modFile);
         await Future.delayed(const Duration(microseconds: 10));
+      }
+      if (submod.getModFilesAppliedState()) {
+        for (var modFile in submod.modFiles.where((e) => e.applyStatus)) {
+          await restoreFromSegaServers(item, mod, submod, modFile);
+          await Future.delayed(const Duration(microseconds: 10));
+        }
+      }
+    } else {
+      for (var modFile in modFilesToRestore) {
+        await restoreFromLocalBackups(item, mod, submod, modFile);
+        await Future.delayed(const Duration(microseconds: 10));
+      }
+      if (modFilesToRestore.indexWhere((e) => e.applyStatus) != -1) {
+        for (var modFile in modFilesToRestore.where((e) => e.applyStatus)) {
+          await restoreFromSegaServers(item, mod, submod, modFile);
+          await Future.delayed(const Duration(microseconds: 10));
+        }
       }
     }
   }
@@ -71,9 +97,9 @@ Future<void> restoreFromLocalBackups(Item item, Mod mod, SubMod submod, ModFile 
   modFile.bkLocations.removeWhere((e) => !File(e).existsSync());
 
   if (modFile.bkLocations.isEmpty) {
-    submod.applyStatus = false;
-    mod.applyStatus = false;
-    item.applyStatus = false;
+    if (!submod.getModFilesAppliedState()) submod.applyStatus = false;
+    if (!mod.getSubmodsAppliedState()) mod.applyStatus = false;
+    if (!item.getModsAppliedState()) item.applyStatus = false;
   }
 }
 
@@ -95,9 +121,9 @@ Future<void> restoreFromSegaServers(Item item, Mod mod, SubMod submod, ModFile m
   modFile.bkLocations.removeWhere((e) => !File(e).existsSync());
 
   if (modFile.bkLocations.isEmpty) {
-    submod.applyStatus = false;
-    mod.applyStatus = false;
-    item.applyStatus = false;
+    if (!submod.getModFilesAppliedState()) submod.applyStatus = false;
+    if (!mod.getSubmodsAppliedState()) mod.applyStatus = false;
+    if (!item.getModsAppliedState()) item.applyStatus = false;
   }
 }
 
@@ -121,7 +147,7 @@ Future<File> restoreOriginalFileDownload(String networkFilePath, String server, 
         case TaskStatus.complete:
           modApplyStatus.value = appText.fileDownloadSuccessful;
           return File(saveLocation + p.separator + p.basenameWithoutExtension(networkFilePath));
-          
+
         default:
           modApplyStatus.value = appText.fileDownloadFailed;
       }

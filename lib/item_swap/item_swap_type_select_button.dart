@@ -35,10 +35,11 @@ class _ItemSwapTypeSelectButtonsState extends State<ItemSwapTypeSelectButtons> {
           itemCount: itemTypes.length,
           itemBuilder: (state, i) {
             return RadioListTile(
-              value: itemTypes[i],
+              value: i == 0 ? appText.both : itemTypes[i],
               groupValue: state.single,
               onChanged: (value) {
                 state.select(itemTypes[i]);
+                debugPrint(value);
               },
               title: ChoiceText(
                 i == 0 ? appText.both : itemTypes[i],

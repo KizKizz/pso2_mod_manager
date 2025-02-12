@@ -29,7 +29,7 @@ Future<void> modToGameData(context, bool applying, Item item, Mod mod, SubMod su
     await modApplySequence(context, applying, item, mod, submod);
     submod.applyStatus ? applySuccessNotification(submod.submodName) : applyFailedNotification(submod.submodName);
   } else {
-    await modUnapplySequence(context, applying, item, mod, submod);
+    await modUnapplySequence(context, applying, item, mod, submod, []);
     !submod.applyStatus ? restoreSuccessNotification(submod.submodName) : restoreFailedNotification(submod.submodName);
   }
   modPopupStatus.value = 'Done!';
@@ -62,9 +62,10 @@ Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod
   (dupItem, dupMod, dupSubmod) = duplicateAppliedModCheck(submod);
 
   if (dupItem != null && dupMod != null && dupSubmod != null) {
-    performApply = await duplicateAppliedModPopup(context, dupItem, dupMod, dupSubmod, submod.submodName);
+    List<ModFile> modFilesToRestore = [];
+    (performApply, modFilesToRestore) = await duplicateAppliedModPopup(context, dupItem, dupMod, dupSubmod, submod);
     if (performApply) {
-      await modUnapplySequence(context, false, dupItem, dupMod, dupSubmod);
+      await modUnapplySequence(context, false, dupItem, dupMod, dupSubmod, modFilesToRestore);
     } else {
       return;
     }
@@ -78,7 +79,7 @@ Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod
       submod.boundingRemoved = true;
     }
 
-    await applyingPopup(context, applying, item, mod, submod);
+    await applyingPopup(context, applying, item, mod, submod, []);
   }
 }
 

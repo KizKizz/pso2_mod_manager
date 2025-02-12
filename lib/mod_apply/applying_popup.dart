@@ -6,12 +6,13 @@ import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
 import 'package:pso2_mod_manager/mod_apply/unapply_functions.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
+import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
 import 'package:signals/signals_flutter.dart';
 
-Future<void> applyingPopup(context, bool applying, Item item, Mod mod, SubMod submod) async {
+Future<void> applyingPopup(context, bool applying, Item item, Mod mod, SubMod submod, List<ModFile> extraModFiles) async {
   await showDialog(
       barrierDismissible: false,
       context: context,
@@ -22,7 +23,7 @@ Future<void> applyingPopup(context, bool applying, Item item, Mod mod, SubMod su
               insetPadding: const EdgeInsets.all(5),
               contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               content: FutureBuilder(
-                future: applying ? modBackupApply(item, mod, submod) : modUnapplyRestore(item, mod, submod),
+                future: applying ? modBackupApply(item, mod, submod) : modUnapplyRestore(item, mod, submod, extraModFiles),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return Center(

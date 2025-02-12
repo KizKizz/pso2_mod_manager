@@ -56,21 +56,22 @@ class _CateModCategorySelectButtonsState extends State<CateModCategorySelectButt
       height: 40,
       child: PromptedChoice<String>.single(
           title: appText.view,
-          value: appText.categoryName(selectedDisplayCategory.value),
+          value: appText.categoryName(selectedModDisplayCategory.value),
           modalFit: FlexFit.tight,
           onChanged: (value) async {
             final prefs = await SharedPreferences.getInstance();
-            selectedDisplayCategory.value = value!;
-            prefs.setString('selectedDisplayCategory', selectedDisplayCategory.value);
+            selectedModDisplayCategory.value = value!;
+            prefs.setString('selectedModDisplayCategory', selectedModDisplayCategory.value);
             widget.scrollController.jumpTo(0);
           },
           itemCount: categoryNames.length,
           itemBuilder: (state, i) {
             return RadioListTile(
-                value: categoryNames[i],
+                value: appText.categoryName(categoryNames[i]),
                 groupValue: state.single,
                 onChanged: (value) {
                   state.select(categoryNames[i]);
+                  debugPrint(state.value.toString());
                 },
                 title: Row(
                   spacing: 5,
@@ -79,7 +80,7 @@ class _CateModCategorySelectButtonsState extends State<CateModCategorySelectButt
                     ChoiceText(
                       appText.categoryName(categoryNames[i]),
                       highlight: state.search?.value,
-                      style: TextStyle(color: selectedDisplayCategory.watch(context) == categoryNames[i] ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.bodyMedium!.color),
+                      style: TextStyle(color: selectedModDisplayCategory.watch(context) == categoryNames[i] ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.bodyMedium!.color),
                     ),
                     HeaderInfoBox(info: appText.dText(cateModAmount[i] > 1 ? appText.numMods : appText.numMod, cateModAmount[i].toString()), borderHighlight: false)
                   ],

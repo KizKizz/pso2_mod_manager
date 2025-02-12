@@ -329,7 +329,10 @@ class AppText {
       addFilter = 'Add Filter',
       collapseAll = 'Collapse All',
       expandAll = 'Expand All',
-      weaponTypes = 'Weapon Types';
+      weaponTypes = 'Weapon Types',
+      replaceTheEntireMod = 'Replace The Entire Mod',
+      replaceConflictingFilesOnly = 'Replace Conflicting Files Only',
+      conflictingFiles = 'Conflicting files:';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',

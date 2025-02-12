@@ -69,10 +69,10 @@ class _MainModGridState extends State<MainModGrid> {
     }
 
     List<Category> displayingCategories = [];
-    if (selectedDisplayCategory.watch(context) == 'All') {
+    if (selectedModDisplayCategory.watch(context) == 'All') {
       displayingCategories = categories;
     } else {
-      displayingCategories = categories.where((e) => e.categoryName == selectedDisplayCategory.watch(context)).toList();
+      displayingCategories = categories.where((e) => e.categoryName == selectedModDisplayCategory.watch(context)).toList();
     }
 
     // Sort

@@ -60,7 +60,7 @@ class _AppliedModCategorySelectButtonsState extends State<AppliedModCategorySele
           itemCount: categoryNames.length,
           itemBuilder: (state, i) {
             return RadioListTile(
-                value: categoryNames[i],
+                value: appText.categoryName(categoryNames[i]),
                 groupValue: state.single,
                 onChanged: (value) {
                   state.select(categoryNames[i]);

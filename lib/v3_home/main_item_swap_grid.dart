@@ -55,7 +55,7 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                     : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[17]
                         ? e.category == defaultCategoryDirs[17] && (e.subCategory.contains(selectedWeaponType.watch(context)) || selectedWeaponType.watch(context) == 'All')
                         : e.category == selectedDisplayItemSwapCategory.watch(context))
-        .where((e) => selectedItemSwapTypeCategory.watch(context) == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.watch(context).toLowerCase())
+        .where((e) => selectedItemSwapTypeCategory.watch(context) == 'Both' || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.watch(context).toLowerCase())
         .toList();
     displayingItems.sort((a, b) => a.getName().compareTo(b.getName()));
 
@@ -74,7 +74,7 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                           : extraCategory == defaultCategoryDirs[11]
                               ? e.category == defaultCategoryDirs[2]
                               : true)
-          .where((e) => selectedItemSwapTypeCategory.watch(context) == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.watch(context).toLowerCase())
+          .where((e) => selectedItemSwapTypeCategory.watch(context) == 'Both' || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.watch(context).toLowerCase())
           .toList();
       rDisplayingItemsExtra.sort((a, b) => a.getName().compareTo(b.getName()));
     } else {

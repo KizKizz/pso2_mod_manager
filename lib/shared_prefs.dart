@@ -17,6 +17,7 @@ Signal<bool> hideAppBackgroundSlides = Signal<bool>(false);
 Signal<int> backgroundImageSlideInterval = Signal<int>(10);
 Signal<bool> itemIconSlides = Signal<bool>(false);
 Signal<String> selectedDisplayCategory = Signal<String>('All');
+Signal<String> selectedModDisplayCategory = Signal<String>('All');
 Signal<String> selectedDisplayCategoryAppliedList = Signal<String>('All');
 Signal<String> selectedDisplaySort = Signal<String>('Name (Alphabetical)');
 Signal<String> selectedDisplaySortModSet = Signal<String>('Name (Alphabetical)');
@@ -80,6 +81,9 @@ Future<void> prefsLoad() async {
 
   // Main list filter
   selectedDisplayCategory.value = prefs.getString('selectedDisplayCategory') ?? 'All';
+
+  // Main Mod list filter
+  selectedModDisplayCategory.value = prefs.getString('selectedModDisplayCategory') ?? 'All';
 
   // Main list applied list filter
   selectedDisplayCategoryAppliedList.value = prefs.getString('selectedDisplayCategoryAppliedList') ?? 'All';

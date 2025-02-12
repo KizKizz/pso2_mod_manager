@@ -41,7 +41,7 @@ class _ItemSwapMotionTypeSelectButtonsState extends State<ItemSwapMotionTypeSele
                 state.select(motionTypes[i]);
               },
               title: ChoiceText(
-                motionTypes[i],
+                appText.motionTypeName(motionTypes[i]),
                 highlight: state.search?.value,
                 style: TextStyle(color: selectedItemSwapMotionType.watch(context) == motionTypes[i] ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.bodyMedium!.color),
               ),

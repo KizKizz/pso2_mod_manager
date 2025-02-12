@@ -59,6 +59,12 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
+    // Refresh
+    if (settingChangeStatus.watch(context) != settingChangeStatus.peek()) {
+      setState(
+        () {},
+      );
+    }
     List<String> homepageWidgetNames = [appText.itemList, appText.modList, appText.modSets, appText.appliedList, appText.itemSwap, appText.aqmInject, appText.vitalGauge, appText.lineStrike];
     List<Icon> homepageWidgetIcons = [
       const Icon(Icons.list_alt),
