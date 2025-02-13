@@ -1,4 +1,5 @@
 {
+  "auxiliaryUIOpacity": "補助UIの不透明度",
   "wpSwords": "ソード",
   "wpWiredLances": "ワイヤードランス",
   "wpPartisans": "パルチザン",
@@ -22,7 +23,7 @@
   "replaceTheEntireMod": "MOD全体を置き換える",
   "replaceConflictingFilesOnly": "競合ファイルのみ置き換える",
   "conflictingFiles": "競合しているファイル:",
-  "hideEmptyCategories": "Hide Empty Categories",
+  "hideEmptyCategories": "空のカテゴリーを隠す",
   "holdToRestoreNumAppliedMods": "ホールドして適用された%p%つのMODを元に戻す",
   "holdToRestoreNumAppliedMod": "ホールドして適用された%p%つのMODを元に戻す",
   "restoredVitalGauges": "修復されたバイタルゲージ",

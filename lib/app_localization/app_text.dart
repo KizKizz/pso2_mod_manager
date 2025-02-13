@@ -332,7 +332,8 @@ class AppText {
       weaponTypes = 'Weapon Types',
       replaceTheEntireMod = 'Replace The Entire Mod',
       replaceConflictingFilesOnly = 'Replace Conflicting Files Only',
-      conflictingFiles = 'Conflicting files:';
+      conflictingFiles = 'Conflicting files:',
+      categorizeModsByItems = 'Categorize Mods By Items';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',

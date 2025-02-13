@@ -200,7 +200,21 @@ Future<List<Item>> modAddToMasterList(bool addingToSet, List<ModSet> modSets) as
           }
         }
 
-        await io.copyPath(modAddingItem.modDir.path, modAddingItem.modDir.path.replaceFirst(modAddTempSortedDirPath, newItemDirDestPath));
+        if (modAddCategorizeModsByItems) {
+          for (var submodDir in modAddingItem.submods.where((e) => e.existsSync())) {
+            var allFiles = submodDir.listSync(recursive: true).whereType<File>();
+            for (var file in allFiles) {
+              if ((p.extension(file.path) == '' && item.containsIce(p.basenameWithoutExtension(file.path))) || p.extension(file.path) != '') {
+                String newFilePath = file.path.replaceFirst(modAddTempSortedDirPath, newItemDirDestPath);
+                await Directory(p.dirname(newFilePath)).create(recursive: true);
+                await file.copy(newFilePath);
+              }
+            }
+          }
+        } else {
+          await io.copyPath(modAddingItem.modDir.path, modAddingItem.modDir.path.replaceFirst(modAddTempSortedDirPath, newItemDirDestPath));
+        }
+
         if (Directory(newItemDirDestPath).existsSync() && Directory(newItemDirDestPath).listSync().whereType<File>().toList().indexWhere((e) => p.basename(e.path) == '$itemName.png') == -1) {
           final response = await http.get(Uri.parse(githubIconDatabaseLink + item.iconImagePath));
           if (response.statusCode == 200) File(newItemDirDestPath + p.separator + p.basename(item.iconImagePath)).writeAsBytesSync(response.bodyBytes);
@@ -249,17 +263,7 @@ Future<List<Item>> modAddToMasterList(bool addingToSet, List<ModSet> modSets) as
                   if (set.setItems.indexWhere((e) => e.location == itemInList.location) == -1) set.addItem(itemInList);
                 }
               }
-              //Sort
-              // itemInList.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
             }
-            //Sort
-            // if (itemsWithNewModsOnTop) {
-            //   cateInList.items.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
-            // } else {
-            //   cateInList.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
-            // }
-            // cateInList.visible = cateInList.items.isNotEmpty ? true : false;
-            // cateType.visible = cateType.categories.where((element) => element.items.isNotEmpty).isNotEmpty ? true : false;
 
             break;
           } else if (cateType.groupName == defaultCategoryTypes[2]) {
