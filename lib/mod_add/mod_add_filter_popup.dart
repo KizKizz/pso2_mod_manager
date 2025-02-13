@@ -24,7 +24,7 @@ Future<void> modAddFilterPopup(context) async {
         return StatefulBuilder(builder: (dialogContext, setState) {
           return AlertDialog(
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: const BorderRadius.all(Radius.circular(5))),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
             insetPadding: const EdgeInsets.all(5),
             titlePadding: const EdgeInsets.only(top: 5),
             title: Column(children: [
@@ -76,7 +76,7 @@ Future<void> modAddFilterPopup(context) async {
                       textAlignVertical: TextAlignVertical.center,
                       inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
                       validator: (value) {
-                        if (modAddFilterList.indexWhere((element) => p.basenameWithoutExtension(element).toLowerCase() == newName.text.toLowerCase()) != -1) {
+                        if (modAddFilterList.indexWhere((element) => p.basenameWithoutExtension(element) == newName.text) != -1) {
                           return appText.nameAlreadyExists;
                         }
                         return null;

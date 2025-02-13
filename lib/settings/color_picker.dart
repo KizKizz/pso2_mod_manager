@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:pso2_mod_manager/app_colorscheme.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/settings/other_settings.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:signals/signals_flutter.dart';
 
 class CustomMaterialColor {
   final int r;
@@ -41,6 +43,7 @@ Future<Color?> colorPicker(context, Color startingColor) async {
             elevation: 10,
             titlePadding: const EdgeInsets.all(0),
             contentPadding: const EdgeInsets.all(0),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: const BorderRadius.vertical(top: Radius.circular(500))),
             content: SizedBox(
               width: 250,

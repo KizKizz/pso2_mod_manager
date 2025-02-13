@@ -27,7 +27,7 @@ Future<void> modsetModViewPopup(context, Item item, String setName) async {
           }
           return AlertDialog(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
             insetPadding: const EdgeInsets.only(top: 25),
             contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
             content: SizedBox(

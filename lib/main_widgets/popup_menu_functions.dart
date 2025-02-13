@@ -22,6 +22,7 @@ Future<void> modRename(context, Mod mod) async {
   if (newName != null) {
     String newPath = p.dirname(mod.location) + p.separator + newName;
     await io.copyPath(mod.location, newPath);
+    if (Directory(newPath).existsSync()) await Directory(mod.location).delete(recursive: true);
     for (int i = 0; i < mod.submods.length; i++) {
       for (int k = 0; k < mod.submods[i].modFiles.length; k++) {
         mod.submods[i].modFiles[k].location.replaceFirst(mod.location, newPath);
@@ -48,6 +49,7 @@ Future<void> modRename(context, Mod mod) async {
       mod.previewVideos[l].replaceFirst(mod.location, newPath);
     }
     mod.location = newPath;
+    mod.modName = newName;
     saveMasterModListToJson();
     modPopupStatus.value = newName;
   }
@@ -60,7 +62,7 @@ Future<void> submodRename(context, Mod mod, SubMod submod) async {
     if (p.isWithin(mod.location, submod.location)) {
       String newPath = p.dirname(submod.location) + p.separator + newName;
       await io.copyPath(submod.location, newPath);
-      await Directory(submod.location).delete(recursive: true);
+      if (Directory(newPath).existsSync()) await Directory(submod.location).delete(recursive: true);
       submod.submodName = newName;
       submod.cmxFile = submod.cmxFile!.replaceFirst(submod.location, newPath);
       for (var modFile in submod.modFiles) {
@@ -89,7 +91,7 @@ Future<void> submodRename(context, Mod mod, SubMod submod) async {
     } else {
       String newPath = p.dirname(mod.location) + p.separator + newName;
       await io.copyPath(mod.location, newPath);
-      await Directory(mod.location).delete(recursive: true);
+      if (Directory(newPath).existsSync()) await Directory(mod.location).delete(recursive: true);
       mod.modName = newName;
       submod.submodName = newName;
       submod.cmxFile = submod.cmxFile!.replaceFirst(submod.location, newPath);

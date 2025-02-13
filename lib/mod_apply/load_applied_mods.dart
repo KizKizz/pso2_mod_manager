@@ -10,10 +10,10 @@ Future<List<Item>> appliedModsCheck() async {
   } else {
     List<Item> unappliedItems = [];
     for (var cateType in masterModList) {
-      for (var cate in cateType.categories) {
-        for (var item in cate.items.where((e) => e.applyStatus)) {
-          for (var mod in item.mods.where((e) => e.applyStatus)) {
-            for (var submod in mod.submods.where((e) => e.applyStatus)) {
+      for (var cate in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0)) {
+        for (var item in cate.items.where((e) => e.getModsAppliedState())) {
+          for (var mod in item.mods.where((e) => e.getSubmodsAppliedState())) {
+            for (var submod in mod.submods.where((e) => e.getModFilesAppliedState())) {
               for (var modFile in submod.modFiles.where((e) => e.applyStatus)) {
                 for (var path in modFile.ogLocations) {
                   modFile.ogMd5s.clear();

@@ -69,7 +69,7 @@ class _MainModSetGridState extends State<MainModSetGrid> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                  flex: 3,
+                  flex: 1,
                   child: SizedBox(
                     height: 40,
                     child: OutlinedButton(
@@ -82,9 +82,9 @@ class _MainModSetGridState extends State<MainModSetGrid> {
                         },
                         child: Text(appText.addNewSet)),
                   )),
-              Expanded(flex: 1, child: ModSetSortingButton(scrollController: controller)),
+              Expanded(flex: 2, child: ModSetSortingButton(scrollController: controller)),
               Expanded(
-                  flex: 1,
+                  flex: 3,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 1),
                     child: ModSetSelectButtons(setNames: masterModSetList.map((e) => e.setName).toList(), scrollController: controller),

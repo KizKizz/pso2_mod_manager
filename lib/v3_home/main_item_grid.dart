@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/main_widgets/sorting_buttons.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
+import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/main_widgets/cate_item_grid_layout.dart';
 import 'package:pso2_mod_manager/main_widgets/category_select_buttons.dart';
+import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
@@ -41,16 +44,21 @@ class _MainItemGridState extends State<MainItemGrid> {
     }
 
     // Suggestions
-    List<String> filteredStrings = [];
-    for (var type in masterModList) {
-      if (searchTextController.value.text.isEmpty) {
-        filteredStrings.addAll(type.getDistinctNames());
-      } else {
-        filteredStrings.addAll(type.getDistinctNames().where((e) => e.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
+    List<Item> filteredItems = [];
+    if (searchTextController.value.text.isEmpty) {
+      for (var cateType in masterModList) {
+        for (var cate in cateType.categories.where((e) => e.categoryName == selectedDisplayCategory.value || selectedDisplayCategory.value == appText.all)) {
+          filteredItems.addAll(cate.items);
+        }
+      }
+    } else {
+      for (var cateType in masterModList) {
+        for (var cate in cateType.categories.where((e) => e.categoryName == selectedDisplayCategory.value || selectedDisplayCategory.value == appText.all)) {
+          filteredItems.addAll(cate.items.where((e) => e.itemName.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
+        }
       }
     }
-    filteredStrings = filteredStrings.toSet().toList();
-    filteredStrings.sort((a, b) => a.compareTo(b));
+    filteredItems.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
 
     // Filter
     List<Category> categories = [];
@@ -101,11 +109,12 @@ class _MainItemGridState extends State<MainItemGrid> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                flex: 3,
+                flex: 4,
                 child: SizedBox(
                   height: 40,
                   child: Stack(alignment: AlignmentDirectional.centerEnd, children: [
-                    SearchField<String>(
+                    SearchField<Item>(
+                      itemHeight: 90,
                       searchInputDecoration: SearchInputDecoration(
                           filled: true,
                           fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
@@ -114,12 +123,43 @@ class _MainItemGridState extends State<MainItemGrid> {
                           cursorHeight: 15,
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
                           cursorColor: Theme.of(context).colorScheme.inverseSurface),
-                      suggestions: filteredStrings
+                      suggestions: filteredItems
                           .map(
-                            (e) => SearchFieldListItem<String>(
-                              e,
+                            (e) => SearchFieldListItem<Item>(
+                              e.itemName,
                               item: e,
-                              child: Padding(padding: const EdgeInsets.all(8.0), child: Text(e)),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 5),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  spacing: 5,
+                                  children: [
+                                    SizedBox(width: 75, height: 75, child: ItemIconBox(item: e)),
+                                    Column(
+                                      spacing: 5,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(e.itemName.replaceFirst('_', '/').trim(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                                        Row(
+                                          spacing: 5,
+                                          children: [
+                                            InfoBox(
+                                              info: appText.dText(e.mods.length > 1 ? appText.numMods : appText.numMod, e.mods.length.toString()),
+                                              borderHighlight: false,
+                                            ),
+                                            InfoBox(
+                                              info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedMods().toString()),
+                                              borderHighlight: e.applyStatus,
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
                             ),
                           )
                           .toList(),

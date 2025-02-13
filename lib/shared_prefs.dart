@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:pso2_mod_manager/app_colorscheme.dart';
 import 'package:pso2_mod_manager/app_localization/item_locale.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/settings/other_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
@@ -64,8 +65,11 @@ Future<void> prefsLoad() async {
   // Main dir path
   mainDataDirPath = prefs.getString('mainDataDirPath') ?? '';
 
-  // Main dir path
+  // Main UI alpha
   uiBackgroundColorAlpha.value = prefs.getInt('uiBackgroundColorAlpha') ?? 150;
+  
+  // Aux UI alpha
+  uiDialogBackgroundColorAlpha.value = prefs.getInt('uiDialogBackgroundColorAlpha') ?? 180;
 
   // App Theme Mode
   appThemeMode = AppThemeMode.values.firstWhere((e) => e.value == prefs.getString('appThemeMode'), orElse: () => AppThemeMode.dark);
@@ -133,7 +137,7 @@ Future<void> prefsLoad() async {
 
   // Default homepage
   defaultHomepageIndex = prefs.getInt('defaultHomepageIndex') ?? 0;
-  
+
   // Hide empty categories
   hideEmptyCategories = prefs.getBool('hideEmptyCategories') ?? true;
 }

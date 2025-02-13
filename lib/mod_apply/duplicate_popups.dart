@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_item_class.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
-import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
@@ -23,7 +23,7 @@ Future<(bool, List<ModFile>)> duplicateAppliedModPopup(context, Item dupItem, Mo
           conflictingIceFileNames.retainWhere((e) => dupSubmod.getModFileNames().contains(e));
 
           return AlertDialog(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
             insetPadding: const EdgeInsets.all(5),
             titlePadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
@@ -119,7 +119,7 @@ Future<bool> duplicateAqmInjectedFilesPopup(context, AqmInjectedItem aqmInjected
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (dialogContext, setState) {
           return AlertDialog(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
             insetPadding: const EdgeInsets.all(5),
             titlePadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),

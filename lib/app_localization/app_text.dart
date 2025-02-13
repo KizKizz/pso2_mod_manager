@@ -411,7 +411,8 @@ class AppText {
       reselectPath = 'Re-Select Path',
       backgroundImageFolder = 'Background Image Folder',
       verTwoMainDataPathLocation = 'Ver.2 Mod Manager Main Data Folder Location:',
-      hideEmptyCategories = 'Hide Empty Categories';
+      hideEmptyCategories = 'Hide Empty Categories',
+      auxiliaryUIOpacity = 'Auxiliary UI Opacity';
 
   factory AppText.fromJson(Map<String, dynamic> json) => _$AppTextFromJson(json);
   Map<String, dynamic> toJson() => _$AppTextToJson(this);

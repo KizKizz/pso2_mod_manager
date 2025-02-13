@@ -7,7 +7,6 @@ import 'package:pso2_mod_manager/main_widgets/popup_list_tile.dart';
 import 'package:pso2_mod_manager/main_widgets/popup_menu_functions.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
-import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_grid_layout.dart';
 import 'package:pso2_mod_manager/v3_widgets/vertical_divider.dart';
@@ -35,7 +34,7 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
           }
           return AlertDialog(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
             insetPadding: const EdgeInsets.only(top: 25),
             contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
             content: SizedBox(
@@ -97,7 +96,8 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
                             slivers: [
                               SubmodGridLayout(
                                 submods: selectedMod!.submods,
-                                searchString: searchTextController.value.text,
+                                // searchString: searchTextController.value.text,
+                                searchString: '',
                                 item: item,
                                 mod: selectedMod!,
                                 modSetName: '',

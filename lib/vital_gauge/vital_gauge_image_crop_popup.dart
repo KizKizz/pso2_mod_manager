@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
-import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:image/image.dart' as img;
 import 'package:path/path.dart' as p;
@@ -29,7 +29,7 @@ Future<File?> vitalGaugeImageCropPopup(context, File newImageFile) async {
         return StatefulBuilder(builder: (dialogContext, setState) {
           return AlertDialog(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
             insetPadding: const EdgeInsets.only(top: 25),
             contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
             content: SizedBox(

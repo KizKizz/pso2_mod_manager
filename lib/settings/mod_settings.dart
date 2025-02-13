@@ -5,7 +5,6 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
-import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/custom_aqm_file_select_button.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_functions/profanity_remove.dart';
@@ -79,7 +78,7 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
                     SizedBox(
                       width: double.infinity,
                       child: SliderTheme(
-                          data: const SliderThemeData(showValueIndicator: ShowValueIndicator.always),
+                          data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.always),
                           child: Slider(
                             value: boundingRadiusRemovalValue,
                             min: -200,
@@ -125,7 +124,10 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
                           },
                           child: Text(appText.addCustomAqmFiles)),
                     ),
-                    SizedBox(width: double.infinity, child: CustomAqmSelectButtons(aqmFilePaths: modCustomAQMFiles.map((e) => e.path).toList())),
+                    SizedBox(
+                        width: double.infinity,
+                        child:
+                            CustomAqmSelectButtons(aqmFilePaths: Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').map((e) => e.path).toList())),
                     // Mark modded items
                     SettingsHeader(icon: Icons.image_search_rounded, text: appText.markModdedItemInGame),
                     AnimatedHorizontalToggleLayout(

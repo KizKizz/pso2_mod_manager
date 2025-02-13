@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
-import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -15,7 +15,7 @@ Future<bool> deleteConfirmPopup(context, String name) async {
         return StatefulBuilder(builder: (dialogContext, setState) {
           return AlertDialog(
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: const BorderRadius.all(Radius.circular(5))),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
             insetPadding: const EdgeInsets.all(5),
             titlePadding: const EdgeInsets.only(top: 5),
             title: Column(children: [
