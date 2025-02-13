@@ -173,7 +173,9 @@ class _BackgroundSlideshowState extends State<BackgroundSlideshow> {
                 SizedBox(
                   width: double.infinity,
                   child: SliderTheme(
-                      data: const SliderThemeData(showValueIndicator: ShowValueIndicator.always),
+                      data: SliderThemeData(
+                        overlayShape: SliderComponentShape.noOverlay,
+                        showValueIndicator: ShowValueIndicator.always),
                       child: Slider(
                         value: backgroundImageSlideInterval.watch(context).toDouble(),
                         min: 1,

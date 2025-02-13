@@ -23,7 +23,7 @@ Future<void> applyingPopup(context, bool applying, Item item, Mod mod, SubMod su
               insetPadding: const EdgeInsets.all(5),
               contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               content: FutureBuilder(
-                future: applying ? modBackupApply(item, mod, submod) : modUnapplyRestore(item, mod, submod, extraModFiles),
+                future: applying ? modBackupApply(item, mod, submod, extraModFiles) : modUnapplyRestore(item, mod, submod, extraModFiles),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return Center(

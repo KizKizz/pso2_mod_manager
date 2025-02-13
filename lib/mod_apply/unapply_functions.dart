@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:background_downloader/background_downloader.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
-import 'package:pso2_mod_manager/app_paths/sega_file_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_apply/applying_popup.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
@@ -96,7 +95,7 @@ Future<void> restoreFromLocalBackups(Item item, Mod mod, SubMod submod, ModFile 
 
   modFile.bkLocations.removeWhere((e) => !File(e).existsSync());
 
-  if (modFile.bkLocations.isEmpty) {
+  if (!modFile.applyStatus) {
     if (!submod.getModFilesAppliedState()) submod.applyStatus = false;
     if (!mod.getSubmodsAppliedState()) mod.applyStatus = false;
     if (!item.getModsAppliedState()) item.applyStatus = false;
@@ -104,13 +103,16 @@ Future<void> restoreFromLocalBackups(Item item, Mod mod, SubMod submod, ModFile 
 }
 
 Future<void> restoreFromSegaServers(Item item, Mod mod, SubMod submod, ModFile modFile) async {
-  for (var backupPath in modFile.bkLocations) {
-    final oData = oItemData.firstWhere((e) => p.basenameWithoutExtension(e.path) == modFile.modFileName, orElse: () => OfficialIceFile.empty());
+  final oDatas = oItemData.where((e) => p.basenameWithoutExtension(e.path) == modFile.modFileName);
+  for (var oData in oDatas) {
     if (oData.path.replaceAll('/', p.separator).isNotEmpty) {
-      final downloadedFile = await restoreOriginalFileDownload(oData.path, oData.server, p.dirname(backupPath.replaceFirst(backupDirPath, pso2DataDirPath)));
+      final downloadedFile = await restoreOriginalFileDownload(oData.path, oData.server, p.dirname(pso2binDirPath + p.separator + oData.path.replaceAll('/', p.separator)));
       if (downloadedFile.path.isNotEmpty && downloadedFile.existsSync()) {
         modApplyStatus.value = appText.dText(appText.restoringBackupFileToGameData, modFile.modFileName);
-        if (await File(backupPath).exists()) await File(backupPath).delete(recursive: true);
+        if (await File(backupDirPath + p.separator + p.withoutExtension(oData.path).replaceAll('/', p.separator)).exists()) {
+          await File(backupDirPath + p.separator + p.withoutExtension(oData.path).replaceAll('/', p.separator)).delete(recursive: true);
+          modFile.bkLocations.remove(backupDirPath + p.separator + p.withoutExtension(oData.path).replaceAll('/', p.separator));
+        }
         modFile.ogLocations.removeWhere((e) => e == downloadedFile.path);
         modFile.applyStatus = false;
         modApplyStatus.value = appText.successful;
@@ -118,9 +120,7 @@ Future<void> restoreFromSegaServers(Item item, Mod mod, SubMod submod, ModFile m
     }
   }
 
-  modFile.bkLocations.removeWhere((e) => !File(e).existsSync());
-
-  if (modFile.bkLocations.isEmpty) {
+  if (!modFile.applyStatus) {
     if (!submod.getModFilesAppliedState()) submod.applyStatus = false;
     if (!mod.getSubmodsAppliedState()) mod.applyStatus = false;
     if (!item.getModsAppliedState()) item.applyStatus = false;

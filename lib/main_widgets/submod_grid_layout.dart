@@ -155,7 +155,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                 // Quick swap Menu
                 PopupMenuButton(
                     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-                    color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
+                    color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
                     padding: EdgeInsets.zero,
                     menuPadding: EdgeInsets.zero,
                     icon: const Icon(Icons.add),
@@ -208,7 +208,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                 // Function menu
                 PopupMenuButton(
                   shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-                  color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
+                  color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
                   padding: EdgeInsets.zero,
                   menuPadding: EdgeInsets.zero,
                   tooltip: '',

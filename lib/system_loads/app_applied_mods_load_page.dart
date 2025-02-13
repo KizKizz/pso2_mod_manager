@@ -106,10 +106,10 @@ class _AppAppliedModsLoadPageState extends State<AppAppliedModsLoadPage> {
                             OutlinedButton(
                                 onPressed: () async {
                                   for (var item in unappliedItemList) {
-                                    for (var mod in item.mods.where((e) => e.applyStatus)) {
-                                      for (var submod in mod.submods.where((e) => e.applyStatus)) {
-                                        if (submod.modFiles.indexWhere((e) => e.ogMd5s.first.isNotEmpty && e.ogMd5s.first != e.md5) != -1) {
-                                          await applyingPopup(context, true, item, mod, submod, []);
+                                    for (var mod in item.mods.where((e) => e.getSubmodsAppliedState())) {
+                                      for (var submod in mod.submods.where((e) => e.getModFilesAppliedState())) {
+                                        if (submod.modFiles.indexWhere((e) => e.applyStatus && e.ogMd5s.isNotEmpty && e.ogMd5s.first != e.md5) != -1) {
+                                          await applyingPopup(context, true, item, mod, submod, submod.modFiles.where((e) => e.applyStatus && e.ogMd5s.isNotEmpty && e.ogMd5s.first != e.md5).toList());
                                         }
                                       }
                                     }
@@ -121,9 +121,9 @@ class _AppAppliedModsLoadPageState extends State<AppAppliedModsLoadPage> {
                             OutlinedButton(
                                 onPressed: () async {
                                   for (var item in unappliedItemList) {
-                                    for (var mod in item.mods.where((e) => e.applyStatus)) {
-                                      for (var submod in mod.submods.where((e) => e.applyStatus)) {
-                                        if (submod.modFiles.indexWhere((e) => e.ogMd5s.first.isNotEmpty && e.ogMd5s.first != e.md5) != -1) {
+                                    for (var mod in item.mods.where((e) => e.getSubmodsAppliedState())) {
+                                      for (var submod in mod.submods.where((e) => e.getModFilesAppliedState())) {
+                                        if (submod.modFiles.indexWhere((e) => e.applyStatus && e.ogMd5s.isNotEmpty && e.ogMd5s.first != e.md5) != -1) {
                                           await applyingPopup(context, false, item, mod, submod, []);
                                         }
                                       }
@@ -132,7 +132,13 @@ class _AppAppliedModsLoadPageState extends State<AppAppliedModsLoadPage> {
                                   pageIndex++;
                                   curPage.value = appPages[pageIndex];
                                 },
-                                child: Text(appText.removeAll))
+                                child: Text(appText.removeAll)),
+                                OutlinedButton(
+                                onPressed: () {
+                                  pageIndex++;
+                                  curPage.value = appPages[pageIndex];
+                                },
+                                child: Text(appText.skip)),
                           ],
                         )
                       ],

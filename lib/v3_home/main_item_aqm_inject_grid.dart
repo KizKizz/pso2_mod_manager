@@ -46,7 +46,7 @@ class _MainItemAqmInjectGridState extends State<MainItemAqmInjectGrid> {
   void initState() {
     aqmInjectedFuture = aqmInjectedItemsFetch();
     super.initState();
-    
+
     Future.delayed(const Duration(milliseconds: 100), () {
       fadeInOpacity = 1;
       if (mounted) setState(() {});
@@ -57,7 +57,7 @@ class _MainItemAqmInjectGridState extends State<MainItemAqmInjectGrid> {
   Widget build(BuildContext context) {
     // Fetch aqm files
     Directory(modCustomAqmsDirPath).createSync(recursive: true);
-    modCustomAQMFiles = Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').toList();
+    // modCustomAQMFiles = Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').toList();
 
     // Sort item data
     displayingItems = pItemData
@@ -179,7 +179,8 @@ class _MainItemAqmInjectGridState extends State<MainItemAqmInjectGrid> {
                     }
                   },
                   child: Text(appText.addCustomAqmFiles)),
-              Expanded(child: CustomAqmSelectButtons(aqmFilePaths: modCustomAQMFiles.map((e) => e.path).toList()))
+              Expanded(
+                  child: CustomAqmSelectButtons(aqmFilePaths: Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').map((e) => e.path).toList()))
             ],
           )
         ],

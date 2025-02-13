@@ -332,7 +332,8 @@ class AppText {
       weaponTypes = 'Weapon Types',
       replaceTheEntireMod = 'Replace The Entire Mod',
       replaceConflictingFilesOnly = 'Replace Conflicting Files Only',
-      conflictingFiles = 'Conflicting files:';
+      conflictingFiles = 'Conflicting files:',
+      categorizeModsByItems = 'Categorize Mods By Items';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',
@@ -411,7 +412,8 @@ class AppText {
       reselectPath = 'Re-Select Path',
       backgroundImageFolder = 'Background Image Folder',
       verTwoMainDataPathLocation = 'Ver.2 Mod Manager Main Data Folder Location:',
-      hideEmptyCategories = 'Hide Empty Categories';
+      hideEmptyCategories = 'Hide Empty Categories',
+      auxiliaryUIOpacity = 'Auxiliary UI Opacity';
 
   factory AppText.fromJson(Map<String, dynamic> json) => _$AppTextFromJson(json);
   Map<String, dynamic> toJson() => _$AppTextToJson(this);

@@ -7,8 +7,11 @@ import 'package:pso2_mod_manager/mod_apply/load_applied_mods.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
+import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/main_widgets/applied_mod_grid_layout.dart';
+import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
@@ -43,35 +46,25 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
     }
     int numOfAppliedMods = 0;
     // Suggestions
-    List<String> filteredStrings = [];
-    for (var type in masterModList) {
-      for (var cate in type.categories.where((e) => e.getNumOfAppliedItems() > 0)) {
-        for (var item in cate.items.where((e) => e.applyStatus)) {
-          for (var mod in item.mods.where((e) => e.applyStatus)) {
-            for (var submod in mod.submods.where((e) => e.applyStatus)) {
-              numOfAppliedMods++;
-              if (searchTextController.value.text.isEmpty) {
-                filteredStrings.addAll(submod.getModFileNames());
-              } else {
-                filteredStrings.addAll(submod.getModFileNames().where((e) => e.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
-              }
-            }
-            if (searchTextController.value.text.isEmpty) {
-              filteredStrings.add(mod.modName);
-            } else if (mod.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase())) {
-              filteredStrings.add(mod.modName);
-            }
+    List<Mod> filteredMods = [];
+    if (searchTextController.value.text.isEmpty) {
+      for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
+        for (var cate in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == appText.all))) {
+          for (var item in cate.items.where((e) => e.applyStatus)) {
+            filteredMods.addAll(item.mods.where((e) => e.applyStatus));
           }
-          if (searchTextController.value.text.isEmpty) {
-            filteredStrings.add(item.itemName);
-          } else if (item.itemName.toLowerCase().contains(searchTextController.value.text.toLowerCase())) {
-            filteredStrings.add(item.itemName);
+        }
+      }
+    } else {
+      for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
+        for (var cate in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == appText.all))) {
+          for (var item in cate.items.where((e) => e.applyStatus)) {
+            filteredMods.addAll(item.mods.where((e) => e.applyStatus && e.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
           }
         }
       }
     }
-    filteredStrings = filteredStrings.toSet().toList();
-    filteredStrings.sort((a, b) => a.compareTo(b));
+    filteredMods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
 
     // Filter
     List<Category> categories = [];
@@ -111,7 +104,8 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                 child: SizedBox(
                   height: 40,
                   child: Stack(alignment: AlignmentDirectional.centerEnd, children: [
-                    SearchField<String>(
+                    SearchField<Mod>(
+                      itemHeight: 90,
                       searchInputDecoration: SearchInputDecoration(
                           filled: true,
                           fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
@@ -120,12 +114,49 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                           cursorHeight: 15,
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
                           cursorColor: Theme.of(context).colorScheme.inverseSurface),
-                      suggestions: filteredStrings
+                      suggestions: filteredMods
                           .map(
-                            (e) => SearchFieldListItem<String>(
-                              e,
+                            (e) => SearchFieldListItem<Mod>(
+                              e.modName,
                               item: e,
-                              child: Padding(padding: const EdgeInsets.all(8.0), child: Text(e)),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 5),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  spacing: 5,
+                                  children: [
+                                    SizedBox(
+                                      width: 75,
+                                      height: 75,
+                                      child: SubmodPreviewBox(imageFilePaths: e.previewImages, videoFilePaths: e.previewVideos, isNew: false),
+                                    ),
+                                    Column(
+                                      spacing: 4,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(e.itemName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                                        Text(e.modName, textAlign: TextAlign.center),
+                                        Row(
+                                          spacing: 5,
+                                          children: [
+                                            InfoBox(
+                                              info: appText.dText(e.submods.length > 1 ? appText.numVariants : appText.numVariant, e.submods.length.toString()),
+                                              borderHighlight: false,
+                                            ),
+                                            InfoBox(
+                                              info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedSubmods().toString()),
+                                              borderHighlight: e.applyStatus,
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
                             ),
                           )
                           .toList(),
@@ -207,7 +238,7 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                         child: Text(appText.dText(numOfAppliedMods > 1 ? appText.holdToRestoreNumAppliedMods : appText.holdToRestoreNumAppliedMod, numOfAppliedMods.toString()))),
                   )),
               Expanded(
-                  flex: 1,
+                  flex: 2,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 1),
                     child: AppliedModCategorySelectButtons(categories: categories.where((e) => e.getNumOfAppliedItems() > 0).toList(), scrollController: controller),

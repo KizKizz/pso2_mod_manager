@@ -83,8 +83,8 @@ Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod
   }
 }
 
-Future<void> modBackupApply(Item item, Mod mod, SubMod submod) async {
-  for (var modFile in submod.modFiles) {
+Future<void> modBackupApply(Item item, Mod mod, SubMod submod, List<ModFile> modFilesToApply) async {
+  for (var modFile in modFilesToApply.isEmpty ? submod.modFiles : modFilesToApply) {
     List<OfficialIceFile> oDataList = oItemData.where((e) => p.basenameWithoutExtension(e.path) == modFile.modFileName).toList();
     oDataList.addAll(oItemDataNA.where((e) => p.basenameWithoutExtension(e.path) == modFile.modFileName).toList());
 

@@ -60,10 +60,14 @@ class _PopupItemInfoState extends State<PopupItemInfo> {
         Row(
           spacing: 5,
           children: [
-            Expanded(child: OutlinedButton(onPressed: () => launchUrlString(widget.item.location), child: Text(appText.openInFileExplorer))),
+            Expanded(
+                child: OutlinedButton(
+                    style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)))),
+                    onPressed: () => launchUrlString(widget.item.location),
+                    child: Text(appText.openInFileExplorer))),
             PopupMenuButton(
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-              color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
+              color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
               padding: EdgeInsets.zero,
               menuPadding: EdgeInsets.zero,
               tooltip: '',

@@ -130,7 +130,13 @@ class _AppVitalGaugeAppliedCheckPageState extends State<AppVitalGaugeAppliedChec
                                   pageIndex++;
                                   curPage.value = appPages[pageIndex];
                                 },
-                                child: Text(appText.removeAll))
+                                child: Text(appText.removeAll)),
+                                OutlinedButton(
+                                onPressed: () {
+                                  pageIndex++;
+                                  curPage.value = appPages[pageIndex];
+                                },
+                                child: Text(appText.skip)),
                           ],
                         )
                       ],

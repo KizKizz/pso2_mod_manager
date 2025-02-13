@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_checksum/checksum_functions.dart';
 import 'package:signals/signals_flutter.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class ChecksumIndicator extends StatefulWidget {
   const ChecksumIndicator({super.key});
@@ -21,35 +25,33 @@ class _ChecksumIndicatorState extends State<ChecksumIndicator> {
           children: [
             Visibility(
               visible: checksumAvailability.watch(context),
-              child: Card(
-                  shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
-                  color: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  margin: EdgeInsets.zero,
-                  elevation: 5,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 5),
-                    child: Center(child: Text('${appText.checksum}: ${appText.ok}', textAlign: TextAlign.center, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500))),
-                  )),
+              child: SizedBox(
+                height: 20,
+                child: OutlinedButton.icon(
+                      style: ButtonStyle(
+                        visualDensity: VisualDensity.adaptivePlatformDensity,
+                        shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+                      onPressed: () => launchUrlString(File(modChecksumFilePath).parent.path),
+                      icon: const Icon(Icons.app_registration_outlined, size: 18,),
+                      label: Text('${appText.checksum}: ${appText.ok}', textAlign: TextAlign.center, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500))),
+              ) 
+              
+              
             ),
             Visibility(
                 visible: !checksumAvailability.watch(context),
-                child: InkWell(
-                  onTap: () async {
-                    await checksumFileSelect();
-                  },
-                  child: Card(
-                      shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
-                      color: Colors.transparent,
-                      shadowColor: Colors.transparent,
-                      margin: EdgeInsets.zero,
-                      elevation: 5,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 5),
-                        child: Center(
-                            child: Text('${appText.checksum}: ${appText.notFoundClickToBrowse}',
-                                textAlign: TextAlign.center, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.redAccent))),
-                      )),
+                child: SizedBox(
+                  height: 20,
+                  child: OutlinedButton.icon(
+                      style: ButtonStyle(
+                        visualDensity: VisualDensity.adaptivePlatformDensity,
+                        shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+                      onPressed: () async {
+                        await checksumFileSelect();
+                      },
+                      icon: const Icon(Icons.apps_outage_outlined, size: 18, color: Colors.redAccent),
+                      label: Text('${appText.checksum}: ${appText.notFoundClickToBrowse}',
+                          textAlign: TextAlign.center, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.redAccent))),
                 ))
           ],
         ));

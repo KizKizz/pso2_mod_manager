@@ -156,17 +156,21 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                   children: [
                     Visibility(visible: appLoadingFinished.watch(context) && pso2RegionVersion.watch(context) == PSO2RegionVersion.jp, child: const JpGameStartButtton()),
                     Visibility(
-                            visible: appLoadingFinished.watch(context),
-                            child: SizedBox(
-                              height: 20,
-                              child: OutlinedButton.icon(
-                                  onPressed: () async {
-                                    pageIndex = 6;
-                                    curPage.value = appPages[pageIndex];
-                                  },
-                                  icon: const Icon(Icons.refresh, size: 18,),
-                                  label: Text(appText.refresh)),
-                            )),
+                        visible: appLoadingFinished.watch(context),
+                        child: SizedBox(
+                          height: 20,
+                          child: OutlinedButton.icon(
+                              style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+                              onPressed: () async {
+                                pageIndex = 6;
+                                curPage.value = appPages[pageIndex];
+                              },
+                              icon: const Icon(
+                                Icons.refresh,
+                                size: 18,
+                              ),
+                              label: Text(appText.refresh)),
+                        )),
                     Visibility(visible: appLoadingFinished.watch(context), child: const ChecksumIndicator())
                   ],
                 )
