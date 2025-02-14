@@ -49,13 +49,40 @@ Future<bool> markedItemIconApply(Item item) async {
   } else {
     Directory(modItemIconTempDirPath).create(recursive: true);
   }
-  if (item.overlayedIconPath!.isEmpty || !File(item.overlayedIconPath!).existsSync()) {
+
+  if (item.overlayedIconPath!.isNotEmpty && File(item.overlayedIconPath!).existsSync()) {
+    File cachedIconIceFile = File(item.overlayedIconPath!);
+    String iconIceWebPath = oItemData.firstWhere((e) => e.path.contains(p.basenameWithoutExtension(cachedIconIceFile.path))).path;
+    modApplyStatus.value = appText.dText(appText.copyingIconFileToGameData, p.basenameWithoutExtension(cachedIconIceFile.path));
+    Future.delayed(const Duration(microseconds: 10));
+    File copiedFile = await cachedIconIceFile.copy(pso2binDirPath + p.separator + p.withoutExtension(iconIceWebPath).replaceAll('/', p.separator));
+    if (await copiedFile.getMd5Hash() == await File(item.overlayedIconPath!).getMd5Hash()) {
+      item.iconPath = copiedFile.path;
+      item.isOverlayedIconApplied = true;
+      saveMasterModListToJson();
+      return true;
+    }
+  } else {
     final itemData = pItemData.firstWhere((e) =>
         e.getENName() == item.itemName ||
         e.getJPName() == item.itemName ||
         item.getDistinctModFilePaths().map((path) => p.basenameWithoutExtension(path)).every((name) => e.getIceDetailsWithoutKeys().contains(name)));
     final itemIconIceName = itemData.getIconIceName();
-    if (itemIconIceName.isNotEmpty) {
+
+    File cachedIconIceFile = File(markedItemIconsDirPath + p.separator + itemIconIceName);
+    if (itemIconIceName.isNotEmpty && cachedIconIceFile.existsSync()) {
+      String iconIceWebPath = oItemData.firstWhere((e) => e.path.contains(itemIconIceName)).path;
+      modApplyStatus.value = appText.dText(appText.copyingIconFileToGameData, p.basenameWithoutExtension(cachedIconIceFile.path));
+      Future.delayed(const Duration(microseconds: 10));
+      File copiedFile = await cachedIconIceFile.copy(pso2binDirPath + p.separator + p.withoutExtension(pso2binDirPath + p.separator + iconIceWebPath).replaceAll('/', p.separator));
+      if (await copiedFile.getMd5Hash() == await File(item.overlayedIconPath!).getMd5Hash()) {
+        item.iconPath = copiedFile.path;
+        item.isOverlayedIconApplied = true;
+        item.overlayedIconPath = cachedIconIceFile.path;
+        saveMasterModListToJson();
+        return true;
+      }
+    } else if (itemIconIceName.isNotEmpty && !cachedIconIceFile.existsSync()) {
       String iconIceWebPath = oItemData.firstWhere((e) => e.path.contains(itemIconIceName)).path;
       File downloadedIconIce = await originalIceDownload(iconIceWebPath, modItemIconTempDirPath, modApplyStatus);
       modApplyStatus.value = appText.dText(appText.editingMod, itemIconIceName);
@@ -84,7 +111,7 @@ Future<bool> markedItemIconApply(Item item) async {
                 File renamedIconFile = await File(Uri.file('${downloadedIconIce.path}_ext.ice').toFilePath())
                     .rename(Uri.file(downloadedIconIce.path.replaceFirst(modItemIconTempDirPath, markedItemIconsDirPath)).toFilePath());
                 if (renamedIconFile.existsSync()) {
-                  modApplyStatus.value = appText.dText(appText.copyingModFileToGameData, itemIconIceName);
+                  modApplyStatus.value = appText.dText(appText.copyingIconFileToGameData, itemIconIceName);
                   Future.delayed(const Duration(microseconds: 10));
                   String iconIceBinPath = p.withoutExtension(pso2binDirPath + p.separator + iconIceWebPath).replaceAll('/', p.separator);
                   File copiedFile = await renamedIconFile.copy(iconIceBinPath);
@@ -102,17 +129,6 @@ Future<bool> markedItemIconApply(Item item) async {
         }
       }
     }
-  } else {
-    String iconIceWebPath = oItemData.firstWhere((e) => e.path.contains(p.basenameWithoutExtension(item.overlayedIconPath!))).path;
-    modApplyStatus.value = appText.dText(appText.copyingModFileToGameData, p.basenameWithoutExtension(iconIceWebPath));
-    Future.delayed(const Duration(microseconds: 10));
-    File copiedFile = await File(item.overlayedIconPath!).copy(pso2binDirPath + p.separator + p.withoutExtension(iconIceWebPath).replaceAll('/', p.separator));
-    if (await copiedFile.getMd5Hash() == await File(item.overlayedIconPath!).getMd5Hash()) {
-      item.iconPath = copiedFile.path;
-      item.isOverlayedIconApplied = true;
-      saveMasterModListToJson();
-      return true;
-    }
   }
   return false;
 }
@@ -120,7 +136,7 @@ Future<bool> markedItemIconApply(Item item) async {
 Future<bool> markedItemIconRestore(Item item) async {
   String iconWebPath = ('${p.withoutExtension(item.iconPath!).replaceFirst(pso2binDirPath + p.separator, '')}.pat').replaceAll(p.separator, '/');
   File downloadedFile = await originalIceDownload(iconWebPath, p.dirname(item.iconPath!), modApplyStatus);
-  modApplyStatus.value = appText.dText(appText.copyingModFileToGameData, p.basenameWithoutExtension(downloadedFile.path));
+  modApplyStatus.value = appText.dText(appText.copyingIconFileToGameData, p.basenameWithoutExtension(downloadedFile.path));
   Future.delayed(const Duration(microseconds: 10));
   if (await downloadedFile.getMd5Hash() != await File(item.overlayedIconPath!).getMd5Hash()) {
     item.iconPath = '';
@@ -135,8 +151,7 @@ Future<bool> markedItemIconRestore(Item item) async {
 Future<bool> markedAqmItemIconRestore(String gameDataIconIcePath) async {
   String iconWebPath = ('${p.withoutExtension(gameDataIconIcePath).replaceFirst(pso2binDirPath + p.separator, '')}.pat').replaceAll(p.separator, '/');
   File downloadedFile = await originalIceDownload(iconWebPath, p.dirname(gameDataIconIcePath), modApplyStatus);
-  modAqmInjectingStatus.value = appText.dText(appText.copyingModFileToGameData, p.basenameWithoutExtension(downloadedFile.path));
+  modAqmInjectingStatus.value = appText.dText(appText.copyingIconFileToGameData, p.basenameWithoutExtension(downloadedFile.path));
   Future.delayed(const Duration(microseconds: 10));
   return false;
 }
-

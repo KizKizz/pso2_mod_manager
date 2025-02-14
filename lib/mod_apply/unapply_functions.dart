@@ -70,7 +70,10 @@ Future<void> modUnapplyRestore(Item item, Mod mod, SubMod submod, List<ModFile> 
   }
 
   if (!item.applyStatus && item.isOverlayedIconApplied!) {
-    await markedItemIconRestore(item);
+     bool result = await markedItemIconRestore(item);
+     if (result) {
+      item.isOverlayedIconApplied = false;
+     }
   }
 
   saveMasterModListToJson();

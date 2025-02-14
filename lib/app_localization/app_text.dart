@@ -182,6 +182,7 @@ class AppText {
       addToModManager = 'Add To Mod Manager',
       creatingBackupForModFile = 'Creating backup for %p%',
       copyingModFileToGameData = 'Copying %p% to game data',
+      copyingIconFileToGameData = 'Copying icon "%p%" to game data',
       localBackupFoundForModFile = 'Local backup found for %p%',
       restoringBackupFileToGameData = 'Restoring %p% to game data',
       applyingMod = 'Applying "%p%"',
