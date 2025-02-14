@@ -10,14 +10,16 @@ import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
-import 'package:pso2_mod_manager/mod_sets/mod_set_functions.dart';
 import 'package:pso2_mod_manager/system_loads/app_mod_load_page.dart';
+
+List<Item> modSetItemsFromMasterList = [];
 
 Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
   // ogModFilesLoader();
 
   List<CategoryType> structureFromJson = [];
   List<CategoryType> cateTypes = [];
+  modSetItemsFromMasterList = [];
   // bool isEmptyCatesHide = false;
 
   // Load item data
@@ -388,8 +390,8 @@ Future<List<Mod>> modsFetcher(String itemPath, String cateName) async {
     }
 
     //add to submod
-    SubMod subModInItemDir = SubMod(p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, false, [], false, false, -1, -1, '',
-        [], [], modPreviewImages, modPreviewVideos, [], modFilesInItemDir);
+    SubMod subModInItemDir = SubMod(p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, false, [], false, false, -1, -1, '', [],
+        [], modPreviewImages, modPreviewVideos, [], modFilesInItemDir);
 
     //add to mod
     mods.add(Mod(p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, false, [], modPreviewImages, modPreviewVideos, [], [subModInItemDir]));

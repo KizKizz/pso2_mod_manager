@@ -57,16 +57,20 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
                               height: 25,
                               child: OutlinedButton(
                                   onPressed: () async {
-                                    for (var item in widget.modSet.setItems.where((e) => !e.applyStatus)) {
-                                      int modIndex = item.mods.indexWhere(
-                                          (e) => e.isSet && e.setNames.contains(widget.modSet.setName) && e.submods.indexWhere((s) => s.activeInSets!.contains(widget.modSet.setName)) != -1);
+                                    for (var item in widget.modSet.setItems) {
+                                      int modIndex = item.mods.indexWhere((e) =>
+                                          e.isSet &&
+                                          e.setNames.contains(widget.modSet.setName) &&
+                                          e.submods.indexWhere((s) => s.activeInSets!.contains(widget.modSet.setName)) != -1 &&
+                                          !e.applyStatus);
                                       if (modIndex != -1) {
                                         Mod mod = item.mods[modIndex];
-                                        int submodIndex = mod.submods.indexWhere((e) => e.isSet && e.setNames.contains(widget.modSet.setName) && e.activeInSets!.contains(widget.modSet.setName));
+                                        int submodIndex =
+                                            mod.submods.indexWhere((e) => e.isSet && e.setNames.contains(widget.modSet.setName) && e.activeInSets!.contains(widget.modSet.setName) && !e.applyStatus);
                                         if (submodIndex != -1) {
                                           await modToGameData(context, true, item, mod, mod.submods[submodIndex]);
                                           setState(() {
-                                            modSetRefreshSignal.value = 'Applied ${mod.submods[submodIndex].submodName} in ${widget.modSet.setName} Set';
+                                            modSetRefreshSignal.value = 'Applied ${mod.submods[submodIndex].submodName} in ${item.itemName} in ${widget.modSet.setName} Set';
                                           });
                                         }
                                       }
@@ -81,15 +85,16 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
                               child: OutlinedButton(
                                   onPressed: () async {
                                     for (var item in widget.modSet.setItems.where((e) => e.applyStatus)) {
-                                      int modIndex = item.mods.indexWhere(
-                                          (e) => e.isSet && e.setNames.contains(widget.modSet.setName) && e.submods.indexWhere((s) => s.activeInSets!.contains(widget.modSet.setName)) != -1);
+                                      int modIndex = item.mods.indexWhere((e) =>
+                                          e.isSet && e.setNames.contains(widget.modSet.setName) && e.submods.indexWhere((s) => s.activeInSets!.contains(widget.modSet.setName)) != -1 && e.applyStatus);
                                       if (modIndex != -1) {
                                         Mod mod = item.mods[modIndex];
-                                        int submodIndex = mod.submods.indexWhere((e) => e.isSet && e.setNames.contains(widget.modSet.setName) && e.activeInSets!.contains(widget.modSet.setName));
+                                        int submodIndex =
+                                            mod.submods.indexWhere((e) => e.isSet && e.setNames.contains(widget.modSet.setName) && e.activeInSets!.contains(widget.modSet.setName) && e.applyStatus);
                                         if (submodIndex != -1) {
                                           await modToGameData(context, false, item, mod, mod.submods[submodIndex]);
                                           setState(() {
-                                            modSetRefreshSignal.value = 'Restored ${mod.submods[submodIndex].submodName} in ${widget.modSet.setName} Set';
+                                            modSetRefreshSignal.value = 'Restored ${mod.submods[submodIndex].submodName} in ${item.itemName} in ${widget.modSet.setName} Set';
                                           });
                                         }
                                       }
@@ -125,23 +130,35 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
                               ];
                             },
                           ),
-                        )
+                        ),
+                        IconButton(
+                            visualDensity: VisualDensity.adaptivePlatformDensity,
+                            onPressed: () {
+                              widget.modSet.expanded ? widget.modSet.expanded = false : widget.modSet.expanded = true;
+                              widget.modSet.expanded ? modSetRefreshSignal.value = '${widget.modSet.setName} is collapsed' : modSetRefreshSignal.value = '${widget.modSet.setName} is expanded';
+                              saveMasterModSetListToJson();
+                              setState(() {});
+                            },
+                            icon: Icon(widget.modSet.expanded ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down))
                       ],
                     )
                   ],
                 ))),
-        sliver: ResponsiveSliverGridList(minItemWidth: 350, verticalGridMargin: 5, horizontalGridSpacing: 5, verticalGridSpacing: 5, children: modCardFetch()));
+        sliver: widget.modSet.expanded
+            ? ResponsiveSliverGridList(
+                minItemWidth: 350, verticalGridMargin: 5, horizontalGridSpacing: 5, verticalGridSpacing: 5, children: modCardFetch(widget.modSet.setName, widget.modSet.setItems))
+            : null);
+  }
+}
+
+List<ModSetCardLayout> modCardFetch(String modSetName, List<Item> itemList) {
+  List<ModSetCardLayout> modCardList = [];
+  for (var item in itemList) {
+    var (mod, submod) = item.getActiveInSet(modSetName);
+    if (mod != null && submod != null) modCardList.add(ModSetCardLayout(item: item, activeMod: mod, activeSubmod: submod, setName: modSetName));
   }
 
-  List<ModSetCardLayout> modCardFetch() {
-    List<ModSetCardLayout> modCardList = [];
-    for (var item in widget.modSet.setItems) {
-      var (mod, submod) = item.getActiveInSet(widget.modSet.setName);
-      if (mod != null && submod != null) modCardList.add(ModSetCardLayout(item: item, activeMod: mod, activeSubmod: submod, setName: widget.modSet.setName));
-    }
-
-    return modCardList;
-  }
+  return modCardList;
 }
 
 class ModSetCardLayout extends StatefulWidget {
@@ -230,8 +247,10 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
                       onPressed: () async {
                         if (!widget.activeSubmod.applyStatus) {
                           await modToGameData(context, true, widget.item, widget.activeMod, widget.activeSubmod);
+                          modSetRefreshSignal.value = '${widget.activeSubmod.submodName} in ${widget.item.itemName} in ${widget.setName} Set was applied';
                         } else {
                           await modToGameData(context, false, widget.item, widget.activeMod, widget.activeSubmod);
+                          modSetRefreshSignal.value = '${widget.activeSubmod.submodName} in ${widget.item.itemName} in ${widget.setName} Set was restored';
                         }
                         setState(() {});
                       },

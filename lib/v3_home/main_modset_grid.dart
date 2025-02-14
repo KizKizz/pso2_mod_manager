@@ -82,6 +82,29 @@ class _MainModSetGridState extends State<MainModSetGrid> {
                         },
                         child: Text(appText.addNewSet)),
                   )),
+              Expanded(
+                  flex: 1,
+                  child: SizedBox(
+                    height: 40,
+                    child: OutlinedButton(
+                        style: ButtonStyle(
+                            backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                            side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                        onPressed: () async {
+                          if (displayingModSets.indexWhere((e) => e.expanded) != -1) {
+                            for (var set in displayingModSets.where((e) => e.expanded)) {
+                              set.expanded = false;
+                            }
+                          } else {
+                            for (var set in displayingModSets.where((e) => !e.expanded)) {
+                              set.expanded = true;
+                            }
+                          }
+                          setState(() {});
+                          saveMasterModSetListToJson();
+                        },
+                        child: Text(displayingModSets.indexWhere((e) => e.expanded) != -1 ? appText.collapseAll : appText.expandAll)),
+                  )),
               Expanded(flex: 2, child: ModSetSortingButton(scrollController: controller)),
               Expanded(
                   flex: 3,

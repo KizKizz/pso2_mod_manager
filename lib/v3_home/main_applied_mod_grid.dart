@@ -39,7 +39,7 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (modApplyStatus.watch(context) != modApplyStatus.peek()) {
+    if (modApplyStatus.watch(context) != modApplyStatus.peek() || mainGridStatus.watch(context) != mainGridStatus.peek()) {
       setState(
         () {},
       );
@@ -49,17 +49,21 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
     List<Mod> filteredMods = [];
     if (searchTextController.value.text.isEmpty) {
       for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
-        for (var cate in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == appText.all))) {
+        for (var cate in cateType.categories
+            .where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == appText.all))) {
           for (var item in cate.items.where((e) => e.applyStatus)) {
             filteredMods.addAll(item.mods.where((e) => e.applyStatus));
+            numOfAppliedMods += item.getNumOfAppliedMods();
           }
         }
       }
     } else {
       for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
-        for (var cate in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == appText.all))) {
+        for (var cate in cateType.categories
+            .where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == appText.all))) {
           for (var item in cate.items.where((e) => e.applyStatus)) {
             filteredMods.addAll(item.mods.where((e) => e.applyStatus && e.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
+            numOfAppliedMods += item.getNumOfAppliedMods();
           }
         }
       }
