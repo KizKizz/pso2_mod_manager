@@ -57,7 +57,6 @@ class _MainItemAqmInjectGridState extends State<MainItemAqmInjectGrid> {
   Widget build(BuildContext context) {
     // Fetch aqm files
     Directory(modCustomAqmsDirPath).createSync(recursive: true);
-    // modCustomAQMFiles = Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').toList();
 
     // Sort item data
     displayingItems = pItemData

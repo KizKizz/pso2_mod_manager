@@ -148,6 +148,68 @@ Future<bool> markedItemIconRestore(Item item) async {
   return false;
 }
 
+// AQM
+Future<bool> markedAqmItemIconApply(String iconIceWebPath) async {
+  if (Directory(modItemIconTempDirPath).existsSync()) {
+    Directory(modItemIconTempDirPath).deleteSync(recursive: true);
+    Directory(modItemIconTempDirPath).createSync(recursive: true);
+  } else {
+    Directory(modItemIconTempDirPath).create(recursive: true);
+  }
+
+  File cachedIconIceFile = File(markedItemIconsDirPath + p.separator + p.basename(iconIceWebPath));
+  if (cachedIconIceFile.existsSync()) {
+    modApplyStatus.value = appText.dText(appText.copyingIconFileToGameData, p.basenameWithoutExtension(cachedIconIceFile.path));
+    Future.delayed(const Duration(microseconds: 10));
+    File copiedFile = await cachedIconIceFile.copy(cachedIconIceFile.path.replaceFirst(markedItemIconsDirPath, pso2binDirPath).replaceAll('/', p.separator));
+    if (await copiedFile.getMd5Hash() == await cachedIconIceFile.getMd5Hash()) {
+      return true;
+    }
+  } else {
+    File downloadedIconIce = await originalIceDownload('$iconIceWebPath.pat', modItemIconTempDirPath, modApplyStatus);
+    modApplyStatus.value = appText.dText(appText.editingMod, p.basename(iconIceWebPath));
+    Future.delayed(const Duration(microseconds: 10));
+    if (downloadedIconIce.path.isNotEmpty && downloadedIconIce.existsSync()) {
+      await Process.run('$zamboniExePath -outdir "$modItemIconTempDirPath"', [downloadedIconIce.path]);
+      Directory extractedIceDir = Directory(Uri.file('$modItemIconTempDirPath/${p.basenameWithoutExtension(iconIceWebPath)}_ext').toFilePath());
+      if (extractedIceDir.existsSync()) {
+        File ddsFile = extractedIceDir.listSync(recursive: true).whereType<File>().firstWhere(
+              (element) => p.extension(element.path) == '.dds',
+              orElse: () => File(''),
+            );
+        if (ddsFile.existsSync()) {
+          await Process.run(pngDdsConvExePath, [ddsFile.path, Uri.file('${p.dirname(ddsFile.path)}/${p.basenameWithoutExtension(ddsFile.path)}.png').toFilePath(), '-ddstopng']);
+          File convertedPng = File(Uri.file('${p.dirname(ddsFile.path)}/${p.basenameWithoutExtension(ddsFile.path)}.png').toFilePath());
+          if (convertedPng.existsSync()) {
+            ddsFile.deleteSync();
+            File? overlayedPng = await itemIconOverlay(convertedPng.path);
+            if (overlayedPng != null) {
+              await Process.run(pngDdsConvExePath, [overlayedPng.path, Uri.file('${p.dirname(overlayedPng.path)}/${p.basenameWithoutExtension(overlayedPng.path)}.dds').toFilePath(), '-pngtodds']);
+              await overlayedPng.delete();
+              modApplyStatus.value = appText.dText(appText.repackingFile, p.basenameWithoutExtension(iconIceWebPath));
+              Future.delayed(const Duration(microseconds: 10));
+              await Process.run('$zamboniExePath -c -pack -outdir "$modItemIconTempDirPath"', [Uri.file('$modItemIconTempDirPath/${p.basenameWithoutExtension(iconIceWebPath)}_ext').toFilePath()]);
+              Directory(markedItemIconsDirPath).createSync(recursive: true);
+              File renamedIconFile = await File(Uri.file('${downloadedIconIce.path}_ext.ice').toFilePath())
+                  .rename(Uri.file(downloadedIconIce.path.replaceFirst(modItemIconTempDirPath, markedItemIconsDirPath)).toFilePath());
+              if (renamedIconFile.existsSync()) {
+                modApplyStatus.value = appText.dText(appText.copyingIconFileToGameData, p.basenameWithoutExtension(iconIceWebPath));
+                Future.delayed(const Duration(microseconds: 10));
+                String iconIceBinPath = p.withoutExtension(pso2binDirPath + p.separator + iconIceWebPath).replaceAll('/', p.separator);
+                File copiedFile = await renamedIconFile.copy(iconIceBinPath);
+                if (await copiedFile.getMd5Hash() == await renamedIconFile.getMd5Hash()) {
+                  return true;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return false;
+}
+
 Future<bool> markedAqmItemIconRestore(String gameDataIconIcePath) async {
   String iconWebPath = ('${p.withoutExtension(gameDataIconIcePath).replaceFirst(pso2binDirPath + p.separator, '')}.pat').replaceAll(p.separator, '/');
   File downloadedFile = await originalIceDownload(iconWebPath, p.dirname(gameDataIconIcePath), modApplyStatus);

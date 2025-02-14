@@ -7,7 +7,6 @@ import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
 import 'package:signals/signals_flutter.dart';
 
 Future<bool> aqmInjectPopup(context, String hqIcePath, String lqIcePath, String itemName, bool restoreAqm, bool restoreBounding, bool restoreAll, bool aqmInjected, bool fromSubmod) async {
-  modAqmInjectedrefresh.value = false;
   return await showDialog(
       barrierDismissible: false,
       context: context,
@@ -69,7 +68,6 @@ Future<bool> aqmInjectPopup(context, String hqIcePath, String lqIcePath, String 
                     return FutureBuilderError(loadingText: appText.dText(appText.editingMod, itemName), snapshotError: snapshot.error.toString());
                   } else {
                     bool result = snapshot.data;
-                    modAqmInjectedrefresh.value = true;
                     Navigator.of(context).pop(result);
                     return const SizedBox();
                   }

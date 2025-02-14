@@ -31,7 +31,7 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (modAqmInjectedrefresh.watch(context) != modAqmInjectedrefresh.peek()) setState(() {});
+    if (modAqmInjectingRefresh.watch(context) != modAqmInjectingRefresh.peek()) setState(() {});
 
     List<AqmInjectedItem> displayingAqmInjectedItem = [];
     if (injectedItemSearchTextController.value.text.isEmpty) {
@@ -160,12 +160,13 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                                 if (displayingAqmInjectedItem[index].isIconReplaced) {
                                                   await markedAqmItemIconRestore(displayingAqmInjectedItem[index].iconIcePath);
                                                 }
+                                                modAqmInjectingRefresh.value = 'Removed AQM and restored ${displayingAqmInjectedItem[index].getName()}';
                                                 masterAqmInjectedItemList.removeAt(index);
                                               } else if (result && displayingAqmInjectedItem[index].isBoundingRemoved!) {
                                                 displayingAqmInjectedItem[index].isAqmReplaced = false;
+                                                modAqmInjectingRefresh.value = 'Removed AQM and restored ${displayingAqmInjectedItem[index].getName()}';
                                               }
                                               saveMasterAqmInjectListToJson();
-                                              setState(() {});
                                             },
                                             child: Text(appText.removeCustomAQM)),
                                       ),
@@ -179,12 +180,13 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                                 if (displayingAqmInjectedItem[index].isIconReplaced) {
                                                   await markedAqmItemIconRestore(displayingAqmInjectedItem[index].iconIcePath);
                                                 }
+                                                modAqmInjectingRefresh.value = 'Restored bounding ${displayingAqmInjectedItem[index].getName()}';
                                                 masterAqmInjectedItemList.removeAt(index);
                                               } else if (result && displayingAqmInjectedItem[index].isAqmReplaced!) {
                                                 displayingAqmInjectedItem[index].isBoundingRemoved = false;
+                                                modAqmInjectingRefresh.value = 'Restored bounding ${displayingAqmInjectedItem[index].getName()}';
                                               }
                                               saveMasterAqmInjectListToJson();
-                                              setState(() {});
                                             },
                                             child: Text(appText.restoreBounding)),
                                       ),
@@ -198,10 +200,10 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                                 if (displayingAqmInjectedItem[index].isIconReplaced) {
                                                   await markedAqmItemIconRestore(displayingAqmInjectedItem[index].iconIcePath);
                                                 }
+                                                modAqmInjectingRefresh.value = 'Restored ${displayingAqmInjectedItem[index].getName()}';
                                                 masterAqmInjectedItemList.removeAt(index);
                                               }
                                               saveMasterAqmInjectListToJson();
-                                              setState(() {});
                                             },
                                             child: Text(appText.restoreAll)),
                                       )

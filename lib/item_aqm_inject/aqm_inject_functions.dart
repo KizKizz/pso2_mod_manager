@@ -15,7 +15,7 @@ import 'package:signals/signals_flutter.dart';
 import 'package:path/path.dart' as p;
 
 Signal<String> modAqmInjectingStatus = Signal('');
-Signal<bool> modAqmInjectedrefresh = Signal(false);
+Signal<String> modAqmInjectingRefresh = Signal('');
 
 Future<List<AqmInjectedItem>> aqmInjectedItemsFetch() async {
   List<AqmInjectedItem> structureFromJson = [];
@@ -51,7 +51,6 @@ Future<List<AqmInjectedItem>> aqmInjectedItemsFetch() async {
 }
 
 Future<bool> itemCustomAqmInject(context, String hqIcePath, String lqIcePath, bool fromSubmod) async {
-  modAqmInjectingStatus.value = '';
   Directory(modAqmInjectTempDirPath).createSync(recursive: true);
   List<String> aqmInjectedFiles = [];
   int packRetries = 0;
@@ -169,13 +168,13 @@ Future<bool> itemCustomAqmInject(context, String hqIcePath, String lqIcePath, bo
 }
 
 Future<bool> itemCustomAqmBounding(context, String hqIcePath, String lqIcePath, String itemName) async {
-  modAqmInjectedrefresh.value = false;
   ModFile hqModFile = ModFile(p.basename(hqIcePath), itemName, itemName, itemName, '', '', [], pso2binDirPath + p.separator + hqIcePath.replaceAll('/', p.separator), false, DateTime(0), 0, false,
       false, false, [], [], [], [], [], []);
   ModFile lqModFile = ModFile(p.basename(lqIcePath), itemName, itemName, itemName, '', '', [], pso2binDirPath + p.separator + lqIcePath.replaceAll('/', p.separator), false, DateTime(0), 0, false,
       false, false, [], [], [], [], [], []);
   SubMod submod = SubMod(itemName, itemName, itemName, '', '', false, DateTime(0), 0, false, false, false, [], false, false, 0, 0, '', [], [], [], [], [], [hqModFile, lqModFile]);
   await boundingRadiusPopup(context, submod);
+  // modAqmInjectingStatus.value = appText.boundingRemoved;
   return true;
 }
 
@@ -184,14 +183,17 @@ Future<bool> itemCustomAqmRestoreAll(String hqIcePath, String lqIcePath) async {
   final filePaths = [hqIcePath, lqIcePath];
   for (var filePath in filePaths) {
     if (filePath.isNotEmpty) {
+      modAqmInjectingStatus.value = appText.dText(appText.restoringFile, p.basename(filePath));
       File downloadedFile = await originalIceDownload('$filePath.pat', pso2binDirPath + p.separator + p.dirname(filePath.replaceAll('/', p.separator)), modAqmInjectingStatus);
       if (downloadedFile.existsSync()) restoredCheck[filePaths.indexOf(filePath)] = true;
     }
   }
 
   if (restoredCheck.where((e) => !e).isEmpty) {
+    modAqmInjectingStatus.value = appText.success;
     return true;
   } else {
+    modAqmInjectingStatus.value = appText.failed;
     return false;
   }
 }
@@ -308,8 +310,10 @@ Future<bool> itemCustomAqmRestoreBounding(context, String hqIcePath, String lqIc
   if (restoreAllResult && aqmInjected) {
     bool result = await itemCustomAqmInject(context, hqIcePath, lqIcePath, false);
     if (result) {
+      modAqmInjectingStatus.value = appText.success;
       return true;
     } else {
+      modAqmInjectingStatus.value = appText.failed;
       return false;
     }
   } else {
