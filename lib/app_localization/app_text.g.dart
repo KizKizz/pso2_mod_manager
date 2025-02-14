@@ -51,6 +51,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..wpWiredLances = json['wpWiredLances'] as String
   ..wpPartisans = json['wpPartisans'] as String
   ..wpTwinDaggers = json['wpTwinDaggers'] as String
+  ..wpDoubleSabers = json['wpDoubleSabers'] as String
   ..wpKnuckles = json['wpKnuckles'] as String
   ..wpKatanas = json['wpKatanas'] as String
   ..wpSoaringBlades = json['wpSoaringBlades'] as String
@@ -333,6 +334,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..replaceTheEntireMod = json['replaceTheEntireMod'] as String
   ..replaceConflictingFilesOnly = json['replaceConflictingFilesOnly'] as String
   ..conflictingFiles = json['conflictingFiles'] as String
+  ..categorizeModsByItems = json['categorizeModsByItems'] as String
   ..failedToFetchRemoteLocaleData =
       json['failedToFetchRemoteLocaleData'] as String
   ..unableToUpdateFile = json['unableToUpdateFile'] as String
@@ -459,6 +461,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'wpWiredLances': instance.wpWiredLances,
       'wpPartisans': instance.wpPartisans,
       'wpTwinDaggers': instance.wpTwinDaggers,
+      'wpDoubleSabers': instance.wpDoubleSabers,
       'wpKnuckles': instance.wpKnuckles,
       'wpKatanas': instance.wpKatanas,
       'wpSoaringBlades': instance.wpSoaringBlades,
@@ -734,6 +737,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'replaceTheEntireMod': instance.replaceTheEntireMod,
       'replaceConflictingFilesOnly': instance.replaceConflictingFilesOnly,
       'conflictingFiles': instance.conflictingFiles,
+      'categorizeModsByItems': instance.categorizeModsByItems,
       'failedToFetchRemoteLocaleData': instance.failedToFetchRemoteLocaleData,
       'unableToUpdateFile': instance.unableToUpdateFile,
       'unableToGetAppVersionDataFromGitHub':

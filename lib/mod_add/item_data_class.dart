@@ -19,6 +19,14 @@ class ItemData {
   String iconImagePath;
   Map<String, String> infos = {};
 
+  String getJPNameOriginal() {
+    return infos.entries.firstWhere((element) => element.key.contains('JP Name') || element.key.contains('Japanese Name')).value.trim();
+  }
+
+  String getENNameOriginal() {
+    return infos.entries.firstWhere((element) => element.key.contains('EN Name') || element.key.contains('English Name')).value.trim();
+  }
+
   String getJPName() {
     return infos.entries.firstWhere((element) => element.key.contains('JP Name') || element.key.contains('Japanese Name')).value.replaceAll(RegExp(charToReplace), '_').trim();
   }

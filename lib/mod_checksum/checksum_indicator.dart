@@ -33,7 +33,7 @@ class _ChecksumIndicatorState extends State<ChecksumIndicator> {
                         shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
                       onPressed: () => launchUrlString(File(modChecksumFilePath).parent.path),
                       icon: const Icon(Icons.app_registration_outlined, size: 18,),
-                      label: Text('${appText.checksum}: ${appText.ok}', textAlign: TextAlign.center, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500))),
+                      label: Text('${appText.checksum}: ${appText.ok}', textAlign: TextAlign.center)),
               ) 
               
               
@@ -51,7 +51,7 @@ class _ChecksumIndicatorState extends State<ChecksumIndicator> {
                       },
                       icon: const Icon(Icons.apps_outage_outlined, size: 18, color: Colors.redAccent),
                       label: Text('${appText.checksum}: ${appText.notFoundClickToBrowse}',
-                          textAlign: TextAlign.center, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.redAccent))),
+                          textAlign: TextAlign.center, style: const TextStyle(color: Colors.redAccent))),
                 ))
           ],
         ));

@@ -19,7 +19,6 @@ Future<void> modUnapplySequence(context, bool applying, Item item, Mod mod, SubM
 }
 
 Future<void> modUnapplyRestore(Item item, Mod mod, SubMod submod, List<ModFile> modFilesToRestore) async {
-  modApplyStatus.value = '';
   if (originalFilesBackupsFromSega) {
     if (modFilesToRestore.isEmpty) {
       for (var modFile in submod.modFiles) {

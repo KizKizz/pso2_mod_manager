@@ -55,6 +55,7 @@ class AppText {
       wpWiredLances = 'Wired Lances',
       wpPartisans = 'Partisans',
       wpTwinDaggers = 'Twin Daggers',
+      wpDoubleSabers = 'Double Sabers',
       wpKnuckles = 'Knuckles',
       wpKatanas = 'Katanas',
       wpSoaringBlades = 'Soaring Blades',
@@ -546,30 +547,32 @@ class AppText {
       case 3:
         return wpTwinDaggers;
       case 4:
-        return wpKnuckles;
+        return wpDoubleSabers;
       case 5:
-        return wpKatanas;
+        return wpKnuckles;
       case 6:
-        return wpSoaringBlades;
+        return wpKatanas;
       case 7:
-        return wpAssaultRifles;
+        return wpSoaringBlades;
       case 8:
-        return wpLaunchers;
+        return wpAssaultRifles;
       case 9:
-        return wpTwinMachineGuns;
+        return wpLaunchers;
       case 10:
-        return wpBows;
+        return wpTwinMachineGuns;
       case 11:
-        return wpGunblades;
+        return wpBows;
       case 12:
-        return wpRods;
+        return wpGunblades;
       case 13:
-        return wpTalises;
+        return wpRods;
       case 14:
-        return wpWands;
+        return wpTalises;
       case 15:
-        return wpJetBoots;
+        return wpWands;
       case 16:
+        return wpJetBoots;
+      case 17:
         return wpHarmonizers;
       default:
         return name;

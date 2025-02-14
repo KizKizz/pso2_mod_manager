@@ -11,7 +11,7 @@ void errorNotification(message) {
   ElegantNotification.error(
     width: 360,
     stackedOptions: StackedOptions(
-      key: 'bottomRight',
+      key: 'bottomRightE',
       type: StackedType.below,
       itemOffset: const Offset(0, 5),
     ),
@@ -89,7 +89,7 @@ void restoreFailedNotification(name) {
   ElegantNotification.error(
     width: 360,
     stackedOptions: StackedOptions(
-      key: 'bottomRight',
+      key: 'bottomRightE',
       type: StackedType.below,
       itemOffset: const Offset(0, 5),
     ),
@@ -99,7 +99,7 @@ void restoreFailedNotification(name) {
     position: Alignment.bottomRight,
     animation: AnimationType.fromRight,
     title: Text(
-      appText.success,
+      appText.failed,
       style: Theme.of(_context).textTheme.titleMedium,
     ),
     description: Text(
@@ -141,7 +141,7 @@ void applyFailedNotification(name) {
   ElegantNotification.error(
     width: 360,
     stackedOptions: StackedOptions(
-      key: 'bottomRight',
+      key: 'bottomRightE',
       type: StackedType.below,
       itemOffset: const Offset(0, 5),
     ),

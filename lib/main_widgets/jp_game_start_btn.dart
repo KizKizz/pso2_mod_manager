@@ -46,7 +46,6 @@ class JpGameStartButtton extends StatelessWidget {
           ),
           label: Text(
             appText.launchPSO2,
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
           )),
     );
   }

@@ -57,6 +57,7 @@ class _CateItemGridLayoutState extends State<CateItemGridLayout> {
                           visualDensity: VisualDensity.adaptivePlatformDensity,
                             onPressed: () {
                               widget.itemCate.visible ? widget.itemCate.visible = false : widget.itemCate.visible = true;
+                              widget.itemCate.visible ? mainGridStatus.value = '${widget.itemCate.categoryName} is collapsed' : mainGridStatus.value = '${widget.itemCate.categoryName} is expanded';
                               saveMasterModListToJson();
                               setState(() {});
                             },

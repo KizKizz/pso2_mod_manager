@@ -57,6 +57,7 @@ final defaultWeaponTypes = [
   'Wired Lances',
   'Partisans',
   'Twin Daggers',
+  'Double Sabers',
   'Knuckles',
   'Katanas',
   'Soaring Blades',

@@ -169,8 +169,8 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                                                       displayingItemData[index].getItemIDs().first,
                                                       displayingItemData[index].getItemIDs().last,
                                                       displayingItemData[index].iconImagePath,
-                                                      displayingItemData[index].getENName(),
-                                                      displayingItemData[index].getJPName(),
+                                                      displayingItemData[index].getENNameOriginal(),
+                                                      displayingItemData[index].getJPNameOriginal(),
                                                       p.withoutExtension(oItemData
                                                           .firstWhere(
                                                             (e) => e.path.contains(displayingItemData[index].getHQIceName()),
