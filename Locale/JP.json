@@ -1,4 +1,8 @@
 {
+  "injectedAQMFile": "挿入されたAQM: %p%",
+  "restoredAQMInjectedItems": "復元されたAQM挿入アイテム",
+  "restoredAQMInjectedItemInfo": "これらのアイテムのカスタムAQMおよびバウンディング半径は、ゲームの更新またはファイルチェックによって復元されました",
+  "copyingIconFileToGameData": "アイコン \"%p%\" をゲームデータにコピー中",
   "wpDoubleSabers": "ダブルセイバーズ",
   "categorizeModsByItems": "アイテム別にModを分類",
   "auxiliaryUIOpacity": "補助UIの不透明度",

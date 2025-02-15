@@ -1,27 +1,35 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
-import 'package:pso2_mod_manager/mod_apply/applying_popup.dart';
-import 'package:pso2_mod_manager/mod_data/item_class.dart';
+import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_functions.dart';
+import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_popup.dart';
+import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
+import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_functions/item_icon_mark.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
-import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
-import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
+import 'package:path/path.dart' as p;
 
-class AppAppliedModsCheckPage extends StatefulWidget {
-  const AppAppliedModsCheckPage({super.key});
+class AppAqmItemsCheckPage extends StatefulWidget {
+  const AppAqmItemsCheckPage({super.key});
 
   @override
-  State<AppAppliedModsCheckPage> createState() => _AppAppliedModsCheckPageState();
+  State<AppAqmItemsCheckPage> createState() => _AppAqmItemsCheckPageState();
 }
 
-class _AppAppliedModsCheckPageState extends State<AppAppliedModsCheckPage> {
+class _AppAqmItemsCheckPageState extends State<AppAqmItemsCheckPage> {
   @override
   Widget build(BuildContext context) {
-    if (masterUnappliedItemList.isEmpty) {
+    if (masterUnappliedAQMItemList.isEmpty) {
       saveMasterModListToJson();
       pageIndex++;
       curPage.value = appPages[pageIndex];
@@ -39,7 +47,7 @@ class _AppAppliedModsCheckPageState extends State<AppAppliedModsCheckPage> {
                 children: [
                   Center(
                     child: Text(
-                      appText.restoredMods,
+                      appText.restoredAQMInjectedItems,
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                   ),
@@ -49,11 +57,11 @@ class _AppAppliedModsCheckPageState extends State<AppAppliedModsCheckPage> {
                     indent: 10,
                     endIndent: 10,
                   ),
-                  Text(appText.restoredModInfo),
+                  Text(appText.restoredAQMInjectedItemInfo),
                   Expanded(
                       child: ResponsiveGridList(
                     minItemWidth: 320,
-                    children: unappliedItemsGet(masterUnappliedItemList),
+                    children: unappliedItemsGet(masterUnappliedAQMItemList),
                   )),
                   const Divider(
                     height: 0,
@@ -68,40 +76,52 @@ class _AppAppliedModsCheckPageState extends State<AppAppliedModsCheckPage> {
                     children: [
                       OutlinedButton(
                           onPressed: () async {
-                            for (var item in masterUnappliedItemList) {
-                              for (var mod in item.mods.where((e) => e.getSubmodsAppliedState())) {
-                                for (var submod in mod.submods.where((e) => e.getModFilesAppliedState())) {
-                                  List<ModFile> unappliedModFiles = submod.modFiles.where((e) => e.applyStatus && e.ogMd5s.isNotEmpty && e.ogMd5s.first != e.md5).toList();
-                                  if (unappliedModFiles.isNotEmpty) {
-                                    await applyingPopup(context, true, item, mod, submod, unappliedModFiles);
-                                  }
+                            for (var item in masterUnappliedAQMItemList) {
+                              bool aqmResult = false;
+                              bool boundingResult = false;
+                              if (item.isApplied && item.isAqmReplaced!) {
+                                aqmResult = await aqmInjectPopup(context, item.injectedAQMFilePath!, item.hqIcePath, item.lqIcePath, item.getName(), false, false, false, false, false);
+                              }
+                              if (item.isApplied && item.isBoundingRemoved!) {
+                                boundingResult = await itemCustomAqmBounding(context, item.hqIcePath, item.lqIcePath, item.getName());
+                              }
+                              if (aqmResult || boundingResult) {
+                                item.injectedHqIceMd5 = await File(pso2binDirPath + p.separator + item.hqIcePath.replaceAll('/', p.separator)).getMd5Hash();
+                                item.injectedLqIceMd5 = await File(pso2binDirPath + p.separator + item.lqIcePath.replaceAll('/', p.separator)).getMd5Hash();
+                                if (replaceItemIconOnApplied) {
+                                  item.isIconReplaced = await markedAqmItemIconApply(item.iconIcePath);
                                 }
+                                item.isAqmReplaced = aqmResult;
+                                item.isBoundingRemoved = boundingResult;
+                                item.isApplied = true;
                               }
                             }
-                            masterAppliedModList.clear();
+                            saveMasterAqmInjectListToJson();
+                            masterUnappliedAQMItemList.clear();
                             pageIndex++;
                             curPage.value = appPages[pageIndex];
                           },
                           child: Text(appText.reApplyAll)),
                       OutlinedButton(
                           onPressed: () async {
-                            for (var item in masterUnappliedItemList) {
-                              for (var mod in item.mods.where((e) => e.getSubmodsAppliedState())) {
-                                for (var submod in mod.submods.where((e) => e.getModFilesAppliedState())) {
-                                  if (submod.modFiles.indexWhere((e) => e.applyStatus && e.ogMd5s.isNotEmpty && e.ogMd5s.first != e.md5) != -1) {
-                                    await applyingPopup(context, false, item, mod, submod, []);
-                                  }
+                            for (var item in masterUnappliedAQMItemList) {
+                              bool result = await aqmInjectPopup(context, item.injectedAQMFilePath!, item.hqIcePath, item.lqIcePath, item.getName(), false, false, true, item.isAqmReplaced!, false);
+                              if (result) {
+                                if (item.isIconReplaced) {
+                                  await markedAqmItemIconRestore(item.iconIcePath);
                                 }
+                                masterAqmInjectedItemList.remove(item);
                               }
                             }
-                            masterUnappliedItemList.clear();
+                            saveMasterAqmInjectListToJson();
+                            masterUnappliedAQMItemList.clear();
                             pageIndex++;
                             curPage.value = appPages[pageIndex];
                           },
                           child: Text(appText.removeAll)),
                       OutlinedButton(
                           onPressed: () {
-                            masterUnappliedItemList.clear();
+                            masterUnappliedAQMItemList.clear();
                             pageIndex++;
                             curPage.value = appPages[pageIndex];
                           },
@@ -115,49 +135,41 @@ class _AppAppliedModsCheckPageState extends State<AppAppliedModsCheckPage> {
     }
   }
 
-  List<Widget> unappliedItemsGet(List<Item> items) {
+  List<Widget> unappliedItemsGet(List<AqmInjectedItem> items) {
     List<Widget> widgets = [];
     for (var item in items) {
-      for (var mod in item.mods.where((e) => e.applyStatus)) {
-        for (var submod in mod.submods.where((e) => e.applyStatus)) {
-          if (submod.modFiles.indexWhere((e) => e.applyStatus && e.ogMd5s.isNotEmpty && e.ogMd5s.first != e.md5) != -1) {
-            widgets.add(
-              CardOverlay(
-                paddingValue: 10,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  spacing: 5,
-                  children: [
-                    Row(
-                      spacing: 5,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Column(
-                            spacing: 5,
-                            children: [
-                              ItemIconBox(item: item),
-                              Text(item.itemName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: SubmodPreviewBox(imageFilePaths: submod.previewImages, videoFilePaths: submod.previewVideos, isNew: submod.isNew),
-                        )
-                      ],
-                    ),
-                    Text(mod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
-                    Visibility(visible: mod.modName != submod.submodName, child: Text(submod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
-                  ],
-                ),
+      widgets.add(
+        CardOverlay(
+          paddingValue: 10,
+          child: Row(
+            spacing: 5,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              GenericItemIconBox(iconImagePaths: [item.iconImagePath], boxSize: const Size(80, 80), isNetwork: true),
+              Column(
+                spacing: 5,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    item.getName(),
+                    style: const TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  Row(
+                    spacing: 5,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Visibility(visible: item.isAqmReplaced!, child: InfoBox(info: appText.aqmInjected, borderHighlight: false)),
+                      Visibility(visible: item.isBoundingRemoved!, child: InfoBox(info: appText.boundingRemoved, borderHighlight: false))
+                    ],
+                  ),
+                  Visibility(visible: item.isAqmReplaced!, child: Text(appText.dText(appText.injectedAQMFile, p.basename(item.injectedAQMFilePath!)), style: Theme.of(context).textTheme.labelMedium))
+                ],
               ),
-            );
-          }
-        }
-      }
+            ],
+          ),
+        ),
+      );
     }
 
     return widgets;

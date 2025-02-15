@@ -249,7 +249,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                           enabled: boundingRadiusCategoryDirs.contains(widget.submod.category) && !widget.submod.applyStatus,
                           onTap: () async {
                             await boundingRadiusPopup(context, widget.submod);
-                            widget.submod.boundingRemoved = true;
+                            // widget.submod.boundingRemoved = true;
                             saveMasterModListToJson();
                             setState(() {});
                           },

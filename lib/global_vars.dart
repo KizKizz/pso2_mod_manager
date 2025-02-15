@@ -102,6 +102,7 @@ List<LineStrikeCard> masterLineStrikeCardList = [];
 List<LineStrikeBoard> masterLineStrikeBoardList = [];
 List<LineStrikeSleeve> masterLineStrikeSleeveList = [];
 List<Item> masterUnappliedItemList = [];
+List<AqmInjectedItem> masterUnappliedAQMItemList = [];
 List<File> modCustomAQMFiless = [];
 Signal<String> mainGridStatus = Signal('');
 Signal<bool> checksumAvailability = Signal(false);

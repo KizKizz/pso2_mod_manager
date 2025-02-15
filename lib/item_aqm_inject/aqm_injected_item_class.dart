@@ -7,8 +7,8 @@ part 'aqm_injected_item_class.g.dart';
 
 @JsonSerializable()
 class AqmInjectedItem {
-  AqmInjectedItem(this.category, this.id, this.adjustedId, this.iconImagePath, this.itemNameEN, this.itemNameJP, this.hqIcePath, this.lqIcePath, this.iconIcePath, this.isApplied, this.isIconReplaced,
-      this.isAqmReplaced, this.isBoundingRemoved);
+  AqmInjectedItem(this.category, this.id, this.adjustedId, this.iconImagePath, this.itemNameEN, this.itemNameJP, this.hqIcePath, this.lqIcePath, this.iconIcePath, this.injectedAQMFilePath, this.injectedHqIceMd5,
+      this.injectedLqIceMd5, this.isApplied, this.isIconReplaced, this.isAqmReplaced, this.isBoundingRemoved);
   String category;
   String id;
   String adjustedId;
@@ -18,6 +18,10 @@ class AqmInjectedItem {
   String hqIcePath;
   String lqIcePath;
   String iconIcePath;
+  String? injectedAQMFilePath;
+  String? injectedHqIceMd5;
+  String? injectedLqIceMd5;
+
   bool isApplied;
   bool isIconReplaced;
   bool? isAqmReplaced;

@@ -174,6 +174,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..addToModManager = json['addToModManager'] as String
   ..creatingBackupForModFile = json['creatingBackupForModFile'] as String
   ..copyingModFileToGameData = json['copyingModFileToGameData'] as String
+  ..copyingIconFileToGameData = json['copyingIconFileToGameData'] as String
   ..localBackupFoundForModFile = json['localBackupFoundForModFile'] as String
   ..restoringBackupFileToGameData =
       json['restoringBackupFileToGameData'] as String
@@ -244,6 +245,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..madeBy = json['madeBy'] as String
   ..holdToRestoreNumAppliedMods = json['holdToRestoreNumAppliedMods'] as String
   ..holdToRestoreNumAppliedMod = json['holdToRestoreNumAppliedMod'] as String
+  ..injectedAQMFile = json['injectedAQMFile'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -357,10 +359,12 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..anticheatLoaderFileNotFound = json['anticheatLoaderFileNotFound'] as String
   ..couldntCreateCustomLauncher = json['couldntCreateCustomLauncher'] as String
   ..restoredVitalGauges = json['restoredVitalGauges'] as String
+  ..restoredAQMInjectedItems = json['restoredAQMInjectedItems'] as String
   ..pso2binDirPathInfo = json['pso2binDirPathInfo'] as String
   ..mainDirPathInfo = json['mainDirPathInfo'] as String
   ..restoredModInfo = json['restoredModInfo'] as String
   ..restoredVitalGaugeInfo = json['restoredVitalGaugeInfo'] as String
+  ..restoredAQMInjectedItemInfo = json['restoredAQMInjectedItemInfo'] as String
   ..duplicateAppliedInfo = json['duplicateAppliedInfo'] as String
   ..duplicateAqmInjectInfo = json['duplicateAqmInjectInfo'] as String
   ..selectSetsToAddToOrRemoveFrom =
@@ -584,6 +588,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'addToModManager': instance.addToModManager,
       'creatingBackupForModFile': instance.creatingBackupForModFile,
       'copyingModFileToGameData': instance.copyingModFileToGameData,
+      'copyingIconFileToGameData': instance.copyingIconFileToGameData,
       'localBackupFoundForModFile': instance.localBackupFoundForModFile,
       'restoringBackupFileToGameData': instance.restoringBackupFileToGameData,
       'applyingMod': instance.applyingMod,
@@ -651,6 +656,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'madeBy': instance.madeBy,
       'holdToRestoreNumAppliedMods': instance.holdToRestoreNumAppliedMods,
       'holdToRestoreNumAppliedMod': instance.holdToRestoreNumAppliedMod,
+      'injectedAQMFile': instance.injectedAQMFile,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,
@@ -759,10 +765,12 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'anticheatLoaderFileNotFound': instance.anticheatLoaderFileNotFound,
       'couldntCreateCustomLauncher': instance.couldntCreateCustomLauncher,
       'restoredVitalGauges': instance.restoredVitalGauges,
+      'restoredAQMInjectedItems': instance.restoredAQMInjectedItems,
       'pso2binDirPathInfo': instance.pso2binDirPathInfo,
       'mainDirPathInfo': instance.mainDirPathInfo,
       'restoredModInfo': instance.restoredModInfo,
       'restoredVitalGaugeInfo': instance.restoredVitalGaugeInfo,
+      'restoredAQMInjectedItemInfo': instance.restoredAQMInjectedItemInfo,
       'duplicateAppliedInfo': instance.duplicateAppliedInfo,
       'duplicateAqmInjectInfo': instance.duplicateAqmInjectInfo,
       'selectSetsToAddToOrRemoveFrom': instance.selectSetsToAddToOrRemoveFrom,

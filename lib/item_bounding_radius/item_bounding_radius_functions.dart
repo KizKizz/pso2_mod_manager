@@ -13,7 +13,7 @@ import 'package:path/path.dart' as p;
 
 Signal<String> modRemovingBoundingStatus = Signal('');
 
-Future<void> itemBoundingRadiusRemove(context, SubMod submod) async {
+Future<bool> itemBoundingRadiusRemove(context, SubMod submod) async {
   Directory(modBoundingRadiusTempDirPath).createSync(recursive: true);
   List<String> boundaryRemovedFiles = [];
   List<String> boundaryNotFoundFiles = [];
@@ -79,7 +79,8 @@ Future<void> itemBoundingRadiusRemove(context, SubMod submod) async {
                 // Add to modified
                 modifiedIceAdd(p.basenameWithoutExtension(renamedFile.path));
                 modRemovingBoundingStatus.value = appText.successful;
-                await Future.delayed(const Duration(milliseconds: 100));
+                await Future.delayed(const Duration(milliseconds: 10));
+                return true;
               } catch (e) {
                 modRemovingBoundingStatus.value = e.toString();
               }
@@ -98,6 +99,5 @@ Future<void> itemBoundingRadiusRemove(context, SubMod submod) async {
     modRemovingBoundingStatus.value = appText.noMatchingFilesFound;
     await Future.delayed(const Duration(milliseconds: 10));
   }
-
-  await Directory(modBoundingRadiusTempDirPath).delete(recursive: true);
+  return false;
 }

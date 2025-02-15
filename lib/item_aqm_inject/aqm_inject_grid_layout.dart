@@ -8,6 +8,7 @@ import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_functions.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_popup.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_item_class.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
+import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_functions/item_icon_mark.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
@@ -192,17 +193,22 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                                                             orElse: () => OfficialIceFile.empty(),
                                                           )
                                                           .path),
+                                                          selectedCustomAQMFilePath.value,
+                                                      '',
+                                                      '',
                                                       false,
                                                       false,
                                                       false,
                                                       false);
 
                                                   bool result =
-                                                      await aqmInjectPopup(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName(), false, false, false, false, false);
+                                                      await aqmInjectPopup(context, newItem.injectedAQMFilePath!, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName(), false, false, false, false, false);
                                                   if (result) {
                                                     if (replaceItemIconOnApplied) {
                                                       newItem.isIconReplaced = await markedAqmItemIconApply(newItem.iconIcePath);
                                                     }
+                                                    newItem.injectedHqIceMd5 = await File(pso2binDirPath + p.separator + newItem.hqIcePath.replaceAll('/', p.separator)).getMd5Hash();
+                                                    newItem.injectedLqIceMd5 = await File(pso2binDirPath + p.separator + newItem.lqIcePath.replaceAll('/', p.separator)).getMd5Hash();
                                                     newItem.isAqmReplaced = true;
                                                     newItem.isApplied = true;
                                                     masterAqmInjectedItemList.add(newItem);
@@ -240,6 +246,9 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                                                             orElse: () => OfficialIceFile.empty(),
                                                           )
                                                           .path),
+                                                          selectedCustomAQMFilePath.value,
+                                                      '',
+                                                      '',
                                                       false,
                                                       false,
                                                       false,
@@ -247,6 +256,8 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
 
                                                   bool result = await itemCustomAqmBounding(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName());
                                                   if (result) {
+                                                    newItem.injectedHqIceMd5 = await File(pso2binDirPath + p.separator + newItem.hqIcePath.replaceAll('/', p.separator)).getMd5Hash();
+                                                    newItem.injectedLqIceMd5 = await File(pso2binDirPath + p.separator + newItem.lqIcePath.replaceAll('/', p.separator)).getMd5Hash();
                                                     newItem.isBoundingRemoved = true;
                                                     newItem.isApplied = true;
                                                     masterAqmInjectedItemList.add(newItem);
@@ -289,16 +300,21 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                                                             orElse: () => OfficialIceFile.empty(),
                                                           )
                                                           .path),
+                                                          selectedCustomAQMFilePath.value,
+                                                      '',
+                                                      '',
                                                       false,
                                                       false,
                                                       false,
                                                       false);
 
                                                   bool aqmResult =
-                                                      await aqmInjectPopup(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName(), false, false, false, false, false);
+                                                      await aqmInjectPopup(context, newItem.injectedAQMFilePath!, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName(), false, false, false, false, false);
                                                   // ignore: use_build_context_synchronously
                                                   bool boundingResult = await itemCustomAqmBounding(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName());
                                                   if (aqmResult || boundingResult) {
+                                                    newItem.injectedHqIceMd5 = await File(pso2binDirPath + p.separator + newItem.hqIcePath.replaceAll('/', p.separator)).getMd5Hash();
+                                                    newItem.injectedLqIceMd5 = await File(pso2binDirPath + p.separator + newItem.lqIcePath.replaceAll('/', p.separator)).getMd5Hash();
                                                     newItem.isAqmReplaced = aqmResult;
                                                     newItem.isBoundingRemoved = boundingResult;
                                                     newItem.isApplied = true;

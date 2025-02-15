@@ -202,7 +202,7 @@ Future<bool> submodAqmInject(context, SubMod submod) async {
     }
   }
 
-  bool result = await aqmInjectPopup(context, hqIcePath, lqIcePath, submod.itemName, false, false, false, false, true);
+  bool result = await aqmInjectPopup(context, selectedCustomAQMFilePath.value, hqIcePath, lqIcePath, submod.itemName, false, false, false, false, true);
 
   if (result) {
     submod.customAQMInjected = true;
@@ -220,7 +220,7 @@ Future<bool> submodCustomAqmRemove(context, SubMod submod) async {
   String hqIcePath = submod.hqIcePath != null ? submod.hqIcePath! : '';
   String lqIcePath = submod.lqIcePath != null ? submod.lqIcePath! : '';
 
-  bool aqmRemovalResult = await aqmInjectPopup(context, hqIcePath, lqIcePath, submod.itemName, true, false, false, false, true);
+  bool aqmRemovalResult = await aqmInjectPopup(context, selectedCustomAQMFilePath.value, hqIcePath, lqIcePath, submod.itemName, true, false, false, false, true);
   if (aqmRemovalResult && submod.boundingRemoved!) {
     await boundingRadiusPopup(context, submod);
   }

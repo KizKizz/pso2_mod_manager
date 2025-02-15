@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_functions.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_popup.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_item_class.dart';
+import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_functions/item_icon_mark.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
@@ -13,6 +16,7 @@ import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
+import 'package:path/path.dart' as p;
 
 class AqmInjectedGridLayout extends StatefulWidget {
   const AqmInjectedGridLayout({super.key, required this.injectedItemList, required this.scrollController, required this.selectedAqmInjectedItem});
@@ -133,7 +137,11 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                     Visibility(visible: displayingAqmInjectedItem[index].isAqmReplaced!, child: InfoBox(info: appText.aqmInjected, borderHighlight: false)),
                                     Visibility(visible: displayingAqmInjectedItem[index].isBoundingRemoved!, child: InfoBox(info: appText.boundingRemoved, borderHighlight: false))
                                   ],
-                                )
+                                ),
+                                Visibility(
+                                    visible: displayingAqmInjectedItem[index].isAqmReplaced!,
+                                    child:
+                                        Text(appText.dText(appText.injectedAQMFile, p.basename(displayingAqmInjectedItem[index].injectedAQMFilePath!)), style: Theme.of(context).textTheme.labelMedium))
                               ],
                             ),
                           ],
@@ -154,8 +162,17 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                         visible: displayingAqmInjectedItem[index].isAqmReplaced!,
                                         child: OutlinedButton(
                                             onPressed: () async {
-                                              bool result = await aqmInjectPopup(context, displayingAqmInjectedItem[index].hqIcePath, displayingAqmInjectedItem[index].lqIcePath,
-                                                  displayingAqmInjectedItem[index].getName(), true, false, false, displayingAqmInjectedItem[index].isAqmReplaced!, false);
+                                              bool result = await aqmInjectPopup(
+                                                  context,
+                                                  displayingAqmInjectedItem[index].injectedAQMFilePath!,
+                                                  displayingAqmInjectedItem[index].hqIcePath,
+                                                  displayingAqmInjectedItem[index].lqIcePath,
+                                                  displayingAqmInjectedItem[index].getName(),
+                                                  true,
+                                                  false,
+                                                  false,
+                                                  displayingAqmInjectedItem[index].isAqmReplaced!,
+                                                  false);
                                               if (result && !displayingAqmInjectedItem[index].isBoundingRemoved!) {
                                                 if (displayingAqmInjectedItem[index].isIconReplaced) {
                                                   await markedAqmItemIconRestore(displayingAqmInjectedItem[index].iconIcePath);
@@ -164,6 +181,10 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                                 masterAqmInjectedItemList.removeAt(index);
                                               } else if (result && displayingAqmInjectedItem[index].isBoundingRemoved!) {
                                                 displayingAqmInjectedItem[index].isAqmReplaced = false;
+                                                displayingAqmInjectedItem[index].injectedHqIceMd5 =
+                                                    await File(pso2binDirPath + p.separator + displayingAqmInjectedItem[index].hqIcePath.replaceAll('/', p.separator)).getMd5Hash();
+                                                displayingAqmInjectedItem[index].injectedLqIceMd5 =
+                                                    await File(pso2binDirPath + p.separator + displayingAqmInjectedItem[index].lqIcePath.replaceAll('/', p.separator)).getMd5Hash();
                                                 modAqmInjectingRefresh.value = 'Removed AQM and restored ${displayingAqmInjectedItem[index].getName()}';
                                               }
                                               saveMasterAqmInjectListToJson();
@@ -174,8 +195,17 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                         visible: displayingAqmInjectedItem[index].isBoundingRemoved!,
                                         child: OutlinedButton(
                                             onPressed: () async {
-                                              bool result = await aqmInjectPopup(context, displayingAqmInjectedItem[index].hqIcePath, displayingAqmInjectedItem[index].lqIcePath,
-                                                  displayingAqmInjectedItem[index].getName(), false, true, false, displayingAqmInjectedItem[index].isAqmReplaced!, false);
+                                              bool result = await aqmInjectPopup(
+                                                  context,
+                                                  displayingAqmInjectedItem[index].injectedAQMFilePath!,
+                                                  displayingAqmInjectedItem[index].hqIcePath,
+                                                  displayingAqmInjectedItem[index].lqIcePath,
+                                                  displayingAqmInjectedItem[index].getName(),
+                                                  false,
+                                                  true,
+                                                  false,
+                                                  displayingAqmInjectedItem[index].isAqmReplaced!,
+                                                  false);
                                               if (result && !displayingAqmInjectedItem[index].isAqmReplaced!) {
                                                 if (displayingAqmInjectedItem[index].isIconReplaced) {
                                                   await markedAqmItemIconRestore(displayingAqmInjectedItem[index].iconIcePath);
@@ -184,6 +214,10 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                                 masterAqmInjectedItemList.removeAt(index);
                                               } else if (result && displayingAqmInjectedItem[index].isAqmReplaced!) {
                                                 displayingAqmInjectedItem[index].isBoundingRemoved = false;
+                                                displayingAqmInjectedItem[index].injectedHqIceMd5 =
+                                                    await File(pso2binDirPath + p.separator + displayingAqmInjectedItem[index].hqIcePath.replaceAll('/', p.separator)).getMd5Hash();
+                                                displayingAqmInjectedItem[index].injectedLqIceMd5 =
+                                                    await File(pso2binDirPath + p.separator + displayingAqmInjectedItem[index].lqIcePath.replaceAll('/', p.separator)).getMd5Hash();
                                                 modAqmInjectingRefresh.value = 'Restored bounding ${displayingAqmInjectedItem[index].getName()}';
                                               }
                                               saveMasterAqmInjectListToJson();
@@ -194,8 +228,17 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                         visible: displayingAqmInjectedItem[index].isAqmReplaced! && displayingAqmInjectedItem[index].isBoundingRemoved!,
                                         child: OutlinedButton(
                                             onPressed: () async {
-                                              bool result = await aqmInjectPopup(context, displayingAqmInjectedItem[index].hqIcePath, displayingAqmInjectedItem[index].lqIcePath,
-                                                  displayingAqmInjectedItem[index].getName(), false, false, true, displayingAqmInjectedItem[index].isAqmReplaced!, false);
+                                              bool result = await aqmInjectPopup(
+                                                  context,
+                                                  displayingAqmInjectedItem[index].injectedAQMFilePath!,
+                                                  displayingAqmInjectedItem[index].hqIcePath,
+                                                  displayingAqmInjectedItem[index].lqIcePath,
+                                                  displayingAqmInjectedItem[index].getName(),
+                                                  false,
+                                                  false,
+                                                  true,
+                                                  displayingAqmInjectedItem[index].isAqmReplaced!,
+                                                  false);
                                               if (result) {
                                                 if (displayingAqmInjectedItem[index].isIconReplaced) {
                                                   await markedAqmItemIconRestore(displayingAqmInjectedItem[index].iconIcePath);
