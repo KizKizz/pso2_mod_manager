@@ -8,7 +8,9 @@ import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_functions.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_popup.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_item_class.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
+import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_functions/item_icon_mark.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
@@ -34,7 +36,9 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (modAqmInjectedrefresh.watch(context) != modAqmInjectedrefresh.peek()) setState(() {});
+    if (modAqmInjectingRefresh.watch(context) != modAqmInjectingRefresh.peek()) {
+      setState(() {});
+    }
 
     // Filtered data
     List<ItemData> displayingItemData = [];
@@ -189,17 +193,26 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                                                             orElse: () => OfficialIceFile.empty(),
                                                           )
                                                           .path),
+                                                          selectedCustomAQMFilePath.value,
+                                                      '',
+                                                      '',
                                                       false,
                                                       false,
                                                       false,
                                                       false);
 
                                                   bool result =
-                                                      await aqmInjectPopup(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName(), false, false, false, false, false);
+                                                      await aqmInjectPopup(context, newItem.injectedAQMFilePath!, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName(), false, false, false, false, false);
                                                   if (result) {
+                                                    if (replaceItemIconOnApplied) {
+                                                      newItem.isIconReplaced = await markedAqmItemIconApply(newItem.iconIcePath);
+                                                    }
+                                                    newItem.injectedHqIceMd5 = await File(pso2binDirPath + p.separator + newItem.hqIcePath.replaceAll('/', p.separator)).getMd5Hash();
+                                                    newItem.injectedLqIceMd5 = await File(pso2binDirPath + p.separator + newItem.lqIcePath.replaceAll('/', p.separator)).getMd5Hash();
                                                     newItem.isAqmReplaced = true;
                                                     newItem.isApplied = true;
                                                     masterAqmInjectedItemList.add(newItem);
+                                                    modAqmInjectingRefresh.value = 'Injected AQM into ${newItem.getName()}';
                                                     saveMasterAqmInjectListToJson();
                                                   }
                                                 }
@@ -213,8 +226,8 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                                                       displayingItemData[index].getItemIDs().first,
                                                       displayingItemData[index].getItemIDs().last,
                                                       displayingItemData[index].iconImagePath,
-                                                      displayingItemData[index].getENName(),
-                                                      displayingItemData[index].getJPName(),
+                                                      displayingItemData[index].getENNameOriginal(),
+                                                      displayingItemData[index].getJPNameOriginal(),
                                                       p.withoutExtension(oItemData
                                                           .firstWhere(
                                                             (e) => e.path.contains(displayingItemData[index].getHQIceName()),
@@ -233,6 +246,9 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                                                             orElse: () => OfficialIceFile.empty(),
                                                           )
                                                           .path),
+                                                          selectedCustomAQMFilePath.value,
+                                                      '',
+                                                      '',
                                                       false,
                                                       false,
                                                       false,
@@ -240,13 +256,17 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
 
                                                   bool result = await itemCustomAqmBounding(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName());
                                                   if (result) {
+                                                    newItem.injectedHqIceMd5 = await File(pso2binDirPath + p.separator + newItem.hqIcePath.replaceAll('/', p.separator)).getMd5Hash();
+                                                    newItem.injectedLqIceMd5 = await File(pso2binDirPath + p.separator + newItem.lqIcePath.replaceAll('/', p.separator)).getMd5Hash();
                                                     newItem.isBoundingRemoved = true;
                                                     newItem.isApplied = true;
                                                     masterAqmInjectedItemList.add(newItem);
-                                                    modAqmInjectedrefresh.value = true;
+                                                    if (replaceItemIconOnApplied) {
+                                                      newItem.isIconReplaced = await markedAqmItemIconApply(newItem.iconIcePath);
+                                                    }
+                                                    modAqmInjectingRefresh.value = 'Removed Bounding from ${newItem.getName()}';
                                                     saveMasterAqmInjectListToJson();
                                                   }
-                                                  setState(() {});
                                                 }
                                               : null,
                                           child: Text(appText.removeBounding)),
@@ -260,8 +280,8 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                                                       displayingItemData[index].getItemIDs().first,
                                                       displayingItemData[index].getItemIDs().last,
                                                       displayingItemData[index].iconImagePath,
-                                                      displayingItemData[index].getENName(),
-                                                      displayingItemData[index].getJPName(),
+                                                      displayingItemData[index].getENNameOriginal(),
+                                                      displayingItemData[index].getJPNameOriginal(),
                                                       p.withoutExtension(oItemData
                                                           .firstWhere(
                                                             (e) => e.path.contains(displayingItemData[index].getHQIceName()),
@@ -280,21 +300,29 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                                                             orElse: () => OfficialIceFile.empty(),
                                                           )
                                                           .path),
+                                                          selectedCustomAQMFilePath.value,
+                                                      '',
+                                                      '',
                                                       false,
                                                       false,
                                                       false,
                                                       false);
 
                                                   bool aqmResult =
-                                                      await aqmInjectPopup(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName(), false, false, false, false, false);
+                                                      await aqmInjectPopup(context, newItem.injectedAQMFilePath!, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName(), false, false, false, false, false);
                                                   // ignore: use_build_context_synchronously
                                                   bool boundingResult = await itemCustomAqmBounding(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName());
                                                   if (aqmResult || boundingResult) {
+                                                    newItem.injectedHqIceMd5 = await File(pso2binDirPath + p.separator + newItem.hqIcePath.replaceAll('/', p.separator)).getMd5Hash();
+                                                    newItem.injectedLqIceMd5 = await File(pso2binDirPath + p.separator + newItem.lqIcePath.replaceAll('/', p.separator)).getMd5Hash();
                                                     newItem.isAqmReplaced = aqmResult;
                                                     newItem.isBoundingRemoved = boundingResult;
                                                     newItem.isApplied = true;
                                                     masterAqmInjectedItemList.add(newItem);
-                                                    modAqmInjectedrefresh.value = true;
+                                                    if (replaceItemIconOnApplied) {
+                                                      newItem.isIconReplaced = await markedAqmItemIconApply(newItem.iconIcePath);
+                                                    }
+                                                    modAqmInjectingRefresh.value = 'Injected AQM and removed Bounding from ${newItem.getName()}';
                                                     saveMasterAqmInjectListToJson();
                                                   }
                                                 }

@@ -182,6 +182,7 @@ class AppText {
       addToModManager = 'Add To Mod Manager',
       creatingBackupForModFile = 'Creating backup for %p%',
       copyingModFileToGameData = 'Copying %p% to game data',
+      copyingIconFileToGameData = 'Copying icon "%p%" to game data',
       localBackupFoundForModFile = 'Local backup found for %p%',
       restoringBackupFileToGameData = 'Restoring %p% to game data',
       applyingMod = 'Applying "%p%"',
@@ -247,7 +248,8 @@ class AppText {
       defaultHomepage = 'Default Homepage',
       madeBy = 'Made by %p%',
       holdToRestoreNumAppliedMods = 'Hold To Restore %p% Applied Mods',
-      holdToRestoreNumAppliedMod = 'Hold To Restore %p% Applied Mod';
+      holdToRestoreNumAppliedMod = 'Hold To Restore %p% Applied Mod',
+      injectedAQMFile = 'Injected AQM: %p%';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -354,13 +356,15 @@ class AppText {
       failedToReplaceSleeveIcon = 'Failed to replace sleeve icon',
       anticheatLoaderFileNotFound = '"ucldr_PSO2_JP_loader_x64.exe" not found\nRun the game at least once then try again',
       couldntCreateCustomLauncher = 'Cound not create custom launcher',
-      restoredVitalGauges = 'Restored Vital Gauges';
+      restoredVitalGauges = 'Restored Vital Gauges',
+      restoredAQMInjectedItems = 'Restored AQM Injected Items';
 
   // Infos
   String pso2binDirPathInfo = 'PSO2 game data folder, this folder located inside the game installation directory',
       mainDirPathInfo = 'This folder stores your mods and other Mod Manager related stuff\nPreferably outside of pso2 installation directory and nested folders',
-      restoredModInfo = 'These mods had been restored by game update or file check',
-      restoredVitalGaugeInfo = 'These Vital Gauge backgrounds had been restored by game update or file check',
+      restoredModInfo = 'These mods have been restored by game update or file check',
+      restoredVitalGaugeInfo = 'These Vital Gauge backgrounds have been restored by game update or file check',
+      restoredAQMInjectedItemInfo = 'Custom AQM and Bounding Radius of these items have been restored by game update or file check',
       duplicateAppliedInfo = 'This mod was found using the same files as "%p%"',
       duplicateAqmInjectInfo = 'This mod was found using the same files as "%p%" in AQM Inject',
       selectSetsToAddToOrRemoveFrom = 'Select Set(s) to add to or to remove from',

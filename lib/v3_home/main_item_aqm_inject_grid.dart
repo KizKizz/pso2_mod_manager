@@ -2,12 +2,10 @@ import 'dart:io';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_cate_select_button.dart';
-import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_functions.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_grid_layout.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_grid_layout.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_item_class.dart';
@@ -16,13 +14,8 @@ import 'package:pso2_mod_manager/item_swap/item_swap_motions_select_button.dart'
 import 'package:pso2_mod_manager/item_swap/item_swap_type_select_button.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
-import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
-import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:path/path.dart' as p;
-
-bool replaceLQTexturesWithHQ = false;
-bool emoteToIdleMotion = false;
 
 class MainItemAqmInjectGrid extends StatefulWidget {
   const MainItemAqmInjectGrid({super.key});
@@ -38,13 +31,10 @@ class _MainItemAqmInjectGridState extends State<MainItemAqmInjectGrid> {
   Signal<ItemData?> lSelectedItemData = Signal<ItemData?>(null);
   Signal<AqmInjectedItem?> rSelectedItemData = Signal<AqmInjectedItem?>(null);
   Signal<bool> showNoNameItems = Signal(false);
-  String extraCategory = '';
   List<ItemData> displayingItems = [];
-  late Future aqmInjectedFuture;
 
   @override
   void initState() {
-    aqmInjectedFuture = aqmInjectedItemsFetch();
     super.initState();
 
     Future.delayed(const Duration(milliseconds: 100), () {
@@ -57,7 +47,6 @@ class _MainItemAqmInjectGridState extends State<MainItemAqmInjectGrid> {
   Widget build(BuildContext context) {
     // Fetch aqm files
     Directory(modCustomAqmsDirPath).createSync(recursive: true);
-    // modCustomAQMFiles = Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').toList();
 
     // Sort item data
     displayingItems = pItemData
@@ -114,49 +103,10 @@ class _MainItemAqmInjectGridState extends State<MainItemAqmInjectGrid> {
                 selectedItemData: lSelectedItemData,
               )),
               Expanded(
-                  child: FutureBuilder(
-                future: aqmInjectedFuture,
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.connectionState != ConnectionState.done) {
-                    return Center(
-                        child: Column(
-                      spacing: 5,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CardOverlay(
-                          paddingValue: 15,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              LoadingAnimationWidget.staggeredDotsWave(
-                                color: Theme.of(context).colorScheme.primary,
-                                size: 100,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: Text(
-                                  appText.loadingAqmInjectedItems,
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ));
-                  } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                    return FutureBuilderError(loadingText: appText.loadingAqmInjectedItems, snapshotError: snapshot.error.toString());
-                  } else {
-                    masterAqmInjectedItemList = snapshot.data;
-                    return AqmInjectedGridLayout(
-                      injectedItemList: masterAqmInjectedItemList,
-                      scrollController: rScrollController,
-                      selectedAqmInjectedItem: rSelectedItemData,
-                    );
-                  }
-                },
+                  child: AqmInjectedGridLayout(
+                injectedItemList: masterAqmInjectedItemList,
+                scrollController: rScrollController,
+                selectedAqmInjectedItem: rSelectedItemData,
               )),
             ],
           )),

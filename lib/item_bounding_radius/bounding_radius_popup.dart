@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/item_bounding_radius/item_bounding_radius_functions.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
@@ -8,10 +12,17 @@ import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
 import 'package:signals/signals_flutter.dart';
 
 Future<void> boundingRadiusPopup(context, SubMod submod) async {
+  Signal<bool> finished = Signal(false);
   await showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          if (finished.watch(context)) {
+            if (Directory(modBoundingRadiusTempDirPath).existsSync()) Directory(modBoundingRadiusTempDirPath).deleteSync(recursive: true);
+            Navigator.of(context).pop();
+          }
+        });
         return StatefulBuilder(builder: (dialogContext, setState) {
           return AlertDialog(
               backgroundColor: Colors.transparent,
@@ -62,7 +73,8 @@ Future<void> boundingRadiusPopup(context, SubMod submod) async {
                   } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
                     return FutureBuilderError(loadingText: appText.dText(appText.editingMod, submod.submodName), snapshotError: snapshot.error.toString());
                   } else {
-                    Navigator.of(context).pop();
+                    submod.boundingRemoved = snapshot.data;
+                    finished.value = true;
                     return const SizedBox();
                   }
                 },

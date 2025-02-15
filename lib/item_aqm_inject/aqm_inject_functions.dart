@@ -15,10 +15,11 @@ import 'package:signals/signals_flutter.dart';
 import 'package:path/path.dart' as p;
 
 Signal<String> modAqmInjectingStatus = Signal('');
-Signal<bool> modAqmInjectedrefresh = Signal(false);
+Signal<String> modAqmInjectingRefresh = Signal('');
 
 Future<List<AqmInjectedItem>> aqmInjectedItemsFetch() async {
   List<AqmInjectedItem> structureFromJson = [];
+  masterUnappliedAQMItemList = [];
 
   //Load list from json
   String dataFromJson = await File(mainAqmInjectListJsonPath).readAsString();
@@ -26,6 +27,10 @@ Future<List<AqmInjectedItem>> aqmInjectedItemsFetch() async {
     var jsonData = await jsonDecode(dataFromJson);
     for (var item in jsonData) {
       AqmInjectedItem newAqmItem = AqmInjectedItem.fromJson(item);
+      newAqmItem.injectedHqIceMd5 ??= '';
+      newAqmItem.injectedLqIceMd5 ??= '';
+      newAqmItem.injectedAQMFilePath ??= '';
+
       if (newAqmItem.isBoundingRemoved == null) {
         if (newAqmItem.isApplied) {
           newAqmItem.isBoundingRemoved ??= true;
@@ -44,14 +49,28 @@ Future<List<AqmInjectedItem>> aqmInjectedItemsFetch() async {
       newAqmItem.lqIcePath = newAqmItem.lqIcePath.replaceFirst(pso2binDirPath + p.separator, '').replaceAll(p.separator, '/');
       newAqmItem.iconIcePath = newAqmItem.iconIcePath.replaceFirst(pso2binDirPath + p.separator, '').replaceAll(p.separator, '/');
       structureFromJson.add(newAqmItem);
+
+      // Check unapplied
+      bool checked = false;
+      String appliedHQIceMd5 = await File(pso2binDirPath + p.separator + newAqmItem.hqIcePath.replaceAll('/', p.separator)).getMd5Hash();
+      if (appliedHQIceMd5 != newAqmItem.injectedHqIceMd5) {
+        if (!masterUnappliedAQMItemList.contains(newAqmItem)) masterUnappliedAQMItemList.add(newAqmItem);
+        checked = true;
+      }
+      if (!checked) {
+        String appliedLQIceMd5 = await File(pso2binDirPath + p.separator + newAqmItem.lqIcePath.replaceAll('/', p.separator)).getMd5Hash();
+        if (appliedLQIceMd5 != newAqmItem.injectedLqIceMd5) {
+          if (!masterUnappliedAQMItemList.contains(newAqmItem)) masterUnappliedAQMItemList.add(newAqmItem);
+          checked = true;
+        }
+      }
     }
   }
 
   return structureFromJson;
 }
 
-Future<bool> itemCustomAqmInject(context, String hqIcePath, String lqIcePath, bool fromSubmod) async {
-  modAqmInjectingStatus.value = '';
+Future<bool> itemCustomAqmInject(context, String customAQMFilePath, String hqIcePath, String lqIcePath, bool fromSubmod) async {
   Directory(modAqmInjectTempDirPath).createSync(recursive: true);
   List<String> aqmInjectedFiles = [];
   int packRetries = 0;
@@ -116,7 +135,7 @@ Future<bool> itemCustomAqmInject(context, String hqIcePath, String lqIcePath, bo
           }
         }
         //copy custom aqm file
-        final copiedFile = File(selectedCustomAQMFilePath.value).copySync(Uri.file('$extractedGroup2Path/pl_rbd_${id}_bw_sa${p.extension(selectedCustomAQMFilePath.value)}').toFilePath());
+        final copiedFile = File(customAQMFilePath).copySync(Uri.file('$extractedGroup2Path/pl_rbd_${id}_bw_sa${p.extension(customAQMFilePath)}').toFilePath());
         if (copiedFile.existsSync() && id > -1) {
           modAqmInjectingStatus.value = appText.dText(appText.repackingFile, p.basename(file.path));
           await Future.delayed(const Duration(milliseconds: 10));
@@ -169,13 +188,13 @@ Future<bool> itemCustomAqmInject(context, String hqIcePath, String lqIcePath, bo
 }
 
 Future<bool> itemCustomAqmBounding(context, String hqIcePath, String lqIcePath, String itemName) async {
-  modAqmInjectedrefresh.value = false;
   ModFile hqModFile = ModFile(p.basename(hqIcePath), itemName, itemName, itemName, '', '', [], pso2binDirPath + p.separator + hqIcePath.replaceAll('/', p.separator), false, DateTime(0), 0, false,
       false, false, [], [], [], [], [], []);
   ModFile lqModFile = ModFile(p.basename(lqIcePath), itemName, itemName, itemName, '', '', [], pso2binDirPath + p.separator + lqIcePath.replaceAll('/', p.separator), false, DateTime(0), 0, false,
       false, false, [], [], [], [], [], []);
   SubMod submod = SubMod(itemName, itemName, itemName, '', '', false, DateTime(0), 0, false, false, false, [], false, false, 0, 0, '', [], [], [], [], [], [hqModFile, lqModFile]);
   await boundingRadiusPopup(context, submod);
+  // modAqmInjectingStatus.value = appText.boundingRemoved;
   return true;
 }
 
@@ -184,14 +203,17 @@ Future<bool> itemCustomAqmRestoreAll(String hqIcePath, String lqIcePath) async {
   final filePaths = [hqIcePath, lqIcePath];
   for (var filePath in filePaths) {
     if (filePath.isNotEmpty) {
+      modAqmInjectingStatus.value = appText.dText(appText.restoringFile, p.basename(filePath));
       File downloadedFile = await originalIceDownload('$filePath.pat', pso2binDirPath + p.separator + p.dirname(filePath.replaceAll('/', p.separator)), modAqmInjectingStatus);
       if (downloadedFile.existsSync()) restoredCheck[filePaths.indexOf(filePath)] = true;
     }
   }
 
   if (restoredCheck.where((e) => !e).isEmpty) {
+    modAqmInjectingStatus.value = appText.success;
     return true;
   } else {
+    modAqmInjectingStatus.value = appText.failed;
     return false;
   }
 }
@@ -253,7 +275,7 @@ Future<bool> itemCustomAqmRestoreAqm(String hqIcePath, String lqIcePath, bool fr
           }
         }
         //copy custom aqm file
-        final customAqmFile = File(Uri.file('$extractedGroup2Path/pl_rbd_${id}_bw_sa${p.extension(selectedCustomAQMFilePath.value)}').toFilePath());
+        final customAqmFile = File(Uri.file('$extractedGroup2Path/pl_rbd_${id}_bw_sa.aqm').toFilePath());
         if (customAqmFile.existsSync()) {
           await customAqmFile.delete();
           modAqmInjectingStatus.value = appText.dText(appText.repackingFile, p.basename(file.path));
@@ -303,13 +325,15 @@ Future<bool> itemCustomAqmRestoreAqm(String hqIcePath, String lqIcePath, bool fr
   }
 }
 
-Future<bool> itemCustomAqmRestoreBounding(context, String hqIcePath, String lqIcePath, bool aqmInjected) async {
+Future<bool> itemCustomAqmRestoreBounding(context, String customAQMFilePath, String hqIcePath, String lqIcePath, bool aqmInjected) async {
   bool restoreAllResult = await itemCustomAqmRestoreAll(hqIcePath, lqIcePath);
   if (restoreAllResult && aqmInjected) {
-    bool result = await itemCustomAqmInject(context, hqIcePath, lqIcePath, false);
+    bool result = await itemCustomAqmInject(context, customAQMFilePath, hqIcePath, lqIcePath, false);
     if (result) {
+      modAqmInjectingStatus.value = appText.success;
       return true;
     } else {
+      modAqmInjectingStatus.value = appText.failed;
       return false;
     }
   } else {

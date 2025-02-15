@@ -1,13 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_functions.dart';
+import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
 import 'package:signals/signals_flutter.dart';
 
-Future<bool> aqmInjectPopup(context, String hqIcePath, String lqIcePath, String itemName, bool restoreAqm, bool restoreBounding, bool restoreAll, bool aqmInjected, bool fromSubmod) async {
-  modAqmInjectedrefresh.value = false;
+Future<bool> aqmInjectPopup(context, String customAQMFilePath, String hqIcePath, String lqIcePath, String itemName, bool restoreAqm, bool restoreBounding, bool restoreAll, bool aqmInjected, bool fromSubmod) async {
   return await showDialog(
       barrierDismissible: false,
       context: context,
@@ -21,10 +23,10 @@ Future<bool> aqmInjectPopup(context, String hqIcePath, String lqIcePath, String 
                 future: restoreAqm
                     ? itemCustomAqmRestoreAqm(hqIcePath, lqIcePath, fromSubmod)
                     : restoreBounding
-                        ? itemCustomAqmRestoreBounding(context, hqIcePath, lqIcePath, aqmInjected)
+                        ? itemCustomAqmRestoreBounding(context, File(customAQMFilePath).existsSync() ? customAQMFilePath : selectedCustomAQMFilePath.value, hqIcePath, lqIcePath, aqmInjected)
                         : restoreAll
                             ? itemCustomAqmRestoreAll(hqIcePath, lqIcePath)
-                            : itemCustomAqmInject(context, hqIcePath, lqIcePath, fromSubmod),
+                            : itemCustomAqmInject(context, File(customAQMFilePath).existsSync() ? customAQMFilePath : selectedCustomAQMFilePath.value, hqIcePath, lqIcePath, fromSubmod),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return Center(
@@ -69,7 +71,6 @@ Future<bool> aqmInjectPopup(context, String hqIcePath, String lqIcePath, String 
                     return FutureBuilderError(loadingText: appText.dText(appText.editingMod, itemName), snapshotError: snapshot.error.toString());
                   } else {
                     bool result = snapshot.data;
-                    modAqmInjectedrefresh.value = true;
                     Navigator.of(context).pop(result);
                     return const SizedBox();
                   }
