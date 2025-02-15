@@ -20,60 +20,37 @@ Future<void> modUnapplySequence(context, bool applying, Item item, Mod mod, SubM
 
 Future<void> modUnapplyRestore(Item item, Mod mod, SubMod submod, List<ModFile> modFilesToRestore) async {
   if (originalFilesBackupsFromSega) {
-    if (modFilesToRestore.isEmpty) {
-      for (var modFile in submod.modFiles) {
-        await restoreFromSegaServers(item, mod, submod, modFile);
-        await Future.delayed(const Duration(microseconds: 10));
-      }
-      if (submod.getModFilesAppliedState()) {
-        for (var modFile in submod.modFiles.where((e) => e.applyStatus)) {
-          await restoreFromLocalBackups(item, mod, submod, modFile);
-          await Future.delayed(const Duration(microseconds: 10));
+    for (var modFile in modFilesToRestore.isNotEmpty ? modFilesToRestore : submod.modFiles.where((e) => e.applyStatus)) {
+      await restoreFromSegaServers(item, mod, submod, modFile);
+      if (modFile.applyStatus) {
+        await restoreFromLocalBackups(item, mod, submod, modFile);
+      } else {
+        for (var path in modFile.bkLocations) {
+          if (File(path).existsSync()) await File(path).delete(recursive: true);
         }
-      }
-    } else {
-      for (var modFile in modFilesToRestore) {
-        await restoreFromSegaServers(item, mod, submod, modFile);
-        await Future.delayed(const Duration(microseconds: 10));
-      }
-      if (modFilesToRestore.indexWhere((e) => e.applyStatus) != -1) {
-        for (var modFile in modFilesToRestore.where((e) => e.applyStatus)) {
-          await restoreFromLocalBackups(item, mod, submod, modFile);
-          await Future.delayed(const Duration(microseconds: 10));
-        }
+        modFile.bkLocations.clear();
       }
     }
   } else {
-    if (modFilesToRestore.isEmpty) {
-      for (var modFile in submod.modFiles) {
-        await restoreFromLocalBackups(item, mod, submod, modFile);
-        await Future.delayed(const Duration(microseconds: 10));
+    for (var modFile in modFilesToRestore.isNotEmpty ? modFilesToRestore : submod.modFiles.where((e) => e.applyStatus)) {
+      await restoreFromLocalBackups(item, mod, submod, modFile);
+      if (modFile.applyStatus) {
+        await restoreFromSegaServers(item, mod, submod, modFile);
       }
-      if (submod.getModFilesAppliedState()) {
-        for (var modFile in submod.modFiles.where((e) => e.applyStatus)) {
-          await restoreFromSegaServers(item, mod, submod, modFile);
-          await Future.delayed(const Duration(microseconds: 10));
+      if (!modFile.applyStatus) {
+        for (var path in modFile.bkLocations) {
+          if (File(path).existsSync()) await File(path).delete(recursive: true);
         }
-      }
-    } else {
-      for (var modFile in modFilesToRestore) {
-        await restoreFromLocalBackups(item, mod, submod, modFile);
-        await Future.delayed(const Duration(microseconds: 10));
-      }
-      if (modFilesToRestore.indexWhere((e) => e.applyStatus) != -1) {
-        for (var modFile in modFilesToRestore.where((e) => e.applyStatus)) {
-          await restoreFromSegaServers(item, mod, submod, modFile);
-          await Future.delayed(const Duration(microseconds: 10));
-        }
+        modFile.bkLocations.clear();
       }
     }
   }
 
   if (!item.applyStatus && item.isOverlayedIconApplied!) {
-     bool result = await markedItemIconRestore(item);
-     if (result) {
+    bool result = await markedItemIconRestore(item);
+    if (result) {
       item.isOverlayedIconApplied = false;
-     }
+    }
   }
 
   saveMasterModListToJson();

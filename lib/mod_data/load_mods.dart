@@ -20,6 +20,7 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
   List<CategoryType> structureFromJson = [];
   List<CategoryType> cateTypes = [];
   modSetItemsFromMasterList = [];
+  masterUnappliedItemList = [];
   // bool isEmptyCatesHide = false;
 
   // Load item data
@@ -196,6 +197,18 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
                           // if (curJsonModFilesList[modFileIndex].previewVideos != null) modFile.previewVideos = curJsonModFilesList[modFileIndex].previewVideos;
                           modFile.isSet = curJsonModFilesList[modFileIndex].isSet;
                           modFile.setNames = curJsonModFilesList[modFileIndex].setNames;
+
+                          // Check applied mods for changes
+                          if (modFile.applyStatus) {
+                            for (var path in modFile.ogLocations) {
+                              modFile.ogMd5s.clear();
+                              modFile.ogMd5s.add(await File(path).getMd5Hash());
+                              if (modFile.md5.isEmpty) modFile.md5 = await File(modFile.location).getMd5Hash();
+                              if (!masterUnappliedItemList.contains(item) && modFile.ogMd5s.first != modFile.md5) {
+                                masterUnappliedItemList.add(item);
+                              }
+                            }
+                          }
                         } else {
                           modFile.isNew = true;
                           submod.isNew = true;

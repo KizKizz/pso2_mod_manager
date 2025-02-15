@@ -134,7 +134,9 @@ Future<void> modApply(Item item, Mod mod, SubMod submod, ModFile modFile, Offici
   if (file.existsSync()) {
     if (oData.path.replaceAll('/', p.separator).isNotEmpty) {
       modApplyStatus.value = appText.dText(appText.copyingModFileToGameData, modFile.modFileName);
-      final copiedFile = await file.copy(pso2binDirPath + p.separator + p.withoutExtension(oData.path.replaceAll('/', p.separator)));
+      String gameDataFilePath = pso2binDirPath + p.separator + p.withoutExtension(oData.path.replaceAll('/', p.separator));
+      await Directory(p.dirname(gameDataFilePath)).create(recursive: true);
+      final copiedFile = await file.copy(gameDataFilePath);
       if (!modFile.ogLocations.contains(copiedFile.path)) modFile.ogLocations.add(copiedFile.path);
     } else {
       final oFilePath = Directory(pso2DataDirPath)
@@ -147,7 +149,9 @@ Future<void> modApply(Item item, Mod mod, SubMod submod, ModFile modFile, Offici
           .path;
       if (oFilePath.isNotEmpty) {
         modApplyStatus.value = appText.dText(appText.copyingModFileToGameData, modFile.modFileName);
-        final copiedFile = await file.copy(pso2binDirPath + p.separator + p.withoutExtension(oData.path.replaceAll('/', p.separator)));
+        String gameDataFilePath = pso2binDirPath + p.separator + p.withoutExtension(oData.path.replaceAll('/', p.separator));
+        await Directory(p.dirname(gameDataFilePath)).create(recursive: true);
+        final copiedFile = await file.copy(gameDataFilePath);
         if (!modFile.ogLocations.contains(copiedFile.path)) modFile.ogLocations.add(copiedFile.path);
       }
     }

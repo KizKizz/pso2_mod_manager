@@ -19,16 +19,12 @@ Future<List<Item>> appliedModsCheck() async {
                   modFile.ogMd5s.clear();
                   modFile.ogMd5s.add(await File(path).getMd5Hash());
                   if (modFile.md5.isEmpty) modFile.md5 = await File(modFile.location).getMd5Hash();
-                  if (modFile.ogMd5s.first != modFile.md5) {
+                  if (!unappliedItems.contains(item) && modFile.ogMd5s.first != modFile.md5) {
                     unappliedItems.add(item);
-                    break;
                   }
                 }
-                if (unappliedItems.contains(item)) break;
               }
-              if (unappliedItems.contains(item)) break;
             }
-            if (unappliedItems.contains(item)) break;
           }
         }
       }
@@ -41,16 +37,16 @@ Future<List<Item>> appliedModsFetch() async {
   if (masterModList.isEmpty) {
     return [];
   } else {
-    List<Item> unappliedItems = [];
+    List<Item> appliedItems = [];
     for (var cateType in masterModList) {
       for (var cate in cateType.categories) {
         for (var item in cate.items.where((e) => e.applyStatus)) {
           if (item.getModsAppliedState()) {
-            unappliedItems.add(item);
+            appliedItems.add(item);
           }
         }
       }
     }
-    return unappliedItems;
+    return appliedItems;
   }
 }
