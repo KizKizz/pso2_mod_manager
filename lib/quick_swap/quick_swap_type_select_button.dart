@@ -4,7 +4,7 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/main_widgets/category_select_buttons.dart';
 import 'package:signals/signals_flutter.dart';
 
-Signal<String> selectedQuickSwapTypeCategory = Signal<String>(appText.both);
+Signal<String> selectedQuickSwapTypeCategory = Signal<String>('Both');
 
 class QuickSwapTypeSelectButtons extends StatefulWidget {
   const QuickSwapTypeSelectButtons({super.key, required this.lScrollController, required this.rScrollController});
@@ -17,7 +17,7 @@ class QuickSwapTypeSelectButtons extends StatefulWidget {
 }
 
 class _ItemSwapTypeSelectButtonsState extends State<QuickSwapTypeSelectButtons> {
-  final itemTypes = [appText.both, 'PSO2', 'NGS'];
+  final itemTypes = ['Both', 'PSO2', 'NGS'];
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class _ItemSwapTypeSelectButtonsState extends State<QuickSwapTypeSelectButtons> 
       height: 40,
       child: PromptedChoice<String>.single(
           title: appText.types,
-          value: appText.categoryName(selectedQuickSwapTypeCategory.value),
+          value: selectedQuickSwapTypeCategory.value == itemTypes.first ? appText.both : selectedQuickSwapTypeCategory.value,
           modalFit: FlexFit.tight,
           onChanged: (value) async {
             selectedQuickSwapTypeCategory.value = value!;
@@ -35,13 +35,13 @@ class _ItemSwapTypeSelectButtonsState extends State<QuickSwapTypeSelectButtons> 
           itemCount: itemTypes.length,
           itemBuilder: (state, i) {
             return RadioListTile(
-              value: itemTypes[i],
+              value: i == 0 ? appText.both : itemTypes[i],
               groupValue: state.single,
               onChanged: (value) {
                 state.select(itemTypes[i]);
               },
               title: ChoiceText(
-                itemTypes[i],
+                i == 0 ? appText.both : itemTypes[i],
                 highlight: state.search?.value,
                 style: TextStyle(color: selectedQuickSwapTypeCategory.watch(context) == itemTypes[i] ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.bodyMedium!.color),
               ),

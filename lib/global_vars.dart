@@ -53,6 +53,23 @@ List<String> aqmInjectCategoryDirs = [
   'Outerwears', //15
   'Setwears', //16
 ];
+List<String> markIconCategoryDirs = [
+  'Accessories', //0
+  'Basewears', //1
+  'Body Paints', //2
+  'Cast Arm Parts', //3
+  'Cast Body Parts', //4
+  'Cast Leg Parts', //5
+  'Costumes', //6
+  'Eyes', //8
+  'Face Paints', //9
+  'Hairs', //10
+  'Innerwears', //11
+  'Mags', //12
+  'Outerwears', //15
+  'Setwears', //16
+  'Weapons' //17
+];
 final defaultWeaponTypes = [
   'Swords',
   'Wired Lances',

@@ -322,7 +322,7 @@ Future<void> modDelete(context, Item item, Mod mod) async {
 }
 
 Future<void> itemDelete(context, Item item) async {
-  final result = await deleteConfirmPopup(context, item.itemName);
+  final result = await deleteConfirmPopup(context, item.getDisplayName());
   if (result) {
     for (var modset in masterModSetList) {
       int iIndex = modset.setItems.indexWhere((e) => e.location == item.location);

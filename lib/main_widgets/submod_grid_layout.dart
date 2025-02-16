@@ -144,7 +144,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                                     }
                                   }
                                   if (!widget.submod.activeInSets!.contains(widget.modSetName)) widget.submod.activeInSets!.add(widget.modSetName);
-                                  modPopupStatus.value = '"${widget.modSetName}" active submod changed to "${widget.submod.submodName}" in "${widget.item.itemName}"';
+                                  modPopupStatus.value = '"${widget.modSetName}" active submod changed to "${widget.submod.submodName}" in "${widget.item.getDisplayName()}"';
                                   saveMasterModListToJson();
                                   saveMasterModSetListToJson();
                                 }
@@ -201,7 +201,11 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                               await quickSwapItemsPopup(context, widget.submod.category);
                               setState(() {});
                             },
-                            child: MenuIconItem(icon: Icons.add, text: appText.selecteMoreItems)),
+                            child: MenuIconItem(
+                              icon: Icons.add,
+                              text: appText.selecteMoreItems,
+                              enabled: true,
+                            )),
                       ];
                     }),
 
@@ -224,7 +228,11 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                             await submodAddToSet(context, widget.item, widget.mod, widget.submod);
                             setState(() {});
                           },
-                          child: MenuIconItem(icon: Icons.list_alt_outlined, text: appText.modSets)),
+                          child: MenuIconItem(
+                            icon: Icons.list_alt_outlined,
+                            text: appText.modSets,
+                            enabled: true,
+                          )),
                       PopupMenuItem(
                           onTap: () async {
                             widget.submod.applyLocations = await modApplyLocationPopup(context, widget.submod);
@@ -234,7 +242,11 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                               message: widget.submod.applyLocations!.isNotEmpty
                                   ? appText.dText(appText.currentlyApplyingToLocations, widget.submod.applyLocations!.join(', '))
                                   : appText.dText(appText.currentlyApplyingToLocations, appText.allLocations),
-                              child: MenuIconItem(icon: Icons.add_location_alt_outlined, text: appText.setApplyLocations))),
+                              child: MenuIconItem(
+                                icon: Icons.add_location_alt_outlined,
+                                text: appText.setApplyLocations,
+                                enabled: true,
+                              ))),
                       const PopupMenuItem(
                           height: 0,
                           enabled: false,
@@ -243,8 +255,18 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                           )),
                       PopupMenuItem(
                           onTap: () async => await modSwapPopup(context, widget.item, widget.mod, widget.submod),
-                          child: MenuIconItem(icon: Icons.swap_horizontal_circle_outlined, text: appText.swapToAnotherItem)),
-                      PopupMenuItem(enabled: false, child: MenuIconItem(icon: Icons.file_present, text: appText.cmx)),
+                          child: MenuIconItem(
+                            icon: Icons.swap_horizontal_circle_outlined,
+                            text: appText.swapToAnotherItem,
+                            enabled: true,
+                          )),
+                      PopupMenuItem(
+                          enabled: false,
+                          child: MenuIconItem(
+                            icon: Icons.file_present,
+                            text: appText.cmx,
+                            enabled: true,
+                          )),
                       PopupMenuItem(
                           enabled: boundingRadiusCategoryDirs.contains(widget.submod.category) && !widget.submod.applyStatus,
                           onTap: () async {
@@ -253,7 +275,11 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                             saveMasterModListToJson();
                             setState(() {});
                           },
-                          child: MenuIconItem(icon: Icons.radio_button_on_sharp, text: appText.removeBoundingRadius)),
+                          child: MenuIconItem(
+                            icon: Icons.radio_button_on_sharp,
+                            text: appText.removeBoundingRadius,
+                            enabled: boundingRadiusCategoryDirs.contains(widget.submod.category) && !widget.submod.applyStatus,
+                          )),
                       if (!widget.submod.customAQMInjected!)
                         PopupMenuItem(
                             enabled: aqmInjectCategoryDirs.contains(widget.submod.category) &&
@@ -265,7 +291,11 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                               await submodAqmInject(context, widget.submod);
                               setState(() {});
                             },
-                            child: MenuIconItem(icon: Icons.auto_fix_high, text: appText.injectCustomAQM)),
+                            child: MenuIconItem(
+                              icon: Icons.auto_fix_high,
+                              text: appText.injectCustomAQM,
+                              enabled: true
+                            )),
                       if (widget.submod.customAQMInjected!)
                         PopupMenuItem(
                             enabled: aqmInjectCategoryDirs.contains(widget.submod.category) && !widget.submod.applyStatus && widget.submod.customAQMInjected!,
@@ -273,7 +303,11 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                               await submodCustomAqmRemove(context, widget.submod);
                               setState(() {});
                             },
-                            child: MenuIconItem(icon: Icons.auto_fix_off, text: appText.removeCustomAQMs)),
+                            child: MenuIconItem(
+                              icon: Icons.auto_fix_off,
+                              text: appText.removeCustomAQMs,
+                              enabled: true,
+                            )),
                       const PopupMenuItem(
                           height: 0,
                           enabled: false,
@@ -285,11 +319,32 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                             await addPreviews(widget.mod, widget.submod);
                             setState(() {});
                           },
-                          child: MenuIconItem(icon: Icons.preview_outlined, text: appText.addPreviews)),
+                          child: MenuIconItem(
+                            icon: Icons.preview_outlined,
+                            text: appText.addPreviews,
+                            enabled: true,
+                          )),
                       PopupMenuItem(
-                          onTap: () => modExportSequence(context, ExportType.submods, widget.item, widget.mod, widget.submod), child: MenuIconItem(icon: Icons.import_export, text: appText.export)),
-                      PopupMenuItem(onTap: () async => await submodRename(context, widget.mod, widget.submod), child: MenuIconItem(icon: Icons.edit, text: appText.rename)),
-                      PopupMenuItem(onTap: () => launchUrlString(widget.submod.location), child: MenuIconItem(icon: Icons.folder_open, text: appText.openInFileExplorer)),
+                          onTap: () => modExportSequence(context, ExportType.submods, widget.item, widget.mod, widget.submod),
+                          child: MenuIconItem(
+                            icon: Icons.import_export,
+                            text: appText.export,
+                            enabled: true,
+                          )),
+                      PopupMenuItem(
+                          onTap: () async => await submodRename(context, widget.mod, widget.submod),
+                          child: MenuIconItem(
+                            icon: Icons.edit,
+                            text: appText.rename,
+                            enabled: true,
+                          )),
+                      PopupMenuItem(
+                          onTap: () => launchUrlString(widget.submod.location),
+                          child: MenuIconItem(
+                            icon: Icons.folder_open,
+                            text: appText.openInFileExplorer,
+                            enabled: true,
+                          )),
                       const PopupMenuItem(
                           height: 0,
                           enabled: false,
@@ -297,22 +352,26 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                             height: 5,
                           )),
                       PopupMenuItem(
-                          enabled: !widget.submod.applyStatus,
+                          enabled: !widget.submod.applyStatus && widget.submod.location != widget.mod.location,
                           onTap: () async {
                             await submodDelete(context, widget.item, widget.mod, widget.submod);
                             widget.mod.isNew = widget.mod.getSubmodsIsNewState();
                             widget.item.isNew = widget.item.getModsIsNewState();
                             modPopupStatus.value = '${widget.submod.submodName} deleted';
                             if (widget.mod.submods.isEmpty) {
-                              mainGridStatus.value = '"${widget.mod.modName}" in "${widget.item.itemName}" is empty and removed';
+                              mainGridStatus.value = '"${widget.mod.modName}" in "${widget.item.getDisplayName()}" is empty and removed';
                             }
                             if (widget.item.mods.isEmpty) {
-                              mainGridStatus.value = '"${widget.item.itemName}" is empty and removed';
+                              mainGridStatus.value = '"${widget.item.getDisplayName()}" is empty and removed';
                               // ignore: use_build_context_synchronously
                               Navigator.of(context).pop;
                             }
                           },
-                          child: MenuIconItem(icon: Icons.delete_forever_outlined, text: appText.delete)),
+                          child: MenuIconItem(
+                            icon: Icons.delete_forever_outlined,
+                            text: appText.delete,
+                            enabled: !widget.submod.applyStatus && widget.submod.location != widget.mod.location,
+                          )),
                     ];
                   },
                 )
@@ -324,10 +383,11 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
 }
 
 class MenuIconItem extends StatelessWidget {
-  const MenuIconItem({super.key, required this.icon, required this.text});
+  const MenuIconItem({super.key, required this.icon, required this.text, required this.enabled});
 
   final IconData icon;
   final String text;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -335,10 +395,20 @@ class MenuIconItem extends StatelessWidget {
       spacing: 5,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: text == appText.delete ? Colors.redAccent : Theme.of(context).iconTheme.color),
+        Icon(icon,
+            color: !enabled
+                ? Theme.of(context).disabledColor
+                : text == appText.delete
+                    ? Colors.redAccent
+                    : Theme.of(context).iconTheme.color),
         Text(
           text,
-          style: TextStyle(color: text == appText.delete ? Colors.redAccent : null),
+          style: TextStyle(
+              color: !enabled
+                  ? Theme.of(context).disabledColor
+                  : text == appText.delete
+                      ? Colors.redAccent
+                      : null),
         )
       ],
     );

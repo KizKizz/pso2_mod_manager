@@ -70,7 +70,7 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
                                     selectedMod = null;
                                     item.isNew = item.getModsIsNewState();
                                     // if (item.mods.isEmpty) {
-                                    mainGridStatus.value = '"${mod.modName}" in "${item.itemName}" is empty and removed';
+                                    mainGridStatus.value = '"${mod.modName}" in "${item.getDisplayName()}" is empty and removed';
                                     // ignore: use_build_context_synchronously
                                     Navigator.of(context).pop();
                                     // }

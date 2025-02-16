@@ -249,7 +249,8 @@ class AppText {
       madeBy = 'Made by %p%',
       holdToRestoreNumAppliedMods = 'Hold To Restore %p% Applied Mods',
       holdToRestoreNumAppliedMod = 'Hold To Restore %p% Applied Mod',
-      injectedAQMFile = 'Injected AQM: %p%';
+      injectedAQMFile = 'Injected AQM: %p%',
+      addingMods = 'Adding Mods';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',

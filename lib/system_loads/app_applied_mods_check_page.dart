@@ -139,7 +139,7 @@ class _AppAppliedModsLoadPageState extends State<AppAppliedModsLoadPage> {
                             spacing: 5,
                             children: [
                               ItemIconBox(item: item),
-                              Text(item.itemName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                              Text(item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
                             ],
                           ),
                         ),

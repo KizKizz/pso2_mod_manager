@@ -57,7 +57,7 @@ class _ItemIconBoxState extends State<ItemIconBox> {
                   items: widget.item.icons.where((e) => File(e).existsSync())
                       .map((e) => Image.file(
                             File(e),
-                            filterQuality: FilterQuality.none,
+                            filterQuality: FilterQuality.high,
                             fit: BoxFit.cover,
                           ))
                       .toList(),

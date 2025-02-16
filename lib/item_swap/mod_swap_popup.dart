@@ -44,7 +44,7 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                       : submod.category == defaultCategoryDirs[14]
                           ? e.category == submod.category && (e.subCategory == selectedItemSwapMotionType.watch(context) || selectedItemSwapMotionType.watch(context) == appText.all)
                           : e.category == submod.category)
-              .where((e) => selectedItemSwapTypeCategory.watch(context) == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.watch(context).toLowerCase())
+              .where((e) => selectedItemSwapTypeCategory.watch(context) == 'Both' || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.watch(context).toLowerCase())
               .toList();
           displayingItems.sort((a, b) => a.getName().compareTo(b.getName()));
 
@@ -63,7 +63,7 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                                 : extraCategory == defaultCategoryDirs[11]
                                     ? e.category == defaultCategoryDirs[2]
                                     : true)
-                .where((e) => selectedItemSwapTypeCategory.watch(context) == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.watch(context).toLowerCase())
+                .where((e) => selectedItemSwapTypeCategory.watch(context) == 'Both' || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.watch(context).toLowerCase())
                 .toList();
             rDisplayingItemsExtra.sort((a, b) => a.getName().compareTo(b.getName()));
           } else {

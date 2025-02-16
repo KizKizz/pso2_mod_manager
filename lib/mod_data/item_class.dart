@@ -11,9 +11,10 @@ part 'item_class.g.dart';
 
 @JsonSerializable()
 class Item with ChangeNotifier {
-  Item(this.itemName, this.variantNames, this.icons, this.iconPath, this.overlayedIconPath, this.backupIconPath, this.isOverlayedIconApplied, this.category, this.location, this.applyStatus,
-      this.applyDate, this.position, this.isFavorite, this.isSet, this.isNew, this.setNames, this.mods);
+  Item(this.itemName, this.variantNames, this.icons, this.iconPath, this.overlayedIconPath, this.backupIconPath, this.isOverlayedIconApplied, this.category, this.location,
+      this.applyStatus, this.applyDate, this.position, this.isFavorite, this.isSet, this.isNew, this.setNames, this.mods);
   String itemName;
+  // String? itemNameJP;
   List<String> variantNames;
   List<String> icons;
   String? iconPath = '';
@@ -31,6 +32,24 @@ class Item with ChangeNotifier {
   bool isNew;
   List<String> setNames;
   List<Mod> mods;
+
+  // void setJPName() {
+  //   final matchingItemData = pItemData.where((e) => getDistinctModFilePaths().contains(e.getHQIceName()) || getDistinctModFilePaths().contains(e.getLQIceName()));
+  //   for (var data in matchingItemData) {
+  //     if (data.getENName() == itemName || p.basenameWithoutExtension(data.iconImagePath) == itemName) {
+  //       itemNameJP = data.getJPName();
+  //       break;
+  //     }
+  //   }
+  //   itemNameJP = '';
+  // }
+
+  String getDisplayName() {
+    // if (itemNameLanguage == ItemNameLanguage.jp && itemNameJP!.isNotEmpty) {
+    //   return itemNameJP!.replaceFirst('_ ', ':').replaceFirst('_', '/');
+    // }
+    return itemName.replaceFirst('_ ', ': ').replaceFirst('_', '/').trim();
+  }
 
   void removeMod(Mod mod) {
     mods.remove(mod);

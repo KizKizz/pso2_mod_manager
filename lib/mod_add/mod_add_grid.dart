@@ -39,11 +39,13 @@ class _ModAddGridState extends State<ModAddGrid> {
         mod.modAddingState = true;
       }
     }
+
+    if (curModAddProcessedStatus.value == ModAddProcessedState.waiting) modAddDropBoxShow.value = true;
     return Stack(
       alignment: AlignmentDirectional.center,
       children: [
         Visibility(
-            visible: curModAddProcessedStatus.watch(context) != ModAddProcessedState.waiting,
+            visible: curModAddProcessedStatus.watch(context) != ModAddProcessedState.waiting && curModAddProcessedStatus.watch(context) != ModAddProcessedState.addingToMasterList,
             child: ResponsiveGridList(minItemWidth: 315, verticalGridMargin: 0, horizontalGridSpacing: 5, verticalGridSpacing: 5, children: [
               for (int i = 0; i < modAddingList.length; i++)
                 CardOverlay(
@@ -138,35 +140,57 @@ class _ModAddGridState extends State<ModAddGrid> {
                 )
             ])),
         Visibility(
-            visible: curModAddProcessedStatus.watch(context) == ModAddProcessedState.waiting || curModAddProcessedStatus.watch(context) == ModAddProcessedState.loadingData,
+            visible: curModAddProcessedStatus.watch(context) == ModAddProcessedState.waiting ||
+                curModAddProcessedStatus.watch(context) == ModAddProcessedState.loadingData ||
+                curModAddProcessedStatus.watch(context) == ModAddProcessedState.addingToMasterList,
             child: Center(
-              child: CardOverlay(
-                paddingValue: 15,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  spacing: 10,
-                  children: [
-                    if (curModAddProcessedStatus.watch(context) == ModAddProcessedState.waiting)
-                      LoadingAnimationWidget.staggeredDotsWave(
-                        color: Theme.of(context).colorScheme.primary,
-                        size: 100,
-                      ),
-                    if (curModAddProcessedStatus.watch(context) == ModAddProcessedState.loadingData)
-                      LoadingAnimationWidget.progressiveDots(
-                        color: Theme.of(context).colorScheme.primary,
-                        size: 100,
-                      ),
-                    Text(
-                      curModAddProcessedStatus.watch(context) == ModAddProcessedState.waiting ? appText.waitingForItems : appText.processingItems,
-                      style: Theme.of(context).textTheme.bodyLarge,
+              spacing: 10,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ConstrainedBox(
+                  constraints: const BoxConstraints(minWidth: 200, minHeight: 200),
+                  child: CardOverlay(
+                    paddingValue: 15,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: 10,
+                      children: [
+                        if (curModAddProcessedStatus.watch(context) == ModAddProcessedState.waiting)
+                          LoadingAnimationWidget.staggeredDotsWave(
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 100,
+                          ),
+                        if (curModAddProcessedStatus.watch(context) == ModAddProcessedState.loadingData)
+                          LoadingAnimationWidget.progressiveDots(
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 100,
+                          ),
+                        if (curModAddProcessedStatus.watch(context) == ModAddProcessedState.addingToMasterList)
+                          LoadingAnimationWidget.waveDots(
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 100,
+                          ),
+                        Text(
+                          curModAddProcessedStatus.watch(context) == ModAddProcessedState.waiting
+                              ? appText.waitingForItems
+                              : curModAddProcessedStatus.watch(context) == ModAddProcessedState.addingToMasterList
+                                  ? appText.addingMods
+                                  : appText.processingItems,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ],
                     ),
-                    Visibility(visible: curModAddProcessedStatus.watch(context) == ModAddProcessedState.loadingData, child: Text(modAddProcessingStatus.watch(context)))
-                  ],
+                  ),
                 ),
-              ),
-            ))
+                Visibility(
+                    visible: modAddProcessingStatus.watch(context).isNotEmpty &&
+                        (curModAddProcessedStatus.watch(context) == ModAddProcessedState.loadingData || curModAddProcessedStatus.watch(context) == ModAddProcessedState.addingToMasterList),
+                    child: CardOverlay(paddingValue: 15, child: Text(modAddProcessingStatus.watch(context))))
+              ],
+            )))
       ],
     );
   }

@@ -5,6 +5,7 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_checksum/checksum_functions.dart';
+import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -18,6 +19,12 @@ class ChecksumIndicator extends StatefulWidget {
 class _ChecksumIndicatorState extends State<ChecksumIndicator> {
   @override
   Widget build(BuildContext context) {
+    // Refresh
+    if (settingChangeStatus.watch(context) != settingChangeStatus.peek()) {
+      setState(
+        () {},
+      );
+    }
     return Padding(
         padding: const EdgeInsets.only(left: 5, right: 10),
         child: Row(

@@ -70,7 +70,7 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
                                         if (submodIndex != -1) {
                                           await modToGameData(context, true, item, mod, mod.submods[submodIndex]);
                                           setState(() {
-                                            modSetRefreshSignal.value = 'Applied ${mod.submods[submodIndex].submodName} in ${item.itemName} in ${widget.modSet.setName} Set';
+                                            modSetRefreshSignal.value = 'Applied ${mod.submods[submodIndex].submodName} in ${item.getDisplayName()} in ${widget.modSet.setName} Set';
                                           });
                                         }
                                       }
@@ -94,7 +94,7 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
                                         if (submodIndex != -1) {
                                           await modToGameData(context, false, item, mod, mod.submods[submodIndex]);
                                           setState(() {
-                                            modSetRefreshSignal.value = 'Restored ${mod.submods[submodIndex].submodName} in ${item.itemName} in ${widget.modSet.setName} Set';
+                                            modSetRefreshSignal.value = 'Restored ${mod.submods[submodIndex].submodName} in ${item.getDisplayName()} in ${widget.modSet.setName} Set';
                                           });
                                         }
                                       }
@@ -120,13 +120,18 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
                             itemBuilder: (BuildContext context) {
                               return [
                                 PopupMenuItem(
+                                    enabled: widget.modSet.setItems.indexWhere((e) => e.applyStatus) == -1,
                                     onTap: () async {
                                       await modSetDelete(context, widget.modSet);
                                       setState(() {
                                         modSetRefreshSignal.value = 'deleted ${widget.modSet.setName}';
                                       });
                                     },
-                                    child: MenuIconItem(icon: Icons.delete_forever_outlined, text: appText.delete)),
+                                    child: MenuIconItem(
+                                      icon: Icons.delete_forever_outlined,
+                                      text: appText.delete,
+                                      enabled: widget.modSet.setItems.indexWhere((e) => e.applyStatus) == -1,
+                                    )),
                               ];
                             },
                           ),
@@ -193,7 +198,7 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
                   spacing: 5,
                   children: [
                     ItemIconBox(item: widget.item),
-                    Text(widget.item.itemName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                    Text(widget.item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
                   ],
                 ),
               ),
@@ -247,10 +252,10 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
                       onPressed: () async {
                         if (!widget.activeSubmod.applyStatus) {
                           await modToGameData(context, true, widget.item, widget.activeMod, widget.activeSubmod);
-                          modSetRefreshSignal.value = '${widget.activeSubmod.submodName} in ${widget.item.itemName} in ${widget.setName} Set was applied';
+                          modSetRefreshSignal.value = '${widget.activeSubmod.submodName} in ${widget.item.getDisplayName()} in ${widget.setName} Set was applied';
                         } else {
                           await modToGameData(context, false, widget.item, widget.activeMod, widget.activeSubmod);
-                          modSetRefreshSignal.value = '${widget.activeSubmod.submodName} in ${widget.item.itemName} in ${widget.setName} Set was restored';
+                          modSetRefreshSignal.value = '${widget.activeSubmod.submodName} in ${widget.item.getDisplayName()} in ${widget.setName} Set was restored';
                         }
                         setState(() {});
                       },

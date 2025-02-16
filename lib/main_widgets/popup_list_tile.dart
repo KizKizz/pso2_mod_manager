@@ -43,7 +43,7 @@ class _PopupListTileState extends State<PopupListTile> {
           child: ListTile(
               contentPadding: const EdgeInsets.symmetric(horizontal: 10),
               selected: widget.selectedMod == widget.mod ? true : false,
-              title: Text(widget.mod.modName),
+              title: Text(widget.mod.modName, style: const TextStyle(fontWeight: FontWeight.w500),),
               subtitle: Row(
                 spacing: 5,
                 children: [
@@ -68,22 +68,22 @@ class _PopupListTileState extends State<PopupListTile> {
                             RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1), borderRadius: const BorderRadius.all(Radius.circular(20))))),
                     itemBuilder: (BuildContext context) {
                       return [
-                        PopupMenuItem(onTap: () => modExportSequence(context, ExportType.mods, widget.item, widget.mod, null), child: MenuIconItem(icon: Icons.import_export, text: appText.export)),
-                        PopupMenuItem(onTap: () => modSwapAllPopup(context, widget.item, widget.mod), child: MenuIconItem(icon: Icons.swap_horizontal_circle_outlined, text: appText.swapAll)),
+                        PopupMenuItem(onTap: () => modExportSequence(context, ExportType.mods, widget.item, widget.mod, null), child: MenuIconItem(icon: Icons.import_export, text: appText.export, enabled: true,)),
+                        PopupMenuItem(onTap: () => modSwapAllPopup(context, widget.item, widget.mod), child: MenuIconItem(icon: Icons.swap_horizontal_circle_outlined, text: appText.swapAll, enabled: true,)),
                         PopupMenuItem(
                             onTap: () async {
                               await modRename(context, widget.mod);
                               setState(() {});
                             },
-                            child: MenuIconItem(icon: Icons.edit, text: appText.rename)),
-                        PopupMenuItem(onTap: () => launchUrlString(widget.mod.location), child: MenuIconItem(icon: Icons.folder_open, text: appText.openInFileExplorer)),
+                            child: MenuIconItem(icon: Icons.edit, text: appText.rename, enabled: true)),
+                        PopupMenuItem(onTap: () => launchUrlString(widget.mod.location), child: MenuIconItem(icon: Icons.folder_open, text: appText.openInFileExplorer, enabled: true)),
                         const PopupMenuItem(
                             height: 0,
                             enabled: false,
                             child: PopupMenuDivider(
                               height: 5,
                             )),
-                        PopupMenuItem(enabled: !widget.mod.applyStatus, onTap: widget.onDelete, child: MenuIconItem(icon: Icons.delete_forever_outlined, text: appText.delete)),
+                        PopupMenuItem(enabled: !widget.mod.applyStatus, onTap: widget.onDelete, child: MenuIconItem(icon: Icons.delete_forever_outlined, text: appText.delete, enabled: !widget.mod.applyStatus,)),
                       ];
                     },
                   )

@@ -350,7 +350,8 @@ Future<List<Mod>> modsFetcher(String itemPath, String cateName) async {
   List<Mod> mods = [];
   //Get modfiles in item folder
   List<ModFile> modFilesInItemDir = [];
-  List<File> iceFilesInItemDir = Directory(itemPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
+  List<File> iceFilesInItemDir =
+      Directory(itemPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '' && p.basenameWithoutExtension(element.path).length > 29).toList();
   if (iceFilesInItemDir.isNotEmpty) {
     for (var iceFile in iceFilesInItemDir) {
       final previewFilesInMainModDir = Directory(iceFile.parent.path)
@@ -437,7 +438,8 @@ Future<List<Mod>> modsFetcher(String itemPath, String cateName) async {
 Future<List<SubMod>> subModFetcher(String modPath, String cateName, String itemName) async {
   List<SubMod> submods = [];
   //ices in main mod dir
-  final filesInMainModDir = Directory(modPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
+  final filesInMainModDir =
+      Directory(modPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '' && p.basenameWithoutExtension(element.path).length > 29).toList();
   if (filesInMainModDir.isNotEmpty) {
     List<ModFile> modFiles = [];
     for (var file in filesInMainModDir) {
@@ -533,7 +535,8 @@ Future<List<SubMod>> subModFetcher(String modPath, String cateName, String itemN
       hasCmx = true;
     }
 
-    final filesInDir = Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
+    final filesInDir =
+        Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '' && p.basenameWithoutExtension(element.path).length > 29).toList();
     List<ModFile> modFiles = [];
     for (var file in filesInDir) {
       //final ogFilePaths = ogDataFiles.where((element) => p.basename(element) == p.basename(file.path)).toList();

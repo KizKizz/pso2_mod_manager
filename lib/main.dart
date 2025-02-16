@@ -15,6 +15,7 @@ import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/jp_game_start_btn.dart';
 import 'package:pso2_mod_manager/settings/other_settings.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:pso2_mod_manager/v3_widgets/background_slideshow.dart';
 import 'package:pso2_mod_manager/mod_checksum/checksum_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -117,6 +118,13 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
   @override
   Widget build(BuildContext context) {
+    // Refresh
+    if (settingChangeStatus.watch(context) != settingChangeStatus.peek()) {
+      setState(
+        () {},
+      );
+    }
+    
     return Scaffold(
         appBar: PreferredSize(
           preferredSize: const Size(double.maxFinite, 25),

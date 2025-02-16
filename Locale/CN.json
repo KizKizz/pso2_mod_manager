@@ -1,4 +1,5 @@
 {
+  "addingMods": "Adding Mods",
   "injectedAQMFile": "Injected AQM: %p%",
   "restoredAQMInjectedItems": "Restored AQM Injected Items",
   "restoredAQMInjectedItemInfo": "Custom AQM and Bounding Radius of these items have been restored by game update or file check",
