@@ -122,7 +122,7 @@ Future<bool> itemCustomAqmInject(context, String customAQMFilePath, String hqIce
         //get id from aqp file
         modAqmInjectingStatus.value = appText.dText(appText.editingMod, p.basename(file.path));
         await Future.delayed(const Duration(milliseconds: 10));
-        file.deleteSync();
+        if (file.existsSync()) file.deleteSync();
         File aqpFile = Directory(extractedGroup2Path).listSync().whereType<File>().firstWhere((e) => p.extension(e.path) == '.aqp', orElse: () => File(''));
         int id = -1;
         if (aqpFile.existsSync()) {
@@ -177,12 +177,10 @@ Future<bool> itemCustomAqmInject(context, String customAQMFilePath, String hqIce
 
     modAqmInjectingStatus.value = appText.successful;
     await Future.delayed(const Duration(milliseconds: 10));
-    await Directory(modAqmInjectTempDirPath).delete(recursive: true);
     return true;
   } else {
     modAqmInjectingStatus.value = appText.noMatchingFilesFound;
     await Future.delayed(const Duration(milliseconds: 10));
-    await Directory(modAqmInjectTempDirPath).delete(recursive: true);
     return false;
   }
 }
@@ -194,7 +192,6 @@ Future<bool> itemCustomAqmBounding(context, String hqIcePath, String lqIcePath, 
       false, false, [], [], [], [], [], []);
   SubMod submod = SubMod(itemName, itemName, itemName, '', '', false, DateTime(0), 0, false, false, false, [], false, false, 0, 0, '', [], [], [], [], [], [hqModFile, lqModFile]);
   await boundingRadiusPopup(context, submod);
-  // modAqmInjectingStatus.value = appText.boundingRemoved;
   return true;
 }
 

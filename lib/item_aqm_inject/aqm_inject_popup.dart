@@ -1,19 +1,31 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_functions.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
 import 'package:signals/signals_flutter.dart';
 
-Future<bool> aqmInjectPopup(context, String customAQMFilePath, String hqIcePath, String lqIcePath, String itemName, bool restoreAqm, bool restoreBounding, bool restoreAll, bool aqmInjected, bool fromSubmod) async {
+Future<bool> aqmInjectPopup(
+    context, String customAQMFilePath, String hqIcePath, String lqIcePath, String itemName, bool restoreAqm, bool restoreBounding, bool restoreAll, bool aqmInjected, bool fromSubmod) async {
+  Signal<bool> finished = Signal(false);
+  bool result = false;
+  if (Directory(modAqmInjectTempDirPath).existsSync()) Directory(modAqmInjectTempDirPath).deleteSync(recursive: true);
   return await showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          if (finished.watch(context)) {
+            finished.value = false;
+            Navigator.of(context).pop(result);
+          }
+        });
         return StatefulBuilder(builder: (dialogContext, setState) {
           return AlertDialog(
               backgroundColor: Colors.transparent,
@@ -70,8 +82,9 @@ Future<bool> aqmInjectPopup(context, String customAQMFilePath, String hqIcePath,
                   } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
                     return FutureBuilderError(loadingText: appText.dText(appText.editingMod, itemName), snapshotError: snapshot.error.toString());
                   } else {
-                    bool result = snapshot.data;
-                    Navigator.of(context).pop(result);
+                    result = snapshot.data;
+                    finished.value = true;
+
                     return const SizedBox();
                   }
                 },
