@@ -19,6 +19,7 @@ Future<void> boundingRadiusPopup(context, SubMod submod) async {
       builder: (BuildContext context) {
         SchedulerBinding.instance.addPostFrameCallback((_) {
           if (finished.watch(context)) {
+            finished.value = false;
             if (Directory(modBoundingRadiusTempDirPath).existsSync()) Directory(modBoundingRadiusTempDirPath).deleteSync(recursive: true);
             Navigator.of(context).pop();
           }
