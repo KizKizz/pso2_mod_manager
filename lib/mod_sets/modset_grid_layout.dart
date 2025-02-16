@@ -120,13 +120,18 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
                             itemBuilder: (BuildContext context) {
                               return [
                                 PopupMenuItem(
+                                    enabled: widget.modSet.setItems.indexWhere((e) => e.applyStatus) == -1,
                                     onTap: () async {
                                       await modSetDelete(context, widget.modSet);
                                       setState(() {
                                         modSetRefreshSignal.value = 'deleted ${widget.modSet.setName}';
                                       });
                                     },
-                                    child: MenuIconItem(icon: Icons.delete_forever_outlined, text: appText.delete)),
+                                    child: MenuIconItem(
+                                      icon: Icons.delete_forever_outlined,
+                                      text: appText.delete,
+                                      enabled: widget.modSet.setItems.indexWhere((e) => e.applyStatus) == -1,
+                                    )),
                               ];
                             },
                           ),

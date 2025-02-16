@@ -193,7 +193,7 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                 ),
               ),
               Expanded(
-                  flex: 1,
+                  flex: 2,
                   child: SizedBox(
                     height: 40,
                     child: OutlinedButton(

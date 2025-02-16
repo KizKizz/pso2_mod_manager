@@ -246,6 +246,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..holdToRestoreNumAppliedMods = json['holdToRestoreNumAppliedMods'] as String
   ..holdToRestoreNumAppliedMod = json['holdToRestoreNumAppliedMod'] as String
   ..injectedAQMFile = json['injectedAQMFile'] as String
+  ..addingMods = json['addingMods'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -657,6 +658,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'holdToRestoreNumAppliedMods': instance.holdToRestoreNumAppliedMods,
       'holdToRestoreNumAppliedMod': instance.holdToRestoreNumAppliedMod,
       'injectedAQMFile': instance.injectedAQMFile,
+      'addingMods': instance.addingMods,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,

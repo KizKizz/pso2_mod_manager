@@ -78,7 +78,7 @@ class _PopupItemInfoState extends State<PopupItemInfo> {
                       RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1), borderRadius: const BorderRadius.all(Radius.circular(20))))),
               itemBuilder: (BuildContext context) {
                 return [
-                  PopupMenuItem(onTap: () => modExportSequence(context, ExportType.item, widget.item, null, null), child: MenuIconItem(icon: Icons.import_export, text: appText.export)),
+                  PopupMenuItem(onTap: () => modExportSequence(context, ExportType.item, widget.item, null, null), child: MenuIconItem(icon: Icons.import_export, text: appText.export, enabled: true)),
                   PopupMenuItem(
                       enabled: !widget.item.applyStatus,
                       onTap: () async {
@@ -87,7 +87,7 @@ class _PopupItemInfoState extends State<PopupItemInfo> {
                         // ignore: use_build_context_synchronously
                         Navigator.of(context).pop();
                       },
-                      child: MenuIconItem(icon: Icons.delete_forever_outlined, text: appText.delete)),
+                      child: MenuIconItem(icon: Icons.delete_forever_outlined, text: appText.delete, enabled: !widget.item.applyStatus)),
                 ];
               },
             )

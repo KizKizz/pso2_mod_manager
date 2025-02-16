@@ -234,6 +234,7 @@
   "holdToRestoreNumAppliedMods": "Hold To Restore %p% Applied Mods",
   "holdToRestoreNumAppliedMod": "Hold To Restore %p% Applied Mod",
   "injectedAQMFile": "Injected AQM: %p%",
+  "addingMods": "Adding Mods",
   "loadingUILanguage": "Loading UI Language",
   "selectUILanguage": "Select UI language",
   "selectItemNameLanguage": "Select item name language",

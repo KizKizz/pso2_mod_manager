@@ -1,4 +1,5 @@
 {
+  "addingMods": "MODの追加",
   "injectedAQMFile": "挿入されたAQM: %p%",
   "restoredAQMInjectedItems": "復元されたAQM挿入アイテム",
   "restoredAQMInjectedItemInfo": "これらのアイテムのカスタムAQMおよびバウンディング半径は、ゲームの更新またはファイルチェックによって復元されました",

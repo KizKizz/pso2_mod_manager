@@ -114,7 +114,7 @@ Future<List<AddingMod>> modAddSort() async {
     ItemData unknownItem = ItemData('', '', '', ['Misc'], 'Misc', '', 13, '', Map.fromEntries([const MapEntry('Japanese Name', '不明項目'), const MapEntry('English Name', 'Unknown Item')]));
     // mod dir
     List<File> modDirFiles = modDir.listSync().whereType<File>().toList();
-    if (modDirFiles.isNotEmpty && modDirFiles.indexWhere((e) => p.extension(e.path) == '') != -1) {
+    if (modDirFiles.isNotEmpty && modDirFiles.indexWhere((e) => p.extension(e.path) == '' && p.basenameWithoutExtension(e.path).length > 29) != -1) {
       submods.add(modDir);
       submodNames.add(p.basename(modDir.path));
       associatedItems.addAll(await matchItemData(associatedItems, modDirFiles.map((e) => e.path).toList()));
@@ -240,7 +240,7 @@ Future<List<Item>> modAddToMasterList(bool addingToSet, List<ModSet> modSets) as
               int modInListIndex = itemInList.mods.indexWhere((element) => element.modName.toLowerCase() == p.basename(modAddingItem.modDir.path).toLowerCase());
               if (modInListIndex != -1) {
                 Mod modInList = itemInList.mods[modInListIndex];
-                List<SubMod> extraSubmods = newSubModFetcher(modInList.location, cateInList.categoryName, itemInList.itemName, addingToSet, modSets.map((e) => e.setName).toList());
+                List<SubMod> extraSubmods = await newSubModFetcher(modInList.location, cateInList.categoryName, itemInList.itemName, addingToSet, modSets.map((e) => e.setName).toList());
                 for (var subModInCurMod in modInList.submods) {
                   extraSubmods.removeWhere((element) => element.submodName.toLowerCase() == subModInCurMod.submodName.toLowerCase());
                 }
@@ -252,7 +252,7 @@ Future<List<Item>> modAddToMasterList(bool addingToSet, List<ModSet> modSets) as
                 }
                 modInList.isNew = true;
               } else {
-                itemInList.mods.addAll(newModsFetcher(itemInList.location, cateInList.categoryName, [Directory(newItemDirDestPath + p.separator + p.basename(modAddingItem.modDir.path))], addingToSet,
+                itemInList.mods.addAll(await newModsFetcher(itemInList.location, cateInList.categoryName, [Directory(newItemDirDestPath + p.separator + p.basename(modAddingItem.modDir.path))], addingToSet,
                     modSets.map((e) => e.setName).toList()));
               }
               itemInList.setLatestCreationDate();
@@ -264,7 +264,6 @@ Future<List<Item>> modAddToMasterList(bool addingToSet, List<ModSet> modSets) as
                 }
               }
             }
-
             break;
           } else if (cateType.groupName == defaultCategoryTypes[2]) {
             Category newCate = Category(category, cateType.groupName, Uri.file('$mainModDirPath/$category').toFilePath(), cateType.categories.length, true, []);
@@ -283,7 +282,7 @@ Future<List<Item>> modAddToMasterList(bool addingToSet, List<ModSet> modSets) as
               int modInListIndex = itemInList.mods.indexWhere((element) => element.modName.toLowerCase() == p.basename(modAddingItem.modDir.path).toLowerCase());
               if (modInListIndex != -1) {
                 Mod modInList = itemInList.mods[modInListIndex];
-                List<SubMod> extraSubmods = newSubModFetcher(modInList.location, newCate.categoryName, itemInList.itemName, addingToSet, modSets.map((e) => e.setName).toList());
+                List<SubMod> extraSubmods = await newSubModFetcher(modInList.location, newCate.categoryName, itemInList.itemName, addingToSet, modSets.map((e) => e.setName).toList());
                 for (var subModInCurMod in modInList.submods) {
                   extraSubmods.removeWhere((element) => element.submodName.toLowerCase() == subModInCurMod.submodName.toLowerCase());
                 }
@@ -295,7 +294,7 @@ Future<List<Item>> modAddToMasterList(bool addingToSet, List<ModSet> modSets) as
                 }
                 modInList.isNew = true;
               } else {
-                itemInList.mods.addAll(newModsFetcher(itemInList.location, newCate.categoryName, [Directory(newItemDirDestPath + p.separator + p.basename(modAddingItem.modDir.path))], addingToSet,
+                itemInList.mods.addAll(await newModsFetcher(itemInList.location, newCate.categoryName, [Directory(newItemDirDestPath + p.separator + p.basename(modAddingItem.modDir.path))], addingToSet,
                     modSets.map((e) => e.setName).toList()));
               }
               itemInList.isNew = true;
@@ -305,15 +304,7 @@ Future<List<Item>> modAddToMasterList(bool addingToSet, List<ModSet> modSets) as
                   if (set.setItems.indexWhere((e) => e.location == itemInList.location) == -1) set.addItem(itemInList);
                 }
               }
-              //Sort alpha
-              // itemInList.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
             }
-            //Sort
-            // if (itemsWithNewModsOnTop) {
-            //   newCate.items.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
-            // } else {
-            //   newCate.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
-            // }
             newCate.visible = newCate.items.isNotEmpty ? true : false;
             cateType.categories.add(newCate);
             cateType.visible = cateType.categories.where((element) => element.items.isNotEmpty).isNotEmpty ? true : false;
@@ -372,7 +363,7 @@ Future<String> removeRebootPath(String dirPath) async {
       String newPath = '';
       final oFilePathDetails = p.dirname(oFilePath).split('/');
       List<String> filePathDetails = dirPath.split(p.separator);
-      filePathDetails.removeWhere((e) => oFilePathDetails.contains(e));
+      filePathDetails.removeWhere((e) => oFilePathDetails.contains(e) && modAddTempSortedDirPath + p.separator + e != dirPath);
       newPath = p.joinAll(filePathDetails);
       if (Platform.isLinux) newPath = p.separator + newPath;
       return newPath;
@@ -428,13 +419,13 @@ Future<Item> newItemsFetcher(String catePath, String itemPath, bool addingToSet,
   }
 
   Item newItem = Item(p.basename(itemPath), [], itemIcons, '', '', '', false, p.basename(catePath), Uri.file(itemPath).toFilePath(), false, DateTime(0), 0, false, addingToSet ? true : false, true,
-      addingToSet ? modSetNames : [], newModsFetcher(itemPath, p.basename(catePath), [], addingToSet, modSetNames));
+      addingToSet ? modSetNames : [], await newModsFetcher(itemPath, p.basename(catePath), [], addingToSet, modSetNames));
   newItem.setLatestCreationDate();
 
   return newItem;
 }
 
-List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newModFolders, bool addingToSet, List<String> modSetNames) {
+Future<List<Mod>> newModsFetcher(String itemPath, String cateName, List<Directory> newModFolders, bool addingToSet, List<String> modSetNames) async {
   List<Directory> foldersInItemPath = [];
   if (newModFolders.isEmpty) {
     foldersInItemPath = Directory(itemPath).listSync(recursive: false).whereType<Directory>().toList();
@@ -445,7 +436,7 @@ List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newMo
 
   //Get modfiles in item folder
   List<ModFile> modFilesInItemDir = [];
-  List<File> iceFilesInItemDir = Directory(itemPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
+  List<File> iceFilesInItemDir = Directory(itemPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '' && p.basenameWithoutExtension(element.path).length > 29).toList();
   if (iceFilesInItemDir.isNotEmpty) {
     for (var iceFile in iceFilesInItemDir) {
       modFilesInItemDir.add(ModFile(p.basename(iceFile.path), p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, '', [], iceFile.path, false, DateTime(0), 0, false,
@@ -505,7 +496,7 @@ List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newMo
     }
 
     Mod newMod = Mod(p.basename(dir.path), p.basename(itemPath), cateName, dir.path, false, DateTime(0), 0, true, false, addingToSet ? true : false, addingToSet ? modSetNames : [], modPreviewImages,
-        modPreviewVideos, [], newSubModFetcher(dir.path, cateName, p.basename(itemPath), addingToSet, modSetNames));
+        modPreviewVideos, [], await newSubModFetcher(dir.path, cateName, p.basename(itemPath), addingToSet, modSetNames));
     newMod.setLatestCreationDate();
     mods.add(newMod);
   }
@@ -516,10 +507,10 @@ List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newMo
   return mods;
 }
 
-List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName, bool addingToSet, List<String> modSetNames) {
+Future<List<SubMod>> newSubModFetcher(String modPath, String cateName, String itemName, bool addingToSet, List<String> modSetNames) async {
   List<SubMod> submods = [];
   //ices in main mod dir
-  final filesInMainModDir = Directory(modPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
+  final filesInMainModDir = Directory(modPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '' && p.basenameWithoutExtension(element.path).length > 29).toList();
   if (filesInMainModDir.isNotEmpty) {
     List<ModFile> modFiles = [];
     for (var file in filesInMainModDir) {
@@ -561,7 +552,11 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName, 
     SubMod newSubmod = SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), 0, true, false, addingToSet ? true : false, [], hasCmx, false, -1, -1, cmxFile,
         addingToSet ? modSetNames : [], [], modPreviewImages, modPreviewVideos, [], modFiles);
     newSubmod.setLatestCreationDate();
-
+    
+    // Status
+    modAddProcessingStatus.value = '${appText.categoryName(newSubmod.category)} > ${newSubmod.itemName} > ${newSubmod.modName} > ${newSubmod.submodName}';
+    await Future.delayed(const Duration(microseconds: 10));
+    
     submods.add(newSubmod);
   }
 
@@ -592,7 +587,7 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName, 
       hasCmx = true;
     }
 
-    final filesInDir = Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
+    final filesInDir = Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '' && p.basenameWithoutExtension(element.path).length > 29).toList();
     List<ModFile> modFiles = [];
     for (var file in filesInDir) {
       //final ogFiles = ogDataFiles.where((element) => p.basename(element) == p.basename(file.path)).toList();
@@ -616,6 +611,10 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName, 
     SubMod newSubmod = SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), 0, true, false, addingToSet ? true : false, [], hasCmx, false, -1, -1,
         cmxFile, addingToSet ? modSetNames : [], [], modPreviewImages, modPreviewVideos, [], modFiles);
     newSubmod.setLatestCreationDate();
+    
+    // Status
+    modAddProcessingStatus.value = '${appText.categoryName(newSubmod.category)} > ${newSubmod.itemName} > ${newSubmod.modName} > ${newSubmod.submodName}';
+    await Future.delayed(const Duration(microseconds: 10));
 
     submods.add(newSubmod);
   }

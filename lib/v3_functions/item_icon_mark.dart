@@ -56,7 +56,7 @@ Future<bool> markedItemIconApply(Item item) async {
     modApplyStatus.value = appText.dText(appText.copyingIconFileToGameData, p.basenameWithoutExtension(cachedIconIceFile.path));
     Future.delayed(const Duration(microseconds: 10));
     File copiedFile = await cachedIconIceFile.copy(pso2binDirPath + p.separator + p.withoutExtension(iconIceWebPath).replaceAll('/', p.separator));
-    if (await copiedFile.getMd5Hash() == await File(item.overlayedIconPath!).getMd5Hash()) {
+    if (await copiedFile.getMd5Hash() == await cachedIconIceFile.getMd5Hash()) {
       item.iconPath = copiedFile.path;
       item.isOverlayedIconApplied = true;
       saveMasterModListToJson();
@@ -66,7 +66,7 @@ Future<bool> markedItemIconApply(Item item) async {
     final itemData = pItemData.firstWhere((e) =>
         e.getENName() == item.itemName ||
         e.getJPName() == item.itemName ||
-        item.getDistinctModFilePaths().map((path) => p.basenameWithoutExtension(path)).every((name) => e.getIceDetailsWithoutKeys().contains(name)));
+        item.getDistinctModFilePaths().indexWhere((m) => e.getIceDetailsWithoutKeys().contains(p.basenameWithoutExtension(m))) != -1);
     final itemIconIceName = itemData.getIconIceName();
 
     File cachedIconIceFile = File(markedItemIconsDirPath + p.separator + itemIconIceName);
@@ -74,8 +74,8 @@ Future<bool> markedItemIconApply(Item item) async {
       String iconIceWebPath = oItemData.firstWhere((e) => e.path.contains(itemIconIceName)).path;
       modApplyStatus.value = appText.dText(appText.copyingIconFileToGameData, p.basenameWithoutExtension(cachedIconIceFile.path));
       Future.delayed(const Duration(microseconds: 10));
-      File copiedFile = await cachedIconIceFile.copy(pso2binDirPath + p.separator + p.withoutExtension(pso2binDirPath + p.separator + iconIceWebPath).replaceAll('/', p.separator));
-      if (await copiedFile.getMd5Hash() == await File(item.overlayedIconPath!).getMd5Hash()) {
+      File copiedFile = await cachedIconIceFile.copy(pso2binDirPath + p.separator + p.withoutExtension(iconIceWebPath).replaceAll('/', p.separator));
+      if (await copiedFile.getMd5Hash() == await cachedIconIceFile.getMd5Hash()) {
         item.iconPath = copiedFile.path;
         item.isOverlayedIconApplied = true;
         item.overlayedIconPath = cachedIconIceFile.path;

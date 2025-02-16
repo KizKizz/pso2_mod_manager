@@ -21,7 +21,7 @@ Future<String> newModNamePopup(context) async {
         return StatefulBuilder(builder: (dialogContext, setState) {
           return AlertDialog(
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: const BorderRadius.all(Radius.circular(5))),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context) + 50),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
             insetPadding: const EdgeInsets.all(5),
             titlePadding: const EdgeInsets.only(top: 5),
             title: Column(children: [
@@ -48,6 +48,7 @@ Future<String> newModNamePopup(context) async {
                     return appText.nameAlreadyExists;
                   }
                   if (newName.value.text.isEmpty) return appText.nameCannotBeEmpty;
+                  if (newName.value.text.trim().isEmpty) return appText.nameCannotBeEmpty;
                   return null;
                 },
                 decoration: InputDecoration(
@@ -101,17 +102,17 @@ Future<String> newModNamePopup(context) async {
                 overflowSpacing: 5,
                 children: [
                   OutlinedButton(
-                      onPressed: newName.value.text.isNotEmpty
+                      onPressed: newName.value.text.trim().isNotEmpty
                           ? () {
-                              Navigator.of(context).pop(newName.value.text);
+                              Navigator.of(context).pop(newName.value.text.trim());
                             }
                           : null,
                       child: Text(appText.continues)),
-                  OutlinedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop('');
-                      },
-                      child: Text(appText.returns))
+                  // OutlinedButton(
+                  //     onPressed: () {
+                  //       Navigator.of(context).pop('');
+                  //     },
+                  //     child: Text(appText.returns))
                 ],
               )
             ],

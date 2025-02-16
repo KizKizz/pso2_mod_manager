@@ -8,6 +8,7 @@ import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_add/adding_mod_class.dart';
 import 'package:pso2_mod_manager/mod_add/mod_add_filter_popup.dart';
 import 'package:pso2_mod_manager/mod_add/mod_add_function.dart';
+import 'package:pso2_mod_manager/mod_add/mod_add_grid.dart';
 import 'package:pso2_mod_manager/mod_add/mod_add_to_set_popup.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
@@ -114,6 +115,8 @@ class _ModAddDragDropButtonsState extends State<ModAddDragDropButtons> {
                         modAddingList = await modAddSort();
                         curModAddDragDropStatus.value = ModAddDragDropState.waitingForFiles;
                         if (modAddingList.isNotEmpty) curModAddProcessedStatus.value = ModAddProcessedState.dataInList;
+                        modAddDropBoxShow.value = false;
+                        modAddProcessingStatus.value = '';
                       }
                     : null,
                 child: Text(
@@ -168,14 +171,16 @@ class _ModAddProcessedButtonsState extends State<ModAddProcessedButtons> {
         Expanded(
           flex: 2,
           child: ElevatedButton(
-            style: ButtonStyle(
-                    shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30), side: BorderSide(width: 1.5, color: Theme.of(context).colorScheme.primary)))),
+              style: ButtonStyle(
+                  shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30), side: BorderSide(width: 1.5, color: Theme.of(context).colorScheme.primary)))),
               onPressed: curModAddProcessedStatus.watch(context) == ModAddProcessedState.dataInList
                   ? () async {
                       curModAddProcessedStatus.value = ModAddProcessedState.addingToMasterList;
+                      Future.delayed(const Duration(milliseconds: 100));
                       await modAddToMasterList(modSetsToAdd.isEmpty ? false : true, modSetsToAdd);
                       modAddingList.isNotEmpty ? curModAddProcessedStatus.value = ModAddProcessedState.dataInList : curModAddProcessedStatus.value = ModAddProcessedState.waiting;
                       modSetsToAdd.clear();
+                      modAddProcessingStatus.value = '';
                     }
                   : null,
               child: Text(
