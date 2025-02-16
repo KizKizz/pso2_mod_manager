@@ -148,38 +148,41 @@ class _ModAddGridState extends State<ModAddGrid> {
               spacing: 10,
               mainAxisSize: MainAxisSize.min,
               children: [
-                CardOverlay(
-                  paddingValue: 15,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    spacing: 10,
-                    children: [
-                      if (curModAddProcessedStatus.watch(context) == ModAddProcessedState.waiting)
-                        LoadingAnimationWidget.staggeredDotsWave(
-                          color: Theme.of(context).colorScheme.primary,
-                          size: 100,
+                ConstrainedBox(
+                  constraints: const BoxConstraints(minWidth: 200, minHeight: 200),
+                  child: CardOverlay(
+                    paddingValue: 15,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: 10,
+                      children: [
+                        if (curModAddProcessedStatus.watch(context) == ModAddProcessedState.waiting)
+                          LoadingAnimationWidget.staggeredDotsWave(
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 100,
+                          ),
+                        if (curModAddProcessedStatus.watch(context) == ModAddProcessedState.loadingData)
+                          LoadingAnimationWidget.progressiveDots(
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 100,
+                          ),
+                        if (curModAddProcessedStatus.watch(context) == ModAddProcessedState.addingToMasterList)
+                          LoadingAnimationWidget.waveDots(
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 100,
+                          ),
+                        Text(
+                          curModAddProcessedStatus.watch(context) == ModAddProcessedState.waiting
+                              ? appText.waitingForItems
+                              : curModAddProcessedStatus.watch(context) == ModAddProcessedState.addingToMasterList
+                                  ? appText.addingMods
+                                  : appText.processingItems,
+                          style: Theme.of(context).textTheme.bodyLarge,
                         ),
-                      if (curModAddProcessedStatus.watch(context) == ModAddProcessedState.loadingData)
-                        LoadingAnimationWidget.progressiveDots(
-                          color: Theme.of(context).colorScheme.primary,
-                          size: 100,
-                        ),
-                      if (curModAddProcessedStatus.watch(context) == ModAddProcessedState.addingToMasterList)
-                        LoadingAnimationWidget.waveDots(
-                          color: Theme.of(context).colorScheme.primary,
-                          size: 100,
-                        ),
-                      Text(
-                        curModAddProcessedStatus.watch(context) == ModAddProcessedState.waiting
-                            ? appText.waitingForItems
-                            : curModAddProcessedStatus.watch(context) == ModAddProcessedState.addingToMasterList
-                                ? appText.addingMods
-                                : appText.processingItems,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 Visibility(

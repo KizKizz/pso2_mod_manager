@@ -152,7 +152,7 @@
   "itemList": "アイテムリスト",
   "modSets": "MODセット",
   "numMod": "%p% MOD",
-  "numMods": "%p% MODs",
+  "numMods": "%p% MOD",
   "numCurrentlyApplied": "%p% 現在適用中",
   "viewMods": "MODを表示",
   "profileNum": "プロファイル %p%",

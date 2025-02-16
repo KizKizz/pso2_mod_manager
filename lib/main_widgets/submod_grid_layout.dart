@@ -144,7 +144,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                                     }
                                   }
                                   if (!widget.submod.activeInSets!.contains(widget.modSetName)) widget.submod.activeInSets!.add(widget.modSetName);
-                                  modPopupStatus.value = '"${widget.modSetName}" active submod changed to "${widget.submod.submodName}" in "${widget.item.itemName}"';
+                                  modPopupStatus.value = '"${widget.modSetName}" active submod changed to "${widget.submod.submodName}" in "${widget.item.getDisplayName()}"';
                                   saveMasterModListToJson();
                                   saveMasterModSetListToJson();
                                 }
@@ -359,10 +359,10 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                             widget.item.isNew = widget.item.getModsIsNewState();
                             modPopupStatus.value = '${widget.submod.submodName} deleted';
                             if (widget.mod.submods.isEmpty) {
-                              mainGridStatus.value = '"${widget.mod.modName}" in "${widget.item.itemName}" is empty and removed';
+                              mainGridStatus.value = '"${widget.mod.modName}" in "${widget.item.getDisplayName()}" is empty and removed';
                             }
                             if (widget.item.mods.isEmpty) {
-                              mainGridStatus.value = '"${widget.item.itemName}" is empty and removed';
+                              mainGridStatus.value = '"${widget.item.getDisplayName()}" is empty and removed';
                               // ignore: use_build_context_synchronously
                               Navigator.of(context).pop;
                             }

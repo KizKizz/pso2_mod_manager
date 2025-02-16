@@ -140,7 +140,7 @@ class _ModCardLayoutState extends State<ModCardLayout> {
                   spacing: 5,
                   children: [
                     ItemIconBox(item: widget.item),
-                    Text(widget.item.itemName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                    Text(widget.item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
                   ],
                 ),
               ),

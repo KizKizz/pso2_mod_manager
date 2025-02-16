@@ -33,7 +33,7 @@ class _PopupItemInfoState extends State<PopupItemInfo> {
           style: Theme.of(context).textTheme.titleMedium,
         ),
         Text(
-          widget.item.itemName.replaceFirst('_', '/').trim(),
+          widget.item.getDisplayName(),
           style: Theme.of(context).textTheme.titleLarge,
         ),
         Row(
@@ -83,7 +83,7 @@ class _PopupItemInfoState extends State<PopupItemInfo> {
                       enabled: !widget.item.applyStatus,
                       onTap: () async {
                         await itemDelete(context, widget.item);
-                        mainGridStatus.value = '"${widget.item.itemName}" removed';
+                        mainGridStatus.value = '"${widget.item.getDisplayName()}" removed';
                         // ignore: use_build_context_synchronously
                         Navigator.of(context).pop();
                       },
