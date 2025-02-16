@@ -1,7 +1,8 @@
 # PSO2NGS Mod Manager ver.3
  **An app to manage, swapping mods and items for Phantasy Star Online 2 New Genesis**
  
-![image](https://github.com/user-attachments/assets/b5d76de9-54e5-4277-abda-12ffc1e17d9b)
+![image](https://github.com/user-attachments/assets/0e7245fb-92db-4ecc-bb2c-6967cec2426e)
+
 
 # Download
 
