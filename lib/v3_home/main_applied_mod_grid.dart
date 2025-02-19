@@ -252,14 +252,15 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
           Expanded(
             child: CustomScrollView(
               controller: controller,
-              cacheExtent: 10000,
               physics: const SuperRangeMaintainingScrollPhysics(),
               slivers: [
-                for (int i = 0; i < displayingCategories.length; i++)
-                  AppliedModGridLayout(
+                SuperSliverList.builder(
+                  itemCount: displayingCategories.length,
+                  itemBuilder: (context, i) => AppliedModGridLayout(
                     category: displayingCategories[i],
                     searchString: searchTextController.value.text,
-                  )
+                  ),
+                )
               ],
             ),
           )

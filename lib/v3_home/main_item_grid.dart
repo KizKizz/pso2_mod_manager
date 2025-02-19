@@ -224,19 +224,13 @@ class _MainItemGridState extends State<MainItemGrid> {
             ],
           ),
           Expanded(
-            child: CustomScrollView(
-              controller: controller,
-              cacheExtent: 10000,
-              physics: const SuperRangeMaintainingScrollPhysics(),
-              slivers: [
-                for (int i = 0; i < displayingCategories.length; i++)
-                  CateItemGridLayout(
-                    itemCate: displayingCategories[i],
-                    searchString: searchTextController.value.text,
-                  )
-              ],
-            ),
-          )
+              child: SuperListView.builder(
+                  physics: const SuperRangeMaintainingScrollPhysics(),
+                  itemBuilder: (context, i) => CateItemGridLayout(
+                        itemCate: displayingCategories[i],
+                        searchString: searchTextController.value.text,
+                      ),
+                  itemCount: displayingCategories.length))
         ],
       ),
     );

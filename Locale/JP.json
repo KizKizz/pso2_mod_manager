@@ -1,4 +1,6 @@
 {
+  "replaceConflictedFilesOnly": "競合するファイルのみ置換",
+  "skipConflictedFiles": "競合ファイルのスキップ",
   "addingMods": "MODの追加",
   "injectedAQMFile": "挿入されたAQM: %p%",
   "restoredAQMInjectedItems": "復元されたAQM挿入アイテム",
@@ -28,7 +30,6 @@
   "expandAll": "すべて展開",
   "weaponTypes": "武器の種類",
   "replaceTheEntireMod": "MOD全体を置き換える",
-  "replaceConflictingFilesOnly": "競合ファイルのみ置き換える",
   "conflictingFiles": "競合しているファイル:",
   "hideEmptyCategories": "空のカテゴリーを隠す",
   "holdToRestoreNumAppliedMods": "ホールドして適用された%p%つのMODを元に戻す",

@@ -117,9 +117,13 @@ class _MainModSetGridState extends State<MainModSetGrid> {
           Expanded(
             child: CustomScrollView(
               controller: controller,
-              cacheExtent: 10000,
               physics: const SuperRangeMaintainingScrollPhysics(),
-              slivers: [for (int i = 0; i < displayingModSets.length; i++) ModSetGridLayout(modSet: displayingModSets[i])],
+              slivers: [
+                SuperSliverList.builder(
+                  itemCount: displayingModSets.length,
+                  itemBuilder: (context, i) => ModSetGridLayout(modSet: displayingModSets[i]),
+                )
+              ],
             ),
           )
         ],

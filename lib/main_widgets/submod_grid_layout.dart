@@ -116,7 +116,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                       )),
                 ],
               ),
-              Text(widget.submod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
+              Expanded(child: Text(widget.submod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium)),
               Row(spacing: 5, children: [
                 Expanded(
                     child: OutlinedButton(

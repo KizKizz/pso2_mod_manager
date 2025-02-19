@@ -7,19 +7,20 @@ import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
+import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:signals/signals_flutter.dart';
 
-Future<(bool, List<ModFile>)> duplicateAppliedModPopup(context, Item dupItem, Mod dupMod, SubMod dupSubmod, SubMod applyingSubmod) async {
+Future<(bool, List<ModFile>)> duplicateAppliedModPopup(context, Item dupItem, Mod dupMod, SubMod dupSubmod, Item applyingItem, SubMod applyingSubmod) async {
   return await showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (dialogContext, setState) {
-          List conflictingIceFileNames = applyingSubmod.getModFileNames();
+          List<String> conflictingIceFileNames = applyingSubmod.getModFileNames();
           conflictingIceFileNames.retainWhere((e) => dupSubmod.getModFileNames().contains(e));
 
           return AlertDialog(
@@ -27,61 +28,96 @@ Future<(bool, List<ModFile>)> duplicateAppliedModPopup(context, Item dupItem, Mo
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
             insetPadding: const EdgeInsets.all(5),
             titlePadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
-            title: Center(child: Text(appText.duplicatesInAppliedMods)),
+            title: Column(
+              children: [
+                Center(child: Text(appText.duplicatesInAppliedMods)),
+                // Text(appText.dText(appText.duplicateAppliedInfo, applyingSubmod.submodName)),
+                const HoriDivider(),
+              ],
+            ),
             contentPadding: const EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 10),
             content: SizedBox(
-              width: 400,
-              height: 325,
+              width: 300,
+              // height: 585,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 spacing: 5,
-                mainAxisSize: MainAxisSize.max,
                 children: [
-                  Text(appText.dText(appText.duplicateAppliedInfo, applyingSubmod.submodName)),
-                  const HoriDivider(),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    spacing: 5,
-                    children: [
-                      Row(
+                  CardOverlay(
+                      paddingValue: 5,
+                      child: Column(
                         spacing: 5,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Expanded(
-                            flex: 1,
-                            child: Column(
-                              spacing: 5,
-                              children: [
-                                ItemIconBox(item: dupItem),
-                                Text(dupItem.itemName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
-                              ],
-                            ),
+                          Row(
+                            spacing: 5,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Column(
+                                spacing: 5,
+                                children: [
+                                  ItemIconBox(item: applyingItem),
+                                  Text(applyingItem.itemName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                                ],
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: SubmodPreviewBox(imageFilePaths: applyingSubmod.previewImages, videoFilePaths: applyingSubmod.previewVideos, isNew: applyingSubmod.isNew),
+                              )
+                            ],
                           ),
-                          Expanded(
-                            flex: 3,
-                            child: SubmodPreviewBox(imageFilePaths: dupSubmod.previewImages, videoFilePaths: dupSubmod.previewVideos, isNew: dupSubmod.isNew),
-                          )
+                          Text(applyingSubmod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                          Visibility(
+                              visible: applyingSubmod.submodName != applyingSubmod.modName,
+                              child: Text(applyingSubmod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
                         ],
-                      ),
-                      Text(dupSubmod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
-                      Visibility(visible: dupSubmod.submodName != dupSubmod.modName, child: Text(dupSubmod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
-                      // SingleChildScrollView(
-                      //   physics: const SuperRangeMaintainingScrollPhysics(),
-                      //   child: Column(
-                      //     spacing: 5,
-                      //     crossAxisAlignment: CrossAxisAlignment.start,
-                      //     mainAxisSize: MainAxisSize.max,
-                      //     children: [Text(appText.conflictingFiles, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelMedium), Text(conflictingIceFileNames.join('\n'))],
-                      //   ),
-                      // ),
-                    ],
-                  ),
-                  const HoriDivider(),
+                      )),
+                  const Icon(Icons.arrow_downward),
+                  CardOverlay(
+                      paddingValue: 5,
+                      child: SingleChildScrollView(
+                          child: Column(
+                        spacing: 5,
+                        mainAxisSize: MainAxisSize.min,
+                        children: conflictingIceFileNames.map((e) => Text(e)).toList(),
+                      ))),
+                  const Icon(Icons.arrow_upward),
+                  CardOverlay(
+                      paddingValue: 5,
+                      child: Column(
+                        spacing: 5,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            spacing: 5,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Column(
+                                spacing: 5,
+                                children: [
+                                  ItemIconBox(item: dupItem),
+                                  Text(dupItem.itemName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                                ],
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: SubmodPreviewBox(imageFilePaths: dupSubmod.previewImages, videoFilePaths: dupSubmod.previewVideos, isNew: dupSubmod.isNew),
+                              )
+                            ],
+                          ),
+                          Text(dupSubmod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                          Visibility(visible: dupSubmod.submodName != dupSubmod.modName, child: Text(dupSubmod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
+                        ],
+                      ))
                 ],
               ),
             ),
             actionsPadding: const EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),
             actions: [
+              const HoriDivider(),
               OverflowBar(
                 spacing: 5,
                 overflowSpacing: 5,
@@ -97,7 +133,13 @@ Future<(bool, List<ModFile>)> duplicateAppliedModPopup(context, Item dupItem, Mo
                         List<ModFile> conflictingFileList = dupSubmod.modFiles.where((e) => conflictingIceFileNames.contains(e.modFileName)).toList();
                         Navigator.of(context).pop((true, conflictingFileList));
                       },
-                      child: Text(appText.replaceConflictingFilesOnly)),
+                      child: Text(appText.replaceConflictedFilesOnly)),
+                  OutlinedButton(
+                      onPressed: () {
+                        List<ModFile> nonconfictedFileList = applyingSubmod.modFiles.where((e) => !conflictingIceFileNames.contains(e.modFileName)).toList();
+                        Navigator.of(context).pop((true, nonconfictedFileList));
+                      },
+                      child: Text(appText.skipConflictedFiles)),
                   OutlinedButton(
                       onPressed: () {
                         List<ModFile> emptyList = [];
@@ -162,11 +204,11 @@ Future<bool> duplicateAqmInjectedFilesPopup(context, AqmInjectedItem aqmInjected
                       ),
                       subtitle: Column(spacing: 5, crossAxisAlignment: CrossAxisAlignment.start, children: aqmInjectedItem.getDetailsForAqmInject().map((e) => Text(e)).toList()),
                     )),
-                const HoriDivider(),
               ],
             ),
             actionsPadding: const EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),
             actions: [
+              const HoriDivider(),
               OverflowBar(
                 spacing: 5,
                 overflowSpacing: 5,

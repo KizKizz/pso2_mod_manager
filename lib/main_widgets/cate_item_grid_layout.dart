@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
@@ -12,6 +11,7 @@ import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/main_widgets/mod_view_popup.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:signals/signals_flutter.dart';
+import 'package:sticky_headers/sticky_headers/widget.dart';
 
 class CateItemGridLayout extends StatefulWidget {
   const CateItemGridLayout({super.key, required this.itemCate, required this.searchString});
@@ -32,12 +32,12 @@ class _CateItemGridLayoutState extends State<CateItemGridLayout> {
         () {},
       );
     }
-    return SliverStickyHeader.builder(
-        builder: (context, state) => Card(
+    return StickyHeaderBuilder(
+        builder:(context, stuckAmount) =>  Card(
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
-            color: state.isPinned
-                ? Theme.of(context).colorScheme.secondaryContainer.withAlpha(uiBackgroundColorAlpha.watch(context))
-                : Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+            color: stuckAmount > 0
+                ? Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))
+                : Theme.of(context).colorScheme.secondaryContainer.withAlpha(uiBackgroundColorAlpha.watch(context)),
             margin: EdgeInsets.zero,
             elevation: 5,
             child: Padding(
@@ -66,11 +66,12 @@ class _CateItemGridLayoutState extends State<CateItemGridLayout> {
                     )
                   ],
                 ))),
-        sliver: ResponsiveSliverGridList(
-            minItemWidth: 150,
+        content: ResponsiveGridList(
+            minItemWidth: 140,
             verticalGridMargin: 5,
             horizontalGridSpacing: 5,
             verticalGridSpacing: 5,
+            listViewBuilderOptions: ListViewBuilderOptions(shrinkWrap: true),
             children: widget.itemCate.visible
                 ? widget.searchString.isEmpty
                     ? widget.itemCate.items.map((e) => ItemCardLayout(item: e)).toList()
@@ -100,14 +101,15 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
         margin: EdgeInsets.zero,
         elevation: 5,
         child: Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(5),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             spacing: 5,
             children: [
-              ItemIconBox(item: widget.item),
-              Text(widget.item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+              AspectRatio(aspectRatio: 1,
+              child: ItemIconBox(item: widget.item)),
+              Expanded(child: Text(widget.item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
               Column(
                 spacing: 5,
                 children: [
