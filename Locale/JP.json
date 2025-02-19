@@ -1,4 +1,5 @@
 {
+  "replaceConflictingFilesOnly": "Replace Conflicting Files Only",
   "replaceConflictedFilesOnly": "競合するファイルのみ置換",
   "skipConflictedFiles": "競合ファイルのスキップ",
   "addingMods": "MODの追加",

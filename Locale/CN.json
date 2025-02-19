@@ -1,4 +1,5 @@
 {
+  "replaceConflictingFilesOnly": "Replace Conflicting Files Only",
   "replaceConflictedFilesOnly": "Replace Conflicted Files Only",
   "skipConflictedFiles": "Skip Conflicted Files",
   "addingMods": "添加Mod",

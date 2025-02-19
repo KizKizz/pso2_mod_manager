@@ -233,20 +233,14 @@ class _MainModGridState extends State<MainModGrid> {
             ],
           ),
           Expanded(
-            child: CustomScrollView(
-              controller: controller,
-              physics: const SuperRangeMaintainingScrollPhysics(),
-              slivers: [
-                SuperSliverList.builder(
-                  itemCount: displayingCategories.length,
-                  itemBuilder: (context, i) => CateModGridLayout(
-                    itemCate: displayingCategories[i],
-                    searchString: searchTextController.value.text,
-                  ),
-                )
-              ],
+              child: SuperListView.builder(
+            controller: controller,
+            itemCount: displayingCategories.length,
+            itemBuilder: (context, i) => CateModGridLayout(
+              itemCate: displayingCategories[i],
+              searchString: searchTextController.value.text,
             ),
-          )
+          ))
         ],
       ),
     );

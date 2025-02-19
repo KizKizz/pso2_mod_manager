@@ -225,6 +225,7 @@ class _MainItemGridState extends State<MainItemGrid> {
           ),
           Expanded(
               child: SuperListView.builder(
+                controller: controller,
                   physics: const SuperRangeMaintainingScrollPhysics(),
                   itemBuilder: (context, i) => CateItemGridLayout(
                         itemCate: displayingCategories[i],
