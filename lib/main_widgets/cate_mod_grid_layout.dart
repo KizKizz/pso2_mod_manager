@@ -96,16 +96,13 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
                     )
                   ],
                 ))),
-        content: SizedBox(
-          height: 500,
-          child: ResponsiveGridList(
+        content: ResponsiveSliverGridList(
               minItemWidth: 260,
               verticalGridMargin: 5,
               horizontalGridSpacing: 5,
               verticalGridSpacing: 5,
-              listViewBuilderOptions: ListViewBuilderOptions(shrinkWrap: false),
               children: widget.itemCate.visible ? modCardFetch() : []),
-        ));
+        );
   }
 }
 

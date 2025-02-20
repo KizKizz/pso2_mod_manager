@@ -34,13 +34,11 @@ Future<AddingMod?> variantsEditPopup(context, AddingMod addingMod, int curIndex)
               int i = addingMod.submods.indexWhere((e) => e.path == submod.path);
               if (i != -1) addingMod.submodAddingStates[i] = false;
             }
-          } else {
-            addingMod.submodAddingStates = List.filled(addingMod.submodAddingStates.length, true);
-          }
+          } 
           return AlertDialog(
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: const BorderRadius.all(Radius.circular(5))),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
-            insetPadding: const EdgeInsets.all(5),
+            insetPadding: EdgeInsets.zero,
             titlePadding: const EdgeInsets.only(top: 5),
             title: Column(children: [
               Text(
@@ -172,9 +170,7 @@ Future<AddingMod?> variantsEditPopup(context, AddingMod addingMod, int curIndex)
                                         visualDensity: VisualDensity.adaptivePlatformDensity),
                                     IconButton(
                                         onPressed: addingMod.submods.length > 1 && addingMod.submodAddingStates.where((e) => e == true).length > 1 || !addingMod.submodAddingStates[i]
-                                            ? () => setState(() {
-                                                  addingMod.submodAddingStates[i] ? addingMod.submodAddingStates[i] = false : addingMod.submodAddingStates[i] = true;
-                                                })
+                                            ? () => setState(() => addingMod.submodAddingStates[i] ? addingMod.submodAddingStates[i] = false : addingMod.submodAddingStates[i] = true)
                                             : null,
                                         icon: Icon(addingMod.submodAddingStates[i] ? Icons.check_box_outlined : Icons.check_box_outline_blank,
                                             color: addingMod.submodAddingStates[i] ? Colors.green : Colors.red),
