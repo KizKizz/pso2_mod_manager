@@ -389,7 +389,7 @@
   "currentPathFolder": "当前路径: %p%",
   "selectPso2BinFolder": "选择 pso2_bin 文件夹",
   "selectModManagerDataFolder": "选择 Mod Manager 数据文件夹",
-  "locations": "路径",
+  "locations": "文件夹位置",
   "pso2binFolder": "pso2_bin文件夹",
   "modManagerMainFolder": "Mod Manager 主数据文件夹",
   "modDataFolder": "Mod 数据文件夹",
