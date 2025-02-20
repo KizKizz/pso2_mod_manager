@@ -63,7 +63,7 @@ Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod
 
   if (dupItem != null && dupMod != null && dupSubmod != null) {
     List<ModFile> modFilesToRestore = [];
-    (performApply, modFilesToRestore) = await duplicateAppliedModPopup(context, dupItem, dupMod, dupSubmod, submod);
+    (performApply, modFilesToRestore) = await duplicateAppliedModPopup(context, dupItem, dupMod, dupSubmod, item, submod);
     if (performApply) {
       await modUnapplySequence(context, false, dupItem, dupMod, dupSubmod, modFilesToRestore);
     } else {

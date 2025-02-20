@@ -335,7 +335,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..expandAll = json['expandAll'] as String
   ..weaponTypes = json['weaponTypes'] as String
   ..replaceTheEntireMod = json['replaceTheEntireMod'] as String
-  ..replaceConflictingFilesOnly = json['replaceConflictingFilesOnly'] as String
+  ..replaceConflictedFilesOnly = json['replaceConflictedFilesOnly'] as String
+  ..skipConflictedFiles = json['skipConflictedFiles'] as String
   ..conflictingFiles = json['conflictingFiles'] as String
   ..categorizeModsByItems = json['categorizeModsByItems'] as String
   ..failedToFetchRemoteLocaleData =
@@ -419,7 +420,9 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..backgroundImageFolder = json['backgroundImageFolder'] as String
   ..verTwoMainDataPathLocation = json['verTwoMainDataPathLocation'] as String
   ..hideEmptyCategories = json['hideEmptyCategories'] as String
-  ..auxiliaryUIOpacity = json['auxiliaryUIOpacity'] as String;
+  ..auxiliaryUIOpacity = json['auxiliaryUIOpacity'] as String
+  ..showPreview = json['showPreview'] as String
+  ..hidePreview = json['hidePreview'] as String;
 
 Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'dfCastParts': instance.dfCastParts,
@@ -743,7 +746,8 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'expandAll': instance.expandAll,
       'weaponTypes': instance.weaponTypes,
       'replaceTheEntireMod': instance.replaceTheEntireMod,
-      'replaceConflictingFilesOnly': instance.replaceConflictingFilesOnly,
+      'replaceConflictedFilesOnly': instance.replaceConflictedFilesOnly,
+      'skipConflictedFiles': instance.skipConflictedFiles,
       'conflictingFiles': instance.conflictingFiles,
       'categorizeModsByItems': instance.categorizeModsByItems,
       'failedToFetchRemoteLocaleData': instance.failedToFetchRemoteLocaleData,
@@ -825,4 +829,6 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'verTwoMainDataPathLocation': instance.verTwoMainDataPathLocation,
       'hideEmptyCategories': instance.hideEmptyCategories,
       'auxiliaryUIOpacity': instance.auxiliaryUIOpacity,
+      'showPreview': instance.showPreview,
+      'hidePreview': instance.hidePreview,
     };

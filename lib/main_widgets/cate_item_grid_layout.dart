@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
@@ -10,14 +9,16 @@ import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/main_widgets/mod_view_popup.dart';
-import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:signals/signals_flutter.dart';
+import 'package:sliver_sticky_collapsable_panel/utils/utils.dart';
+import 'package:sliver_sticky_collapsable_panel/widgets/sliver_sticky_collapsable_panel.dart';
 
 class CateItemGridLayout extends StatefulWidget {
-  const CateItemGridLayout({super.key, required this.itemCate, required this.searchString});
+  const CateItemGridLayout({super.key, required this.itemCate, required this.searchString, required this.scrollController});
 
   final Category itemCate;
   final String searchString;
+  final ScrollController scrollController;
 
   @override
   State<CateItemGridLayout> createState() => _CateItemGridLayoutState();
@@ -32,53 +33,63 @@ class _CateItemGridLayoutState extends State<CateItemGridLayout> {
         () {},
       );
     }
-    return SliverStickyHeader.builder(
-        builder: (context, state) => Card(
-            shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
-            color: state.isPinned
-                ? Theme.of(context).colorScheme.secondaryContainer.withAlpha(uiBackgroundColorAlpha.watch(context))
-                : Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-            margin: EdgeInsets.zero,
-            elevation: 5,
-            child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  spacing: 5,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('${appText.categoryTypeName(widget.itemCate.group)} - ${appText.categoryName(widget.itemCate.categoryName)}', style: Theme.of(context).textTheme.titleMedium),
-                    Row(
-                      spacing: 5,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        HeaderInfoBox(info: appText.dText(widget.itemCate.items.length > 1 ? appText.numItems : appText.numItem, widget.itemCate.items.length.toString()), borderHighlight: false),
-                        HeaderInfoBox(info: appText.dText(appText.numCurrentlyApplied, widget.itemCate.items.where((e) => e.applyStatus).length.toString()), borderHighlight: false),
-                        IconButton(
-                          visualDensity: VisualDensity.adaptivePlatformDensity,
-                            onPressed: () {
-                              widget.itemCate.visible ? widget.itemCate.visible = false : widget.itemCate.visible = true;
-                              widget.itemCate.visible ? mainGridStatus.value = '${widget.itemCate.categoryName} is collapsed' : mainGridStatus.value = '${widget.itemCate.categoryName} is expanded';
-                              saveMasterModListToJson();
-                              setState(() {});
-                            },
-                            icon: Icon(widget.itemCate.visible ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down))
-                      ],
-                    )
-                  ],
-                ))),
-        sliver: ResponsiveSliverGridList(
-            minItemWidth: 150,
-            verticalGridMargin: 5,
-            horizontalGridSpacing: 5,
-            verticalGridSpacing: 5,
-            children: widget.itemCate.visible
-                ? widget.searchString.isEmpty
-                    ? widget.itemCate.items.map((e) => ItemCardLayout(item: e)).toList()
-                    : widget.itemCate.items
-                        .where((e) => e.getDistinctNames().where((e) => e.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty)
-                        .map((e) => ItemCardLayout(item: e))
-                        .toList()
-                : []));
+
+    // prep data
+    List<ItemCardLayout> displayingItemCards = widget.searchString.isEmpty
+        ? widget.itemCate.items.map((e) => ItemCardLayout(item: e)).toList()
+        : widget.itemCate.items.where((e) => e.getDistinctNames().where((e) => e.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty).map((e) => ItemCardLayout(item: e)).toList();
+    
+    return SliverPadding(
+      padding: const EdgeInsets.only(bottom: 2.5),
+      sliver: SliverStickyCollapsablePanel(
+          scrollController: widget.scrollController,
+          controller: StickyCollapsablePanelController(),
+          disableCollapsable: true,
+          iOSStyleSticky: true,
+          headerBuilder: (context, status) => InkWell(
+                onTap: () {
+                  widget.itemCate.visible ? widget.itemCate.visible = false : widget.itemCate.visible = true;
+                  widget.itemCate.visible ? mainGridStatus.value = '${widget.itemCate.categoryName} is collapsed' : mainGridStatus.value = '${widget.itemCate.categoryName} is expanded';
+                  saveMasterModListToJson();
+                  setState(() {});
+                },
+                child: Card(
+                    shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                    color: !status.isPinned
+                        ? Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))
+                        : Theme.of(context).colorScheme.secondaryContainer.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                    margin: EdgeInsets.zero,
+                    elevation: 5,
+                    child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          spacing: 5,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('${appText.categoryTypeName(widget.itemCate.group)} - ${appText.categoryName(widget.itemCate.categoryName)}', style: Theme.of(context).textTheme.titleMedium),
+                            Row(
+                              spacing: 5,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                HeaderInfoBox(
+                                    info: appText.dText(widget.itemCate.items.length > 1 ? appText.numItems : appText.numItem, widget.itemCate.items.length.toString()), borderHighlight: false),
+                                HeaderInfoBox(info: appText.dText(appText.numCurrentlyApplied, widget.itemCate.items.where((e) => e.applyStatus).length.toString()), borderHighlight: false),
+                                Icon(widget.itemCate.visible ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down)
+                              ],
+                            )
+                          ],
+                        ))),
+              ),
+          sliverPanel: widget.itemCate.visible
+              ? SliverPadding(
+                  padding: const EdgeInsets.symmetric(vertical: 2.5),
+                  sliver: SliverGrid.builder(
+                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 292, maxCrossAxisExtent: 160, mainAxisSpacing: 2.5, crossAxisSpacing: 2.5),
+                      itemCount: displayingItemCards.length,
+                      itemBuilder: (context, index) => displayingItemCards[index]),
+                )
+              : null),
+    );
   }
 }
 
@@ -100,14 +111,14 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
         margin: EdgeInsets.zero,
         elevation: 5,
         child: Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(5),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             spacing: 5,
             children: [
-              ItemIconBox(item: widget.item),
-              Text(widget.item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+              AspectRatio(aspectRatio: 1, child: ItemIconBox(item: widget.item)),
+              Flexible(child: Center(child: Text(widget.item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge))),
               Column(
                 spacing: 5,
                 children: [

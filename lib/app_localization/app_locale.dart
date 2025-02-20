@@ -116,7 +116,7 @@ class AppLocale {
       for (var locale in locales) {
         int remoteLocaleIndex = remoteLocales.indexWhere((e) => e.language == locale.language);
         if (remoteLocaleIndex != -1 && remoteLocales[remoteLocaleIndex].version > locale.version) {
-          final tResponse = await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/refs/heads/main/Locale/${remoteLocales[remoteLocaleIndex]}.json'));
+          final tResponse = await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/refs/heads/main/Locale/${remoteLocales[remoteLocaleIndex].language}.json'));
           if (tResponse.statusCode == 200) {
             File(locale.translationFilePath).writeAsStringSync(tResponse.body);
           } else {

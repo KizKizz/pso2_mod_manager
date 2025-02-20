@@ -29,6 +29,7 @@ class _SubmodPreviewBoxState extends State<SubmodPreviewBox> {
   bool videoRefreshed = false;
   @override
   Widget build(BuildContext context) {
+    if (!showPreviewBox.watch(context)) return const SizedBox();
     widget.videoFilePaths.isEmpty ? showPlayButton = false : showPlayButton = true;
     if (widget.videoFilePaths.isEmpty) showVideoBox = false;
     if (showVideoBox && !overrideShow) {
@@ -272,7 +273,7 @@ class _SubmodImageBoxState extends State<SubmodImageBox> {
                     slideIndicator: CircularWaveSlideIndicator(
                         slideIndicatorOptions: SlideIndicatorOptions(
                             itemSpacing: 10, indicatorRadius: 4, currentIndicatorColor: Theme.of(context).colorScheme.primary, indicatorBackgroundColor: Theme.of(context).hintColor.withAlpha(200)))),
-                items: imagePaths.where((e) => File(e).existsSync()).map((e) => Image.file(File(e))).toList(),
+                items: imagePaths.where((e) => File(e).existsSync()).map((e) => Image.file(File(e), filterQuality: FilterQuality.none,)).toList(),
               ),
               Visibility(
                   visible: imagePaths.isNotEmpty,

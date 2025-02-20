@@ -35,88 +35,96 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
           return AlertDialog(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
-            insetPadding: const EdgeInsets.only(top: 25),
-            contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
+            insetPadding: EdgeInsets.zero,
+            contentPadding: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
             content: SizedBox(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Column(
-                      spacing: 5,
-                      children: [
-                        PopupItemInfo(item: item, showModInfo: false),
-                        const HoriDivider(),
-                        Expanded(
-                            child: CustomScrollView(physics: const SuperRangeMaintainingScrollPhysics(), slivers: [
-                          SuperSliverList.builder(
-                              itemCount: 1,
-                              itemBuilder: (context, modIndex) {
-                                return PopupListTile(
-                                  item: item,
-                                  mod: mod,
-                                  selectedMod: selectedMod,
-                                  onSelectedMod: () {
-                                    selectedMod = mod;
-                                    setState(
-                                      () {},
-                                    );
-                                  },
-                                  onDelete: () async {
-                                    await modDelete(context, item, mod);
-                                    modPopupStatus.value = '${mod.modName} deleted';
-                                    selectedMod = null;
-                                    item.isNew = item.getModsIsNewState();
-                                    // if (item.mods.isEmpty) {
-                                    mainGridStatus.value = '"${mod.modName}" in "${item.getDisplayName()}" is empty and removed';
-                                    // ignore: use_build_context_synchronously
-                                    Navigator.of(context).pop();
-                                    // }
-                                  },
-                                );
-                              })
-                        ]))
-                      ],
-                    ),
-                  ),
-                  const VertDivider(),
-                  Expanded(
-                    flex: 3,
-                    child: selectedMod == null
-                        ? Center(
-                            child: Text(
-                              appText.selectAMod,
-                              style: Theme.of(context).textTheme.headlineSmall,
+              child: InkWell(
+                  splashColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  mouseCursor: MouseCursor.defer,
+                  onSecondaryTap: () => Navigator.of(context).pop(),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                spacing: 5,
+                                children: [
+                                  PopupItemInfo(item: item, showModInfo: false),
+                                  const HoriDivider(),
+                                  Expanded(
+                                      child: CustomScrollView(physics: const SuperRangeMaintainingScrollPhysics(), slivers: [
+                                    SuperSliverList.builder(
+                                        itemCount: 1,
+                                        itemBuilder: (context, modIndex) {
+                                          return PopupListTile(
+                                            item: item,
+                                            mod: mod,
+                                            selectedMod: selectedMod,
+                                            onSelectedMod: () {
+                                              selectedMod = mod;
+                                              setState(
+                                                () {},
+                                              );
+                                            },
+                                            onDelete: () async {
+                                              await modDelete(context, item, mod);
+                                              modPopupStatus.value = '${mod.modName} deleted';
+                                              selectedMod = null;
+                                              item.isNew = item.getModsIsNewState();
+                                              // if (item.mods.isEmpty) {
+                                              mainGridStatus.value = '"${mod.modName}" in "${item.getDisplayName()}" is empty and removed';
+                                              // ignore: use_build_context_synchronously
+                                              Navigator.of(context).pop();
+                                              // }
+                                            },
+                                          );
+                                        })
+                                  ]))
+                                ],
+                              ),
                             ),
-                          )
-                        : CustomScrollView(
-                            physics: const SuperRangeMaintainingScrollPhysics(),
-                            slivers: [
-                              SubmodGridLayout(
-                                submods: selectedMod!.submods,
-                                // searchString: searchTextController.value.text,
-                                searchString: '',
-                                item: item,
-                                mod: selectedMod!,
-                                modSetName: '',
-                              )
-                            ],
-                          ),
-                  ),
-                ],
-              ),
+                            const VertDivider(),
+                            Expanded(
+                              flex: 3,
+                              child: selectedMod == null
+                                  ? Center(
+                                      child: Text(
+                                        appText.selectAMod,
+                                        style: Theme.of(context).textTheme.headlineSmall,
+                                      ),
+                                    )
+                                  : CustomScrollView(
+                                      physics: const SuperRangeMaintainingScrollPhysics(),
+                                      slivers: [
+                                        SubmodGridLayout(
+                                          submods: selectedMod!.submods,
+                                          // searchString: searchTextController.value.text,
+                                          searchString: '',
+                                          item: item,
+                                          mod: selectedMod!,
+                                          modSetName: '',
+                                        )
+                                      ],
+                                    ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const HoriDivider(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [OutlinedButton(onPressed: () => Navigator.of(context).pop(), child: Text(appText.returns))],
+                      )
+                    ],
+                  )),
             ),
-            actionsPadding: const EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),
-            actions: [
-              const HoriDivider(),
-              OutlinedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(appText.returns))
-            ],
           );
         });
       });

@@ -8,7 +8,6 @@ import 'package:pso2_mod_manager/mod_sets/modset_select_buttons.dart';
 import 'package:pso2_mod_manager/mod_sets/modset_sorting_buttons.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:signals/signals_flutter.dart';
-import 'package:super_sliver_list/super_sliver_list.dart';
 
 Signal<String> selectedDisplayModSet = Signal('All');
 Signal<String> modSetRefreshSignal = Signal('');
@@ -103,25 +102,23 @@ class _MainModSetGridState extends State<MainModSetGrid> {
                           setState(() {});
                           saveMasterModSetListToJson();
                         },
-                        child: Text(displayingModSets.indexWhere((e) => e.expanded) != -1 ? appText.collapseAll : appText.expandAll)),
+                        child: Text(
+                          displayingModSets.indexWhere((e) => e.expanded) != -1 ? appText.collapseAll : appText.expandAll,
+                          textAlign: TextAlign.center,
+                        )),
                   )),
-              Expanded(flex: 2, child: ModSetSortingButton(scrollController: controller)),
-              Expanded(
-                  flex: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 1),
-                    child: ModSetSelectButtons(setNames: masterModSetList.map((e) => e.setName).toList(), scrollController: controller),
-                  )),
+              SizedBox(width: 250, child: ModSetSortingButton(scrollController: controller)),
+              SizedBox(
+                width: 200,
+                child: ModSetSelectButtons(setNames: masterModSetList.map((e) => e.setName).toList(), scrollController: controller),
+              ),
             ],
           ),
           Expanded(
-            child: CustomScrollView(
-              controller: controller,
-              cacheExtent: 10000,
-              physics: const SuperRangeMaintainingScrollPhysics(),
-              slivers: [for (int i = 0; i < displayingModSets.length; i++) ModSetGridLayout(modSet: displayingModSets[i])],
-            ),
-          )
+              child: CustomScrollView(
+            controller: controller,
+            slivers: displayingModSets.map((e) => ModSetGridLayout(modSet: e, scrollController: controller,)).toList(),
+          ))
         ],
       ),
     );

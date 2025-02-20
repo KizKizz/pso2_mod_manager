@@ -42,7 +42,7 @@ Future<void> quickSwapItemsPopup(context, String category) async {
           return AlertDialog(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
-            insetPadding: const EdgeInsets.only(top: 25),
+            insetPadding: EdgeInsets.zero,
             contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
             content: SizedBox(
                 width: MediaQuery.of(context).size.width,

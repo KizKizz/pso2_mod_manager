@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 
 class AddingMod {
-  AddingMod(this.modDir, this.modAddingState, this.submods, this.submodNames, this.submodAddingStates, this.associatedItems, this.aItemAddingStates, this.previewImages, this.previewVideos);
+  AddingMod(this.modDir, this.modAddingState, this.submods, this.submodNames, this.submodAddingStates, this.associatedItems, this.aItemAddingStates, this.sameItemIceNames, this.previewImages, this.previewVideos);
 
   Directory modDir;
   bool modAddingState;
@@ -12,6 +12,7 @@ class AddingMod {
   List<bool> submodAddingStates;
   List<ItemData> associatedItems;
   List<bool> aItemAddingStates;
+  List<MapEntry<String, List<String>>> sameItemIceNames;
   List<File> previewImages;
   List<File> previewVideos;
 }

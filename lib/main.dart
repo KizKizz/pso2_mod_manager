@@ -124,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         () {},
       );
     }
-    
+
     return Scaffold(
         appBar: PreferredSize(
           preferredSize: const Size(double.maxFinite, 25),
@@ -159,7 +159,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                   ),
                 ),
                 Row(
-                  spacing: 5,
+                  spacing: 2.5,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Visibility(visible: appLoadingFinished.watch(context) && pso2RegionVersion.watch(context) == PSO2RegionVersion.jp, child: const JpGameStartButtton()),
@@ -179,6 +179,23 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                               ),
                               label: Text(appText.refresh)),
                         )),
+                    // Visibility(
+                    //     visible: appLoadingFinished.watch(context),
+                    //     child: SizedBox(
+                    //       height: 20,
+                    //       child: OutlinedButton.icon(
+                    //           style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+                    //           onPressed: () async {
+                    //             final prefs = await SharedPreferences.getInstance();
+                    //             showPreviewBox.value ? showPreviewBox.value = false : showPreviewBox.value = true;
+                    //             prefs.setBool('showPreviewBox', showPreviewBox.value);
+                    //           },
+                    //           icon: const Icon(
+                    //             Icons.preview,
+                    //             size: 18,
+                    //           ),
+                    //           label: Text(showPreviewBox.watch(context) ? appText.hidePreview : appText.showPreview)),
+                    //     )),
                     Visibility(visible: appLoadingFinished.watch(context), child: const ChecksumIndicator())
                   ],
                 )

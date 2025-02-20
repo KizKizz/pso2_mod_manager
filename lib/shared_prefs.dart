@@ -31,7 +31,8 @@ bool sideMenuAlwaysExpanded = false;
 bool enableModAddFilters = false;
 int defaultHomepageIndex = 0;
 bool hideEmptyCategories = true;
-bool modAddCategorizeModsByItems = false;
+bool modAddCategorizeModsByItems = true;
+Signal<bool> showPreviewBox = Signal(true);
 
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
@@ -142,6 +143,9 @@ Future<void> prefsLoad() async {
   // Hide empty categories
   hideEmptyCategories = prefs.getBool('hideEmptyCategories') ?? true;
 
-  // Hide empty categories
-  modAddCategorizeModsByItems = prefs.getBool('modAddCategorizeModsByItems') ?? false;
+  // categorize by items
+  modAddCategorizeModsByItems = prefs.getBool('modAddCategorizeModsByItems') ?? true;
+  
+  // show previwe box
+  showPreviewBox.value = prefs.getBool('showPreviewBox') ?? true;
 }

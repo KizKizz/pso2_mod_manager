@@ -335,7 +335,8 @@ class AppText {
       expandAll = 'Expand All',
       weaponTypes = 'Weapon Types',
       replaceTheEntireMod = 'Replace The Entire Mod',
-      replaceConflictingFilesOnly = 'Replace Conflicting Files Only',
+      replaceConflictedFilesOnly = 'Replace Conflicted Files Only',
+      skipConflictedFiles = 'Skip Conflicted Files',
       conflictingFiles = 'Conflicting files:',
       categorizeModsByItems = 'Categorize Mods By Items';
 
@@ -419,7 +420,9 @@ class AppText {
       backgroundImageFolder = 'Background Image Folder',
       verTwoMainDataPathLocation = 'Ver.2 Mod Manager Main Data Folder Location:',
       hideEmptyCategories = 'Hide Empty Categories',
-      auxiliaryUIOpacity = 'Auxiliary UI Opacity';
+      auxiliaryUIOpacity = 'Auxiliary UI Opacity',
+      showPreview = 'Show Preview',
+      hidePreview = 'Hide Preview';
 
   factory AppText.fromJson(Map<String, dynamic> json) => _$AppTextFromJson(json);
   Map<String, dynamic> toJson() => _$AppTextToJson(this);

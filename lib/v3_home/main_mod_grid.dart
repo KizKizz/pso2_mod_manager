@@ -12,7 +12,6 @@ import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:signals/signals_flutter.dart';
-import 'package:super_sliver_list/super_sliver_list.dart';
 
 class MainModGrid extends StatefulWidget {
   const MainModGrid({super.key});
@@ -221,31 +220,28 @@ class _MainModGridState extends State<MainModGrid> {
                           setState(() {});
                           saveMasterModListToJson();
                         },
-                        child: Text(categories.indexWhere((e) => e.visible) != -1 ? appText.collapseAll : appText.expandAll)),
+                        child: Text(
+                          categories.indexWhere((e) => e.visible) != -1 ? appText.collapseAll : appText.expandAll,
+                          textAlign: TextAlign.center,
+                        )),
                   )),
-              Expanded(flex: 2, child: SortingButtons(scrollController: controller)),
-              Expanded(
-                  flex: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 1),
-                    child: CateModCategorySelectButtons(categories: categories, scrollController: controller),
-                  )),
+              SizedBox(width: 250, child: SortingButtons(scrollController: controller)),
+              SizedBox(
+                width: 200,
+                child: CateModCategorySelectButtons(categories: categories, scrollController: controller),
+              ),
             ],
           ),
           Expanded(
-            child: CustomScrollView(
-              controller: controller,
-              cacheExtent: 10000,
-              physics: const SuperRangeMaintainingScrollPhysics(),
-              slivers: [
-                for (int i = 0; i < displayingCategories.length; i++)
-                  CateModGridLayout(
-                    itemCate: displayingCategories[i],
-                    searchString: searchTextController.value.text,
-                  )
-              ],
-            ),
-          )
+              child: CustomScrollView(
+                  controller: controller,
+                  slivers: displayingCategories
+                      .map((e) => CateModGridLayout(
+                            itemCate: e,
+                            searchString: searchTextController.value.text,
+                            scrollController: controller,
+                          ))
+                      .toList()))
         ],
       ),
     );

@@ -1,4 +1,9 @@
 {
+  "showPreview": "Show Preview",
+  "hidePreview": "Hide Preview",
+  "replaceConflictingFilesOnly": "Replace Conflicting Files Only",
+  "replaceConflictedFilesOnly": "Replace Conflicted Files Only",
+  "skipConflictedFiles": "Skip Conflicted Files",
   "addingMods": "添加Mod",
   "injectedAQMFile": "注入AQM: %p%",
   "restoredAQMInjectedItems": "还原已注入AQM的物品",
@@ -28,7 +33,6 @@
   "expandAll": "全部展开",
   "weaponTypes": "武器类型",
   "replaceTheEntireMod": "更换整个MOD",
-  "replaceConflictingFilesOnly": "仅替换冲突的文件",
   "conflictingFiles": "冲突文件:",
   "hideEmptyCategories": "隐藏空的分类",
   "holdToRestoreNumAppliedMods": "按住可还原已应用的 %p% 个模组",
