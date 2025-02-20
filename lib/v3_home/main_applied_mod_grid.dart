@@ -14,7 +14,6 @@ import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:signals/signals_flutter.dart';
-import 'package:super_sliver_list/super_sliver_list.dart';
 
 class MainAppliedModGrid extends StatefulWidget {
   const MainAppliedModGrid({super.key});
@@ -215,7 +214,10 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                                 saveMasterModListToJson();
                               }
                             : null,
-                        child: Text(categories.indexWhere((e) => e.visible) != -1 ? appText.collapseAll : appText.expandAll)),
+                        child: Text(
+                          categories.indexWhere((e) => e.visible) != -1 ? appText.collapseAll : appText.expandAll,
+                          textAlign: TextAlign.center,
+                        )),
                   )),
               Expanded(
                   flex: 2,
@@ -239,24 +241,24 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                                 }
                               }
                             : null,
-                        child: Text(appText.dText(numOfAppliedMods > 1 ? appText.holdToRestoreNumAppliedMods : appText.holdToRestoreNumAppliedMod, numOfAppliedMods.toString()))),
+                        child: Text(appText.dText(numOfAppliedMods > 1 ? appText.holdToRestoreNumAppliedMods : appText.holdToRestoreNumAppliedMod, numOfAppliedMods.toString()), textAlign: TextAlign.center,)),
                   )),
-              Expanded(
-                  flex: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 1),
-                    child: AppliedModCategorySelectButtons(categories: categories.where((e) => e.getNumOfAppliedItems() > 0).toList(), scrollController: controller),
-                  )),
+              SizedBox(
+                width: 200,
+                child: AppliedModCategorySelectButtons(categories: categories.where((e) => e.getNumOfAppliedItems() > 0).toList(), scrollController: controller),
+              ),
             ],
           ),
           Expanded(
-              child: SuperListView.builder(
+              child: CustomScrollView(
             controller: controller,
-            itemCount: displayingCategories.length,
-            itemBuilder: (context, i) => AppliedModGridLayout(
-              category: displayingCategories[i],
-              searchString: searchTextController.value.text,
-            ),
+            slivers: displayingCategories
+                .map((e) => AppliedModGridLayout(
+                      category: e,
+                      searchString: searchTextController.value.text,
+                      scrollController: controller,
+                    ))
+                .toList(),
           ))
         ],
       ),

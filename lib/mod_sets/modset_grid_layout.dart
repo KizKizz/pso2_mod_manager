@@ -16,14 +16,15 @@ import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
-import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:signals/signals_flutter.dart';
-import 'package:sticky_headers/sticky_headers/widget.dart';
+import 'package:sliver_sticky_collapsable_panel/utils/sliver_sticky_collapsable_panel_controller.dart';
+import 'package:sliver_sticky_collapsable_panel/widgets/sliver_sticky_collapsable_panel.dart';
 
 class ModSetGridLayout extends StatefulWidget {
-  const ModSetGridLayout({super.key, required this.modSet});
+  const ModSetGridLayout({super.key, required this.modSet, required this.scrollController});
 
   final ModSet modSet;
+  final ScrollController scrollController;
 
   @override
   State<ModSetGridLayout> createState() => _ModSetGridLayoutState();
@@ -32,141 +33,151 @@ class ModSetGridLayout extends StatefulWidget {
 class _ModSetGridLayoutState extends State<ModSetGridLayout> {
   @override
   Widget build(BuildContext context) {
-    return StickyHeaderBuilder(
-        builder: (context, stuckAmount) => Card(
-            shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
-            color: stuckAmount > 0
-                ? Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))
-                : Theme.of(context).colorScheme.secondaryContainer.withAlpha(uiBackgroundColorAlpha.watch(context)),
-            margin: EdgeInsets.zero,
-            elevation: 5,
-            child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  spacing: 5,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(widget.modSet.setName, style: Theme.of(context).textTheme.titleMedium),
-                    Row(
-                      spacing: 5,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Visibility(
-                          visible: widget.modSet.setItems.indexWhere((e) => !e.applyStatus) != -1,
-                          child: SizedBox(
-                              height: 25,
-                              child: OutlinedButton(
-                                  onPressed: () async {
-                                    for (var item in widget.modSet.setItems) {
-                                      int modIndex = item.mods.indexWhere((e) =>
-                                          e.isSet &&
-                                          e.setNames.contains(widget.modSet.setName) &&
-                                          e.submods.indexWhere((s) => s.activeInSets!.contains(widget.modSet.setName)) != -1 &&
-                                          !e.applyStatus);
-                                      if (modIndex != -1) {
-                                        Mod mod = item.mods[modIndex];
-                                        int submodIndex =
-                                            mod.submods.indexWhere((e) => e.isSet && e.setNames.contains(widget.modSet.setName) && e.activeInSets!.contains(widget.modSet.setName) && !e.applyStatus);
-                                        if (submodIndex != -1) {
-                                          await modToGameData(context, true, item, mod, mod.submods[submodIndex]);
-                                          setState(() {
-                                            modSetRefreshSignal.value = 'Applied ${mod.submods[submodIndex].submodName} in ${item.getDisplayName()} in ${widget.modSet.setName} Set';
-                                          });
-                                        }
-                                      }
-                                    }
-                                  },
-                                  child: Text(appText.applyThisSet))),
-                        ),
-                        Visibility(
-                          visible: widget.modSet.setItems.indexWhere((e) => e.applyStatus) != -1,
-                          child: SizedBox(
-                              height: 25,
-                              child: OutlinedButton(
-                                  onPressed: () async {
-                                    for (var item in widget.modSet.setItems.where((e) => e.applyStatus)) {
-                                      int modIndex = item.mods.indexWhere((e) =>
-                                          e.isSet && e.setNames.contains(widget.modSet.setName) && e.submods.indexWhere((s) => s.activeInSets!.contains(widget.modSet.setName)) != -1 && e.applyStatus);
-                                      if (modIndex != -1) {
-                                        Mod mod = item.mods[modIndex];
-                                        int submodIndex =
-                                            mod.submods.indexWhere((e) => e.isSet && e.setNames.contains(widget.modSet.setName) && e.activeInSets!.contains(widget.modSet.setName) && e.applyStatus);
-                                        if (submodIndex != -1) {
-                                          await modToGameData(context, false, item, mod, mod.submods[submodIndex]);
-                                          setState(() {
-                                            modSetRefreshSignal.value = 'Restored ${mod.submods[submodIndex].submodName} in ${item.getDisplayName()} in ${widget.modSet.setName} Set';
-                                          });
-                                        }
-                                      }
-                                    }
-                                  },
-                                  child: Text(appText.restoreThisSet))),
-                        ),
-                        HeaderInfoBox(info: appText.dText(widget.modSet.setItems.length > 1 ? appText.numItems : appText.numItem, widget.modSet.setItems.length.toString()), borderHighlight: false),
-                        SizedBox(
-                          width: 25,
-                          height: 25,
-                          child: PopupMenuButton(
-                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-                            color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
-                            padding: EdgeInsets.zero,
-                            menuPadding: EdgeInsets.zero,
-                            tooltip: '',
-                            elevation: 5,
-                            style: ButtonStyle(
-                                visualDensity: VisualDensity.adaptivePlatformDensity,
-                                shape: WidgetStatePropertyAll(
-                                    RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1), borderRadius: const BorderRadius.all(Radius.circular(5))))),
-                            itemBuilder: (BuildContext context) {
-                              return [
-                                PopupMenuItem(
-                                    enabled: widget.modSet.setItems.indexWhere((e) => e.applyStatus) == -1,
-                                    onTap: () async {
-                                      await modSetDelete(context, widget.modSet);
-                                      setState(() {
-                                        modSetRefreshSignal.value = 'deleted ${widget.modSet.setName}';
-                                      });
+    // get data
+    List<ModSetCardLayout> modCardList = [];
+    for (var item in widget.modSet.setItems) {
+      var (mod, submod) = item.getActiveInSet(widget.modSet.setName);
+      if (mod != null && submod != null) modCardList.add(ModSetCardLayout(item: item, activeMod: mod, activeSubmod: submod, setName: widget.modSet.setName));
+    }
+
+    return SliverPadding(
+      padding: const EdgeInsets.only(bottom: 2.5),
+      sliver: SliverStickyCollapsablePanel(
+          scrollController: widget.scrollController,
+          controller: StickyCollapsablePanelController(),
+          disableCollapsable: true,
+          iOSStyleSticky: true,
+          headerBuilder: (context, status) => InkWell(
+                onTap: () {
+                  widget.modSet.expanded ? widget.modSet.expanded = false : widget.modSet.expanded = true;
+                  widget.modSet.expanded ? modSetRefreshSignal.value = '${widget.modSet.setName} is collapsed' : modSetRefreshSignal.value = '${widget.modSet.setName} is expanded';
+                  saveMasterModSetListToJson();
+                  setState(() {});
+                },
+                child: Card(
+                    shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                    color: !status.isPinned
+                        ? Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))
+                        : Theme.of(context).colorScheme.secondaryContainer.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                    margin: EdgeInsets.zero,
+                    elevation: 5,
+                    child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          spacing: 5,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(widget.modSet.setName, style: Theme.of(context).textTheme.titleMedium),
+                            Row(
+                              spacing: 5,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Visibility(
+                                  visible: widget.modSet.setItems.indexWhere((e) => !e.applyStatus) != -1,
+                                  child: SizedBox(
+                                      height: 25,
+                                      child: OutlinedButton(
+                                          onPressed: () async {
+                                            for (var item in widget.modSet.setItems) {
+                                              int modIndex = item.mods.indexWhere((e) =>
+                                                  e.isSet &&
+                                                  e.setNames.contains(widget.modSet.setName) &&
+                                                  e.submods.indexWhere((s) => s.activeInSets!.contains(widget.modSet.setName)) != -1 &&
+                                                  !e.applyStatus);
+                                              if (modIndex != -1) {
+                                                Mod mod = item.mods[modIndex];
+                                                int submodIndex = mod.submods
+                                                    .indexWhere((e) => e.isSet && e.setNames.contains(widget.modSet.setName) && e.activeInSets!.contains(widget.modSet.setName) && !e.applyStatus);
+                                                if (submodIndex != -1) {
+                                                  await modToGameData(context, true, item, mod, mod.submods[submodIndex]);
+                                                  setState(() {
+                                                    modSetRefreshSignal.value = 'Applied ${mod.submods[submodIndex].submodName} in ${item.getDisplayName()} in ${widget.modSet.setName} Set';
+                                                  });
+                                                }
+                                              }
+                                            }
+                                          },
+                                          child: Text(appText.applyThisSet))),
+                                ),
+                                Visibility(
+                                  visible: widget.modSet.setItems.indexWhere((e) => e.applyStatus) != -1,
+                                  child: SizedBox(
+                                      height: 25,
+                                      child: OutlinedButton(
+                                          onPressed: () async {
+                                            for (var item in widget.modSet.setItems.where((e) => e.applyStatus)) {
+                                              int modIndex = item.mods.indexWhere((e) =>
+                                                  e.isSet &&
+                                                  e.setNames.contains(widget.modSet.setName) &&
+                                                  e.submods.indexWhere((s) => s.activeInSets!.contains(widget.modSet.setName)) != -1 &&
+                                                  e.applyStatus);
+                                              if (modIndex != -1) {
+                                                Mod mod = item.mods[modIndex];
+                                                int submodIndex = mod.submods
+                                                    .indexWhere((e) => e.isSet && e.setNames.contains(widget.modSet.setName) && e.activeInSets!.contains(widget.modSet.setName) && e.applyStatus);
+                                                if (submodIndex != -1) {
+                                                  await modToGameData(context, false, item, mod, mod.submods[submodIndex]);
+                                                  setState(() {
+                                                    modSetRefreshSignal.value = 'Restored ${mod.submods[submodIndex].submodName} in ${item.getDisplayName()} in ${widget.modSet.setName} Set';
+                                                  });
+                                                }
+                                              }
+                                            }
+                                          },
+                                          child: Text(appText.restoreThisSet))),
+                                ),
+                                HeaderInfoBox(
+                                    info: appText.dText(widget.modSet.setItems.length > 1 ? appText.numItems : appText.numItem, widget.modSet.setItems.length.toString()), borderHighlight: false),
+                                SizedBox(
+                                  width: 25,
+                                  height: 25,
+                                  child: PopupMenuButton(
+                                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
+                                    color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
+                                    padding: EdgeInsets.zero,
+                                    menuPadding: EdgeInsets.zero,
+                                    tooltip: '',
+                                    elevation: 5,
+                                    style: ButtonStyle(
+                                        visualDensity: VisualDensity.adaptivePlatformDensity,
+                                        shape: WidgetStatePropertyAll(
+                                            RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1), borderRadius: const BorderRadius.all(Radius.circular(5))))),
+                                    itemBuilder: (BuildContext context) {
+                                      return [
+                                        PopupMenuItem(
+                                            enabled: widget.modSet.setItems.indexWhere((e) => e.applyStatus) == -1,
+                                            onTap: () async {
+                                              await modSetDelete(context, widget.modSet);
+                                              setState(() {
+                                                modSetRefreshSignal.value = 'deleted ${widget.modSet.setName}';
+                                              });
+                                            },
+                                            child: MenuIconItem(
+                                              icon: Icons.delete_forever_outlined,
+                                              text: appText.delete,
+                                              enabled: widget.modSet.setItems.indexWhere((e) => e.applyStatus) == -1,
+                                            )),
+                                      ];
                                     },
-                                    child: MenuIconItem(
-                                      icon: Icons.delete_forever_outlined,
-                                      text: appText.delete,
-                                      enabled: widget.modSet.setItems.indexWhere((e) => e.applyStatus) == -1,
-                                    )),
-                              ];
-                            },
-                          ),
-                        ),
-                        IconButton(
-                            visualDensity: VisualDensity.adaptivePlatformDensity,
-                            onPressed: () {
-                              widget.modSet.expanded ? widget.modSet.expanded = false : widget.modSet.expanded = true;
-                              widget.modSet.expanded ? modSetRefreshSignal.value = '${widget.modSet.setName} is collapsed' : modSetRefreshSignal.value = '${widget.modSet.setName} is expanded';
-                              saveMasterModSetListToJson();
-                              setState(() {});
-                            },
-                            icon: Icon(widget.modSet.expanded ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down))
-                      ],
-                    )
-                  ],
-                ))),
-        content: ResponsiveGridList(
-            minItemWidth: 350,
-            verticalGridMargin: 5,
-            horizontalGridSpacing: 5,
-            verticalGridSpacing: 5,
-            listViewBuilderOptions: ListViewBuilderOptions(shrinkWrap: true),
-            children: widget.modSet.expanded ? modCardFetch(widget.modSet.setName, widget.modSet.setItems) : []));
+                                  ),
+                                ),
+                                Icon(widget.modSet.expanded ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down)
+                              ],
+                            )
+                          ],
+                        ))),
+              ),
+          sliverPanel: widget.modSet.expanded
+              ? SliverPadding(
+                  padding: const EdgeInsets.symmetric(vertical: 2.5),
+                  sliver: SliverGrid.builder(
+                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 340, maxCrossAxisExtent: 600, mainAxisSpacing: 2.5, crossAxisSpacing: 2.5),
+                      itemCount: modCardList.length,
+                      itemBuilder: (context, index) => modCardList[index]),
+                )
+              : null),
+    );
   }
-}
-
-List<ModSetCardLayout> modCardFetch(String modSetName, List<Item> itemList) {
-  List<ModSetCardLayout> modCardList = [];
-  for (var item in itemList) {
-    var (mod, submod) = item.getActiveInSet(modSetName);
-    if (mod != null && submod != null) modCardList.add(ModSetCardLayout(item: item, activeMod: mod, activeSubmod: submod, setName: modSetName));
-  }
-
-  return modCardList;
 }
 
 class ModSetCardLayout extends StatefulWidget {
@@ -211,9 +222,18 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
               )
             ],
           ),
-          Visibility(
-              visible: widget.activeMod.modName != widget.activeSubmod.submodName, child: Text(widget.activeMod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
-          Expanded(child: Text(widget.activeSubmod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
+          Expanded(
+              child: Column(
+            spacing: 5,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Visibility(
+                  // visible: widget.activeMod.modName != widget.activeSubmod.submodName,
+                  visible: true,
+                  child: Text(widget.activeMod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
+              Text(widget.activeSubmod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+            ],
+          )),
           Row(
             spacing: 5,
             children: [
@@ -248,7 +268,10 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
                         onPressed: () {
                           modsetModViewPopup(context, widget.item, widget.setName);
                         },
-                        child: Text(appText.viewVariants)),
+                        child: Text(
+                          appText.viewVariants,
+                          textAlign: TextAlign.center,
+                        )),
                   )),
               Expanded(
                   child: OutlinedButton(

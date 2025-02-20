@@ -1,4 +1,6 @@
 {
+  "showPreview": "Show Preview",
+  "hidePreview": "Hide Preview",
   "replaceConflictingFilesOnly": "Replace Conflicting Files Only",
   "replaceConflictedFilesOnly": "Replace Conflicted Files Only",
   "skipConflictedFiles": "Skip Conflicted Files",

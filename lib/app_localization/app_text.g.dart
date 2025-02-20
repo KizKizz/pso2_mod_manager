@@ -420,7 +420,9 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..backgroundImageFolder = json['backgroundImageFolder'] as String
   ..verTwoMainDataPathLocation = json['verTwoMainDataPathLocation'] as String
   ..hideEmptyCategories = json['hideEmptyCategories'] as String
-  ..auxiliaryUIOpacity = json['auxiliaryUIOpacity'] as String;
+  ..auxiliaryUIOpacity = json['auxiliaryUIOpacity'] as String
+  ..showPreview = json['showPreview'] as String
+  ..hidePreview = json['hidePreview'] as String;
 
 Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'dfCastParts': instance.dfCastParts,
@@ -827,4 +829,6 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'verTwoMainDataPathLocation': instance.verTwoMainDataPathLocation,
       'hideEmptyCategories': instance.hideEmptyCategories,
       'auxiliaryUIOpacity': instance.auxiliaryUIOpacity,
+      'showPreview': instance.showPreview,
+      'hidePreview': instance.hidePreview,
     };

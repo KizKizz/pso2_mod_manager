@@ -1,5 +1,7 @@
 {
-  "replaceConflictingFilesOnly": "Replace Conflicting Files Only",
+  "showPreview": "ショーのプレビュー",
+  "hidePreview": "プレビューを隠す",
+  "replaceConflictingFilesOnly": "競合するファイルのみ置換",
   "replaceConflictedFilesOnly": "競合するファイルのみ置換",
   "skipConflictedFiles": "競合ファイルのスキップ",
   "addingMods": "MODの追加",
