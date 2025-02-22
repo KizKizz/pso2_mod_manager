@@ -272,7 +272,7 @@
   "extractingDownloadedZipFile": "提取下载的 zip 文件",
   "extractCompletedReadyToPatch": "提取完成，准备更新",
   "cannotCreatePatchLauncherCheckPerm": "无法创建更新启动器，请检查管理员权限",
-  "checkingItemDataVersion": "检查物品数据库版本",
+  "checkingItemDataVersion": "检查物品数据文件版本",
   "newItemDataVersionFound": "发现新版本物品数据",
   "fetchingNecessaryDirPaths": "获取必要的目录路径",
   "missingPathsFound": "存在缺失的路径",
