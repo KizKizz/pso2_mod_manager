@@ -58,7 +58,7 @@ class _AppTitleBarState extends State<AppTitleBar> {
             spacing: 2.5,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Visibility(visible: appLoadingFinished.watch(context) && pso2RegionVersion.watch(context) == PSO2RegionVersion.jp, child: const JpGameStartButtton()),
+              Visibility(visible: appLoadingFinished.watch(context) && pso2RegionVersion.watch(context) == PSO2RegionVersion.jp, child: const JpGameStartBtn()),
               Visibility(
                   visible: appLoadingFinished.watch(context),
                   child: SizedBox(

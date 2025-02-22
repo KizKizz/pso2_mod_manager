@@ -43,6 +43,9 @@ class _AppUpdatePageState extends State<AppUpdatePage> {
           } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
             return FutureBuilderError(loadingText: appText.checkingAppVersion, snapshotError: snapshot.error.toString());
           } else {
+            if (Directory('${Directory.current.path}${p.separator}appUpdate').existsSync()) {
+              Directory('${Directory.current.path}${p.separator}appUpdate').deleteSync(recursive: true);
+            }
             String remoteVersion = snapshot.data.$1;
             String remotePatchNotes = snapshot.data.$2;
             if (remoteVersion.isNotEmpty && remoteVersion != curAppVersion && newAppVersionCheck(remoteVersion)) {
@@ -83,7 +86,8 @@ class _AppUpdatePageState extends State<AppUpdatePage> {
                                           updates: Updates.statusAndProgress,
                                           retries: 2,
                                         );
-                                        await FileDownloader().download(updaterTask, onProgress: (progress) => downloadProgress.value = progress, onStatus: (status) => downloadStatus.value = status.name);
+                                        await FileDownloader()
+                                            .download(updaterTask, onProgress: (progress) => downloadProgress.value = progress, onStatus: (status) => downloadStatus.value = status.name);
                                         // Unpack and apply
                                         downloadStatus.value = appText.extractingDownloadedZipFile;
                                         await extractFileToDisk('${Directory.current.path}${p.separator}appUpdate${p.separator}PSO2NGSModManager_v$remoteVersion.zip',

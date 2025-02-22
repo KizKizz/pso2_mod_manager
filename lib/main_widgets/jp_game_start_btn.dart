@@ -7,13 +7,26 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/mod_checksum/checksum_functions.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:path/path.dart' as p;
+import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:pso2_mod_manager/v3_widgets/notifications.dart';
+import 'package:signals/signals_flutter.dart';
 
-class JpGameStartButtton extends StatelessWidget {
-  const JpGameStartButtton({super.key});
+class JpGameStartBtn extends StatefulWidget {
+  const JpGameStartBtn({super.key});
 
   @override
+  State<JpGameStartBtn> createState() => _JpGameStartBtnState();
+}
+
+class _JpGameStartBtnState extends State<JpGameStartBtn> {
+  @override
   Widget build(BuildContext context) {
+    // Refresh
+    if (settingChangeStatus.watch(context) != settingChangeStatus.peek()) {
+      setState(
+        () {},
+      );
+    }
     return SizedBox(
       height: 20,
       child: OutlinedButton.icon(
