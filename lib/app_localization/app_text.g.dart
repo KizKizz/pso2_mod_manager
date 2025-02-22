@@ -422,7 +422,16 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..hideEmptyCategories = json['hideEmptyCategories'] as String
   ..auxiliaryUIOpacity = json['auxiliaryUIOpacity'] as String
   ..showPreview = json['showPreview'] as String
-  ..hidePreview = json['hidePreview'] as String;
+  ..hidePreview = json['hidePreview'] as String
+  ..applyOnlyHQFilesFromMods = json['applyOnlyHQFilesFromMods'] as String
+  ..selectedOnly = json['selectedOnly'] as String
+  ..allPossible = json['allPossible'] as String
+  ..applyHQFilesOnly = json['applyHQFilesOnly'] as String
+  ..applyHQOnlyInfo = json['applyHQOnlyInfo'] as String
+  ..hideUIWhenAppUnfocused = json['hideUIWhenAppUnfocused'] as String
+  ..interval = json['interval'] as String
+  ..startAfter = json['startAfter'] as String
+  ..tapToReturn = json['tapToReturn'] as String;
 
 Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'dfCastParts': instance.dfCastParts,
@@ -831,4 +840,13 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'auxiliaryUIOpacity': instance.auxiliaryUIOpacity,
       'showPreview': instance.showPreview,
       'hidePreview': instance.hidePreview,
+      'applyOnlyHQFilesFromMods': instance.applyOnlyHQFilesFromMods,
+      'selectedOnly': instance.selectedOnly,
+      'allPossible': instance.allPossible,
+      'applyHQFilesOnly': instance.applyHQFilesOnly,
+      'applyHQOnlyInfo': instance.applyHQOnlyInfo,
+      'hideUIWhenAppUnfocused': instance.hideUIWhenAppUnfocused,
+      'interval': instance.interval,
+      'startAfter': instance.startAfter,
+      'tapToReturn': instance.tapToReturn,
     };

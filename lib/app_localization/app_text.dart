@@ -155,7 +155,7 @@ class AppText {
       moreOptions = 'More Options',
       numVariant = '%p% Variant',
       numVariants = '%p% Variants',
-      intervalNumSecond = 'Interval: %p%s',
+      intervalNumSecond = '%p%s',
       loading = 'Loading...',
       viewVariants = 'View Variants',
       addMods = 'Add Mods',
@@ -422,7 +422,17 @@ class AppText {
       hideEmptyCategories = 'Hide Empty Categories',
       auxiliaryUIOpacity = 'Auxiliary UI Opacity',
       showPreview = 'Show Preview',
-      hidePreview = 'Hide Preview';
+      hidePreview = 'Hide Preview',
+      applyOnlyHQFilesFromMods = 'Apply Only HQ Files From Mods',
+      selectedOnly = 'Selected Only',
+      allPossible = 'All Possible',
+      applyHQFilesOnly = 'Apply HQ Files Only',
+      applyHQOnlyInfo =
+          'All Possible: Always try to apply HQ files to the game\nSelected Only: Only HQ files of the selected mods will be applied to the game\nNote: If a mod does not have any HQ file, all files will be applied like normal',
+      hideUIWhenAppUnfocused = 'Hide UI When App Unfocused',
+      interval = 'Interval',
+      startAfter = 'Start After',
+      tapToReturn = 'Tap To Return';
 
   factory AppText.fromJson(Map<String, dynamic> json) => _$AppTextFromJson(json);
   Map<String, dynamic> toJson() => _$AppTextToJson(this);

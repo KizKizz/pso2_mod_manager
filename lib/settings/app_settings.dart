@@ -6,6 +6,7 @@ import 'package:pso2_mod_manager/app_localization/app_locale.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_localization/item_locale.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
+import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/settings/repath_confirm_popup.dart';
 import 'package:pso2_mod_manager/v3_functions/json_backup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
@@ -17,6 +18,7 @@ import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class AppSettingsLayout extends StatefulWidget {
   const AppSettingsLayout({super.key});
@@ -145,7 +147,7 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                           },
                         ),
                         // Item icon slides
-                        SettingsHeader(icon: Icons.slideshow, text: appText.itemIconSlides),
+                        SettingsHeader(icon: Icons.slow_motion_video , text: appText.itemIconSlides),
                         AnimatedHorizontalToggleLayout(
                           taps: [appText.on, appText.off],
                           initialIndex: itemIconSlides.watch(context) ? 0 : 1,
@@ -157,7 +159,7 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                           },
                         ),
                         // Hide empty cate
-                        SettingsHeader(icon: Icons.slideshow, text: appText.hideEmptyCategories),
+                        SettingsHeader(icon: Icons.hide_source, text: appText.hideEmptyCategories),
                         AnimatedHorizontalToggleLayout(
                           taps: [appText.on, appText.off],
                           initialIndex: hideEmptyCategories ? 0 : 1,
@@ -168,17 +170,63 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             prefs.setBool('hideEmptyCategories', hideEmptyCategories);
                           },
                         ),
+                        // Screensaver
+                        SettingsHeader(icon: Icons.photo_size_select_large_rounded, text: appText.hideUIWhenAppUnfocused),
+                        AnimatedHorizontalToggleLayout(
+                          taps: [appText.on, appText.off],
+                          initialIndex: hideUIWhenAppUnfocused ? 0 : 1,
+                          width: constraints.maxWidth,
+                          onChange: (currentIndex, targetIndex) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            targetIndex == 0 ? hideUIWhenAppUnfocused = true : hideUIWhenAppUnfocused = false;
+                            prefs.setBool('hideUIWhenAppUnfocused', hideUIWhenAppUnfocused);
+                          },
+                        ),
+                        Row(
+                          spacing: 5,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(width: 5,),
+                            Text(appText.startAfter, style: Theme.of(context).textTheme.labelMedium),
+                            Expanded(
+                              child: SliderTheme(
+                                  data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.always),
+                                  child: Slider(
+                                    value: hideUIInitDelaySeconds.toDouble(),
+                                    min: 0,
+                                    max: 250,
+                                    label: appText.dText(appText.intervalNumSecond, hideUIInitDelaySeconds.toString()),
+                                    onChanged: (value) async {
+                                      final prefs = await SharedPreferences.getInstance();
+                                      hideUIInitDelaySeconds = value.toInt();
+                                      prefs.setInt('hideUIInitDelaySeconds', hideUIInitDelaySeconds);
+                                      setState(() {});
+                                    },
+                                  )),
+                            ),
+                          ],
+                        ),
                         // jsons backup
                         SettingsHeader(icon: Icons.backup_table_sharp, text: appText.dText(appText.modConfigsLastSaveDate, latestJsonBackupDate)),
-                        SizedBox(
-                          width: double.infinity,
-                          child: OutlinedButton(
-                              onPressed: () async {
-                                await jsonManualBackup();
-                                latestJsonBackupDate = getLatestBackupDate();
-                                setState(() {});
-                              },
-                              child: Text(appText.backupNow)),
+                        Row(
+                          spacing: 5,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            OutlinedButton(
+                                onPressed: () async {
+                                  await jsonManualBackup();
+                                  latestJsonBackupDate = getLatestBackupDate();
+                                  setState(() {});
+                                },
+                                child: Text(appText.backupNow)),
+                            Expanded(
+                              child: OutlinedButton(
+                                  onPressed: () async {
+                                    launchUrlString(jsonBackupDirPath);
+                                  },
+                                  child: Text(appText.openInFileExplorer)),
+                            ),
+                          ],
                         ),
                         // Main paths reselect
                         SettingsHeader(icon: Icons.folder, text: appText.mainPaths),

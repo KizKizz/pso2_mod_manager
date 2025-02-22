@@ -159,6 +159,7 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
                       curJsonSubmodsList[submodIndex].hqIcePath == null ? submod.hqIcePath = '' : submod.hqIcePath = curJsonSubmodsList[submodIndex].hqIcePath;
                       curJsonSubmodsList[submodIndex].lqIcePath == null ? submod.lqIcePath = '' : submod.lqIcePath = curJsonSubmodsList[submodIndex].lqIcePath;
                       curJsonSubmodsList[submodIndex].boundingRemoved == null ? submod.boundingRemoved = false : submod.boundingRemoved = curJsonSubmodsList[submodIndex].boundingRemoved;
+                      curJsonSubmodsList[submodIndex].applyHQFilesOnly == null ? submod.applyHQFilesOnly = false : submod.applyHQFilesOnly = curJsonSubmodsList[submodIndex].applyHQFilesOnly;
                       //submod.itemName = curJsonSubmodsList[submodIndex].itemName;
                       //submod.location = curJsonSubmodsList[submodIndex].location;
                       //submod.modName = curJsonSubmodsList[submodIndex].modName;

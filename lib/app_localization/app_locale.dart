@@ -118,7 +118,8 @@ class AppLocale {
         if (remoteLocaleIndex != -1 && remoteLocales[remoteLocaleIndex].version > locale.version) {
           final tResponse = await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/refs/heads/main/Locale/${remoteLocales[remoteLocaleIndex].language}.json'));
           if (tResponse.statusCode == 200) {
-            File(locale.translationFilePath).writeAsStringSync(tResponse.body);
+            await File(locale.translationFilePath).writeAsString(tResponse.body);
+            locale.version = remoteLocales[remoteLocaleIndex].version;
           } else {
             throw Exception(appText.dText(appText.unableToUpdateFile, '${locale.language}.json'));
           }

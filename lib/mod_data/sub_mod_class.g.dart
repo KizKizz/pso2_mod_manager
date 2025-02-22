@@ -42,6 +42,7 @@ SubMod _$SubModFromJson(Map<String, dynamic> json) => SubMod(
       ..creationDate = json['creationDate'] == null
           ? null
           : DateTime.parse(json['creationDate'] as String)
+      ..applyHQFilesOnly = json['applyHQFilesOnly'] as bool?
       ..customAQMInjected = json['customAQMInjected'] as bool?
       ..customAQMFileName = json['customAQMFileName'] as String?
       ..hqIcePath = json['hqIcePath'] as String?
@@ -57,6 +58,7 @@ Map<String, dynamic> _$SubModToJson(SubMod instance) => <String, dynamic>{
       'applyStatus': instance.applyStatus,
       'applyDate': instance.applyDate.toIso8601String(),
       'creationDate': instance.creationDate?.toIso8601String(),
+      'applyHQFilesOnly': instance.applyHQFilesOnly,
       'customAQMInjected': instance.customAQMInjected,
       'customAQMFileName': instance.customAQMFileName,
       'hqIcePath': instance.hqIcePath,

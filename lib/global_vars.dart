@@ -36,6 +36,22 @@ List<String> defaultCategoryDirs = [
   'Setwears', //16
   'Weapons' //17
 ];
+List<String> applyHQFilesCategoryDirs = [
+  'Accessories', //0
+  'Basewears', //1
+  'Body Paints', //2
+  'Cast Arm Parts', //3
+  'Cast Body Parts', //4
+  'Cast Leg Parts', //5
+  'Costumes', //6
+  'Eyes', //8
+  'Face Paints', //9
+  'Hairs', //10
+  'Innerwears', //11
+  'Misc', //13
+  'Outerwears', //15
+  'Setwears', //16
+];
 List<String> boundingRadiusCategoryDirs = [
   'Basewears', //1
   'Body Paints', //2
@@ -96,6 +112,7 @@ final modSortingSelections = ['Name (Alphabetical)', 'Recently Added', 'Recently
 String charToReplace = '[\\/:*?"<>|]';
 String charToReplaceWithoutSeparators = '[:*?"<>|]';
 
+String appTitle = 'PSO2NGS Mod Manager';
 String curAppVersion = '';
 bool offlineMode = false;
 List<CategoryType> masterModList = [];
@@ -129,3 +146,4 @@ List<String> modifiedIceList = [];
 List<String> modAddFilterList = [];
 Signal<bool> appLoadingFinished = Signal(false);
 Signal<int> uiDialogBackgroundColorAlpha = Signal(uiBackgroundColorAlpha.value + 50 <= 255 ? uiBackgroundColorAlpha.value + 50 : uiBackgroundColorAlpha.value);
+Signal<bool> showMessageOnInactiveOverlay = Signal(false);

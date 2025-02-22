@@ -170,23 +170,28 @@ class _BackgroundSlideshowState extends State<BackgroundSlideshow> {
                         child: Text(hideAppBackgroundSlides.watch(context) ? appText.show : appText.hide)),
                   ],
                 ),
-                SizedBox(
-                  width: double.infinity,
-                  child: SliderTheme(
-                      data: SliderThemeData(
-                        overlayShape: SliderComponentShape.noOverlay,
-                        showValueIndicator: ShowValueIndicator.always),
-                      child: Slider(
-                        value: backgroundImageSlideInterval.watch(context).toDouble(),
-                        min: 1,
-                        max: 120,
-                        label: appText.dText(appText.intervalNumSecond, backgroundImageSlideInterval.value.toString()),
-                        onChanged: (value) async {
-                          final prefs = await SharedPreferences.getInstance();
-                          backgroundImageSlideInterval.value = value.round();
-                          prefs.setInt('backgroundImageSlideInterval', backgroundImageSlideInterval.value);
-                        },
-                      )),
+                Row(
+                  spacing: 5,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(width: 5),
+                    Text(appText.interval, style: Theme.of(context).textTheme.labelMedium),
+                    Expanded(
+                      child: SliderTheme(
+                          data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.always),
+                          child: Slider(
+                            value: backgroundImageSlideInterval.watch(context).toDouble(),
+                            min: 1,
+                            max: 120,
+                            label: appText.dText(appText.intervalNumSecond, backgroundImageSlideInterval.value.toString()),
+                            onChanged: (value) async {
+                              final prefs = await SharedPreferences.getInstance();
+                              backgroundImageSlideInterval.value = value.round();
+                              prefs.setInt('backgroundImageSlideInterval', backgroundImageSlideInterval.value);
+                            },
+                          )),
+                    ),
+                  ],
                 ),
                 SizedBox(
                   width: double.infinity,

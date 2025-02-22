@@ -7,17 +7,16 @@ import 'package:media_kit/media_kit.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pso2_mod_manager/app_colorscheme.dart';
 import 'package:pso2_mod_manager/app_localization/app_locale.dart';
-import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
+import 'package:pso2_mod_manager/app_title_bar.dart';
 import 'package:pso2_mod_manager/material_app_service.dart';
 import 'package:pso2_mod_manager/v3_functions/pso2_version_check.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
-import 'package:pso2_mod_manager/main_widgets/jp_game_start_btn.dart';
 import 'package:pso2_mod_manager/settings/other_settings.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:pso2_mod_manager/v3_widgets/background_slideshow.dart';
-import 'package:pso2_mod_manager/mod_checksum/checksum_indicator.dart';
+import 'package:pso2_mod_manager/v3_widgets/inactive_overlay.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:window_manager/window_manager.dart';
@@ -75,18 +74,14 @@ class MyApp extends StatelessWidget {
                 ? ThemeData.from(colorScheme: darkColorScheme)
                 : ThemeData.from(colorScheme: ColorScheme.fromSeed(seedColor: darkModeSeedColor, brightness: Brightness.dark)),
             themeMode: currentMode,
-            home: const MyHomePage(
-              title: 'PSO2NGS Mod Manager',
-            ),
+            home: const MyHomePage(),
           );
         });
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -117,6 +112,28 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   }
 
   @override
+  Future<void> onWindowBlur() async {
+    if (appLoadingFinished.watch(context) && hideUIWhenAppUnfocused) {
+      await Future.delayed(Duration(seconds: hideUIInitDelaySeconds));
+      if (!await windowManager.isFocused()) {
+        showMessageOnInactiveOverlay.value = false;
+        await inactiveOverlay(context);
+      }
+    }
+  }
+
+  @override
+  Future<void> onWindowFocus() async {
+    if (appLoadingFinished.watch(context) && hideUIWhenAppUnfocused) {
+      if (await windowManager.isFocused()) {
+        showMessageOnInactiveOverlay.value = true;
+      } else {
+        showMessageOnInactiveOverlay.value = false;
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Refresh
     if (settingChangeStatus.watch(context) != settingChangeStatus.peek()) {
@@ -126,120 +143,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     }
 
     return Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size(double.maxFinite, 25),
-          child: AppBar(
-            title: DragToMoveArea(
-                child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Tooltip(
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      border: Border.all(color: Theme.of(context).colorScheme.outline, width: 1),
-                      borderRadius: const BorderRadius.all(Radius.circular(5))),
-                  message: appText.dText(appText.madeBy, 'キス★ (KizKizz)'),
-                  textStyle: Theme.of(context).textTheme.titleSmall,
-                  child: Row(
-                    children: [
-                      Text(
-                        widget.title,
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Theme.of(context).textTheme.headlineSmall!.color),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5),
-                        child: Text(
-                          'v$curAppVersion',
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, fontStyle: FontStyle.italic, color: Theme.of(context).textTheme.headlineSmall!.color),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Row(
-                  spacing: 2.5,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Visibility(visible: appLoadingFinished.watch(context) && pso2RegionVersion.watch(context) == PSO2RegionVersion.jp, child: const JpGameStartButtton()),
-                    Visibility(
-                        visible: appLoadingFinished.watch(context),
-                        child: SizedBox(
-                          height: 20,
-                          child: OutlinedButton.icon(
-                              style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
-                              onPressed: () async {
-                                pageIndex = 6;
-                                curPage.value = appPages[pageIndex];
-                              },
-                              icon: const Icon(
-                                Icons.refresh,
-                                size: 18,
-                              ),
-                              label: Text(appText.refresh)),
-                        )),
-                    // Visibility(
-                    //     visible: appLoadingFinished.watch(context),
-                    //     child: SizedBox(
-                    //       height: 20,
-                    //       child: OutlinedButton.icon(
-                    //           style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
-                    //           onPressed: () async {
-                    //             final prefs = await SharedPreferences.getInstance();
-                    //             showPreviewBox.value ? showPreviewBox.value = false : showPreviewBox.value = true;
-                    //             prefs.setBool('showPreviewBox', showPreviewBox.value);
-                    //           },
-                    //           icon: const Icon(
-                    //             Icons.preview,
-                    //             size: 18,
-                    //           ),
-                    //           label: Text(showPreviewBox.watch(context) ? appText.hidePreview : appText.showPreview)),
-                    //     )),
-                    Visibility(visible: appLoadingFinished.watch(context), child: const ChecksumIndicator())
-                  ],
-                )
-              ],
-            )),
-            titleSpacing: 5,
-            actions: [
-              SizedBox(
-                width: 35,
-                height: double.maxFinite,
-                child: InkWell(
-                  onTap: () => windowManager.minimize(),
-                  child: const Icon(
-                    Icons.minimize,
-                    size: 16,
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: 35,
-                height: double.maxFinite,
-                child: InkWell(
-                  onTap: () async => await windowManager.isMaximized() ? windowManager.restore() : windowManager.maximize(),
-                  child: const Icon(
-                    Icons.crop_square,
-                    size: 16,
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: 45,
-                height: double.maxFinite,
-                child: InkWell(
-                  hoverColor: Colors.red,
-                  onTap: () => windowManager.close(),
-                  child: const Icon(
-                    Icons.close,
-                    size: 16,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+        appBar: const PreferredSize(preferredSize: Size(double.maxFinite, 25), child: AppTitleBar()),
         body: Stack(
           children: [
             Visibility(
