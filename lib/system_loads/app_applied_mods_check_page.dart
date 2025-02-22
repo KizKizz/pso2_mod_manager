@@ -79,6 +79,7 @@ class _AppAppliedModsLoadPageState extends State<AppAppliedModsLoadPage> {
                               }
                             }
                             masterAppliedModList.clear();
+                            saveMasterModListToJson();
                             pageIndex++;
                             curPage.value = appPages[pageIndex];
                           },
@@ -102,6 +103,7 @@ class _AppAppliedModsLoadPageState extends State<AppAppliedModsLoadPage> {
                       OutlinedButton(
                           onPressed: () {
                             masterUnappliedItemList.clear();
+                            saveMasterModListToJson();
                             pageIndex++;
                             curPage.value = appPages[pageIndex];
                           },

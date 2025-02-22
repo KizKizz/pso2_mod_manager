@@ -33,6 +33,10 @@ int defaultHomepageIndex = 0;
 bool hideEmptyCategories = true;
 bool modAddCategorizeModsByItems = true;
 Signal<bool> showPreviewBox = Signal(true);
+bool modAlwaysApplyHQFiles = false;
+bool selectedModsApplyHQFilesOnly = false;
+bool hideUIWhenAppUnfocused = false;
+int hideUIInitDelaySeconds = 30;
 
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
@@ -145,7 +149,15 @@ Future<void> prefsLoad() async {
 
   // categorize by items
   modAddCategorizeModsByItems = prefs.getBool('modAddCategorizeModsByItems') ?? true;
-  
+
   // show previwe box
   showPreviewBox.value = prefs.getBool('showPreviewBox') ?? true;
+
+  // mod apply hq files only
+  modAlwaysApplyHQFiles = prefs.getBool('modAlwaysApplyHQFiles') ?? false;
+  selectedModsApplyHQFilesOnly = prefs.getBool('selectedModsApplyHQFilesOnly') ?? false;
+
+  // categorize by items
+  hideUIWhenAppUnfocused = prefs.getBool('hideUIWhenAppUnfocused') ?? false;
+  hideUIInitDelaySeconds = prefs.getInt('hideUIInitDelaySeconds') ?? 30;
 }

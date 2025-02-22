@@ -43,7 +43,7 @@ class _SubmodGridLayoutState extends State<SubmodGridLayout> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveSliverGridList(
-        minItemWidth: 260,
+        minItemWidth: 300,
         verticalGridMargin: 0,
         horizontalGridSpacing: 5,
         verticalGridSpacing: 5,
@@ -101,13 +101,14 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                 children: [
                   SubmodPreviewBox(imageFilePaths: widget.submod.previewImages, videoFilePaths: widget.submod.previewVideos, isNew: widget.submod.isNew),
                   Visibility(
-                      visible: widget.submod.hasCmx! || widget.submod.customAQMInjected! || widget.submod.boundingRemoved!,
+                      visible: widget.submod.hasCmx! || widget.submod.customAQMInjected! || widget.submod.boundingRemoved! || widget.submod.applyHQFilesOnly!,
                       child: Padding(
                         padding: const EdgeInsets.only(left: 5, bottom: 5),
                         child: Row(
-                          spacing: 5,
+                          spacing: 1,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
+                            Visibility(visible: widget.submod.applyHQFilesOnly!, child: Icon(Icons.high_quality_outlined, color: selectedModsApplyHQFilesOnly ? Theme.of(context).colorScheme.primary: null)),
                             Visibility(visible: widget.submod.hasCmx!, child: InfoTag(info: appText.cmx, borderHighlight: widget.submod.cmxApplied!)),
                             Visibility(visible: widget.submod.customAQMInjected!, child: InfoTag(info: appText.aqm, borderHighlight: widget.submod.customAQMInjected!)),
                             Visibility(visible: widget.submod.boundingRemoved!, child: InfoTag(info: appText.bounding, borderHighlight: widget.submod.boundingRemoved!)),
@@ -247,6 +248,18 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                                 text: appText.setApplyLocations,
                                 enabled: true,
                               ))),
+                      PopupMenuItem(
+                          onTap: () {
+                            widget.submod.applyHQFilesOnly! ? widget.submod.applyHQFilesOnly = false : widget.submod.applyHQFilesOnly = true;
+                            setState(() {});
+                            saveMasterModListToJson();
+                          },
+                          enabled: applyHQFilesCategoryDirs.contains(widget.submod.category),
+                          child: Row(
+                            spacing: 5,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [const Icon(Icons.high_quality), Text(appText.applyHQFilesOnly), Visibility(visible: widget.submod.applyHQFilesOnly!, child: const Icon(Icons.check))],
+                          )),
                       const PopupMenuItem(
                           height: 0,
                           enabled: false,
@@ -291,11 +304,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                               await submodAqmInject(context, widget.submod);
                               setState(() {});
                             },
-                            child: MenuIconItem(
-                              icon: Icons.auto_fix_high,
-                              text: appText.injectCustomAQM,
-                              enabled: true
-                            )),
+                            child: MenuIconItem(icon: Icons.auto_fix_high, text: appText.injectCustomAQM, enabled: true)),
                       if (widget.submod.customAQMInjected!)
                         PopupMenuItem(
                             enabled: aqmInjectCategoryDirs.contains(widget.submod.category) && !widget.submod.applyStatus && widget.submod.customAQMInjected!,

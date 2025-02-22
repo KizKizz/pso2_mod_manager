@@ -11,6 +11,7 @@ import 'package:pso2_mod_manager/v3_functions/profanity_remove.dart';
 import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:pso2_mod_manager/v3_widgets/animated_hori_toggle_layout.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
+import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
@@ -153,6 +154,23 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
                         prefs.setBool('removeProfanityFilter', removeProfanityFilter);
                         Isolate.run(() => profanityRemove);
                       },
+                    ),
+                    // Mod apply settings
+                    SettingsHeader(icon: Icons.high_quality_outlined, text: appText.applyOnlyHQFilesFromMods),
+                    ModManTooltip(
+                      message: appText.applyHQOnlyInfo,
+                      child: AnimatedHorizontalToggleLayout(
+                        taps: [appText.allPossible, appText.selectedOnly, appText.off],
+                        initialIndex: modAlwaysApplyHQFiles ? 0 : selectedModsApplyHQFilesOnly ? 1 : 2,
+                        width: constraints.maxWidth,
+                        onChange: (currentIndex, targetIndex) async {
+                          final prefs = await SharedPreferences.getInstance();
+                          targetIndex == 0 ? modAlwaysApplyHQFiles = true : modAlwaysApplyHQFiles = false;
+                          prefs.setBool('modAlwaysApplyHQFiles', modAlwaysApplyHQFiles);
+                          targetIndex == 1 ? selectedModsApplyHQFilesOnly = true : selectedModsApplyHQFilesOnly = false;
+                          prefs.setBool('selectedModsApplyHQFilesOnly', selectedModsApplyHQFilesOnly);
+                        },
+                      ),
                     ),
                   ],
                 ),

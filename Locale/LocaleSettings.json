@@ -3,13 +3,13 @@
     "language": "EN",
     "version": 1,
     "translationFilePath": "E:\\Flutter project\\pso2_mod_manager\\Locale\\EN.json",
-    "isActive": true
+    "isActive": false
   },
   {
     "language": "JP",
     "version": 1,
     "translationFilePath": "E:\\Flutter project\\pso2_mod_manager\\Locale\\JP.json",
-    "isActive": false
+    "isActive": true
   },
   {
     "language": "CN",

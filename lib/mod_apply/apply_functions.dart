@@ -8,6 +8,7 @@ import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_functions.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_popup.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_item_class.dart';
 import 'package:pso2_mod_manager/item_bounding_radius/bounding_radius_popup.dart';
+import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_apply/applying_popup.dart';
 import 'package:pso2_mod_manager/mod_apply/duplicate_popups.dart';
 import 'package:pso2_mod_manager/mod_apply/unapply_functions.dart';
@@ -47,7 +48,8 @@ Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod
   if (dupAqmItem != null) {
     performApply = await duplicateAqmInjectedFilesPopup(context, dupAqmItem);
     if (performApply) {
-      bool result = await aqmInjectPopup(context, dupAqmItem.injectedAQMFilePath!, dupAqmItem.hqIcePath, dupAqmItem.lqIcePath, dupAqmItem.getName(), false, false, true, dupAqmItem.isAqmReplaced!, false);
+      bool result =
+          await aqmInjectPopup(context, dupAqmItem.injectedAQMFilePath!, dupAqmItem.hqIcePath, dupAqmItem.lqIcePath, dupAqmItem.getName(), false, false, true, dupAqmItem.isAqmReplaced!, false);
       if (result) masterAqmInjectedItemList.remove(dupAqmItem);
       saveMasterAqmInjectListToJson();
     } else {
@@ -79,7 +81,13 @@ Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod
       submod.boundingRemoved = true;
     }
 
-    await applyingPopup(context, applying, item, mod, submod, []);
+    if (submod.applyHQFilesOnly! && selectedModsApplyHQFilesOnly || modAlwaysApplyHQFiles && applyHQFilesCategoryDirs.contains(submod.category)) {
+      List<ItemData> matchingItemData = pItemData.where((e) => e.category == submod.category && submod.getModFileNames().contains(e.getHQIceName())).toList();
+      List<ModFile> hqIces = submod.modFiles.where((e) => matchingItemData.indexWhere((data) => data.getHQIceName() == e.modFileName) != -1).toList();
+      hqIces.isNotEmpty ? await applyingPopup(context, applying, item, mod, submod, hqIces) : await applyingPopup(context, applying, item, mod, submod, []);
+    } else {
+      await applyingPopup(context, applying, item, mod, submod, []);
+    }
   }
 }
 
@@ -103,11 +111,12 @@ Future<void> modBackupApply(Item item, Mod mod, SubMod submod, List<ModFile> mod
 
   // Mark item icon
   if (markIconCategoryDirs.contains(item.category)) {
-  if (replaceItemIconOnApplied && item.applyStatus && !item.isOverlayedIconApplied!) {
-    await markedItemIconApply(item);
-  } else if (replaceItemIconOnApplied && item.applyStatus && item.overlayedIconPath!.isNotEmpty && await File(item.overlayedIconPath!).getMd5Hash() != await File(item.iconPath!).getMd5Hash()) {
-    await markedItemIconApply(item);
-  }}
+    if (replaceItemIconOnApplied && item.applyStatus && !item.isOverlayedIconApplied!) {
+      await markedItemIconApply(item);
+    } else if (replaceItemIconOnApplied && item.applyStatus && item.overlayedIconPath!.isNotEmpty && await File(item.overlayedIconPath!).getMd5Hash() != await File(item.iconPath!).getMd5Hash()) {
+      await markedItemIconApply(item);
+    }
+  }
 
   saveMasterModListToJson();
 }
@@ -186,7 +195,8 @@ Future<void> modApply(Item item, Mod mod, SubMod submod, ModFile modFile, Offici
       for (var item in cate.items.where((e) => e.applyStatus)) {
         for (var mod in item.mods.where((e) => e.applyStatus)) {
           for (var submod in mod.submods.where((e) => e.applyStatus)) {
-            if (submod.getModFileNames().where((e) => newSubmod.getModFileNames().contains(e)).isNotEmpty) {
+            final appliedModFileNames = submod.modFiles.where((e) => e.applyStatus).map((e) => e.modFileName);
+            if (appliedModFileNames.where((e) => newSubmod.getModFileNames().contains(e)).isNotEmpty) {
               return (item, mod, submod);
             }
           }
