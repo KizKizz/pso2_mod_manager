@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
+import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
@@ -106,12 +107,12 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
               ),
           sliverPanel: widget.itemCate.visible
               ? SliverPadding(
-                padding: const EdgeInsets.symmetric(vertical: 2.5),
-                sliver: SliverGrid.builder(
-                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 335, maxCrossAxisExtent: 450, mainAxisSpacing: 2.5, crossAxisSpacing: 2.5),
-                    itemCount: modCardList.length,
-                    itemBuilder: (context, index) => modCardList[index]),
-              )
+                  padding: const EdgeInsets.symmetric(vertical: 2.5),
+                  sliver: SliverGrid.builder(
+                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 335, maxCrossAxisExtent: 450, mainAxisSpacing: 2.5, crossAxisSpacing: 2.5),
+                      itemCount: modCardList.length,
+                      itemBuilder: (context, index) => modCardList[index]),
+                )
               : null),
     );
   }
@@ -142,7 +143,26 @@ class _ModCardLayoutState extends State<ModCardLayout> {
             mainAxisSize: MainAxisSize.min,
             spacing: 5,
             children: [
-              SubmodPreviewBox(imageFilePaths: widget.mod.previewImages, videoFilePaths: widget.mod.previewVideos, isNew: widget.mod.isNew),
+              Row(
+                spacing: 5,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      spacing: 5,
+                      children: [
+                        ItemIconBox(item: widget.item),
+                        Text(widget.item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: SubmodPreviewBox(imageFilePaths: widget.mod.previewImages, videoFilePaths: widget.mod.previewVideos, isNew: widget.mod.isNew),
+                  )
+                ],
+              ),
               Expanded(child: Text(widget.mod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
               Column(
                 spacing: 5,

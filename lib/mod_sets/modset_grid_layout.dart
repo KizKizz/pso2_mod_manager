@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
-import 'package:pso2_mod_manager/main_widgets/popup_menu_functions.dart';
+import 'package:pso2_mod_manager/main_widgets/more_functions_menu.dart';
+import 'package:pso2_mod_manager/main_widgets/quick_swap_menu.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_grid_layout.dart';
 import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
@@ -33,6 +34,12 @@ class ModSetGridLayout extends StatefulWidget {
 class _ModSetGridLayoutState extends State<ModSetGridLayout> {
   @override
   Widget build(BuildContext context) {
+    // Refresh
+    if (modSetRefreshSignal.watch(context) != modSetRefreshSignal.peek()) {
+      setState(
+        () {},
+      );
+    }
     // get data
     List<ModSetCardLayout> modCardList = [];
     for (var item in widget.modSet.setItems) {
@@ -140,8 +147,8 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
                                     elevation: 5,
                                     style: ButtonStyle(
                                         visualDensity: VisualDensity.adaptivePlatformDensity,
-                                        shape: WidgetStatePropertyAll(
-                                            RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1), borderRadius: const BorderRadius.all(Radius.circular(5))))),
+                                        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                                            side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1), borderRadius: const BorderRadius.all(Radius.circular(5))))),
                                     itemBuilder: (BuildContext context) {
                                       return [
                                         PopupMenuItem(
@@ -171,7 +178,7 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
               ? SliverPadding(
                   padding: const EdgeInsets.symmetric(vertical: 2.5),
                   sliver: SliverGrid.builder(
-                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 340, maxCrossAxisExtent: 600, mainAxisSpacing: 2.5, crossAxisSpacing: 2.5),
+                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 340, maxCrossAxisExtent: 560, mainAxisSpacing: 2.5, crossAxisSpacing: 2.5),
                       itemCount: modCardList.length,
                       itemBuilder: (context, index) => modCardList[index]),
                 )
@@ -286,15 +293,29 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
                         setState(() {});
                       },
                       child: Text(widget.activeSubmod.applyStatus ? appText.restore : appText.apply))),
-              IconButton.outlined(
-                  onPressed: () async {
-                    await submodAddToSet(context, widget.item, widget.activeMod, widget.activeSubmod);
-                    modSetRefreshSignal.value = '${widget.item} modified in ${widget.setName}';
-                  },
-                  icon: const Icon(
-                    Icons.edit_attributes_outlined,
-                  ),
-                  visualDensity: VisualDensity.adaptivePlatformDensity),
+
+              // Quick swap Menu
+              QuickSwapMenu(item: widget.item, mod: widget.activeMod, submod: widget.activeSubmod),
+
+              // Function menu
+              MoreFunctionsMenu(
+                item: widget.item,
+                mod: widget.activeMod,
+                submod: widget.activeSubmod,
+                refresh: () {
+                  setState(() {});
+                  modSetRefreshSignal.value = '${widget.item.itemName} > ${widget.activeMod.modName} > ${widget.activeSubmod.submodName} modified in set "${widget.setName}"';
+                },
+              ),
+              // IconButton.outlined(
+              //     onPressed: () async {
+              //       await submodAddToSet(context, widget.item, widget.activeMod, widget.activeSubmod);
+              //       modSetRefreshSignal.value = '${widget.item.itemName} > ${widget.activeMod.modName} > ${widget.activeSubmod.submodName} modified in ${widget.setName}';
+              //     },
+              //     icon: const Icon(
+              //       Icons.edit_attributes_outlined,
+              //     ),
+              //     visualDensity: VisualDensity.adaptivePlatformDensity),
             ],
           )
         ],

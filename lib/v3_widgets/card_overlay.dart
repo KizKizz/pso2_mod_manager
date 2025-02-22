@@ -18,7 +18,7 @@ class _CardOverlayState extends State<CardOverlay> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 100), () {
+    Future.delayed(const Duration(milliseconds: 50), () {
       fadeInOpacity = 1;
       if (mounted) setState(() {});
     });
@@ -28,7 +28,7 @@ class _CardOverlayState extends State<CardOverlay> {
   Widget build(BuildContext context) {
     return AnimatedOpacity(
         opacity: fadeInOpacity,
-        duration: const Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 100),
         child: Card(
           shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
           color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),

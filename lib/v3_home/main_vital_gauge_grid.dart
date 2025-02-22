@@ -29,7 +29,7 @@ class _MainVitalGaugeGridState extends State<MainVitalGaugeGrid> {
   void initState() {
     super.initState();
 
-    Future.delayed(const Duration(milliseconds: 100), () {
+    Future.delayed(const Duration(milliseconds: 50), () {
       fadeInOpacity = 1;
       if (mounted) setState(() {});
     });
@@ -42,7 +42,7 @@ class _MainVitalGaugeGridState extends State<MainVitalGaugeGrid> {
   Widget build(BuildContext context) {
     return AnimatedOpacity(
       opacity: fadeInOpacity,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 100),
       child: Column(
         spacing: 5,
         children: [

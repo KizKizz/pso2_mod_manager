@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
+import 'package:pso2_mod_manager/main_widgets/more_functions_menu.dart';
+import 'package:pso2_mod_manager/main_widgets/quick_swap_menu.dart';
 import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
@@ -184,6 +186,18 @@ class _ModCardLayoutState extends State<ModCardLayout> {
                         await modToGameData(context, false, widget.item, widget.mod, widget.submod);
                       },
                       child: Text(appText.restore))),
+              // Quick swap Menu
+              QuickSwapMenu(item: widget.item, mod: widget.mod, submod: widget.submod),
+
+              // Function menu
+              MoreFunctionsMenu(
+                item: widget.item,
+                mod: widget.mod,
+                submod: widget.submod,
+                refresh: () {
+                  setState(() {});
+                },
+              )
             ],
           )
         ],

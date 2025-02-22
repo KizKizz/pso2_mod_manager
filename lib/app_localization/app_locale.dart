@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/shared_prefs.dart';
 
 part 'app_locale.g.dart';
 
@@ -96,6 +97,10 @@ class AppLocale {
           await File(locale.translationFilePath).writeAsString(curLocaleContent.join('\n'));
         }
       }
+
+      for (var locale in localLocales) {
+        locale.language == activeUILanguage ? locale.isActive = true : locale.isActive = false;
+      }
     }
 
     saveSettings(localLocales);
@@ -163,6 +168,10 @@ class AppLocale {
 
   Future<void> offlineLocaleGet() async {
     List<AppLocale> locales = loadLocales();
+
+    for (var locale in locales) {
+      locale.language == activeUILanguage ? locale.isActive = true : locale.isActive = false;
+    }
 
     // Switch to default if none active
     if (locales.indexWhere((e) => e.isActive) == -1) {
