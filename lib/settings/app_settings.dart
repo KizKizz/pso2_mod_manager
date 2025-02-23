@@ -124,17 +124,16 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             prefs.setString('itemNameLanguage', itemNameLanguage.value);
                           },
                         ),
-                        // Side menu
+                        // v2 Homepage
                         SettingsHeader(icon: Icons.view_sidebar, text: appText.sideBar),
                         AnimatedHorizontalToggleLayout(
-                          taps: [appText.minimal, appText.alwaysExpanded],
-                          initialIndex: sideMenuAlwaysExpanded ? 1 : 0,
+                          taps: [appText.legacy, appText.xnew],
+                          initialIndex: v2Homepage.value ? 0 : 1,
                           width: constraints.maxWidth,
                           onChange: (currentIndex, targetIndex) async {
                             final prefs = await SharedPreferences.getInstance();
-                            targetIndex == 1 ? sideMenuAlwaysExpanded = true : sideMenuAlwaysExpanded = false;
-                            sideMenuAlwaysExpanded ? sideBarCollapse.value = false : sideBarCollapse.value = true;
-                            prefs.setBool('sideMenuAlwaysExpanded', sideMenuAlwaysExpanded);
+                            targetIndex == 0 ? v2Homepage.value = true : v2Homepage.value = false;
+                            prefs.setBool('v2Homepage', v2Homepage.value);
                           },
                         ),
                         // Default Homepage
@@ -147,6 +146,19 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             final prefs = await SharedPreferences.getInstance();
                             defaultHomepageIndex = targetIndex;
                             prefs.setInt('defaultHomepageIndex', defaultHomepageIndex);
+                          },
+                        ),
+                        // Side menu
+                        SettingsHeader(icon: Icons.view_sidebar, text: appText.sideBar),
+                        AnimatedHorizontalToggleLayout(
+                          taps: [appText.minimal, appText.alwaysExpanded],
+                          initialIndex: sideMenuAlwaysExpanded ? 1 : 0,
+                          width: constraints.maxWidth,
+                          onChange: (currentIndex, targetIndex) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            targetIndex == 1 ? sideMenuAlwaysExpanded = true : sideMenuAlwaysExpanded = false;
+                            sideMenuAlwaysExpanded ? sideBarCollapse.value = false : sideBarCollapse.value = true;
+                            prefs.setBool('sideMenuAlwaysExpanded', sideMenuAlwaysExpanded);
                           },
                         ),
                         // Item icon slides

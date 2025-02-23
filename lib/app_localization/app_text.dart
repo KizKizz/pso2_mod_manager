@@ -432,7 +432,9 @@ class AppText {
       hideUIWhenAppUnfocused = 'Hide UI When App Unfocused',
       interval = 'Interval',
       startAfter = 'Start After',
-      tapToReturn = 'Tap To Return';
+      tapToReturn = 'Tap To Return',
+      homepageStyle = 'Homepage Style',
+      legacy = 'Legacy';
 
   factory AppText.fromJson(Map<String, dynamic> json) => _$AppTextFromJson(json);
   Map<String, dynamic> toJson() => _$AppTextToJson(this);

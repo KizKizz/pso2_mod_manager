@@ -38,6 +38,7 @@ bool selectedModsApplyHQFilesOnly = false;
 bool hideUIWhenAppUnfocused = false;
 int hideUIInitDelaySeconds = 30;
 String activeUILanguage = 'EN';
+Signal<bool> v2Homepage = Signal(false);
 
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
@@ -161,7 +162,10 @@ Future<void> prefsLoad() async {
   // categorize by items
   hideUIWhenAppUnfocused = prefs.getBool('hideUIWhenAppUnfocused') ?? false;
   hideUIInitDelaySeconds = prefs.getInt('hideUIInitDelaySeconds') ?? 30;
-  
+
   // Active UI Languge
   activeUILanguage = prefs.getString('activeUILanguage') ?? 'EN';
+  
+  // v2 homepage
+  v2Homepage.value = prefs.getBool('v2Homepage') ?? false;
 }
