@@ -1,47 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
-import 'package:pso2_mod_manager/global_vars.dart';
-import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
-import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
-import 'package:pso2_mod_manager/mod_data/load_mods.dart';
+import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
-import 'package:pso2_mod_manager/v2_home/category_item_layout.dart';
+import 'package:pso2_mod_manager/v2_home/mod_view_v2_layout.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
-class ItemListV2 extends StatefulWidget {
-  const ItemListV2({super.key});
+class ModViewListV2 extends StatefulWidget {
+  const ModViewListV2({super.key, required this.item});
+
+  final Item? item;
 
   @override
-  State<ItemListV2> createState() => _ItemListV2State();
+  State<ModViewListV2> createState() => _ModViewListV2State();
 }
 
-class _ItemListV2State extends State<ItemListV2> {
+class _ModViewListV2State extends State<ModViewListV2> {
   ScrollController scrollController = ScrollController();
+  TextEditingController searchTextController = TextEditingController();
+  bool expandAll = false;
 
   @override
   Widget build(BuildContext context) {
     // data prep
-    List<Category> displayingCategories = [];
-    for (var cateType in masterModList) {
-      displayingCategories.addAll(cateType.categories);
-    }
-
-    List<Item> filteredItems = [];
-    if (searchTextController.value.text.isEmpty) {
-      for (var cateType in masterModList) {
-        for (var cate in cateType.categories) {
-          filteredItems.addAll(cate.items);
-        }
-      }
-    } else {
-      for (var cateType in masterModList) {
-        for (var cate in cateType.categories) {
-          filteredItems.addAll(cate.items.where((e) => e.itemName.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
-        }
+    List<Mod> filteredMods = [];
+    if (widget.item != null) {
+      if (searchTextController.value.text.isEmpty) {
+        filteredMods = widget.item!.mods;
+      } else {
+        filteredMods = widget.item!.mods
+            .where((mod) =>
+                mod.itemName.replaceFirst('_', '/').trim().toLowerCase().contains(searchTextController.text.toLowerCase()) ||
+                mod.modName.toLowerCase().contains(searchTextController.text.toLowerCase()) ||
+                mod.getDistinctNames().where((e) => e.toLowerCase().contains(searchTextController.text.toLowerCase())).isNotEmpty)
+            .toList();
       }
     }
 
@@ -56,7 +52,7 @@ class _ItemListV2State extends State<ItemListV2> {
               child: SizedBox(
                 height: 40,
                 child: Stack(alignment: AlignmentDirectional.centerEnd, children: [
-                  SearchField<Item>(
+                  SearchField<Mod>(
                     itemHeight: 90,
                     searchInputDecoration: SearchInputDecoration(
                         filled: true,
@@ -66,10 +62,10 @@ class _ItemListV2State extends State<ItemListV2> {
                         cursorHeight: 15,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
                         cursorColor: Theme.of(context).colorScheme.inverseSurface),
-                    suggestions: filteredItems
+                    suggestions: filteredMods
                         .map(
-                          (e) => SearchFieldListItem<Item>(
-                            e.itemName,
+                          (e) => SearchFieldListItem<Mod>(
+                            e.modName,
                             item: e,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -78,22 +74,27 @@ class _ItemListV2State extends State<ItemListV2> {
                                 mainAxisSize: MainAxisSize.min,
                                 spacing: 5,
                                 children: [
-                                  SizedBox(width: 75, height: 75, child: ItemIconBox(item: e)),
+                                  SizedBox(
+                                    width: 75,
+                                    height: 75,
+                                    child: SubmodPreviewBox(imageFilePaths: e.previewImages, videoFilePaths: e.previewVideos, isNew: false),
+                                  ),
                                   Column(
                                     spacing: 5,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Text(e.itemName.replaceFirst('_', '/').trim(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                                      Text(e.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
                                       Row(
                                         spacing: 5,
                                         children: [
                                           InfoBox(
-                                            info: appText.dText(e.mods.length > 1 ? appText.numMods : appText.numMod, e.mods.length.toString()),
+                                            info: appText.dText(e.submods.length > 1 ? appText.numVariants : appText.numVariant, e.submods.length.toString()),
                                             borderHighlight: false,
                                           ),
                                           InfoBox(
-                                            info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedMods().toString()),
+                                            info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedSubmods().toString()),
                                             borderHighlight: e.applyStatus,
                                           ),
                                         ],
@@ -143,20 +144,11 @@ class _ItemListV2State extends State<ItemListV2> {
                       backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
                       side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
                   onPressed: () async {
-                    if (displayingCategories.indexWhere((e) => e.visible) != -1) {
-                      for (var cate in displayingCategories) {
-                        cate.visible = false;
-                      }
-                    } else {
-                      for (var cate in displayingCategories) {
-                        cate.visible = true;
-                      }
-                    }
+                    expandAll ? expandAll = false : expandAll = true;
                     setState(() {});
-                    saveMasterModListToJson();
                   },
                   icon: Icon(
-                    displayingCategories.indexWhere((e) => e.visible) != -1 ? Icons.drag_handle_sharp : Icons.expand_outlined,
+                    expandAll == true ? Icons.drag_handle_sharp : Icons.expand_outlined,
                   )),
             ),
           ],
@@ -166,11 +158,12 @@ class _ItemListV2State extends State<ItemListV2> {
         Expanded(
           child: CustomScrollView(
             physics: const SuperRangeMaintainingScrollPhysics(),
-            slivers: displayingCategories
-                .map((e) => CategoryItemLayout(
-                      category: e,
-                      searchString: '',
-                      scrollController: scrollController,
+            slivers: filteredMods
+                .map((e) => ModViewV2Layout(
+                      item: widget.item!,
+                      mod: e,
+                      searchString: searchTextController.text,
+                      scrollController: scrollController,        
                     ))
                 .toList(),
           ),

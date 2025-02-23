@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
@@ -6,19 +7,17 @@ import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v2_home/homepage_v2.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:signals/signals_flutter.dart';
-import 'package:sliver_sticky_collapsable_panel/utils/sliver_sticky_collapsable_panel_controller.dart';
-import 'package:sliver_sticky_collapsable_panel/widgets/sliver_sticky_collapsable_panel.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 class CategoryItemLayout extends StatefulWidget {
-  const CategoryItemLayout({super.key, required this.category, required this.searchString, required this.scrollController, required this.refresh});
+  const CategoryItemLayout({super.key, required this.category, required this.searchString, required this.scrollController});
 
   final Category category;
   final String searchString;
   final ScrollController scrollController;
-  final VoidCallback refresh;
 
   @override
   State<CategoryItemLayout> createState() => _CategoryItemLayoutState();
@@ -29,17 +28,29 @@ class _CategoryItemLayoutState extends State<CategoryItemLayout> {
   Widget build(BuildContext context) {
     // prep data
     List<ItemCardLayout> displayingItemCards = widget.searchString.isEmpty
-        ? widget.category.items.map((e) => ItemCardLayout(item: e)).toList()
-        : widget.category.items.where((e) => e.getDistinctNames().where((e) => e.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty).map((e) => ItemCardLayout(item: e)).toList();
+        ? widget.category.items
+            .map((e) => ItemCardLayout(
+                  item: e,
+                  onSelected: () => setState(() {
+                    selectedItemV2.value = e;
+                  }),
+                ))
+            .toList()
+        : widget.category.items
+            .where((e) => e.getDistinctNames().where((e) => e.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty)
+            .map((e) => ItemCardLayout(
+                  item: e,
+                  onSelected: () => setState(() {
+                    selectedItemV2.value = e;
+                  }),
+                ))
+            .toList();
 
     return SliverPadding(
       padding: const EdgeInsets.only(bottom: 2.5),
-      sliver: SliverStickyCollapsablePanel(
-          scrollController: widget.scrollController,
-          controller: StickyCollapsablePanelController(),
-          disableCollapsable: true,
-          iOSStyleSticky: true,
-          headerBuilder: (context, status) => InkWell(
+      sliver: SliverStickyHeader.builder(
+          sticky: widget.category.visible ? true : false,
+          builder: (context, status) => InkWell(
                 onTap: () {
                   widget.category.visible ? widget.category.visible = false : widget.category.visible = true;
                   saveMasterModListToJson();
@@ -77,7 +88,7 @@ class _CategoryItemLayoutState extends State<CategoryItemLayout> {
                           ],
                         ))),
               ),
-          sliverPanel: widget.category.visible
+          sliver: widget.category.visible
               ? SliverPadding(
                   padding: const EdgeInsets.symmetric(vertical: 2.5),
                   sliver: SuperSliverList.separated(
@@ -93,9 +104,10 @@ class _CategoryItemLayoutState extends State<CategoryItemLayout> {
 }
 
 class ItemCardLayout extends StatefulWidget {
-  const ItemCardLayout({super.key, required this.item});
+  const ItemCardLayout({super.key, required this.item, required this.onSelected});
 
   final Item item;
+  final VoidCallback onSelected;
 
   @override
   State<ItemCardLayout> createState() => _ItemCardLayoutState();
@@ -106,36 +118,41 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 90,
-      child: Card(
-          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-          color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-          margin: EdgeInsets.zero,
-          elevation: 5,
-          child: Padding(
-            padding: const EdgeInsets.all(5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              spacing: 5,
-              children: [
-                AspectRatio(aspectRatio: 1, child: ItemIconBox(item: widget.item)),
-                Column(
-                  spacing: 5,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Flexible(child: Center(child: Text(widget.item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge))),
-                    InfoBox(
-                      info: appText.dText(widget.item.mods.length > 1 ? appText.numMods : appText.numMod, widget.item.mods.length.toString()),
-                      borderHighlight: false,
-                    ),
-                    InfoBox(
-                      info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedMods().toString()),
-                      borderHighlight: widget.item.applyStatus,
-                    ),
-                  ],
-                )
-              ],
-            ),
-          )),
+      child: InkWell(
+        onTap: () => widget.onSelected(),
+        child: Card(
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
+            color: selectedItemV2.watch(context) != null && selectedItemV2.watch(context) == widget.item
+                ? Theme.of(context).listTileTheme.selectedColor
+                : Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+            margin: EdgeInsets.zero,
+            elevation: 5,
+            child: Padding(
+              padding: const EdgeInsets.all(5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                spacing: 5,
+                children: [
+                  AspectRatio(aspectRatio: 1, child: ItemIconBox(item: widget.item)),
+                  Column(
+                    spacing: 5,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: Text(widget.item.getDisplayName(), style: Theme.of(context).textTheme.labelLarge)),
+                      InfoBox(
+                        info: appText.dText(widget.item.mods.length > 1 ? appText.numMods : appText.numMod, widget.item.mods.length.toString()),
+                        borderHighlight: false,
+                      ),
+                      InfoBox(
+                        info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedMods().toString()),
+                        borderHighlight: widget.item.applyStatus,
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            )),
+      ),
     );
   }
 }

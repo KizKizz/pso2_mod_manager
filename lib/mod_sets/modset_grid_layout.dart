@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
 import 'package:pso2_mod_manager/main_widgets/more_functions_menu.dart';
@@ -18,8 +19,6 @@ import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:signals/signals_flutter.dart';
-import 'package:sliver_sticky_collapsable_panel/utils/sliver_sticky_collapsable_panel_controller.dart';
-import 'package:sliver_sticky_collapsable_panel/widgets/sliver_sticky_collapsable_panel.dart';
 
 class ModSetGridLayout extends StatefulWidget {
   const ModSetGridLayout({super.key, required this.modSet, required this.scrollController});
@@ -49,12 +48,9 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
 
     return SliverPadding(
       padding: const EdgeInsets.only(bottom: 2.5),
-      sliver: SliverStickyCollapsablePanel(
-          scrollController: widget.scrollController,
-          controller: StickyCollapsablePanelController(),
-          disableCollapsable: true,
-          iOSStyleSticky: true,
-          headerBuilder: (context, status) => InkWell(
+      sliver: SliverStickyHeader.builder(
+        sticky: widget.modSet.expanded ? true : false,
+          builder: (context, status) => InkWell(
                 onTap: () {
                   widget.modSet.expanded ? widget.modSet.expanded = false : widget.modSet.expanded = true;
                   widget.modSet.expanded ? modSetRefreshSignal.value = '${widget.modSet.setName} is collapsed' : modSetRefreshSignal.value = '${widget.modSet.setName} is expanded';
@@ -174,7 +170,7 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
                           ],
                         ))),
               ),
-          sliverPanel: widget.modSet.expanded
+          sliver: widget.modSet.expanded
               ? SliverPadding(
                   padding: const EdgeInsets.symmetric(vertical: 2.5),
                   sliver: SliverGrid.builder(

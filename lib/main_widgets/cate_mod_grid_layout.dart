@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
@@ -12,7 +13,6 @@ import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_view_popup.dart';
 import 'package:signals/signals_flutter.dart';
-import 'package:sliver_sticky_collapsable_panel/sliver_sticky_collapsable_panel.dart';
 
 class CateModGridLayout extends StatefulWidget {
   const CateModGridLayout({super.key, required this.itemCate, required this.searchString, required this.scrollController});
@@ -26,7 +26,6 @@ class CateModGridLayout extends StatefulWidget {
 }
 
 class _CateModGridLayoutState extends State<CateModGridLayout> {
-  StickyCollapsablePanelController stickyCollapsablePanelController = StickyCollapsablePanelController(key: 'key_1');
   @override
   Widget build(BuildContext context) {
     // Refresh
@@ -66,13 +65,9 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
 
     return SliverPadding(
       padding: const EdgeInsets.only(bottom: 2.5),
-      sliver: SliverStickyCollapsablePanel(
-          scrollController: widget.scrollController,
-          controller: stickyCollapsablePanelController,
-          disableCollapsable: true,
-          iOSStyleSticky: true,
-          // headerSize: const Size(double.infinity, 40),
-          headerBuilder: (context, status) => InkWell(
+      sliver: SliverStickyHeader.builder(
+        sticky: widget.itemCate.visible ? true : false,
+          builder: (context, status) => InkWell(
                 onTap: () {
                   widget.itemCate.visible ? widget.itemCate.visible = false : widget.itemCate.visible = true;
                   widget.itemCate.visible ? mainGridStatus.value = '${widget.itemCate.categoryName} is collapsed' : mainGridStatus.value = '${widget.itemCate.categoryName} is expanded';
@@ -105,7 +100,7 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
                           ],
                         ))),
               ),
-          sliverPanel: widget.itemCate.visible
+          sliver: widget.itemCate.visible
               ? SliverPadding(
                   padding: const EdgeInsets.symmetric(vertical: 2.5),
                   sliver: SliverGrid.builder(

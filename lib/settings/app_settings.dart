@@ -125,7 +125,7 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                           },
                         ),
                         // v2 Homepage
-                        SettingsHeader(icon: Icons.view_sidebar, text: appText.sideBar),
+                        SettingsHeader(icon: Icons.view_sidebar, text: appText.homepageStyle),
                         AnimatedHorizontalToggleLayout(
                           taps: [appText.legacy, appText.xnew],
                           initialIndex: v2Homepage.value ? 0 : 1,
