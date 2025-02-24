@@ -1,7 +1,7 @@
 import 'package:choice/choice.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
-import 'package:pso2_mod_manager/main_widgets/category_select_buttons.dart';
+import 'package:pso2_mod_manager/main_widgets/choice_anchor_layout.dart';
 import 'package:signals/signals_flutter.dart';
 
 Signal<String> selectedModSwapAllMotionType = Signal<String>('All');
@@ -21,7 +21,7 @@ class _ModSwapAllMotionsSelectButtonState extends State<ModSwapAllMotionsSelectB
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 40,
+      height: 30,
       child: PromptedChoice<String>.single(
           title: appText.motions,
           value: appText.motionTypeName(selectedModSwapAllMotionType.value),

@@ -52,7 +52,7 @@ class _MainVitalGaugeGridState extends State<MainVitalGaugeGrid> {
             children: [
               Expanded(
                   child: SizedBox(
-                height: 40,
+                height: 30,
                 child: OutlinedButton(
                     style: ButtonStyle(
                         backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
@@ -74,7 +74,7 @@ class _MainVitalGaugeGridState extends State<MainVitalGaugeGrid> {
               )),
               Expanded(
                   child: SizedBox(
-                height: 40,
+                height: 30,
                 child: OutlinedButton(
                     style: ButtonStyle(
                         backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
@@ -86,7 +86,7 @@ class _MainVitalGaugeGridState extends State<MainVitalGaugeGrid> {
               )),
               Expanded(
                   child: SizedBox(
-                height: 40,
+                height: 30,
                 child: OutlinedButton(
                     style: ButtonStyle(
                         backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
@@ -99,7 +99,7 @@ class _MainVitalGaugeGridState extends State<MainVitalGaugeGrid> {
               )),
               Expanded(
                   child: SizedBox(
-                height: 40,
+                height: 30,
                 child: OutlinedButton(
                     style: ButtonStyle(
                         backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),

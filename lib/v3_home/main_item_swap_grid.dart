@@ -90,11 +90,10 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
         children: [
           Row(
             spacing: 5,
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
                   child: SizedBox(
-                height: 40,
+                height: 30,
                 child: OutlinedButton(
                     style: ButtonStyle(
                         backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),

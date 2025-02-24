@@ -4,26 +4,24 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_grid_layout.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
-import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v2_home/homepage_v2.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
-class ModViewV2Layout extends StatefulWidget {
-  const ModViewV2Layout({super.key, required this.item, required this.mod, required this.searchString, required this.expandAll, required this.scrollController});
+class AppliedModV2Layout extends StatefulWidget {
+  const AppliedModV2Layout({super.key, required this.item, required this.searchString, required this.expandAll, required this.scrollController});
 
   final Item item;
-  final Mod mod;
   final String searchString;
   final bool expandAll;
   final ScrollController scrollController;
 
   @override
-  State<ModViewV2Layout> createState() => _ModViewV2LayoutState();
+  State<AppliedModV2Layout> createState() => _AppliedModV2LayoutState();
 }
 
-class _ModViewV2LayoutState extends State<ModViewV2Layout> {
+class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
   bool expanded = false;
 
   @override
@@ -32,25 +30,20 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
       expanded = false;
     }
     // prep data
-    List<SubmodCardLayout> displayingSubmodCards = widget.searchString.isEmpty
-        ? widget.mod.submods
-            .map((e) => SubmodCardLayout(
-                  item: widget.item,
-                  mod: widget.mod,
-                  submod: e,
-                  modSetName: '',
-                ))
-            .toList()
-        : widget.mod.submods
-            .where((e) =>
-                e.getModFileNames().where((e) => e.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty || e.submodName.toLowerCase().contains(widget.searchString.toLowerCase()))
-            .map((e) => SubmodCardLayout(
-                  item: widget.item,
-                  mod: widget.mod,
-                  submod: e,
-                  modSetName: '',
-                ))
-            .toList();
+    List<SubmodCardLayout> displayingSubmodCards = [];
+    if (widget.searchString.isEmpty) {
+      for (var mod in widget.item.mods.where((e) => e.applyStatus)) {
+        for (var submod in mod.submods.where((e) => e.applyStatus)) {
+          displayingSubmodCards.add(SubmodCardLayout(item: widget.item, mod: mod, submod: submod, modSetName: ''));
+        }
+      }
+    } else {
+      for (var mod in widget.item.mods.where((e) => e.applyStatus)) {
+        for (var submod in mod.submods.where((e) => e.applyStatus && (e.getModFileNames().where((i) => i.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty || e.submodName.toLowerCase().contains(widget.searchString.toLowerCase())))) {
+          displayingSubmodCards.add(SubmodCardLayout(item: widget.item, mod: mod, submod: submod, modSetName: ''));
+        }
+      }
+    }
 
     return SliverPadding(
       padding: const EdgeInsets.only(bottom: 2.5),
@@ -77,19 +70,19 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
                               spacing: 5,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(widget.mod.modName, style: Theme.of(context).textTheme.titleMedium),
-                                Row(
-                                  spacing: 5,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    HeaderInfoBox(
-                                        info: appText.dText(widget.mod.submods.length > 1 ? appText.numVariants : appText.numVariant, widget.mod.submods.length.toString()), borderHighlight: false),
-                                    HeaderInfoBox(
-                                      info: appText.dText(appText.numCurrentlyApplied, widget.mod.getNumOfAppliedSubmods().toString()),
-                                      borderHighlight: widget.mod.applyStatus,
-                                    ),
-                                  ],
-                                )
+                                Text(widget.item.itemName, style: Theme.of(context).textTheme.titleMedium),
+                                // Row(
+                                //   spacing: 5,
+                                //   mainAxisSize: MainAxisSize.min,
+                                //   children: [
+                                    // HeaderInfoBox(
+                                    //     info: appText.dText(widget.item.submods.length > 1 ? appText.numVariants : appText.numVariant, widget.mod.submods.length.toString()), borderHighlight: false),
+                                    // HeaderInfoBox(
+                                    //   info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedSubmods().toString()),
+                                    //   borderHighlight: widget.mod.applyStatus,
+                                    // ),
+                                //   ],
+                                // )
                               ],
                             ),
                             Icon(expanded ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down)

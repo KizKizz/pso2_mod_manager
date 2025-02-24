@@ -114,7 +114,7 @@ class _MainModGridState extends State<MainModGrid> {
               Expanded(
                 flex: 4,
                 child: SizedBox(
-                  height: 40,
+                  height: 30,
                   child: Stack(alignment: AlignmentDirectional.centerEnd, children: [
                     SearchField<Mod>(
                       itemHeight: 90,
@@ -122,7 +122,7 @@ class _MainModGridState extends State<MainModGrid> {
                           filled: true,
                           fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
                           isDense: true,
-                          contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 30),
+                          contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                           cursorHeight: 15,
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
                           cursorColor: Theme.of(context).colorScheme.inverseSurface),
@@ -185,15 +185,16 @@ class _MainModGridState extends State<MainModGrid> {
                     Visibility(
                       visible: searchTextController.value.text.isNotEmpty,
                       child: Padding(
-                        padding: const EdgeInsets.only(right: 4),
-                        child: ElevatedButton(
+                        padding: const EdgeInsets.only(right: 2),
+                        child: IconButton(
+                          visualDensity: VisualDensity.adaptivePlatformDensity,
                             onPressed: searchTextController.value.text.isNotEmpty
                                 ? () {
                                     searchTextController.clear();
                                     setState(() {});
                                   }
                                 : null,
-                            child: const Icon(Icons.close)),
+                            icon: const Icon(Icons.close)),
                       ),
                     )
                   ]),
@@ -202,7 +203,7 @@ class _MainModGridState extends State<MainModGrid> {
               Expanded(
                   flex: 2,
                   child: SizedBox(
-                    height: 40,
+                    height: 30,
                     child: OutlinedButton(
                         style: ButtonStyle(
                             backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),

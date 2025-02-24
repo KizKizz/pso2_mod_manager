@@ -70,7 +70,7 @@ class _MainModSetGridState extends State<MainModSetGrid> {
               Expanded(
                   flex: 1,
                   child: SizedBox(
-                    height: 40,
+                    height: 30,
                     child: OutlinedButton(
                         style: ButtonStyle(
                             backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
@@ -84,7 +84,7 @@ class _MainModSetGridState extends State<MainModSetGrid> {
               Expanded(
                   flex: 1,
                   child: SizedBox(
-                    height: 40,
+                    height: 30,
                     child: OutlinedButton(
                         style: ButtonStyle(
                             backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),

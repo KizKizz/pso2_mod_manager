@@ -80,7 +80,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
       margin: EdgeInsets.zero,
       elevation: 5,
       child: Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(5),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -163,35 +163,4 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
   }
 }
 
-class MenuIconItem extends StatelessWidget {
-  const MenuIconItem({super.key, required this.icon, required this.text, required this.enabled});
 
-  final IconData icon;
-  final String text;
-  final bool enabled;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      spacing: 5,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon,
-            color: !enabled
-                ? Theme.of(context).disabledColor
-                : text == appText.delete
-                    ? Colors.redAccent
-                    : Theme.of(context).iconTheme.color),
-        Text(
-          text,
-          style: TextStyle(
-              color: !enabled
-                  ? Theme.of(context).disabledColor
-                  : text == appText.delete
-                      ? Colors.redAccent
-                      : null),
-        )
-      ],
-    );
-  }
-}

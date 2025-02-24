@@ -32,6 +32,7 @@ class _CategoryItemLayoutState extends State<CategoryItemLayout> {
             .map((e) => ItemCardLayout(
                   item: e,
                   onSelected: () => setState(() {
+                    modViewExpandState.value = false;
                     selectedItemV2.value = e;
                   }),
                 ))
@@ -41,6 +42,7 @@ class _CategoryItemLayoutState extends State<CategoryItemLayout> {
             .map((e) => ItemCardLayout(
                   item: e,
                   onSelected: () => setState(() {
+                    modViewExpandState.value = false;
                     selectedItemV2.value = e;
                   }),
                 ))
@@ -49,13 +51,15 @@ class _CategoryItemLayoutState extends State<CategoryItemLayout> {
     return SliverPadding(
       padding: const EdgeInsets.only(bottom: 2.5),
       sliver: SliverStickyHeader.builder(
-          sticky: widget.category.visible ? true : false,
+          // sticky: widget.category.visible ? true : false,
           builder: (context, status) => InkWell(
-                onTap: () {
-                  widget.category.visible ? widget.category.visible = false : widget.category.visible = true;
-                  saveMasterModListToJson();
-                  setState(() {});
-                },
+                onTap: widget.category.items.isNotEmpty
+                    ? () {
+                        widget.category.visible ? widget.category.visible = false : widget.category.visible = true;
+                        saveMasterModListToJson();
+                        setState(() {});
+                      }
+                    : null,
                 child: Card(
                     shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
                     color: !status.isPinned
@@ -84,11 +88,11 @@ class _CategoryItemLayoutState extends State<CategoryItemLayout> {
                                 )
                               ],
                             ),
-                            Icon(widget.category.visible ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down)
+                            Visibility(visible: widget.category.items.isNotEmpty, child: Icon(widget.category.visible ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down))
                           ],
                         ))),
               ),
-          sliver: widget.category.visible
+          sliver: widget.category.visible && widget.category.items.isNotEmpty
               ? SliverPadding(
                   padding: const EdgeInsets.symmetric(vertical: 2.5),
                   sliver: SuperSliverList.separated(

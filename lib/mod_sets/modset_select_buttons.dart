@@ -1,8 +1,8 @@
 import 'package:choice/choice.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/main_widgets/choice_anchor_layout.dart';
 import 'package:pso2_mod_manager/v3_home/main_modset_grid.dart';
-import 'package:pso2_mod_manager/main_widgets/category_select_buttons.dart';
 import 'package:signals/signals_flutter.dart';
 
 class ModSetSelectButtons extends StatefulWidget {
@@ -20,7 +20,7 @@ class _ModSetSelectButtonsState extends State<ModSetSelectButtons> {
   Widget build(BuildContext context) {
     if (!widget.setNames.contains('All')) widget.setNames.insert(0, 'All');
     return SizedBox(
-      height: 40,
+      height: 30,
       child: PromptedChoice<String>.single(
         title: appText.view,
         value: selectedDisplayModSet.value,

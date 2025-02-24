@@ -1,49 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
-import 'package:pso2_mod_manager/main_widgets/category_select_buttons.dart';
+import 'package:pso2_mod_manager/main_widgets/applied_mod_category_select_buttons.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
-import 'package:pso2_mod_manager/main_widgets/sorting_buttons.dart';
+import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
+import 'package:pso2_mod_manager/mod_apply/load_applied_mods.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
-import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
-import 'package:pso2_mod_manager/v2_home/category_item_layout.dart';
+import 'package:pso2_mod_manager/v2_home/applied_mod_v2_layout.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:signals/signals_flutter.dart';
 
-class ItemListV2 extends StatefulWidget {
-  const ItemListV2({super.key});
+class AppliedListV2 extends StatefulWidget {
+  const AppliedListV2({super.key});
 
   @override
-  State<ItemListV2> createState() => _ItemListV2State();
+  State<AppliedListV2> createState() => _AppliedListV2State();
 }
 
-class _ItemListV2State extends State<ItemListV2> {
+class _AppliedListV2State extends State<AppliedListV2> {
   ScrollController scrollController = ScrollController();
+  bool expandAll = false;
 
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (selectedDisplaySort.watch(context) != selectedDisplaySort.peek() || mainGridStatus.watch(context) != mainGridStatus.peek()) {
+    if (modApplyStatus.watch(context) != modApplyStatus.peek() || mainGridStatus.watch(context) != mainGridStatus.peek()) {
       setState(
         () {},
       );
     }
 
+    int numOfAppliedMods = 0;
     // Suggestions
     List<Item> filteredItems = [];
     if (searchTextController.value.text.isEmpty) {
-      for (var cateType in masterModList) {
-        for (var cate in cateType.categories.where((e) => e.categoryName == selectedDisplayCategory.value || selectedDisplayCategory.value == appText.all)) {
-          filteredItems.addAll(cate.items);
+      for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
+        for (var cate in cateType.categories
+            .where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == appText.all))) {
+          for (var item in cate.items.where((e) => e.applyStatus)) {
+            filteredItems.add(item);
+            numOfAppliedMods += item.getNumOfAppliedMods();
+          }
         }
       }
     } else {
-      for (var cateType in masterModList) {
-        for (var cate in cateType.categories.where((e) => e.categoryName == selectedDisplayCategory.value || selectedDisplayCategory.value == appText.all)) {
-          filteredItems.addAll(cate.items.where((e) => e.itemName.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
+      for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
+        for (var cate in cateType.categories
+            .where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == appText.all))) {
+          for (var item in cate.items.where((e) => e.applyStatus)) {
+            if (item.mods.indexWhere((e) => e.applyStatus && e.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase())) != -1) filteredItems.add(item);
+            numOfAppliedMods += item.getNumOfAppliedMods();
+          }
         }
       }
     }
@@ -61,29 +71,7 @@ class _ItemListV2State extends State<ItemListV2> {
       }
     } else {
       for (var type in masterModList) {
-        hideEmptyCategories ? categories.addAll(type.categories.where((e) => e.items.isNotEmpty)) : categories.addAll(type.categories);
-      }
-    }
-
-    List<Category> displayingCategories = [];
-    if (selectedDisplayCategory.watch(context) == 'All') {
-      displayingCategories = categories;
-    } else {
-      displayingCategories = categories.where((e) => e.categoryName == selectedDisplayCategory.watch(context)).toList();
-    }
-
-    // Sort
-    if (selectedDisplaySort.value == modSortingSelections[0]) {
-      for (var category in displayingCategories) {
-        category.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
-      }
-    } else if (selectedDisplaySort.value == modSortingSelections[1]) {
-      for (var category in displayingCategories) {
-        category.items.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
-      }
-    } else if (selectedDisplaySort.value == modSortingSelections[2]) {
-      for (var category in displayingCategories) {
-        category.items.sort((a, b) => b.applyDate.compareTo(a.applyDate));
+        categories.addAll(type.categories);
       }
     }
 
@@ -110,36 +98,62 @@ class _ItemListV2State extends State<ItemListV2> {
                         ),
                       ),
 
-                      CategorySelectButtons(categories: categories, scrollController: scrollController),
+                      AppliedModCategorySelectButtons(categories: categories.where((e) => e.getNumOfAppliedItems() > 0).toList(), scrollController: scrollController),
                       Row(
                         spacing: 2.5,
                         children: [
-                          Expanded(child: SortingButtons(scrollController: scrollController)),
+                          Expanded(
+                              flex: 2,
+                              child: SizedBox(
+                                height: 30,
+                                child: OutlinedButton(
+                                    style: ButtonStyle(
+                                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                                        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                                    onPressed: numOfAppliedMods > 0 ? () {} : null,
+                                    onLongPress: numOfAppliedMods > 0
+                                        ? () async {
+                                            List<Item> appliedItems = await appliedModsFetch();
+                                            for (var item in appliedItems) {
+                                              for (var mod in item.mods.where((e) => e.applyStatus)) {
+                                                for (var submod in mod.submods.where((e) => e.applyStatus)) {
+                                                  // ignore: use_build_context_synchronously
+                                                  await modToGameData(context, false, item, mod, submod);
+                                                }
+                                              }
+                                            }
+                                          }
+                                        : null,
+                                    child: Text(
+                                      appText.dText(numOfAppliedMods > 1 ? appText.holdToRestoreNumAppliedMods : appText.holdToRestoreNumAppliedMod, numOfAppliedMods.toString()),
+                                      textAlign: TextAlign.center,
+                                    )),
+                              )),
                           // col-ex
-                          SizedBox(
-                            height: 30,
-                            child: IconButton.outlined(
-                                visualDensity: VisualDensity.adaptivePlatformDensity,
-                                style: ButtonStyle(
-                                    backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                                    side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                                onPressed: () async {
-                                  if (displayingCategories.indexWhere((e) => e.visible) != -1) {
-                                    for (var cate in displayingCategories) {
-                                      cate.visible = false;
-                                    }
-                                  } else {
-                                    for (var cate in displayingCategories) {
-                                      cate.visible = true;
-                                    }
-                                  }
-                                  setState(() {});
-                                  saveMasterModListToJson();
-                                },
-                                icon: Icon(
-                                  displayingCategories.indexWhere((e) => e.visible) != -1 ? Icons.drag_handle_sharp : Icons.expand_outlined,
-                                )),
-                          ),
+                          // SizedBox(
+                          //   height: 30,
+                          //   child: IconButton.outlined(
+                          //       visualDensity: VisualDensity.adaptivePlatformDensity,
+                          //       style: ButtonStyle(
+                          //           backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                          //           side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                          //       onPressed: () async {
+                          //         if (displayingCategories.indexWhere((e) => e.visible) != -1) {
+                          //           for (var cate in displayingCategories) {
+                          //             cate.visible = false;
+                          //           }
+                          //         } else {
+                          //           for (var cate in displayingCategories) {
+                          //             cate.visible = true;
+                          //           }
+                          //         }
+                          //         setState(() {});
+                          //         saveMasterModListToJson();
+                          //       },
+                          //       icon: Icon(
+                          //         displayingCategories.indexWhere((e) => e.visible) != -1 ? Icons.drag_handle_sharp : Icons.expand_outlined,
+                          //       )),
+                          // ),
                         ],
                       ),
 
@@ -212,18 +226,15 @@ class _ItemListV2State extends State<ItemListV2> {
                             visible: searchTextController.value.text.isNotEmpty,
                             child: Padding(
                               padding: const EdgeInsets.only(right: 2),
-                              child: SizedBox(
-                                height: 30,
-                                child: IconButton(
-                                    visualDensity: VisualDensity.adaptivePlatformDensity,
-                                    onPressed: searchTextController.value.text.isNotEmpty
-                                        ? () {
-                                            searchTextController.clear();
-                                            setState(() {});
-                                          }
-                                        : null,
-                                    icon: const Icon(Icons.close)),
-                              ),
+                              child: IconButton(
+                                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                                  onPressed: searchTextController.value.text.isNotEmpty
+                                      ? () {
+                                          searchTextController.clear();
+                                          setState(() {});
+                                        }
+                                      : null,
+                                  icon: const Icon(Icons.close)),
                             ),
                           )
                         ]),
@@ -236,13 +247,7 @@ class _ItemListV2State extends State<ItemListV2> {
           child: CustomScrollView(
             controller: scrollController,
             // physics: const RangeMaintainingScrollPhysics()  ,
-            slivers: displayingCategories
-                .map((e) => CategoryItemLayout(
-                      category: e,
-                      searchString: searchTextController.text,
-                      scrollController: scrollController,
-                    ))
-                .toList(),
+            slivers: filteredItems.map((e) => AppliedModV2Layout(item: e, searchString: searchTextController.text, expandAll: expandAll, scrollController: scrollController)).toList(),
           ),
         )
       ],

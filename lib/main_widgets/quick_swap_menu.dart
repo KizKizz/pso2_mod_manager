@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_popup.dart';
-import 'package:pso2_mod_manager/main_widgets/submod_grid_layout.dart';
+import 'package:pso2_mod_manager/main_widgets/more_functions_menu.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';

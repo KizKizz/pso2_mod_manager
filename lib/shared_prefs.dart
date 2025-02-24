@@ -21,6 +21,7 @@ Signal<String> selectedDisplayCategory = Signal<String>('All');
 Signal<String> selectedModDisplayCategory = Signal<String>('All');
 Signal<String> selectedDisplayCategoryAppliedList = Signal<String>('All');
 Signal<String> selectedDisplaySort = Signal<String>('Name (Alphabetical)');
+Signal<String> selectedDisplaySortModView = Signal<String>('Name (Alphabetical)');
 Signal<String> selectedDisplaySortModSet = Signal<String>('Name (Alphabetical)');
 bool originalFilesBackupsFromSega = true;
 double boundingRadiusRemovalValue = -10;
@@ -102,6 +103,9 @@ Future<void> prefsLoad() async {
 
   // Main list sort
   selectedDisplaySort.value = prefs.getString('selectedDisplaySort') ?? 'Name (Alphabetical)';
+
+  // Main list sort
+  selectedDisplaySortModView.value = prefs.getString('selectedDisplaySortModView') ?? 'Name (Alphabetical)';
 
   // Mod set list sort
   selectedDisplaySortModSet.value = prefs.getString('selectedDisplaySortModSet') ?? 'Name (Alphabetical)';
