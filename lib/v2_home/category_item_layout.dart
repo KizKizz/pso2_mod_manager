@@ -167,7 +167,7 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
                         child: IconButton.outlined(
                             visualDensity: VisualDensity.adaptivePlatformDensity,
                             style: ButtonStyle(
-                                backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                                // backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
                                 side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
                             onPressed: () async {
                               launchUrlString(widget.item.location);

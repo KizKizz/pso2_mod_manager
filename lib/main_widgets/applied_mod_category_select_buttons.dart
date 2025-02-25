@@ -23,13 +23,8 @@ class _AppliedModCategorySelectButtonsState extends State<AppliedModCategorySele
   List<int> cateItemAmount = [];
 
   @override
-  void initState() {
-    categoryNames = widget.categories.map((e) => e.categoryName).toList();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    categoryNames = widget.categories.map((e) => e.categoryName).toList();
     cateItemAmount = widget.categories.map((e) => e.getNumOfAppliedItems()).toList();
     if (!categoryNames.contains('All')) {
       categoryNames.insert(0, 'All');

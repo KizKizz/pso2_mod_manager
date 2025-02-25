@@ -65,7 +65,7 @@ class _AppliedListV2State extends State<AppliedListV2> {
 
     // Filter
     List<Category> categories = [];
-    if (appliedListSearchTextController.value.text.isNotEmpty) {
+    if (appliedListSearchTextController.text.isNotEmpty) {
       for (var type in masterModList) {
         for (var category in type.categories.where((e) => e.getNumOfAppliedItems() > 0)) {
           if (category.getDistinctNames().where((e) => e.toLowerCase().contains(appliedListSearchTextController.text.toLowerCase())).isNotEmpty) {

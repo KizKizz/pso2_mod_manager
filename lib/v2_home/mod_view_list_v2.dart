@@ -62,7 +62,21 @@ class _ModViewListV2State extends State<ModViewListV2> {
     }
 
     if (widget.item == null) {
-      return const SizedBox();
+      return SizedBox(
+          height: 136,
+          child: Card(
+              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
+              color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+              margin: EdgeInsets.zero,
+              elevation: 5,
+              child: Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: Center(
+                      child: Text(
+                    appText.emptyModViewInfo,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  )))));
     } else {
       return Column(
         spacing: 5,

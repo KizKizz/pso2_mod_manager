@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
+import 'package:pso2_mod_manager/main_widgets/item_more_functions_menu.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_grid_layout.dart';
 import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
@@ -12,6 +13,7 @@ import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class AppliedModV2Layout extends StatefulWidget {
   const AppliedModV2Layout({super.key, required this.item, required this.searchString, required this.expandAll, required this.scrollController});
@@ -110,48 +112,75 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                                           ),
                                         ],
                                       ),
-                                      Expanded(
-                                          child: ModManTooltip(
-                                            message: firstAppliedModName,
+                                      Row(
+                                        spacing: 5,
+                                        children: [
+                                          SizedBox(
+                                            height: 25,
                                             child: OutlinedButton(
                                                 onPressed: () async {
-                                                  int modIndex = widget.item.mods.indexWhere((e) => e.applyStatus);
-                                                  if (modIndex != -1) {
-                                                    Mod appliedMod = widget.item.mods[modIndex];
-                                                    int submodIndex = appliedMod.submods.indexWhere((e) => e.applyStatus);
-                                                    if (submodIndex != -1) {
-                                                      await modToGameData(context, false, widget.item, appliedMod, appliedMod.submods[submodIndex]);
-                                                    }
-                                                  }
+                                                  selectedItemV2.value = widget.item;
                                                 },
                                                 child: Text(appText.details)),
                                           ),
-                                        ),
-                                      Visibility(
-                                        visible: widget.item.getNumOfAppliedMods() == 1,
-                                        child: Expanded(
-                                          child: ModManTooltip(
-                                            message: firstAppliedModName,
-                                            child: OutlinedButton(
-                                                onPressed: () async {
-                                                  int modIndex = widget.item.mods.indexWhere((e) => e.applyStatus);
-                                                  if (modIndex != -1) {
-                                                    Mod appliedMod = widget.item.mods[modIndex];
-                                                    int submodIndex = appliedMod.submods.indexWhere((e) => e.applyStatus);
-                                                    if (submodIndex != -1) {
-                                                      await modToGameData(context, false, widget.item, appliedMod, appliedMod.submods[submodIndex]);
-                                                    }
-                                                  }
-                                                },
-                                                child: Text(appText.restore)),
-                                          ),
-                                        ),
-                                      )
+                                          Visibility(
+                                            visible: widget.item.getNumOfAppliedMods() == 1,
+                                            child: ModManTooltip(
+                                              message: firstAppliedModName,
+                                              child: SizedBox(
+                                                height: 25,
+                                                child: OutlinedButton(
+                                                    onPressed: () async {
+                                                      int modIndex = widget.item.mods.indexWhere((e) => e.applyStatus);
+                                                      if (modIndex != -1) {
+                                                        Mod appliedMod = widget.item.mods[modIndex];
+                                                        int submodIndex = appliedMod.submods.indexWhere((e) => e.applyStatus);
+                                                        if (submodIndex != -1) {
+                                                          await modToGameData(context, false, widget.item, appliedMod, appliedMod.submods[submodIndex]);
+                                                        }
+                                                      }
+                                                    },
+                                                    child: Text(appText.restore)),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ],
                                   )
                                 ],
                               ),
-                              Icon(expanded || widget.expandAll ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down)
+                              Row(
+                                spacing: 2.5,
+                                children: [
+                                  Column(
+                                    spacing: 2.5,
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(
+                                        height: 30,
+                                        child: IconButton.outlined(
+                                            visualDensity: VisualDensity.adaptivePlatformDensity,
+                                            style: ButtonStyle(
+                                                // backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                                                side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                                            onPressed: () async {
+                                              launchUrlString(widget.item.location);
+                                            },
+                                            icon: const Icon(
+                                              Icons.folder_open,
+                                            )),
+                                      ),
+                                      ItemMoreFunctionsMenu(
+                                        item: widget.item,
+                                        isInsidePopup: false,
+                                      )
+                                    ],
+                                  ),
+                                  Icon(expanded || widget.expandAll ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down)
+                                ],
+                              )
                             ],
                           ))),
                 ),

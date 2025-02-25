@@ -41,6 +41,9 @@ bool hideUIWhenAppUnfocused = false;
 int hideUIInitDelaySeconds = 30;
 String activeUILanguage = 'EN';
 Signal<bool> v2Homepage = Signal(false);
+double splitViewFlexValue0 = 1;
+double splitViewFlexValue1 = 1;
+double splitViewFlexValue2 = 1;
 
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
@@ -107,7 +110,7 @@ Future<void> prefsLoad() async {
 
   // Modview v2 sort
   selectedDisplaySortModView.value = prefs.getString('selectedDisplaySortModView') ?? 'Name (Alphabetical)';
-  
+
   // AppliedList v2 sort
   selectedDisplaySortAppliedList.value = prefs.getString('selectedDisplaySortAppliedList') ?? 'Name (Alphabetical)';
 
@@ -173,7 +176,12 @@ Future<void> prefsLoad() async {
 
   // Active UI Languge
   activeUILanguage = prefs.getString('activeUILanguage') ?? 'EN';
-  
+
   // v2 homepage
   v2Homepage.value = prefs.getBool('v2Homepage') ?? false;
+
+  // split view flex value
+  splitViewFlexValue0 = prefs.getDouble('splitViewFlexValue0') ?? 1;
+  splitViewFlexValue1 = prefs.getDouble('splitViewFlexValue1') ?? 1;
+  splitViewFlexValue2 = prefs.getDouble('splitViewFlexValue2') ?? 1;
 }

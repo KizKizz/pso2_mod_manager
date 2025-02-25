@@ -135,7 +135,8 @@ class AppText {
       select = 'Select',
       continues = 'Continue',
       imported = 'Imported',
-      filters = 'Filters';
+      filters = 'Filters', 
+      details = 'Details';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -372,7 +373,8 @@ class AppText {
       selectSetsToAddToOrRemoveFrom = 'Select Set(s) to add to or to remove from',
       jpGameStartInfo = 'If the game is not starting, try to run the Mod Manager as admin and try again',
       filterRemoveInfo = 'Click and hold on the filters to remove',
-      firstTimeInfo = 'If this is your first time using PSO2NGS Mod Manager and your game currently contains mods, please remove them first';
+      firstTimeInfo = 'If this is your first time using PSO2NGS Mod Manager and your game currently contains mods, please remove them first',
+      emptyModViewInfo = 'Select an item to display its mods here';
 
   // Settings Text
   String appSettings = 'App Settings',
