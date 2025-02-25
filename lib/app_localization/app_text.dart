@@ -259,7 +259,7 @@ class AppText {
       checkingAppVersion = 'Checking App Version',
       newAppVersionFound = 'New App Version Found',
       extractingDownloadedZipFile = 'Extracting downloaded zip file',
-      extractCompletedReadyToPatch = 'Extract completed, ready to patch',
+      extractCompletedReadyToPatch = 'Extraction completed, ready to patch',
       cannotCreatePatchLauncherCheckPerm = 'Cannot create patch launcher, check permission',
       checkingItemDataVersion = 'Checking Item Data Version',
       newItemDataVersionFound = 'New Item Data Version Found',

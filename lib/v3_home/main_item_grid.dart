@@ -46,13 +46,13 @@ class _MainItemGridState extends State<MainItemGrid> {
     List<Item> filteredItems = [];
     if (searchTextController.value.text.isEmpty) {
       for (var cateType in masterModList) {
-        for (var cate in cateType.categories.where((e) => e.categoryName == selectedDisplayCategory.value || selectedDisplayCategory.value == appText.all)) {
+        for (var cate in cateType.categories.where((e) => e.categoryName == selectedDisplayCategory.value || selectedDisplayCategory.value == 'All')) {
           filteredItems.addAll(cate.items);
         }
       }
     } else {
       for (var cateType in masterModList) {
-        for (var cate in cateType.categories.where((e) => e.categoryName == selectedDisplayCategory.value || selectedDisplayCategory.value == appText.all)) {
+        for (var cate in cateType.categories.where((e) => e.categoryName == selectedDisplayCategory.value || selectedDisplayCategory.value == 'All')) {
           filteredItems.addAll(cate.items.where((e) => e.itemName.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
         }
       }

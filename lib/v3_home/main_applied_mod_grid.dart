@@ -49,7 +49,7 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
     if (searchTextController.value.text.isEmpty) {
       for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
         for (var cate in cateType.categories
-            .where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == appText.all))) {
+            .where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == 'All'))) {
           for (var item in cate.items.where((e) => e.applyStatus)) {
             filteredMods.addAll(item.mods.where((e) => e.applyStatus));
             numOfAppliedMods += item.getNumOfAppliedMods();
@@ -59,7 +59,7 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
     } else {
       for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
         for (var cate in cateType.categories
-            .where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == appText.all))) {
+            .where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == 'All'))) {
           for (var item in cate.items.where((e) => e.applyStatus)) {
             filteredMods.addAll(item.mods.where((e) => e.applyStatus && e.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
             numOfAppliedMods += item.getNumOfAppliedMods();

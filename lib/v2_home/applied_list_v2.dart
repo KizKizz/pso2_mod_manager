@@ -8,6 +8,7 @@ import 'package:pso2_mod_manager/mod_apply/load_applied_mods.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v2_home/applied_list_sorting_button.dart';
 import 'package:pso2_mod_manager/v2_home/applied_mod_v2_layout.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:searchfield/searchfield.dart';
@@ -21,13 +22,16 @@ class AppliedListV2 extends StatefulWidget {
 }
 
 class _AppliedListV2State extends State<AppliedListV2> {
+  TextEditingController appliedListSearchTextController = TextEditingController();
   ScrollController scrollController = ScrollController();
   bool expandAll = false;
 
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (modApplyStatus.watch(context) != modApplyStatus.peek() || mainGridStatus.watch(context) != mainGridStatus.peek()) {
+    if (modApplyStatus.watch(context) != modApplyStatus.peek() ||
+        mainGridStatus.watch(context) != mainGridStatus.peek() ||
+        selectedDisplayCategoryAppliedList.watch(context) != selectedDisplayCategoryAppliedList.peek()) {
       setState(
         () {},
       );
@@ -36,10 +40,10 @@ class _AppliedListV2State extends State<AppliedListV2> {
     int numOfAppliedMods = 0;
     // Suggestions
     List<Item> filteredItems = [];
-    if (searchTextController.value.text.isEmpty) {
+    if (appliedListSearchTextController.text.isEmpty) {
       for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
-        for (var cate in cateType.categories
-            .where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == appText.all))) {
+        for (var cate
+            in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == 'All'))) {
           for (var item in cate.items.where((e) => e.applyStatus)) {
             filteredItems.add(item);
             numOfAppliedMods += item.getNumOfAppliedMods();
@@ -48,10 +52,10 @@ class _AppliedListV2State extends State<AppliedListV2> {
       }
     } else {
       for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
-        for (var cate in cateType.categories
-            .where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == appText.all))) {
+        for (var cate
+            in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == 'All'))) {
           for (var item in cate.items.where((e) => e.applyStatus)) {
-            if (item.mods.indexWhere((e) => e.applyStatus && e.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase())) != -1) filteredItems.add(item);
+            if (item.mods.indexWhere((e) => e.applyStatus && e.itemName.toLowerCase().contains(appliedListSearchTextController.text.toLowerCase())) != -1) filteredItems.add(item);
             numOfAppliedMods += item.getNumOfAppliedMods();
           }
         }
@@ -61,18 +65,27 @@ class _AppliedListV2State extends State<AppliedListV2> {
 
     // Filter
     List<Category> categories = [];
-    if (searchTextController.value.text.isNotEmpty) {
+    if (appliedListSearchTextController.value.text.isNotEmpty) {
       for (var type in masterModList) {
-        for (var category in type.categories) {
-          if (category.getDistinctNames().where((e) => e.toLowerCase().contains(searchTextController.text.toLowerCase())).isNotEmpty) {
+        for (var category in type.categories.where((e) => e.getNumOfAppliedItems() > 0)) {
+          if (category.getDistinctNames().where((e) => e.toLowerCase().contains(appliedListSearchTextController.text.toLowerCase())).isNotEmpty) {
             categories.add(category);
           }
         }
       }
     } else {
       for (var type in masterModList) {
-        categories.addAll(type.categories);
+        categories.addAll(type.categories.where((e) => e.getNumOfAppliedItems() > 0));
       }
+    }
+
+    // Sort
+    if (selectedDisplaySortAppliedList.value == modSortingSelections[0]) {
+      filteredItems.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
+    } else if (selectedDisplaySortAppliedList.value == modSortingSelections[1]) {
+      filteredItems.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
+    } else if (selectedDisplaySortAppliedList.value == modSortingSelections[2]) {
+      filteredItems.sort((a, b) => b.applyDate.compareTo(a.applyDate));
     }
 
     return Column(
@@ -93,68 +106,69 @@ class _AppliedListV2State extends State<AppliedListV2> {
                     children: [
                       Expanded(
                         child: Text(
-                          appText.itemList,
+                          appText.appliedList,
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ),
-
-                      AppliedModCategorySelectButtons(categories: categories.where((e) => e.getNumOfAppliedItems() > 0).toList(), scrollController: scrollController),
-                      Row(
-                        spacing: 2.5,
-                        children: [
-                          Expanded(
-                              flex: 2,
-                              child: SizedBox(
-                                height: 30,
-                                child: OutlinedButton(
-                                    style: ButtonStyle(
-                                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                                        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                                    onPressed: numOfAppliedMods > 0 ? () {} : null,
-                                    onLongPress: numOfAppliedMods > 0
-                                        ? () async {
-                                            List<Item> appliedItems = await appliedModsFetch();
-                                            for (var item in appliedItems) {
-                                              for (var mod in item.mods.where((e) => e.applyStatus)) {
-                                                for (var submod in mod.submods.where((e) => e.applyStatus)) {
-                                                  // ignore: use_build_context_synchronously
-                                                  await modToGameData(context, false, item, mod, submod);
+                      Expanded(
+                        child: Row(
+                          spacing: 2.5,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AppliedModCategorySelectButtons(categories: categories, scrollController: scrollController),
+                            AppliedListSortingButton(scrollController: scrollController),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Row(
+                          spacing: 2.5,
+                          children: [
+                            Expanded(
+                                flex: 2,
+                                child: SizedBox(
+                                  height: 30,
+                                  child: OutlinedButton(
+                                      style: ButtonStyle(
+                                          backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                                          side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                                      onPressed: numOfAppliedMods > 0 ? () {} : null,
+                                      onLongPress: numOfAppliedMods > 0
+                                          ? () async {
+                                              List<Item> appliedItems = await appliedModsFetch();
+                                              for (var item in appliedItems) {
+                                                for (var mod in item.mods.where((e) => e.applyStatus)) {
+                                                  for (var submod in mod.submods.where((e) => e.applyStatus)) {
+                                                    // ignore: use_build_context_synchronously
+                                                    await modToGameData(context, false, item, mod, submod);
+                                                  }
                                                 }
                                               }
                                             }
-                                          }
-                                        : null,
-                                    child: Text(
-                                      appText.dText(numOfAppliedMods > 1 ? appText.holdToRestoreNumAppliedMods : appText.holdToRestoreNumAppliedMod, numOfAppliedMods.toString()),
-                                      textAlign: TextAlign.center,
-                                    )),
-                              )),
-                          // col-ex
-                          // SizedBox(
-                          //   height: 30,
-                          //   child: IconButton.outlined(
-                          //       visualDensity: VisualDensity.adaptivePlatformDensity,
-                          //       style: ButtonStyle(
-                          //           backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                          //           side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                          //       onPressed: () async {
-                          //         if (displayingCategories.indexWhere((e) => e.visible) != -1) {
-                          //           for (var cate in displayingCategories) {
-                          //             cate.visible = false;
-                          //           }
-                          //         } else {
-                          //           for (var cate in displayingCategories) {
-                          //             cate.visible = true;
-                          //           }
-                          //         }
-                          //         setState(() {});
-                          //         saveMasterModListToJson();
-                          //       },
-                          //       icon: Icon(
-                          //         displayingCategories.indexWhere((e) => e.visible) != -1 ? Icons.drag_handle_sharp : Icons.expand_outlined,
-                          //       )),
-                          // ),
-                        ],
+                                          : null,
+                                      child: Text(
+                                        appText.dText(numOfAppliedMods > 1 ? appText.holdToRestoreNumAppliedMods : appText.holdToRestoreNumAppliedMod, numOfAppliedMods.toString()),
+                                        textAlign: TextAlign.center,
+                                      )),
+                                )),
+                            // col-ex
+                            SizedBox(
+                              height: 30,
+                              child: IconButton.outlined(
+                                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                                  style: ButtonStyle(
+                                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                                      side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                                  onPressed: () async {
+                                    expandAll ? expandAll = false : expandAll = true;
+                                    setState(() {});
+                                  },
+                                  icon: Icon(
+                                    expandAll == true ? Icons.drag_handle_sharp : Icons.expand_outlined,
+                                  )),
+                            ),
+                          ],
+                        ),
                       ),
 
                       // Search box
@@ -212,9 +226,9 @@ class _AppliedListV2State extends State<AppliedListV2> {
                                 )
                                 .toList(),
                             hint: appText.search,
-                            controller: searchTextController,
+                            controller: appliedListSearchTextController,
                             onSuggestionTap: (p0) {
-                              searchTextController.text = p0.searchKey;
+                              appliedListSearchTextController.text = p0.searchKey;
                               setState(() {});
                             },
                             onSearchTextChanged: (p0) {
@@ -223,14 +237,14 @@ class _AppliedListV2State extends State<AppliedListV2> {
                             },
                           ),
                           Visibility(
-                            visible: searchTextController.value.text.isNotEmpty,
+                            visible: appliedListSearchTextController.value.text.isNotEmpty,
                             child: Padding(
                               padding: const EdgeInsets.only(right: 2),
                               child: IconButton(
                                   visualDensity: VisualDensity.adaptivePlatformDensity,
-                                  onPressed: searchTextController.value.text.isNotEmpty
+                                  onPressed: appliedListSearchTextController.value.text.isNotEmpty
                                       ? () {
-                                          searchTextController.clear();
+                                          appliedListSearchTextController.clear();
                                           setState(() {});
                                         }
                                       : null,
@@ -247,7 +261,7 @@ class _AppliedListV2State extends State<AppliedListV2> {
           child: CustomScrollView(
             controller: scrollController,
             // physics: const RangeMaintainingScrollPhysics()  ,
-            slivers: filteredItems.map((e) => AppliedModV2Layout(item: e, searchString: searchTextController.text, expandAll: expandAll, scrollController: scrollController)).toList(),
+            slivers: filteredItems.map((e) => AppliedModV2Layout(item: e, searchString: appliedListSearchTextController.text, expandAll: expandAll, scrollController: scrollController)).toList(),
           ),
         )
       ],

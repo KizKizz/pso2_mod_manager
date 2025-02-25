@@ -92,7 +92,7 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
                                 )
                               ],
                             ),
-                            Icon(expanded ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down)
+                            Icon(expanded || widget.expandAll ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down)
                           ],
                         ))),
               ),

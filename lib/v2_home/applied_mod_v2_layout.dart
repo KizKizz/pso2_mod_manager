@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
-import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
+import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_grid_layout.dart';
+import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
+import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v2_home/homepage_v2.dart';
+import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
@@ -39,9 +43,21 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
       }
     } else {
       for (var mod in widget.item.mods.where((e) => e.applyStatus)) {
-        for (var submod in mod.submods.where((e) => e.applyStatus && (e.getModFileNames().where((i) => i.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty || e.submodName.toLowerCase().contains(widget.searchString.toLowerCase())))) {
+        for (var submod in mod.submods.where((e) =>
+            e.applyStatus &&
+            (e.getModFileNames().where((i) => i.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty || e.submodName.toLowerCase().contains(widget.searchString.toLowerCase())))) {
           displayingSubmodCards.add(SubmodCardLayout(item: widget.item, mod: mod, submod: submod, modSetName: ''));
         }
+      }
+    }
+
+    String firstAppliedModName = '';
+    int modIndex = widget.item.mods.indexWhere((e) => e.applyStatus);
+    if (modIndex != -1) {
+      Mod appliedMod = widget.item.mods[modIndex];
+      int submodIndex = appliedMod.submods.indexWhere((e) => e.applyStatus);
+      if (submodIndex != -1) {
+        firstAppliedModName = '${appliedMod.modName} > ${appliedMod.submods[submodIndex].submodName}';
       }
     }
 
@@ -54,40 +70,76 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                   modViewExpandState.value = true;
                   expanded ? expanded = false : expanded = true;
                 }),
-                child: Card(
-                    shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
-                    color: !status.isPinned
-                        ? Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))
-                        : Theme.of(context).colorScheme.secondaryContainer.withAlpha(uiBackgroundColorAlpha.watch(context)),
-                    margin: EdgeInsets.zero,
-                    elevation: 5,
-                    child: Padding(
-                        padding: const EdgeInsets.all(5),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              spacing: 5,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(widget.item.itemName, style: Theme.of(context).textTheme.titleMedium),
-                                // Row(
-                                //   spacing: 5,
-                                //   mainAxisSize: MainAxisSize.min,
-                                //   children: [
-                                    // HeaderInfoBox(
-                                    //     info: appText.dText(widget.item.submods.length > 1 ? appText.numVariants : appText.numVariant, widget.mod.submods.length.toString()), borderHighlight: false),
-                                    // HeaderInfoBox(
-                                    //   info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedSubmods().toString()),
-                                    //   borderHighlight: widget.mod.applyStatus,
-                                    // ),
-                                //   ],
-                                // )
-                              ],
-                            ),
-                            Icon(expanded ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down)
-                          ],
-                        ))),
+                child: SizedBox(
+                  height: 90,
+                  child: Card(
+                      shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                      color: !status.isPinned
+                          ? Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))
+                          : Theme.of(context).colorScheme.secondaryContainer.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                      margin: EdgeInsets.zero,
+                      elevation: 5,
+                      child: Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                spacing: 5,
+                                children: [
+                                  AspectRatio(aspectRatio: 1, child: ItemIconBox(item: widget.item)),
+                                  Column(
+                                    spacing: 5,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(widget.item.getDisplayName(), style: Theme.of(context).textTheme.labelLarge),
+                                      Row(
+                                        spacing: 5,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          InfoBox(
+                                            info: appText.dText(widget.item.mods.length > 1 ? appText.numMods : appText.numMod, widget.item.mods.length.toString()),
+                                            borderHighlight: false,
+                                          ),
+                                          InfoBox(
+                                            info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedMods().toString()),
+                                            borderHighlight: widget.item.applyStatus,
+                                          ),
+                                        ],
+                                      ),
+                                      Visibility(
+                                        visible: widget.item.getNumOfAppliedMods() == 1,
+                                        child: Expanded(
+                                          child: ModManTooltip(
+                                            message: firstAppliedModName,
+                                            child: OutlinedButton(
+                                                onPressed: () async {
+                                                  int modIndex = widget.item.mods.indexWhere((e) => e.applyStatus);
+                                                  if (modIndex != -1) {
+                                                    Mod appliedMod = widget.item.mods[modIndex];
+                                                    int submodIndex = appliedMod.submods.indexWhere((e) => e.applyStatus);
+                                                    if (submodIndex != -1) {
+                                                      await modToGameData(context, true, widget.item, appliedMod, appliedMod.submods[submodIndex]);
+                                                    } else {
+                                                      await modToGameData(context, false, widget.item, appliedMod, appliedMod.submods[submodIndex]);
+                                                    }
+                                                  }
+                                                },
+                                                child: Text(widget.item.applyStatus ? appText.restore : appText.apply)),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+                              Icon(expanded ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down)
+                            ],
+                          ))),
+                ),
               ),
           sliver: expanded || widget.expandAll
               ? SliverPadding(

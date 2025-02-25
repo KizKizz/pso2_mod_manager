@@ -46,7 +46,7 @@ class _MainModGridState extends State<MainModGrid> {
     List<Mod> filteredMods = [];
     if (searchTextController.value.text.isEmpty) {
       for (var cateType in masterModList) {
-        for (var cate in cateType.categories.where((e) => e.categoryName == selectedModDisplayCategory.value || selectedModDisplayCategory.value == appText.all)) {
+        for (var cate in cateType.categories.where((e) => e.categoryName == selectedModDisplayCategory.value || selectedModDisplayCategory.value == 'All')) {
           for (var item in cate.items) {
             filteredMods.addAll(item.mods);
           }
@@ -54,7 +54,7 @@ class _MainModGridState extends State<MainModGrid> {
       }
     } else {
       for (var cateType in masterModList) {
-        for (var cate in cateType.categories.where((e) => e.categoryName == selectedModDisplayCategory.value || selectedModDisplayCategory.value == appText.all)) {
+        for (var cate in cateType.categories.where((e) => e.categoryName == selectedModDisplayCategory.value || selectedModDisplayCategory.value == 'All')) {
           for (var item in cate.items) {
             filteredMods.addAll(item.mods.where((e) => e.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
           }
