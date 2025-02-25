@@ -3,6 +3,7 @@ import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
+import 'package:pso2_mod_manager/main_widgets/item_more_functions_menu.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
@@ -11,6 +12,7 @@ import 'package:pso2_mod_manager/v2_home/homepage_v2.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class CategoryItemLayout extends StatefulWidget {
   const CategoryItemLayout({super.key, required this.category, required this.searchString, required this.scrollController});
@@ -138,19 +140,43 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
                 spacing: 5,
                 children: [
                   AspectRatio(aspectRatio: 1, child: ItemIconBox(item: widget.item)),
+                  Expanded(
+                    child: Column(
+                      spacing: 5,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(child: Text(widget.item.getDisplayName(), style: Theme.of(context).textTheme.labelLarge)),
+                        InfoBox(
+                          info: appText.dText(widget.item.mods.length > 1 ? appText.numMods : appText.numMod, widget.item.mods.length.toString()),
+                          borderHighlight: false,
+                        ),
+                        InfoBox(
+                          info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedMods().toString()),
+                          borderHighlight: widget.item.applyStatus,
+                        ),
+                      ],
+                    ),
+                  ),
                   Column(
-                    spacing: 5,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 2.5,
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(child: Text(widget.item.getDisplayName(), style: Theme.of(context).textTheme.labelLarge)),
-                      InfoBox(
-                        info: appText.dText(widget.item.mods.length > 1 ? appText.numMods : appText.numMod, widget.item.mods.length.toString()),
-                        borderHighlight: false,
+                      SizedBox(
+                        height: 30,
+                        child: IconButton.outlined(
+                            visualDensity: VisualDensity.adaptivePlatformDensity,
+                            style: ButtonStyle(
+                                backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                                side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                            onPressed: () async {
+                              launchUrlString(widget.item.location);
+                            },
+                            icon: const Icon(
+                              Icons.folder_open,
+                            )),
                       ),
-                      InfoBox(
-                        info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedMods().toString()),
-                        borderHighlight: widget.item.applyStatus,
-                      ),
+                      ItemMoreFunctionsMenu(item: widget.item, isInsidePopup: false,)
                     ],
                   )
                 ],

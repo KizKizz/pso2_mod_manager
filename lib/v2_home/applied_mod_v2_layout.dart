@@ -30,9 +30,9 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
 
   @override
   Widget build(BuildContext context) {
-    if (!modViewExpandState.watch(context)) {
-      expanded = false;
-    }
+    // if (!modViewExpandState.watch(context)) {
+    //   expanded = false;
+    // }
     // prep data
     List<SubmodCardLayout> displayingSubmodCards = [];
     if (widget.searchString.isEmpty) {
@@ -110,6 +110,23 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                                           ),
                                         ],
                                       ),
+                                      Expanded(
+                                          child: ModManTooltip(
+                                            message: firstAppliedModName,
+                                            child: OutlinedButton(
+                                                onPressed: () async {
+                                                  int modIndex = widget.item.mods.indexWhere((e) => e.applyStatus);
+                                                  if (modIndex != -1) {
+                                                    Mod appliedMod = widget.item.mods[modIndex];
+                                                    int submodIndex = appliedMod.submods.indexWhere((e) => e.applyStatus);
+                                                    if (submodIndex != -1) {
+                                                      await modToGameData(context, false, widget.item, appliedMod, appliedMod.submods[submodIndex]);
+                                                    }
+                                                  }
+                                                },
+                                                child: Text(appText.details)),
+                                          ),
+                                        ),
                                       Visibility(
                                         visible: widget.item.getNumOfAppliedMods() == 1,
                                         child: Expanded(
@@ -122,13 +139,11 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                                                     Mod appliedMod = widget.item.mods[modIndex];
                                                     int submodIndex = appliedMod.submods.indexWhere((e) => e.applyStatus);
                                                     if (submodIndex != -1) {
-                                                      await modToGameData(context, true, widget.item, appliedMod, appliedMod.submods[submodIndex]);
-                                                    } else {
                                                       await modToGameData(context, false, widget.item, appliedMod, appliedMod.submods[submodIndex]);
                                                     }
                                                   }
                                                 },
-                                                child: Text(widget.item.applyStatus ? appText.restore : appText.apply)),
+                                                child: Text(appText.restore)),
                                           ),
                                         ),
                                       )
@@ -136,7 +151,7 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                                   )
                                 ],
                               ),
-                              Icon(expanded ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down)
+                              Icon(expanded || widget.expandAll ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down)
                             ],
                           ))),
                 ),

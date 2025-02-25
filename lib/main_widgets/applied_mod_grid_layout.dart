@@ -3,7 +3,7 @@ import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
-import 'package:pso2_mod_manager/main_widgets/more_functions_menu.dart';
+import 'package:pso2_mod_manager/main_widgets/submod_more_functions_menu.dart';
 import 'package:pso2_mod_manager/main_widgets/quick_swap_menu.dart';
 import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
@@ -186,7 +186,7 @@ class _ModCardLayoutState extends State<ModCardLayout> {
               QuickSwapMenu(item: widget.item, mod: widget.mod, submod: widget.submod),
 
               // Function menu
-              MoreFunctionsMenu(
+              SubmodMoreFunctionsMenu(
                 item: widget.item,
                 mod: widget.mod,
                 submod: widget.submod,

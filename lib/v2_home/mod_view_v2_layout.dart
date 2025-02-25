@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
+import 'package:pso2_mod_manager/main_widgets/mod_more_functions_menu.dart';
+import 'package:pso2_mod_manager/main_widgets/popup_menu_functions.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_grid_layout.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
@@ -92,7 +95,25 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
                                 )
                               ],
                             ),
-                            Icon(expanded || widget.expandAll ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down)
+                            Row(
+                              spacing: 2.5,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                ModMoreFunctionsMenu(
+                                  item: widget.item,
+                                  mod: widget.mod,
+                                  onDelete: () async {
+                                    await modDelete(context, widget.item, widget.mod);
+                                    modPopupStatus.value = '${widget.mod.modName} deleted';
+                                    widget.item.isNew = widget.item.getModsIsNewState();
+                                    if (widget.item.mods.isEmpty) {
+                                      mainGridStatus.value = '"${widget.mod.modName}" in "${widget.item.getDisplayName()}" is empty and removed';
+                                    }
+                                  },
+                                ),
+                                Icon(expanded || widget.expandAll ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down)
+                              ],
+                            )
                           ],
                         ))),
               ),

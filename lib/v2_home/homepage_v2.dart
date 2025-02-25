@@ -33,12 +33,12 @@ class _HomepageV2State extends State<HomepageV2> {
         // controller: _controller,
         // pushDividers: _pushDividers,
         initialAreas: [
-          Area(flex: 2, builder: (context, area) => const ItemListV2()),
-          Area(flex: 2, builder: (context, area) => ModViewListV2(item: selectedItemV2.watch(context))),
-          Area(flex: 3, builder: (context, area) => const AppliedListV2()),
+          Area(flex: 1, builder: (context, area) => const ItemListV2()),
+          Area(flex: 1, builder: (context, area) => ModViewListV2(item: selectedItemV2.watch(context))),
+          Area(flex: 1, builder: (context, area) => const AppliedListV2()),
         ]);
     return MultiSplitViewTheme(
-        data: MultiSplitViewThemeData(dividerPainter: DividerPainters.grooved2(count: 49, highlightedCount: 99, highlightedColor: Theme.of(context).colorScheme.primaryContainer)),
+        data: MultiSplitViewThemeData(dividerPainter: DividerPainters.grooved2(count: 49, highlightedCount: 99, highlightedColor: Theme.of(context).colorScheme.primary)),
         child: multiSplitView);
   }
 }

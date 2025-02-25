@@ -110,65 +110,60 @@ class _AppliedListV2State extends State<AppliedListV2> {
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ),
-                      Expanded(
-                        child: Row(
-                          spacing: 2.5,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            AppliedModCategorySelectButtons(categories: categories, scrollController: scrollController),
-                            AppliedListSortingButton(scrollController: scrollController),
-                          ],
-                        ),
+                      Row(
+                        spacing: 2.5,
+                        children: [
+                          Flexible(child: AppliedModCategorySelectButtons(categories: categories, scrollController: scrollController)),
+                          Flexible(child: AppliedListSortingButton(scrollController: scrollController)),
+                        ],
                       ),
-                      Expanded(
-                        child: Row(
-                          spacing: 2.5,
-                          children: [
-                            Expanded(
-                                flex: 2,
-                                child: SizedBox(
-                                  height: 30,
-                                  child: OutlinedButton(
-                                      style: ButtonStyle(
-                                          backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                                          side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                                      onPressed: numOfAppliedMods > 0 ? () {} : null,
-                                      onLongPress: numOfAppliedMods > 0
-                                          ? () async {
-                                              List<Item> appliedItems = await appliedModsFetch();
-                                              for (var item in appliedItems) {
-                                                for (var mod in item.mods.where((e) => e.applyStatus)) {
-                                                  for (var submod in mod.submods.where((e) => e.applyStatus)) {
-                                                    // ignore: use_build_context_synchronously
-                                                    await modToGameData(context, false, item, mod, submod);
-                                                  }
+                      Row(
+                        spacing: 2.5,
+                        children: [
+                          Expanded(
+                              flex: 2,
+                              child: SizedBox(
+                                height: 30,
+                                child: OutlinedButton(
+                                    style: ButtonStyle(
+                                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                                        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                                    onPressed: numOfAppliedMods > 0 ? () {} : null,
+                                    onLongPress: numOfAppliedMods > 0
+                                        ? () async {
+                                            List<Item> appliedItems = await appliedModsFetch();
+                                            for (var item in appliedItems) {
+                                              for (var mod in item.mods.where((e) => e.applyStatus)) {
+                                                for (var submod in mod.submods.where((e) => e.applyStatus)) {
+                                                  // ignore: use_build_context_synchronously
+                                                  await modToGameData(context, false, item, mod, submod);
                                                 }
                                               }
                                             }
-                                          : null,
-                                      child: Text(
-                                        appText.dText(numOfAppliedMods > 1 ? appText.holdToRestoreNumAppliedMods : appText.holdToRestoreNumAppliedMod, numOfAppliedMods.toString()),
-                                        textAlign: TextAlign.center,
-                                      )),
+                                          }
+                                        : null,
+                                    child: Text(
+                                      appText.dText(numOfAppliedMods > 1 ? appText.holdToRestoreNumAppliedMods : appText.holdToRestoreNumAppliedMod, numOfAppliedMods.toString()),
+                                      textAlign: TextAlign.center,
+                                    )),
+                              )),
+                          // col-ex
+                          SizedBox(
+                            height: 30,
+                            child: IconButton.outlined(
+                                visualDensity: VisualDensity.adaptivePlatformDensity,
+                                style: ButtonStyle(
+                                    backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                                    side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                                onPressed: () async {
+                                  expandAll ? expandAll = false : expandAll = true;
+                                  setState(() {});
+                                },
+                                icon: Icon(
+                                  expandAll == true ? Icons.drag_handle_sharp : Icons.expand_outlined,
                                 )),
-                            // col-ex
-                            SizedBox(
-                              height: 30,
-                              child: IconButton.outlined(
-                                  visualDensity: VisualDensity.adaptivePlatformDensity,
-                                  style: ButtonStyle(
-                                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                                      side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                                  onPressed: () async {
-                                    expandAll ? expandAll = false : expandAll = true;
-                                    setState(() {});
-                                  },
-                                  icon: Icon(
-                                    expandAll == true ? Icons.drag_handle_sharp : Icons.expand_outlined,
-                                  )),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
 
                       // Search box

@@ -17,8 +17,8 @@ import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-class MoreFunctionsMenu extends StatefulWidget {
-  const MoreFunctionsMenu({super.key, required this.item, required this.mod, required this.submod, required this.refresh});
+class SubmodMoreFunctionsMenu extends StatefulWidget {
+  const SubmodMoreFunctionsMenu({super.key, required this.item, required this.mod, required this.submod, required this.refresh});
 
   final Item item;
   final Mod mod;
@@ -26,10 +26,10 @@ class MoreFunctionsMenu extends StatefulWidget {
   final VoidCallback refresh;
 
   @override
-  State<MoreFunctionsMenu> createState() => _MoreFunctionsMenuState();
+  State<SubmodMoreFunctionsMenu> createState() => _SubmodMoreFunctionsMenuState();
 }
 
-class _MoreFunctionsMenuState extends State<MoreFunctionsMenu> {
+class _SubmodMoreFunctionsMenuState extends State<SubmodMoreFunctionsMenu> {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
