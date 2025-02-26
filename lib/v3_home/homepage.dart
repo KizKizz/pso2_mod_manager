@@ -4,6 +4,7 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/first_time_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v2_home/homepage_v2.dart';
 import 'package:pso2_mod_manager/v3_functions/json_backup.dart';
 import 'package:pso2_mod_manager/v3_home/main_applied_mod_grid.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_aqm_inject_grid.dart';
@@ -32,6 +33,16 @@ List<Widget> homepageWidgets = [
   const MainVitalGaugeGrid(),
   const MainLineStrikeGrid()
 ];
+List<Widget> homepageV2Widgets = [
+  const HomepageV2(),
+  const MainModGrid(),
+  const MainModSetGrid(),
+  // const MainAppliedModGrid(),
+  const MainItemSwapGrid(),
+  const MainItemAqmInjectGrid(),
+  const MainVitalGaugeGrid(),
+  const MainLineStrikeGrid()
+];
 List<Widget> homepageFooterWidgets = [const ModAdd(), const Settings()];
 
 class Homepage extends StatefulWidget {
@@ -47,7 +58,7 @@ class _HomepageState extends State<Homepage> {
     footerSideMenuController.changePage(-1);
     sideMenuAlwaysExpanded ? sideBarCollapse.value = false : sideBarCollapse.value = true;
     mainSideMenuController.changePage(defaultHomepageIndex);
-    homepageCurrentWidget.value = homepageWidgets[defaultHomepageIndex];
+    homepageCurrentWidget.value = v2Homepage.value ? homepageV2Widgets.first : homepageWidgets[defaultHomepageIndex];
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       appLoadingFinished.value = true;
@@ -76,11 +87,23 @@ class _HomepageState extends State<Homepage> {
       const Icon(Icons.calendar_view_day_rounded),
       const Icon(Icons.view_carousel_outlined)
     ];
+    List<String> homepageV2WidgetNames = [appText.itemList, appText.modList, appText.modSets, appText.itemSwap, appText.aqmInject, appText.vitalGauge, appText.lineStrike];
+    List<Icon> homepageV2WidgetIcons = [
+      const Icon(Icons.list_alt),
+      const Icon(Icons.grid_view),
+      const Icon(Icons.library_books_outlined),
+      // const Icon(Icons.turned_in),
+      const Icon(Icons.swap_horizontal_circle_outlined),
+      const Icon(Icons.auto_fix_high),
+      const Icon(Icons.calendar_view_day_rounded),
+      const Icon(Icons.view_carousel_outlined)
+    ];
     List<String> homepageFooterWidgetNames = [appText.addMods, appText.settings];
     List<Icon> homepageFooterWidgetIcon = [
       const Icon(Icons.add_circle_outline_sharp),
       const Icon(Icons.settings),
     ];
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Row(
@@ -141,18 +164,31 @@ class _HomepageState extends State<Homepage> {
                           ),
                           controller: mainSideMenuController,
                           title: const Divider(thickness: 1, height: 5, indent: 5, endIndent: 5),
-                          items: [
-                            for (int i = 0; i < homepageWidgets.length; i++)
-                              SideMenuItem(
-                                icon: homepageWidgetIcons[i],
-                                title: homepageWidgetNames[i],
-                                onTap: (index, sideMenuController) {
-                                  homepageCurrentWidget.value = homepageWidgets[i];
-                                  footerSideMenuController.changePage(-1);
-                                  mainSideMenuController.changePage(index);
-                                },
-                              ),
-                          ],
+                          items: v2Homepage.watch(context)
+                              ? [
+                                  for (int i = 0; i < homepageV2Widgets.length; i++)
+                                    SideMenuItem(
+                                      icon: homepageV2WidgetIcons[i],
+                                      title: homepageV2WidgetNames[i],
+                                      onTap: (index, sideMenuController) {
+                                        homepageCurrentWidget.value = homepageV2Widgets[i];
+                                        footerSideMenuController.changePage(-1);
+                                        mainSideMenuController.changePage(index);
+                                      },
+                                    ),
+                                ]
+                              : [
+                                  for (int i = 0; i < homepageWidgets.length; i++)
+                                    SideMenuItem(
+                                      icon: homepageWidgetIcons[i],
+                                      title: homepageWidgetNames[i],
+                                      onTap: (index, sideMenuController) {
+                                        homepageCurrentWidget.value = homepageWidgets[i];
+                                        footerSideMenuController.changePage(-1);
+                                        mainSideMenuController.changePage(index);
+                                      },
+                                    ),
+                                ],
                         ),
                       ),
 

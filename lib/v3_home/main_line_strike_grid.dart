@@ -38,7 +38,7 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
   void initState() {
     super.initState();
 
-    Future.delayed(const Duration(milliseconds: 100), () {
+    Future.delayed(const Duration(milliseconds: 50), () {
       fadeInOpacity = 1;
       if (mounted) setState(() {});
     });
@@ -60,7 +60,7 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
     customImageFetch();
     return AnimatedOpacity(
       opacity: fadeInOpacity,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 100),
       child: Column(
         spacing: 5,
         children: [
@@ -70,7 +70,7 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
             children: [
               Expanded(
                   child: SizedBox(
-                height: 40,
+                height: 30,
                 child: OutlinedButton(
                     style: ButtonStyle(
                         backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
@@ -92,7 +92,7 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
               )),
               Expanded(
                   child: SizedBox(
-                height: 40,
+                height: 30,
                 child: OutlinedButton(
                     style: ButtonStyle(
                         backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
@@ -108,7 +108,7 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
               )),
               Expanded(
                   child: SizedBox(
-                height: 40,
+                height: 30,
                 child: OutlinedButton(
                     style: ButtonStyle(
                         backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
@@ -127,7 +127,7 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
               )),
               Expanded(
                   child: SizedBox(
-                height: 40,
+                height: 30,
                 child: OutlinedButton(
                     style: ButtonStyle(
                         backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),

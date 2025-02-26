@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
+import 'package:pso2_mod_manager/main_widgets/submod_more_functions_menu.dart';
+import 'package:pso2_mod_manager/main_widgets/quick_swap_menu.dart';
 import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
@@ -13,8 +16,6 @@ import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:signals/signals_flutter.dart';
-import 'package:sliver_sticky_collapsable_panel/utils/sliver_sticky_collapsable_panel_controller.dart';
-import 'package:sliver_sticky_collapsable_panel/widgets/sliver_sticky_collapsable_panel.dart';
 
 class AppliedModGridLayout extends StatefulWidget {
   const AppliedModGridLayout({super.key, required this.category, required this.searchString, required this.scrollController});
@@ -72,12 +73,9 @@ class _AppliedModGridLayoutState extends State<AppliedModGridLayout> {
 
     return SliverPadding(
       padding: const EdgeInsets.only(bottom: 2.5),
-      sliver: SliverStickyCollapsablePanel(
-          scrollController: widget.scrollController,
-          controller: StickyCollapsablePanelController(),
-          disableCollapsable: true,
-          iOSStyleSticky: true,
-          headerBuilder: (context, status) => InkWell(
+      sliver: SliverStickyHeader.builder(
+        sticky: widget.category.visible ? true : false,
+          builder: (context, status) => InkWell(
                 onTap: () {
                   widget.category.visible ? widget.category.visible = false : widget.category.visible = true;
                   widget.category.visible ? mainGridStatus.value = '${widget.category.categoryName} is collapsed' : mainGridStatus.value = '${widget.category.categoryName} is expanded';
@@ -109,7 +107,7 @@ class _AppliedModGridLayoutState extends State<AppliedModGridLayout> {
                           ],
                         ))),
               ),
-          sliverPanel: widget.category.visible
+          sliver: widget.category.visible
               ? SliverPadding(
                   padding: const EdgeInsets.symmetric(vertical: 2.5),
                   sliver: SliverGrid.builder(
@@ -184,6 +182,19 @@ class _ModCardLayoutState extends State<ModCardLayout> {
                         await modToGameData(context, false, widget.item, widget.mod, widget.submod);
                       },
                       child: Text(appText.restore))),
+              // Quick swap Menu
+              QuickSwapMenu(item: widget.item, mod: widget.mod, submod: widget.submod),
+
+              // Function menu
+              SubmodMoreFunctionsMenu(
+                item: widget.item,
+                mod: widget.mod,
+                isInPopup: true,
+                submod: widget.submod,
+                refresh: () {
+                  setState(() {});
+                },
+              )
             ],
           )
         ],

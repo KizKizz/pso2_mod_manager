@@ -2,8 +2,8 @@ import 'package:choice/choice.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/main_widgets/choice_anchor_layout.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
-import 'package:pso2_mod_manager/main_widgets/category_select_buttons.dart';
 import 'package:signals/signals_flutter.dart';
 
 Signal<String> selectedAqmInjectCategory = Signal<String>(aqmInjectCategoryDirs[0]);
@@ -24,7 +24,7 @@ class _AqmInjectCateSelectButtonState extends State<AqmInjectCateSelectButton> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 40,
+      height: 30,
       child: PromptedChoice<String>.single(
           title: appText.view,
           value: appText.categoryName(selectedAqmInjectCategory.value),

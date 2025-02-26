@@ -37,7 +37,7 @@ class _MainItemAqmInjectGridState extends State<MainItemAqmInjectGrid> {
   void initState() {
     super.initState();
 
-    Future.delayed(const Duration(milliseconds: 100), () {
+    Future.delayed(const Duration(milliseconds: 50), () {
       fadeInOpacity = 1;
       if (mounted) setState(() {});
     });
@@ -64,7 +64,7 @@ class _MainItemAqmInjectGridState extends State<MainItemAqmInjectGrid> {
 
     return AnimatedOpacity(
       opacity: fadeInOpacity,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 100),
       child: Column(
         spacing: 5,
         children: [
@@ -74,7 +74,7 @@ class _MainItemAqmInjectGridState extends State<MainItemAqmInjectGrid> {
             children: [
               Expanded(
                   child: SizedBox(
-                height: 40,
+                height: 30,
                 child: OutlinedButton(
                     style: ButtonStyle(
                         backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),

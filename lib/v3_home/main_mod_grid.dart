@@ -27,7 +27,7 @@ class _MainModGridState extends State<MainModGrid> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 100), () {
+    Future.delayed(const Duration(milliseconds: 50), () {
       fadeInOpacity = 1;
       if (mounted) setState(() {});
     });
@@ -46,7 +46,7 @@ class _MainModGridState extends State<MainModGrid> {
     List<Mod> filteredMods = [];
     if (searchTextController.value.text.isEmpty) {
       for (var cateType in masterModList) {
-        for (var cate in cateType.categories.where((e) => e.categoryName == selectedModDisplayCategory.value || selectedModDisplayCategory.value == appText.all)) {
+        for (var cate in cateType.categories.where((e) => e.categoryName == selectedModDisplayCategory.value || selectedModDisplayCategory.value == 'All')) {
           for (var item in cate.items) {
             filteredMods.addAll(item.mods);
           }
@@ -54,7 +54,7 @@ class _MainModGridState extends State<MainModGrid> {
       }
     } else {
       for (var cateType in masterModList) {
-        for (var cate in cateType.categories.where((e) => e.categoryName == selectedModDisplayCategory.value || selectedModDisplayCategory.value == appText.all)) {
+        for (var cate in cateType.categories.where((e) => e.categoryName == selectedModDisplayCategory.value || selectedModDisplayCategory.value == 'All')) {
           for (var item in cate.items) {
             filteredMods.addAll(item.mods.where((e) => e.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
           }
@@ -103,7 +103,7 @@ class _MainModGridState extends State<MainModGrid> {
 
     return AnimatedOpacity(
       opacity: fadeInOpacity,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 100),
       child: Column(
         spacing: 5,
         children: [
@@ -114,7 +114,7 @@ class _MainModGridState extends State<MainModGrid> {
               Expanded(
                 flex: 4,
                 child: SizedBox(
-                  height: 40,
+                  height: 30,
                   child: Stack(alignment: AlignmentDirectional.centerEnd, children: [
                     SearchField<Mod>(
                       itemHeight: 90,
@@ -122,7 +122,7 @@ class _MainModGridState extends State<MainModGrid> {
                           filled: true,
                           fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
                           isDense: true,
-                          contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 30),
+                          contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                           cursorHeight: 15,
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
                           cursorColor: Theme.of(context).colorScheme.inverseSurface),
@@ -185,50 +185,49 @@ class _MainModGridState extends State<MainModGrid> {
                     Visibility(
                       visible: searchTextController.value.text.isNotEmpty,
                       child: Padding(
-                        padding: const EdgeInsets.only(right: 4),
-                        child: ElevatedButton(
+                        padding: const EdgeInsets.only(right: 2),
+                        child: IconButton(
+                            visualDensity: VisualDensity.adaptivePlatformDensity,
                             onPressed: searchTextController.value.text.isNotEmpty
                                 ? () {
                                     searchTextController.clear();
                                     setState(() {});
                                   }
                                 : null,
-                            child: const Icon(Icons.close)),
+                            icon: const Icon(Icons.close)),
                       ),
                     )
                   ]),
                 ),
               ),
-              Expanded(
-                  flex: 2,
-                  child: SizedBox(
-                    height: 40,
-                    child: OutlinedButton(
-                        style: ButtonStyle(
-                            backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                            side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                        onPressed: () async {
-                          if (categories.indexWhere((e) => e.visible) != -1) {
-                            for (var cate in categories) {
-                              cate.visible = false;
-                            }
-                          } else {
-                            for (var cate in categories) {
-                              cate.visible = true;
-                            }
-                          }
-                          setState(() {});
-                          saveMasterModListToJson();
-                        },
-                        child: Text(
-                          categories.indexWhere((e) => e.visible) != -1 ? appText.collapseAll : appText.expandAll,
-                          textAlign: TextAlign.center,
-                        )),
-                  )),
               SizedBox(width: 250, child: SortingButtons(scrollController: controller)),
               SizedBox(
                 width: 200,
                 child: CateModCategorySelectButtons(categories: categories, scrollController: controller),
+              ),
+              SizedBox(
+                height: 30,
+                child: IconButton.outlined(
+                    visualDensity: VisualDensity.adaptivePlatformDensity,
+                    style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                    onPressed: () async {
+                      if (categories.indexWhere((e) => e.visible) != -1) {
+                        for (var cate in categories) {
+                          cate.visible = false;
+                        }
+                      } else {
+                        for (var cate in categories) {
+                          cate.visible = true;
+                        }
+                      }
+                      setState(() {});
+                      saveMasterModListToJson();
+                    },
+                    icon: Icon(
+                      categories.indexWhere((e) => e.visible) != -1 ? Icons.drag_handle_sharp : Icons.expand_outlined,
+                    )),
               ),
             ],
           ),

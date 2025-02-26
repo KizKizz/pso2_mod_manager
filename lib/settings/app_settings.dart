@@ -99,13 +99,16 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                           taps: appLocales.map((e) => e.language).toList(),
                           initialIndex: appLocales.indexWhere((e) => e.isActive),
                           width: constraints.maxWidth,
-                          onChange: (currentIndex, targetIndex) {
+                          onChange: (currentIndex, targetIndex) async {
                             for (var e in appLocales) {
                               e.isActive = false;
                             }
                             appLocales[targetIndex].isActive = true;
                             appLocales[targetIndex].saveSettings(appLocales);
                             appText = AppText.fromJson(jsonDecode(File(appLocales[targetIndex].translationFilePath).readAsStringSync()));
+                            final prefs = await SharedPreferences.getInstance();
+                            activeUILanguage = appLocales[targetIndex].language;
+                            prefs.setString('activeUILanguage', activeUILanguage);
                             settingChangeStatus.value = 'Changed UI langage to ${appLocales[targetIndex].language}';
                           },
                         ),
@@ -121,17 +124,16 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             prefs.setString('itemNameLanguage', itemNameLanguage.value);
                           },
                         ),
-                        // Side menu
-                        SettingsHeader(icon: Icons.view_sidebar, text: appText.sideBar),
+                        // v2 Homepage
+                        SettingsHeader(icon: Icons.view_sidebar, text: appText.homepageStyle),
                         AnimatedHorizontalToggleLayout(
-                          taps: [appText.minimal, appText.alwaysExpanded],
-                          initialIndex: sideMenuAlwaysExpanded ? 1 : 0,
+                          taps: [appText.legacy, appText.xnew],
+                          initialIndex: v2Homepage.value ? 0 : 1,
                           width: constraints.maxWidth,
                           onChange: (currentIndex, targetIndex) async {
                             final prefs = await SharedPreferences.getInstance();
-                            targetIndex == 1 ? sideMenuAlwaysExpanded = true : sideMenuAlwaysExpanded = false;
-                            sideMenuAlwaysExpanded ? sideBarCollapse.value = false : sideBarCollapse.value = true;
-                            prefs.setBool('sideMenuAlwaysExpanded', sideMenuAlwaysExpanded);
+                            targetIndex == 0 ? v2Homepage.value = true : v2Homepage.value = false;
+                            prefs.setBool('v2Homepage', v2Homepage.value);
                           },
                         ),
                         // Default Homepage
@@ -146,8 +148,21 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             prefs.setInt('defaultHomepageIndex', defaultHomepageIndex);
                           },
                         ),
+                        // Side menu
+                        SettingsHeader(icon: Icons.view_sidebar, text: appText.sideBar),
+                        AnimatedHorizontalToggleLayout(
+                          taps: [appText.minimal, appText.alwaysExpanded],
+                          initialIndex: sideMenuAlwaysExpanded ? 1 : 0,
+                          width: constraints.maxWidth,
+                          onChange: (currentIndex, targetIndex) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            targetIndex == 1 ? sideMenuAlwaysExpanded = true : sideMenuAlwaysExpanded = false;
+                            sideMenuAlwaysExpanded ? sideBarCollapse.value = false : sideBarCollapse.value = true;
+                            prefs.setBool('sideMenuAlwaysExpanded', sideMenuAlwaysExpanded);
+                          },
+                        ),
                         // Item icon slides
-                        SettingsHeader(icon: Icons.slow_motion_video , text: appText.itemIconSlides),
+                        SettingsHeader(icon: Icons.slow_motion_video, text: appText.itemIconSlides),
                         AnimatedHorizontalToggleLayout(
                           taps: [appText.on, appText.off],
                           initialIndex: itemIconSlides.watch(context) ? 0 : 1,
@@ -186,7 +201,9 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                           spacing: 5,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const SizedBox(width: 5,),
+                            const SizedBox(
+                              width: 5,
+                            ),
                             Text(appText.startAfter, style: Theme.of(context).textTheme.labelMedium),
                             Expanded(
                               child: SliderTheme(

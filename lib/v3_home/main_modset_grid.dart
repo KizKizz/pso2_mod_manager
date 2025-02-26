@@ -26,7 +26,7 @@ class _MainModSetGridState extends State<MainModSetGrid> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 100), () {
+    Future.delayed(const Duration(milliseconds: 50), () {
       fadeInOpacity = 1;
       if (mounted) setState(() {});
     });
@@ -59,7 +59,7 @@ class _MainModSetGridState extends State<MainModSetGrid> {
 
     return AnimatedOpacity(
       opacity: fadeInOpacity,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 100),
       child: Column(
         spacing: 5,
         children: [
@@ -70,7 +70,7 @@ class _MainModSetGridState extends State<MainModSetGrid> {
               Expanded(
                   flex: 1,
                   child: SizedBox(
-                    height: 40,
+                    height: 30,
                     child: OutlinedButton(
                         style: ButtonStyle(
                             backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
@@ -81,43 +81,46 @@ class _MainModSetGridState extends State<MainModSetGrid> {
                         },
                         child: Text(appText.addNewSet)),
                   )),
-              Expanded(
-                  flex: 1,
-                  child: SizedBox(
-                    height: 40,
-                    child: OutlinedButton(
-                        style: ButtonStyle(
-                            backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                            side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                        onPressed: () async {
-                          if (displayingModSets.indexWhere((e) => e.expanded) != -1) {
-                            for (var set in displayingModSets.where((e) => e.expanded)) {
-                              set.expanded = false;
-                            }
-                          } else {
-                            for (var set in displayingModSets.where((e) => !e.expanded)) {
-                              set.expanded = true;
-                            }
-                          }
-                          setState(() {});
-                          saveMasterModSetListToJson();
-                        },
-                        child: Text(
-                          displayingModSets.indexWhere((e) => e.expanded) != -1 ? appText.collapseAll : appText.expandAll,
-                          textAlign: TextAlign.center,
-                        )),
-                  )),
               SizedBox(width: 250, child: ModSetSortingButton(scrollController: controller)),
               SizedBox(
                 width: 200,
                 child: ModSetSelectButtons(setNames: masterModSetList.map((e) => e.setName).toList(), scrollController: controller),
+              ),
+              SizedBox(
+                height: 30,
+                child: IconButton.outlined(
+                    visualDensity: VisualDensity.adaptivePlatformDensity,
+                    style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                    onPressed: () async {
+                      if (displayingModSets.indexWhere((e) => e.expanded) != -1) {
+                        for (var set in displayingModSets.where((e) => e.expanded)) {
+                          set.expanded = false;
+                        }
+                      } else {
+                        for (var set in displayingModSets.where((e) => !e.expanded)) {
+                          set.expanded = true;
+                        }
+                      }
+                      setState(() {});
+                      saveMasterModSetListToJson();
+                    },
+                    icon: Icon(
+                      displayingModSets.indexWhere((e) => e.expanded) != -1 ? Icons.drag_handle_sharp : Icons.expand_outlined,
+                    )),
               ),
             ],
           ),
           Expanded(
               child: CustomScrollView(
             controller: controller,
-            slivers: displayingModSets.map((e) => ModSetGridLayout(modSet: e, scrollController: controller,)).toList(),
+            slivers: displayingModSets
+                .map((e) => ModSetGridLayout(
+                      modSet: e,
+                      scrollController: controller,
+                    ))
+                .toList(),
           ))
         ],
       ),

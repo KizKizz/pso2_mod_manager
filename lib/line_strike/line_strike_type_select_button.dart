@@ -2,7 +2,7 @@ import 'package:choice/choice.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_image_crop_popup.dart';
-import 'package:pso2_mod_manager/main_widgets/category_select_buttons.dart';
+import 'package:pso2_mod_manager/main_widgets/choice_anchor_layout.dart';
 import 'package:signals/signals_flutter.dart';
 
 Signal<LineStrikeItemType> selectedLineStrikeType = Signal<LineStrikeItemType>(LineStrikeItemType.card);
@@ -22,7 +22,7 @@ class _LineStrikeTypeSelectButtonState extends State<LineStrikeTypeSelectButton>
   Widget build(BuildContext context) {
     final typeList = [appText.cards, appText.boards, appText.sleeves];
     return SizedBox(
-      height: 40,
+      height: 30,
       child: PromptedChoice<String>.single(
           title: appText.view,
           value: selectedLineStrikeType.value == LineStrikeItemType.card

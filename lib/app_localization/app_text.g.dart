@@ -130,6 +130,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..continues = json['continues'] as String
   ..imported = json['imported'] as String
   ..filters = json['filters'] as String
+  ..details = json['details'] as String
   ..patchNotes = json['patchNotes'] as String
   ..appUpdate = json['appUpdate'] as String
   ..tryAgain = json['tryAgain'] as String
@@ -247,6 +248,9 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..holdToRestoreNumAppliedMod = json['holdToRestoreNumAppliedMod'] as String
   ..injectedAQMFile = json['injectedAQMFile'] as String
   ..addingMods = json['addingMods'] as String
+  ..modHasBeenAddedToSet = json['modHasBeenAddedToSet'] as String
+  ..modHasBeenRemovedFromSet = json['modHasBeenRemovedFromSet'] as String
+  ..addToSets = json['addToSets'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -374,6 +378,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..jpGameStartInfo = json['jpGameStartInfo'] as String
   ..filterRemoveInfo = json['filterRemoveInfo'] as String
   ..firstTimeInfo = json['firstTimeInfo'] as String
+  ..emptyModViewInfo = json['emptyModViewInfo'] as String
   ..appSettings = json['appSettings'] as String
   ..uiLanguage = json['uiLanguage'] as String
   ..itemNameLanguage = json['itemNameLanguage'] as String
@@ -431,7 +436,9 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..hideUIWhenAppUnfocused = json['hideUIWhenAppUnfocused'] as String
   ..interval = json['interval'] as String
   ..startAfter = json['startAfter'] as String
-  ..tapToReturn = json['tapToReturn'] as String;
+  ..tapToReturn = json['tapToReturn'] as String
+  ..homepageStyle = json['homepageStyle'] as String
+  ..legacy = json['legacy'] as String;
 
 Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'dfCastParts': instance.dfCastParts,
@@ -557,6 +564,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'continues': instance.continues,
       'imported': instance.imported,
       'filters': instance.filters,
+      'details': instance.details,
       'patchNotes': instance.patchNotes,
       'appUpdate': instance.appUpdate,
       'tryAgain': instance.tryAgain,
@@ -671,6 +679,9 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'holdToRestoreNumAppliedMod': instance.holdToRestoreNumAppliedMod,
       'injectedAQMFile': instance.injectedAQMFile,
       'addingMods': instance.addingMods,
+      'modHasBeenAddedToSet': instance.modHasBeenAddedToSet,
+      'modHasBeenRemovedFromSet': instance.modHasBeenRemovedFromSet,
+      'addToSets': instance.addToSets,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,
@@ -792,6 +803,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'jpGameStartInfo': instance.jpGameStartInfo,
       'filterRemoveInfo': instance.filterRemoveInfo,
       'firstTimeInfo': instance.firstTimeInfo,
+      'emptyModViewInfo': instance.emptyModViewInfo,
       'appSettings': instance.appSettings,
       'uiLanguage': instance.uiLanguage,
       'itemNameLanguage': instance.itemNameLanguage,
@@ -849,4 +861,6 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'interval': instance.interval,
       'startAfter': instance.startAfter,
       'tapToReturn': instance.tapToReturn,
+      'homepageStyle': instance.homepageStyle,
+      'legacy': instance.legacy,
     };

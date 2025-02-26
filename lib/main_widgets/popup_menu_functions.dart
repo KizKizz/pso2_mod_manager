@@ -12,6 +12,7 @@ import 'package:pso2_mod_manager/mod_sets/mod_set_functions.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_to_set_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/delete_confirm_popup.dart';
+import 'package:pso2_mod_manager/v3_widgets/notifications.dart';
 import 'package:pso2_mod_manager/v3_widgets/rename_popup.dart';
 import 'package:path/path.dart' as p;
 import 'package:io/io.dart' as io;
@@ -242,12 +243,14 @@ Future<void> submodAddToSet(context, Item item, Mod mod, SubMod submod) async {
     if (mod.submods.indexWhere((e) => e.setNames.contains(modset.setName)) == -1) mod.setNames.remove(modset.setName);
     if (item.mods.indexWhere((e) => e.setNames.contains(modset.setName)) == -1) item.setNames.remove(modset.setName);
     if (!item.setNames.contains(modset.setName) && iIndex != -1) modset.setItems.removeAt(iIndex);
+    removeFromSetSuccessNotification(submod.submodName, modset.setName);
   }
   for (var modset in toAddSets) {
     if (modset.setItems.indexWhere((e) => e.location == item.location) == -1) modset.setItems.add(item);
     if (!item.setNames.contains(modset.setName)) item.setNames.add(modset.setName);
     if (!mod.setNames.contains(modset.setName)) mod.setNames.add(modset.setName);
     if (!submod.setNames.contains(modset.setName)) submod.setNames.add(modset.setName);
+    addToSetSuccessNotification(submod.submodName, modset.setName);
   }
 
   submod.setNames.isNotEmpty ? submod.isSet = true : submod.isSet = false;

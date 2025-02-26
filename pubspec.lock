@@ -427,6 +427,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
+  flutter_sticky_header:
+    dependency: "direct main"
+    description:
+      name: flutter_sticky_header
+      sha256: "7f76d24d119424ca0c95c146b8627a457e8de8169b0d584f766c2c545db8f8be"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -693,6 +701,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  multi_split_view:
+    dependency: "direct main"
+    description:
+      name: multi_split_view
+      sha256: "99c02f128e7423818d13b8f2e01e3027e953b35508019dcee214791bd0525db5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.6.0"
   package_config:
     dependency: transitive
     description:
@@ -1090,14 +1106,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  sliver_sticky_collapsable_panel:
-    dependency: "direct main"
-    description:
-      name: sliver_sticky_collapsable_panel
-      sha256: "2674ad94d78df09cce798be62b7cd78cf2e9f240e4eabfdb10ac8b3c87edee4c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.7"
   source_gen:
     dependency: transitive
     description:
@@ -1298,6 +1306,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.5.1"
+  value_layout_builder:
+    dependency: transitive
+    description:
+      name: value_layout_builder
+      sha256: c02511ea91ca5c643b514a33a38fa52536f74aa939ec367d02938b5ede6807fa
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0"
   vector_math:
     dependency: transitive
     description:

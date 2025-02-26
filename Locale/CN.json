@@ -1,4 +1,11 @@
 {
+  "modHasBeenAddedToSet": "\"%p%\" has been added to \"%p%\" Set",
+  "modHasBeenRemovedFromSet": "\"%p%\" has been removed from \"%p%\" Set",
+  "addToSets": "Add To Sets",
+  "details": "Details",
+  "emptyModViewInfo": "Select an item to display its mods here",
+  "homepageStyle": "Homepage Style",
+  "legacy": "Legacy",
   "interval": "背景切换间隔",
   "applyOnlyHQFilesFromMods": "仅应用MOD中的HQ（高清模型）文件",
   "selectedOnly": "仅选定",

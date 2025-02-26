@@ -135,7 +135,8 @@ class AppText {
       select = 'Select',
       continues = 'Continue',
       imported = 'Imported',
-      filters = 'Filters';
+      filters = 'Filters',
+      details = 'Details';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -250,7 +251,10 @@ class AppText {
       holdToRestoreNumAppliedMods = 'Hold To Restore %p% Applied Mods',
       holdToRestoreNumAppliedMod = 'Hold To Restore %p% Applied Mod',
       injectedAQMFile = 'Injected AQM: %p%',
-      addingMods = 'Adding Mods';
+      addingMods = 'Adding Mods',
+      modHasBeenAddedToSet = '"%p%" has been added to "%p%" Set',
+      modHasBeenRemovedFromSet = '"%p%" has been removed from "%p%" Set', 
+      addToSets = 'Add To Sets';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -259,7 +263,7 @@ class AppText {
       checkingAppVersion = 'Checking App Version',
       newAppVersionFound = 'New App Version Found',
       extractingDownloadedZipFile = 'Extracting downloaded zip file',
-      extractCompletedReadyToPatch = 'Extract completed, ready to patch',
+      extractCompletedReadyToPatch = 'Extraction completed, ready to patch',
       cannotCreatePatchLauncherCheckPerm = 'Cannot create patch launcher, check permission',
       checkingItemDataVersion = 'Checking Item Data Version',
       newItemDataVersionFound = 'New Item Data Version Found',
@@ -372,7 +376,8 @@ class AppText {
       selectSetsToAddToOrRemoveFrom = 'Select Set(s) to add to or to remove from',
       jpGameStartInfo = 'If the game is not starting, try to run the Mod Manager as admin and try again',
       filterRemoveInfo = 'Click and hold on the filters to remove',
-      firstTimeInfo = 'If this is your first time using PSO2NGS Mod Manager and your game currently contains mods, please remove them first';
+      firstTimeInfo = 'If this is your first time using PSO2NGS Mod Manager and your game currently contains mods, please remove them first',
+      emptyModViewInfo = 'Select an item to display its mods here';
 
   // Settings Text
   String appSettings = 'App Settings',
@@ -432,7 +437,9 @@ class AppText {
       hideUIWhenAppUnfocused = 'Hide UI When App Unfocused',
       interval = 'Interval',
       startAfter = 'Start After',
-      tapToReturn = 'Tap To Return';
+      tapToReturn = 'Tap To Return',
+      homepageStyle = 'Homepage Style',
+      legacy = 'Legacy';
 
   factory AppText.fromJson(Map<String, dynamic> json) => _$AppTextFromJson(json);
   Map<String, dynamic> toJson() => _$AppTextToJson(this);

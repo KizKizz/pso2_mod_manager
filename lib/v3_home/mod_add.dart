@@ -25,7 +25,7 @@ class _ModAddState extends State<ModAdd> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 100), () {
+    Future.delayed(const Duration(milliseconds: 50), () {
       fadeInOpacity = 1;
       if (mounted) setState(() {});
     });

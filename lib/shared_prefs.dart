@@ -21,6 +21,8 @@ Signal<String> selectedDisplayCategory = Signal<String>('All');
 Signal<String> selectedModDisplayCategory = Signal<String>('All');
 Signal<String> selectedDisplayCategoryAppliedList = Signal<String>('All');
 Signal<String> selectedDisplaySort = Signal<String>('Name (Alphabetical)');
+Signal<String> selectedDisplaySortModView = Signal<String>('Name (Alphabetical)');
+Signal<String> selectedDisplaySortAppliedList = Signal<String>('Name (Alphabetical)');
 Signal<String> selectedDisplaySortModSet = Signal<String>('Name (Alphabetical)');
 bool originalFilesBackupsFromSega = true;
 double boundingRadiusRemovalValue = -10;
@@ -37,6 +39,11 @@ bool modAlwaysApplyHQFiles = false;
 bool selectedModsApplyHQFilesOnly = false;
 bool hideUIWhenAppUnfocused = false;
 int hideUIInitDelaySeconds = 30;
+String activeUILanguage = 'EN';
+Signal<bool> v2Homepage = Signal(false);
+double splitViewFlexValue0 = 1;
+double splitViewFlexValue1 = 1;
+double splitViewFlexValue2 = 1;
 
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
@@ -101,6 +108,12 @@ Future<void> prefsLoad() async {
   // Main list sort
   selectedDisplaySort.value = prefs.getString('selectedDisplaySort') ?? 'Name (Alphabetical)';
 
+  // Modview v2 sort
+  selectedDisplaySortModView.value = prefs.getString('selectedDisplaySortModView') ?? 'Name (Alphabetical)';
+
+  // AppliedList v2 sort
+  selectedDisplaySortAppliedList.value = prefs.getString('selectedDisplaySortAppliedList') ?? 'Name (Alphabetical)';
+
   // Mod set list sort
   selectedDisplaySortModSet.value = prefs.getString('selectedDisplaySortModSet') ?? 'Name (Alphabetical)';
 
@@ -160,4 +173,15 @@ Future<void> prefsLoad() async {
   // categorize by items
   hideUIWhenAppUnfocused = prefs.getBool('hideUIWhenAppUnfocused') ?? false;
   hideUIInitDelaySeconds = prefs.getInt('hideUIInitDelaySeconds') ?? 30;
+
+  // Active UI Languge
+  activeUILanguage = prefs.getString('activeUILanguage') ?? 'EN';
+
+  // v2 homepage
+  v2Homepage.value = prefs.getBool('v2Homepage') ?? false;
+
+  // split view flex value
+  splitViewFlexValue0 = prefs.getDouble('splitViewFlexValue0') ?? 1;
+  splitViewFlexValue1 = prefs.getDouble('splitViewFlexValue1') ?? 1;
+  splitViewFlexValue2 = prefs.getDouble('splitViewFlexValue2') ?? 1;
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
+import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
@@ -11,7 +13,6 @@ import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_view_popup.dart';
 import 'package:signals/signals_flutter.dart';
-import 'package:sliver_sticky_collapsable_panel/sliver_sticky_collapsable_panel.dart';
 
 class CateModGridLayout extends StatefulWidget {
   const CateModGridLayout({super.key, required this.itemCate, required this.searchString, required this.scrollController});
@@ -25,7 +26,6 @@ class CateModGridLayout extends StatefulWidget {
 }
 
 class _CateModGridLayoutState extends State<CateModGridLayout> {
-  StickyCollapsablePanelController stickyCollapsablePanelController = StickyCollapsablePanelController(key: 'key_1');
   @override
   Widget build(BuildContext context) {
     // Refresh
@@ -65,13 +65,9 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
 
     return SliverPadding(
       padding: const EdgeInsets.only(bottom: 2.5),
-      sliver: SliverStickyCollapsablePanel(
-          scrollController: widget.scrollController,
-          controller: stickyCollapsablePanelController,
-          disableCollapsable: true,
-          iOSStyleSticky: true,
-          // headerSize: const Size(double.infinity, 40),
-          headerBuilder: (context, status) => InkWell(
+      sliver: SliverStickyHeader.builder(
+        sticky: widget.itemCate.visible ? true : false,
+          builder: (context, status) => InkWell(
                 onTap: () {
                   widget.itemCate.visible ? widget.itemCate.visible = false : widget.itemCate.visible = true;
                   widget.itemCate.visible ? mainGridStatus.value = '${widget.itemCate.categoryName} is collapsed' : mainGridStatus.value = '${widget.itemCate.categoryName} is expanded';
@@ -104,14 +100,14 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
                           ],
                         ))),
               ),
-          sliverPanel: widget.itemCate.visible
+          sliver: widget.itemCate.visible
               ? SliverPadding(
-                padding: const EdgeInsets.symmetric(vertical: 2.5),
-                sliver: SliverGrid.builder(
-                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 335, maxCrossAxisExtent: 450, mainAxisSpacing: 2.5, crossAxisSpacing: 2.5),
-                    itemCount: modCardList.length,
-                    itemBuilder: (context, index) => modCardList[index]),
-              )
+                  padding: const EdgeInsets.symmetric(vertical: 2.5),
+                  sliver: SliverGrid.builder(
+                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 335, maxCrossAxisExtent: 450, mainAxisSpacing: 2.5, crossAxisSpacing: 2.5),
+                      itemCount: modCardList.length,
+                      itemBuilder: (context, index) => modCardList[index]),
+                )
               : null),
     );
   }
@@ -142,7 +138,26 @@ class _ModCardLayoutState extends State<ModCardLayout> {
             mainAxisSize: MainAxisSize.min,
             spacing: 5,
             children: [
-              SubmodPreviewBox(imageFilePaths: widget.mod.previewImages, videoFilePaths: widget.mod.previewVideos, isNew: widget.mod.isNew),
+              Row(
+                spacing: 5,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      spacing: 5,
+                      children: [
+                        ItemIconBox(item: widget.item),
+                        Text(widget.item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: SubmodPreviewBox(imageFilePaths: widget.mod.previewImages, videoFilePaths: widget.mod.previewVideos, isNew: widget.mod.isNew),
+                  )
+                ],
+              ),
               Expanded(child: Text(widget.mod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
               Column(
                 spacing: 5,

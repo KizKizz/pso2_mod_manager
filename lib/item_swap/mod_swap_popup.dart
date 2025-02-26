@@ -91,7 +91,7 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                     children: [
                       Expanded(
                           child: SizedBox(
-                        height: 40,
+                        height: 30,
                         child: OutlinedButton(
                             style: ButtonStyle(
                                 backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context))),
