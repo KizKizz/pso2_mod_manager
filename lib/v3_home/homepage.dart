@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
@@ -18,6 +20,7 @@ import 'package:pso2_mod_manager/v3_home/main_mod_grid.dart';
 import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:signals/signals_flutter.dart';
+import 'package:path/path.dart' as p;
 
 Signal<Widget> homepageCurrentWidget = Signal(const MainItemGrid());
 Signal<bool> sideBarCollapse = Signal<bool>(true);
@@ -59,6 +62,10 @@ class _HomepageState extends State<Homepage> {
     sideMenuAlwaysExpanded ? sideBarCollapse.value = false : sideBarCollapse.value = true;
     mainSideMenuController.changePage(defaultHomepageIndex);
     homepageCurrentWidget.value = v2Homepage.value ? homepageV2Widgets.first : homepageWidgets[defaultHomepageIndex];
+    if (Directory('${Directory.current.path}${p.separator}appUpdate').existsSync()) {
+      Directory('${Directory.current.path}${p.separator}appUpdate').deleteSync(recursive: true);
+    }
+
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       appLoadingFinished.value = true;
