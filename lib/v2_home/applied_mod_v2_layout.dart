@@ -40,7 +40,7 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
     if (widget.searchString.isEmpty) {
       for (var mod in widget.item.mods.where((e) => e.applyStatus)) {
         for (var submod in mod.submods.where((e) => e.applyStatus)) {
-          displayingSubmodCards.add(SubmodCardLayout(item: widget.item, mod: mod, submod: submod, modSetName: ''));
+          displayingSubmodCards.add(SubmodCardLayout(item: widget.item, mod: mod, submod: submod, modSetName: '', isInPopup: false,));
         }
       }
     } else {
@@ -48,7 +48,7 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
         for (var submod in mod.submods.where((e) =>
             e.applyStatus &&
             (e.getModFileNames().where((i) => i.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty || e.submodName.toLowerCase().contains(widget.searchString.toLowerCase())))) {
-          displayingSubmodCards.add(SubmodCardLayout(item: widget.item, mod: mod, submod: submod, modSetName: ''));
+          displayingSubmodCards.add(SubmodCardLayout(item: widget.item, mod: mod, submod: submod, modSetName: '', isInPopup: false,));
         }
       }
     }

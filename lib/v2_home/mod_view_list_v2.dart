@@ -89,7 +89,7 @@ class _ModViewListV2State extends State<ModViewListV2> {
                 margin: EdgeInsets.zero,
                 elevation: 5,
                 child: Padding(
-                    padding: const EdgeInsets.all(5),
+                    padding: const EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
                     child: Column(
                       spacing: 5,
                       children: [
@@ -105,7 +105,7 @@ class _ModViewListV2State extends State<ModViewListV2> {
                                   spacing: 5,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(widget.item!.getDisplayName(), style: Theme.of(context).textTheme.titleMedium),
+                                    Expanded(child: Text(widget.item!.getDisplayName(), style: Theme.of(context).textTheme.titleMedium)),
                                     Expanded(
                                       child: Row(
                                         spacing: 2.5,

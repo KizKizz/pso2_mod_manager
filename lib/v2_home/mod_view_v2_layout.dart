@@ -42,6 +42,7 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
                   mod: widget.mod,
                   submod: e,
                   modSetName: '',
+                  isInPopup: false,
                 ))
             .toList()
         : widget.mod.submods
@@ -54,6 +55,7 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
                   mod: widget.mod,
                   submod: e,
                   modSetName: '',
+                  isInPopup: false,
                 ))
             .toList();
 
@@ -110,6 +112,7 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
                                     widget.item.isNew = widget.item.getModsIsNewState();
                                     if (widget.item.mods.isEmpty) {
                                       mainGridStatus.value = '"${widget.mod.modName}" in "${widget.item.getDisplayName()}" is empty and removed';
+                                      if (selectedItemV2.value == widget.item) selectedItemV2.value = null;
                                     }
                                   },
                                 ),

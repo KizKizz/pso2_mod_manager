@@ -13,16 +13,18 @@ import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v2_home/homepage_v2.dart';
 import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class SubmodMoreFunctionsMenu extends StatefulWidget {
-  const SubmodMoreFunctionsMenu({super.key, required this.item, required this.mod, required this.submod, required this.refresh});
+  const SubmodMoreFunctionsMenu({super.key, required this.item, required this.mod, required this.submod, required this.isInPopup, required this.refresh});
 
   final Item item;
   final Mod mod;
   final SubMod submod;
+  final bool isInPopup;
   final VoidCallback refresh;
 
   @override
@@ -199,8 +201,9 @@ class _SubmodMoreFunctionsMenuState extends State<SubmodMoreFunctionsMenu> {
                 }
                 if (widget.item.mods.isEmpty) {
                   mainGridStatus.value = '"${widget.item.getDisplayName()}" is empty and removed';
+                  if (selectedItemV2.value == widget.item) selectedItemV2.value = null;
                   // ignore: use_build_context_synchronously
-                  Navigator.of(context).pop;
+                  if (widget.isInPopup) Navigator.of(context).pop;
                 }
               },
               child: MenuIconItem(

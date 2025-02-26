@@ -104,7 +104,7 @@ Future<void> modsetModViewPopup(context, Item item, String setName) async {
                                           mod: selectedMod!,
                                           submods: selectedMod!.submods.where((e) => e.isSet && e.setNames.contains(setName)).toList(),
                                           searchString: searchTextController.value.text,
-                                          modSetName: setName,
+                                          modSetName: setName, isPopup: true,
                                         )
                                       ],
                                     ),

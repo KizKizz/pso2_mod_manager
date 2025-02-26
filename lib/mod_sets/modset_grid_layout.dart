@@ -297,6 +297,7 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
                 item: widget.item,
                 mod: widget.activeMod,
                 submod: widget.activeSubmod,
+                isInPopup: true,
                 refresh: () {
                   setState(() {});
                   modSetRefreshSignal.value = '${widget.item.itemName} > ${widget.activeMod.modName} > ${widget.activeSubmod.submodName} modified in set "${widget.setName}"';

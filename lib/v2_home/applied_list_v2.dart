@@ -102,24 +102,27 @@ class _AppliedListV2State extends State<AppliedListV2> {
               margin: EdgeInsets.zero,
               elevation: 5,
               child: Padding(
-                  padding: const EdgeInsets.all(5),
+                  padding: const EdgeInsets.only(top: 0, bottom: 5, left: 5, right: 5),
                   child: Column(
                     spacing: 5,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Name
                       Expanded(
                         child: Text(
                           appText.appliedList,
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ),
+                      // Cate + Sort
                       Row(
                         spacing: 2.5,
                         children: [
-                          Flexible(flex: 4, child: AppliedModCategorySelectButtons(categories: categories, scrollController: scrollController)),
-                          Flexible(flex: 5, child: AppliedListSortingButton(scrollController: scrollController)),
+                          Flexible(flex: 4, fit: FlexFit.tight, child: AppliedModCategorySelectButtons(categories: categories, scrollController: scrollController)),
+                          Flexible(flex: 5, fit: FlexFit.tight, child: AppliedListSortingButton(scrollController: scrollController)),
                         ],
                       ),
+                      // Restore + expanse
                       Row(
                         spacing: 2.5,
                         children: [
@@ -197,7 +200,6 @@ class _AppliedListV2State extends State<AppliedListV2> {
                           ),
                         ],
                       ),
-
                       // Search box
                       SizedBox(
                         height: 30,

@@ -109,7 +109,7 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
                                           searchString: '',
                                           item: item,
                                           mod: selectedMod!,
-                                          modSetName: '',
+                                          modSetName: '', isPopup: true,
                                         )
                                       ],
                                     ),

@@ -189,6 +189,7 @@ class _ModCardLayoutState extends State<ModCardLayout> {
               SubmodMoreFunctionsMenu(
                 item: widget.item,
                 mod: widget.mod,
+                isInPopup: true,
                 submod: widget.submod,
                 refresh: () {
                   setState(() {});

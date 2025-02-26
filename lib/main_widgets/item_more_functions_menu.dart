@@ -4,6 +4,7 @@ import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/popup_menu_functions.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_more_functions_menu.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
+import 'package:pso2_mod_manager/v2_home/homepage_v2.dart';
 import 'package:signals/signals_flutter.dart';
 
 import '../export_import/export_import_functions.dart';
@@ -39,6 +40,7 @@ class _ItemMoreFunctionsMenuState extends State<ItemMoreFunctionsMenu> {
               onTap: () async {
                 await itemDelete(context, widget.item);
                 mainGridStatus.value = '"${widget.item.getDisplayName()}" removed';
+                if (selectedItemV2.value == widget.item) selectedItemV2.value = null;
                 // ignore: use_build_context_synchronously
                 if (widget.isInsidePopup) Navigator.of(context).pop();
               },

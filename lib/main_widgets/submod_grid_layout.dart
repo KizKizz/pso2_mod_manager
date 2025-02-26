@@ -17,13 +17,14 @@ import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:signals/signals_flutter.dart';
 
 class SubmodGridLayout extends StatefulWidget {
-  const SubmodGridLayout({super.key, required this.item, required this.mod, required this.submods, required this.searchString, required this.modSetName});
+  const SubmodGridLayout({super.key, required this.item, required this.mod, required this.submods, required this.searchString, required this.modSetName, required this.isPopup});
 
   final Item item;
   final Mod mod;
   final List<SubMod> submods;
   final String searchString;
   final String modSetName;
+  final bool isPopup;
 
   @override
   State<SubmodGridLayout> createState() => _SubmodGridLayoutState();
@@ -43,7 +44,7 @@ class _SubmodGridLayoutState extends State<SubmodGridLayout> {
                       submod: e,
                       item: widget.item,
                       mod: widget.mod,
-                      modSetName: widget.modSetName,
+                      modSetName: widget.modSetName, isInPopup: widget.isPopup,
                     ))
                 .toList()
             : widget.submods
@@ -53,19 +54,20 @@ class _SubmodGridLayoutState extends State<SubmodGridLayout> {
                       item: widget.item,
                       mod: widget.mod,
                       submod: e,
-                      modSetName: widget.modSetName,
+                      modSetName: widget.modSetName, isInPopup: widget.isPopup,
                     ))
                 .toList());
   }
 }
 
 class SubmodCardLayout extends StatefulWidget {
-  const SubmodCardLayout({super.key, required this.item, required this.mod, required this.submod, required this.modSetName});
+  const SubmodCardLayout({super.key, required this.item, required this.mod, required this.submod, required this.modSetName, required this.isInPopup});
 
   final Item item;
   final Mod mod;
   final SubMod submod;
   final String modSetName;
+  final bool isInPopup;
 
   @override
   State<SubmodCardLayout> createState() => _SubmodCardLayoutState();
@@ -152,6 +154,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                   item: widget.item,
                   mod: widget.mod,
                   submod: widget.submod,
+                  isInPopup: widget.isInPopup,
                   refresh: () {
                     setState(() {});
                   },
@@ -162,5 +165,3 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
     );
   }
 }
-
-

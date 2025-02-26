@@ -98,7 +98,7 @@ class _ItemListV2State extends State<ItemListV2> {
               margin: EdgeInsets.zero,
               elevation: 5,
               child: Padding(
-                  padding: const EdgeInsets.all(5),
+                  padding: const EdgeInsets.only(top: 0, bottom: 5, left: 5, right: 5),
                   child: Column(
                     spacing: 5,
                     crossAxisAlignment: CrossAxisAlignment.start,

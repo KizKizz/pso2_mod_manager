@@ -110,7 +110,7 @@ Future<void> modViewPopup(context, Item item) async {
                                             submods: selectedMod!.submods,
                                             // searchString: searchTextController.value.text,
                                             searchString: '',
-                                            modSetName: '',
+                                            modSetName: '', isPopup: true,
                                           )
                                         ],
                                       ),
