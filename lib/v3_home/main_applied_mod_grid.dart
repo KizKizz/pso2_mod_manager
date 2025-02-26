@@ -8,9 +8,12 @@ import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
+import 'package:pso2_mod_manager/mod_sets/mod_set_functions.dart';
+import 'package:pso2_mod_manager/mod_sets/mods_to_set_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/main_widgets/applied_mod_grid_layout.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/notifications.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:signals/signals_flutter.dart';
@@ -48,8 +51,8 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
     List<Mod> filteredMods = [];
     if (searchTextController.value.text.isEmpty) {
       for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
-        for (var cate in cateType.categories
-            .where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == 'All'))) {
+        for (var cate
+            in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == 'All'))) {
           for (var item in cate.items.where((e) => e.applyStatus)) {
             filteredMods.addAll(item.mods.where((e) => e.applyStatus));
             numOfAppliedMods += item.getNumOfAppliedMods();
@@ -58,8 +61,8 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
       }
     } else {
       for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
-        for (var cate in cateType.categories
-            .where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == 'All'))) {
+        for (var cate
+            in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == 'All'))) {
           for (var item in cate.items.where((e) => e.applyStatus)) {
             filteredMods.addAll(item.mods.where((e) => e.applyStatus && e.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
             numOfAppliedMods += item.getNumOfAppliedMods();
@@ -179,7 +182,7 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                       child: Padding(
                         padding: const EdgeInsets.only(right: 2),
                         child: IconButton(
-                          visualDensity: VisualDensity.adaptivePlatformDensity,
+                            visualDensity: VisualDensity.adaptivePlatformDensity,
                             onPressed: searchTextController.value.text.isNotEmpty
                                 ? () {
                                     searchTextController.clear();
@@ -192,34 +195,6 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                   ]),
                 ),
               ),
-              Expanded(
-                  flex: 2,
-                  child: SizedBox(
-                    height: 30,
-                    child: OutlinedButton(
-                        style: ButtonStyle(
-                            backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                            side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                        onPressed: numOfAppliedMods > 0
-                            ? () async {
-                                if (categories.indexWhere((e) => e.visible) != -1) {
-                                  for (var cate in categories) {
-                                    cate.visible = false;
-                                  }
-                                } else {
-                                  for (var cate in categories) {
-                                    cate.visible = true;
-                                  }
-                                }
-                                setState(() {});
-                                saveMasterModListToJson();
-                              }
-                            : null,
-                        child: Text(
-                          categories.indexWhere((e) => e.visible) != -1 ? appText.collapseAll : appText.expandAll,
-                          textAlign: TextAlign.center,
-                        )),
-                  )),
               Expanded(
                   flex: 2,
                   child: SizedBox(
@@ -242,11 +217,66 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                                 }
                               }
                             : null,
-                        child: Text(appText.dText(numOfAppliedMods > 1 ? appText.holdToRestoreNumAppliedMods : appText.holdToRestoreNumAppliedMod, numOfAppliedMods.toString()), textAlign: TextAlign.center,)),
+                        child: Text(
+                          appText.dText(numOfAppliedMods > 1 ? appText.holdToRestoreNumAppliedMods : appText.holdToRestoreNumAppliedMod, numOfAppliedMods.toString()),
+                          textAlign: TextAlign.center,
+                        )),
                   )),
               SizedBox(
                 width: 200,
                 child: AppliedModCategorySelectButtons(categories: categories.where((e) => e.getNumOfAppliedItems() > 0).toList(), scrollController: controller),
+              ),
+              SizedBox(
+                height: 30,
+                child: IconButton.outlined(
+                    visualDensity: VisualDensity.adaptivePlatformDensity,
+                    style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                    onPressed: () async {
+                      int addedCounter = 0;
+                      final toAddSets = await modsToSetPopup(context);
+                      List<Item> appliedItems = await appliedModsFetch();
+                      for (var item in appliedItems) {
+                        for (var mod in item.mods.where((e) => e.applyStatus)) {
+                          for (var submod in mod.submods.where((e) => e.applyStatus)) {
+                            // ignore: use_build_context_synchronously
+                            final result = await submodsAddToSet(context, item, mod, submod, toAddSets);
+                            if (result) addedCounter++;
+                          }
+                        }
+                      }
+                      if (addedCounter > 0) {
+                        addToSetSuccessNotification(appText.dText(addedCounter > 1 ? appText.numMods : appText.numMod, addedCounter.toString()), toAddSets.map((e) => e.setName).toList().join(', '));
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.my_library_books_outlined,
+                    )),
+              ),
+              SizedBox(
+                height: 30,
+                child: IconButton.outlined(
+                    visualDensity: VisualDensity.adaptivePlatformDensity,
+                    style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                    onPressed: () async {
+                      if (categories.indexWhere((e) => e.visible) != -1) {
+                        for (var cate in categories) {
+                          cate.visible = false;
+                        }
+                      } else {
+                        for (var cate in categories) {
+                          cate.visible = true;
+                        }
+                      }
+                      setState(() {});
+                      saveMasterModListToJson();
+                    },
+                    icon: Icon(
+                      categories.indexWhere((e) => e.visible) != -1 ? Icons.drag_handle_sharp : Icons.expand_outlined,
+                    )),
               ),
             ],
           ),

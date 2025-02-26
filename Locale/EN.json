@@ -122,6 +122,7 @@
   "continues": "Continue",
   "imported": "Imported",
   "filters": "Filters",
+  "details": "Details",
   "patchNotes": "Patch Notes",
   "appUpdate": "App Update",
   "tryAgain": "Try Again",
@@ -351,6 +352,7 @@
   "jpGameStartInfo": "If the game is not starting, try to run the Mod Manager as admin and try again",
   "filterRemoveInfo": "Click and hold on the filters to remove",
   "firstTimeInfo": "If this is your first time using PSO2NGS Mod Manager and your game currently contains mods, please remove them first",
+  "emptyModViewInfo": "Select an item to display its mods here",
   "appSettings": "App Settings",
   "uiLanguage": "UI Language",
   "itemNameLanguage": "Item Name Language",
@@ -407,5 +409,7 @@
   "hideUIWhenAppUnfocused": "Hide UI When App Unfocused",
   "interval": "Interval",
   "startAfter": "Start After",
-  "tapToReturn": "Tap To Return"
+  "tapToReturn": "Tap To Return",
+  "homepageStyle": "Homepage Style",
+  "legacy": "Legacy"
 }

@@ -46,7 +46,9 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
             .toList()
         : widget.mod.submods
             .where((e) =>
-                e.getModFileNames().where((e) => e.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty || e.submodName.toLowerCase().contains(widget.searchString.toLowerCase()))
+                e.getModFileNames().where((e) => e.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty ||
+                e.submodName.toLowerCase().contains(widget.searchString.toLowerCase()) ||
+                e.modName.toLowerCase().contains(widget.searchString.toLowerCase()))
             .map((e) => SubmodCardLayout(
                   item: widget.item,
                   mod: widget.mod,

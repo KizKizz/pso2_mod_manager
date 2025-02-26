@@ -187,7 +187,7 @@ class _MainModGridState extends State<MainModGrid> {
                       child: Padding(
                         padding: const EdgeInsets.only(right: 2),
                         child: IconButton(
-                          visualDensity: VisualDensity.adaptivePlatformDensity,
+                            visualDensity: VisualDensity.adaptivePlatformDensity,
                             onPressed: searchTextController.value.text.isNotEmpty
                                 ? () {
                                     searchTextController.clear();
@@ -200,36 +200,34 @@ class _MainModGridState extends State<MainModGrid> {
                   ]),
                 ),
               ),
-              Expanded(
-                  flex: 2,
-                  child: SizedBox(
-                    height: 30,
-                    child: OutlinedButton(
-                        style: ButtonStyle(
-                            backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                            side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                        onPressed: () async {
-                          if (categories.indexWhere((e) => e.visible) != -1) {
-                            for (var cate in categories) {
-                              cate.visible = false;
-                            }
-                          } else {
-                            for (var cate in categories) {
-                              cate.visible = true;
-                            }
-                          }
-                          setState(() {});
-                          saveMasterModListToJson();
-                        },
-                        child: Text(
-                          categories.indexWhere((e) => e.visible) != -1 ? appText.collapseAll : appText.expandAll,
-                          textAlign: TextAlign.center,
-                        )),
-                  )),
               SizedBox(width: 250, child: SortingButtons(scrollController: controller)),
               SizedBox(
                 width: 200,
                 child: CateModCategorySelectButtons(categories: categories, scrollController: controller),
+              ),
+              SizedBox(
+                height: 30,
+                child: IconButton.outlined(
+                    visualDensity: VisualDensity.adaptivePlatformDensity,
+                    style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                    onPressed: () async {
+                      if (categories.indexWhere((e) => e.visible) != -1) {
+                        for (var cate in categories) {
+                          cate.visible = false;
+                        }
+                      } else {
+                        for (var cate in categories) {
+                          cate.visible = true;
+                        }
+                      }
+                      setState(() {});
+                      saveMasterModListToJson();
+                    },
+                    icon: Icon(
+                      categories.indexWhere((e) => e.visible) != -1 ? Icons.drag_handle_sharp : Icons.expand_outlined,
+                    )),
               ),
             ],
           ),

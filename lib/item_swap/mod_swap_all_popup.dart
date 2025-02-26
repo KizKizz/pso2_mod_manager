@@ -11,6 +11,7 @@ import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_swap_grid.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
+import 'package:pso2_mod_manager/v3_widgets/notifications.dart';
 import 'package:signals/signals_flutter.dart';
 
 Future<void> modSwapAllPopup(context, Item item, Mod mod) async {
@@ -172,12 +173,22 @@ Future<void> modSwapAllPopup(context, Item item, Mod mod) async {
                               ? () async {
                                   itemSwapWorkingStatus.value = '';
                                   for (var submod in mod.submods) {
-                                    lSelectedItemData.value = pItemData
-                                        .where((e) => e.category == mod.category && submod.getModFileNames().indexWhere((f) => e.getIceDetailsWithoutKeys().contains(f)) != -1)
-                                        .toList()
-                                        .firstWhere((e) => e.getENName() == item.itemName || e.getJPName() == item.itemName);
-                  
-                                    await modSwapAllWorkingPopup(context, false, lSelectedItemData.value!, rSelectedItemData.value!, mod, submod);
+                                    final matchingItemData =
+                                        pItemData.where((e) => e.category == mod.category && submod.getModFileNames().indexWhere((f) => e.getIceDetailsWithoutKeys().contains(f)) != -1).toList();
+                                    if (matchingItemData.length == 1) {
+                                      lSelectedItemData.value = matchingItemData.first;
+                                    } else if (matchingItemData.length > 1) {
+                                      int matchingIndex = matchingItemData.indexWhere((e) => e.getENName() == item.itemName || e.getJPName() == item.itemName);
+                                      matchingIndex != -1 ? lSelectedItemData.value = matchingItemData[matchingIndex] : lSelectedItemData.value = matchingItemData.first;
+                                    } else {
+                                      lSelectedItemData.value = null;
+                                    }
+
+                                    if (lSelectedItemData.value != null) {
+                                      await modSwapAllWorkingPopup(context, false, lSelectedItemData.value!, rSelectedItemData.value!, mod, submod);
+                                    } else {
+                                      errorNotification(appText.noMatchingFilesBetweenItemsToSwap);
+                                    }
                                   }
                                 }
                               : null,

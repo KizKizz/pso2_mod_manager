@@ -1,4 +1,8 @@
 {
+  "details": "Details",
+  "emptyModViewInfo": "Select an item to display its mods here",
+  "homepageStyle": "Homepage Style",
+  "legacy": "Legacy",
   "interval": "間隔",
   "applyOnlyHQFilesFromMods": "MODのHQファイルのみ適用",
   "selectedOnly": "選抜のみ",

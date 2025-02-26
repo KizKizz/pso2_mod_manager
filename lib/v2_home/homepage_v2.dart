@@ -20,9 +20,9 @@ class HomepageV2 extends StatefulWidget {
 
 class _HomepageV2State extends State<HomepageV2> {
   final MultiSplitViewController multiSplitViewController = MultiSplitViewController(areas: [
-    Area(flex: splitViewFlexValue0, builder: (context, area) => const ItemListV2()),
-    Area(flex: splitViewFlexValue1, builder: (context, area) => ModViewListV2(item: selectedItemV2.watch(context))),
-    Area(flex: splitViewFlexValue2, builder: (context, area) => const AppliedListV2()),
+    Area(flex: splitViewFlexValue0, min: 0.75, builder: (context, area) => const ItemListV2()),
+    Area(flex: splitViewFlexValue1, min: 0.9, builder: (context, area) => ModViewListV2(item: selectedItemV2.watch(context))),
+    Area(flex: splitViewFlexValue2, min: 1, builder: (context, area) => const AppliedListV2()),
   ]);
 
   @override

@@ -162,3 +162,55 @@ void applyFailedNotification(name) {
     onDismiss: () {},
   ).show(_context);
 }
+
+// Mod sets
+void addToSetSuccessNotification(String names, String modSetName) {
+  ElegantNotification.success(
+    width: 360,
+    stackedOptions: StackedOptions(
+      key: 'bottomRight',
+      type: StackedType.below,
+      itemOffset: const Offset(0, 5),
+    ),
+    background: Theme.of(_context).scaffoldBackgroundColor.withAlpha(50),
+    notificationMargin: 1,
+    border: Border.all(width: 1, color: Theme.of(_context).colorScheme.outline),
+    position: Alignment.bottomRight,
+    animation: AnimationType.fromRight,
+    title: Text(
+      appText.success,
+      style: Theme.of(_context).textTheme.titleMedium,
+    ),
+    description: Text(
+      appText.dTexts(appText.modHasBeenAddedToSet, [names, modSetName]),
+      style: Theme.of(_context).textTheme.bodyMedium,
+    ),
+    shadow: BoxShadow(color: Theme.of(_context).shadowColor),
+    onDismiss: () {},
+  ).show(_context);
+}
+void removeFromSetSuccessNotification(String names, String modSetName) {
+  ElegantNotification.success(
+    width: 360,
+    stackedOptions: StackedOptions(
+      key: 'bottomRight',
+      type: StackedType.below,
+      itemOffset: const Offset(0, 5),
+    ),
+    background: Theme.of(_context).scaffoldBackgroundColor.withAlpha(50),
+    notificationMargin: 1,
+    border: Border.all(width: 1, color: Theme.of(_context).colorScheme.outline),
+    position: Alignment.bottomRight,
+    animation: AnimationType.fromRight,
+    title: Text(
+      appText.success,
+      style: Theme.of(_context).textTheme.titleMedium,
+    ),
+    description: Text(
+      appText.dTexts(appText.modHasBeenRemovedFromSet, [names, modSetName]),
+      style: Theme.of(_context).textTheme.bodyMedium,
+    ),
+    shadow: BoxShadow(color: Theme.of(_context).shadowColor),
+    onDismiss: () {},
+  ).show(_context);
+}

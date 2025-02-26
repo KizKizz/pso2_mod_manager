@@ -135,7 +135,7 @@ class AppText {
       select = 'Select',
       continues = 'Continue',
       imported = 'Imported',
-      filters = 'Filters', 
+      filters = 'Filters',
       details = 'Details';
 
   // Short Strings
@@ -251,7 +251,10 @@ class AppText {
       holdToRestoreNumAppliedMods = 'Hold To Restore %p% Applied Mods',
       holdToRestoreNumAppliedMod = 'Hold To Restore %p% Applied Mod',
       injectedAQMFile = 'Injected AQM: %p%',
-      addingMods = 'Adding Mods';
+      addingMods = 'Adding Mods',
+      modHasBeenAddedToSet = '"%p%" has been added to "%p%" Set',
+      modHasBeenRemovedFromSet = '"%p%" has been removed from "%p%" Set', 
+      addToSets = 'Add To Sets';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',

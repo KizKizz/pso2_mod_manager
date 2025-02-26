@@ -7,10 +7,13 @@ import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
 import 'package:pso2_mod_manager/mod_apply/load_applied_mods.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
+import 'package:pso2_mod_manager/mod_sets/mod_set_functions.dart';
+import 'package:pso2_mod_manager/mod_sets/mods_to_set_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v2_home/applied_list_sorting_button.dart';
 import 'package:pso2_mod_manager/v2_home/applied_mod_v2_layout.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/notifications.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -113,8 +116,8 @@ class _AppliedListV2State extends State<AppliedListV2> {
                       Row(
                         spacing: 2.5,
                         children: [
-                          Flexible(child: AppliedModCategorySelectButtons(categories: categories, scrollController: scrollController)),
-                          Flexible(child: AppliedListSortingButton(scrollController: scrollController)),
+                          Flexible(flex: 4, child: AppliedModCategorySelectButtons(categories: categories, scrollController: scrollController)),
+                          Flexible(flex: 5, child: AppliedListSortingButton(scrollController: scrollController)),
                         ],
                       ),
                       Row(
@@ -147,6 +150,35 @@ class _AppliedListV2State extends State<AppliedListV2> {
                                       textAlign: TextAlign.center,
                                     )),
                               )),
+                          SizedBox(
+                            height: 30,
+                            child: IconButton.outlined(
+                                visualDensity: VisualDensity.adaptivePlatformDensity,
+                                style: ButtonStyle(
+                                    backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                                    side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                                onPressed: () async {
+                                  int addedCounter = 0;
+                                  final toAddSets = await modsToSetPopup(context);
+                                  List<Item> appliedItems = await appliedModsFetch();
+                                  for (var item in appliedItems) {
+                                    for (var mod in item.mods.where((e) => e.applyStatus)) {
+                                      for (var submod in mod.submods.where((e) => e.applyStatus)) {
+                                        // ignore: use_build_context_synchronously
+                                        final result = await submodsAddToSet(context, item, mod, submod, toAddSets);
+                                        if (result) addedCounter++;
+                                      }
+                                    }
+                                  }
+                                  if (addedCounter > 0) {
+                                    addToSetSuccessNotification(
+                                        appText.dText(addedCounter > 1 ? appText.numMods : appText.numMod, addedCounter.toString()), toAddSets.map((e) => e.setName).toList().join(', '));
+                                  }
+                                },
+                                icon: const Icon(
+                                  Icons.my_library_books_outlined,
+                                )),
+                          ),
                           // col-ex
                           SizedBox(
                             height: 30,
