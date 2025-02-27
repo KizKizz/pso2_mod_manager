@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/item_swap/item_swap_all_popup.dart';
 import 'package:pso2_mod_manager/main_widgets/popup_menu_functions.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_more_functions_menu.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
@@ -35,6 +36,13 @@ class _ItemMoreFunctionsMenuState extends State<ItemMoreFunctionsMenu> {
       itemBuilder: (BuildContext context) {
         return [
           PopupMenuItem(onTap: () => modExportSequence(context, ExportType.item, widget.item, null, null), child: MenuIconItem(icon: Icons.import_export, text: appText.export, enabled: true)),
+          PopupMenuItem(
+              onTap: () => itemSwapAllPopup(context, widget.item),
+              child: MenuIconItem(
+                icon: Icons.swap_horizontal_circle_outlined,
+                text: appText.swapAll,
+                enabled: true,
+              )),
           PopupMenuItem(
               enabled: !widget.item.applyStatus,
               onTap: () async {

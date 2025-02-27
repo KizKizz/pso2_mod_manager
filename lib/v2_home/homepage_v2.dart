@@ -26,12 +26,16 @@ class _HomepageV2State extends State<HomepageV2> {
   ]);
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    if (showAppliedListV2.watch(context)) {
+      if (multiSplitViewController.areasCount == 2) {
+        multiSplitViewController.addArea(Area(flex: splitViewFlexValue2, min: 1, builder: (context, area) => const AppliedListV2()));
+      }
+    } else {
+      if (multiSplitViewController.areasCount == 3) {
+        multiSplitViewController.removeAreaAt(2);
+      }
+    }
     MultiSplitView multiSplitView = MultiSplitView(
       controller: multiSplitViewController,
       onDividerDragEnd: (_) async {
@@ -40,8 +44,10 @@ class _HomepageV2State extends State<HomepageV2> {
         prefs.setDouble('splitViewFlexValue0', splitViewFlexValue0);
         splitViewFlexValue1 = multiSplitViewController.getArea(1).flex!;
         prefs.setDouble('splitViewFlexValue1', splitViewFlexValue1);
-        splitViewFlexValue2 = multiSplitViewController.getArea(2).flex!;
-        prefs.setDouble('splitViewFlexValue2', splitViewFlexValue2);
+        if (multiSplitViewController.areasCount == 3) {
+          splitViewFlexValue2 = multiSplitViewController.getArea(2).flex!;
+          prefs.setDouble('splitViewFlexValue2', splitViewFlexValue2);
+        }
         // debugPrint('Index: $index : ${multiSplitViewController.getArea(index).flex}');
       },
       onDividerDoubleTap: (_) async {
@@ -54,7 +60,9 @@ class _HomepageV2State extends State<HomepageV2> {
         prefs.setDouble('splitViewFlexValue2', splitViewFlexValue2);
         multiSplitViewController.getArea(0).flex = splitViewFlexValue0;
         multiSplitViewController.getArea(1).flex = splitViewFlexValue1;
-        multiSplitViewController.getArea(2).flex = splitViewFlexValue2;
+        if (multiSplitViewController.areasCount == 3) {
+          multiSplitViewController.getArea(2).flex = splitViewFlexValue2;
+        }
 
         setState(() {});
       },

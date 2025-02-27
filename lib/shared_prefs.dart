@@ -44,6 +44,7 @@ Signal<bool> v2Homepage = Signal(false);
 double splitViewFlexValue0 = 1;
 double splitViewFlexValue1 = 1;
 double splitViewFlexValue2 = 1;
+Signal<bool> showAppliedListV2 = Signal(true);
 
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
@@ -179,6 +180,9 @@ Future<void> prefsLoad() async {
 
   // v2 homepage
   v2Homepage.value = prefs.getBool('v2Homepage') ?? false;
+
+  // v2 applied list
+  showAppliedListV2.value = prefs.getBool('showAppliedListV2') ?? true;
 
   // split view flex value
   splitViewFlexValue0 = prefs.getDouble('splitViewFlexValue0') ?? 1;

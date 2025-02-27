@@ -94,17 +94,45 @@ class _HomepageState extends State<Homepage> {
       const Icon(Icons.calendar_view_day_rounded),
       const Icon(Icons.view_carousel_outlined)
     ];
-    List<String> homepageV2WidgetNames = [appText.itemList, appText.modList, appText.modSets, appText.itemSwap, appText.aqmInject, appText.vitalGauge, appText.lineStrike];
-    List<Icon> homepageV2WidgetIcons = [
-      const Icon(Icons.list_alt),
-      const Icon(Icons.grid_view),
-      const Icon(Icons.library_books_outlined),
-      // const Icon(Icons.turned_in),
-      const Icon(Icons.swap_horizontal_circle_outlined),
-      const Icon(Icons.auto_fix_high),
-      const Icon(Icons.calendar_view_day_rounded),
-      const Icon(Icons.view_carousel_outlined)
-    ];
+    List<String> homepageV2WidgetNames =
+        showAppliedListV2.watch(context) ? [appText.itemList, appText.modList, appText.modSets, appText.itemSwap, appText.aqmInject, appText.vitalGauge, appText.lineStrike] : homepageWidgetNames;
+    List<Icon> homepageV2WidgetIcons = showAppliedListV2.watch(context)
+        ? [
+            const Icon(Icons.list_alt),
+            const Icon(Icons.grid_view),
+            const Icon(Icons.library_books_outlined),
+            // const Icon(Icons.turned_in),
+            const Icon(Icons.swap_horizontal_circle_outlined),
+            const Icon(Icons.auto_fix_high),
+            const Icon(Icons.calendar_view_day_rounded),
+            const Icon(Icons.view_carousel_outlined)
+          ]
+        : homepageWidgetIcons;
+    if (showAppliedListV2.value) {
+      homepageV2Widgets = [
+        const HomepageV2(),
+        const MainModGrid(),
+        const MainModSetGrid(),
+        // const MainAppliedModGrid(),
+        const MainItemSwapGrid(),
+        const MainItemAqmInjectGrid(),
+        const MainVitalGaugeGrid(),
+        const MainLineStrikeGrid()
+      ];
+    } else {
+      homepageV2Widgets = [
+        const HomepageV2(),
+        const MainModGrid(),
+        const MainModSetGrid(),
+        const MainAppliedModGrid(),
+        const MainItemSwapGrid(),
+        const MainItemAqmInjectGrid(),
+        const MainVitalGaugeGrid(),
+        const MainLineStrikeGrid()
+      ];
+    }
+
+    // footer
     List<String> homepageFooterWidgetNames = [appText.addMods, appText.settings];
     List<Icon> homepageFooterWidgetIcon = [
       const Icon(Icons.add_circle_outline_sharp),
