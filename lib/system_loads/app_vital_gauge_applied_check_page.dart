@@ -53,7 +53,7 @@ class _AppVitalGaugeAppliedCheckPageState extends State<AppVitalGaugeAppliedChec
             ],
           ));
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-          return FutureBuilderError(loadingText: appText.checkingAppliedVitalGauges, snapshotError: snapshot.error.toString());
+          return FutureBuilderError(loadingText: appText.checkingAppliedVitalGauges, snapshotError: snapshot.error.toString(), isPopup: false,);
         } else {
           List<VitalGaugeBackground> unappliedVitalGaugeList = snapshot.data;
           if (unappliedVitalGaugeList.isEmpty) {

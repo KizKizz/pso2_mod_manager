@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
+import 'package:window_manager/window_manager.dart';
 
 class FutureBuilderLoading extends StatelessWidget {
   const FutureBuilderLoading({super.key, required this.loadingText});
@@ -37,10 +38,11 @@ class FutureBuilderLoading extends StatelessWidget {
 }
 
 class FutureBuilderError extends StatelessWidget {
-  const FutureBuilderError({super.key,required this.loadingText, required this.snapshotError});
+  const FutureBuilderError({super.key, required this.loadingText, required this.snapshotError, required this.isPopup});
 
   final String loadingText;
   final String snapshotError;
+  final bool isPopup;
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +72,7 @@ class FutureBuilderError extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10),
-              child: OutlinedButton(onPressed: () => Navigator.of(context).pop(), child: Text(appText.returns)),
+              child: OutlinedButton(onPressed: () => isPopup ? Navigator.of(context).pop() : windowManager.close(), child: Text(isPopup ? appText.returns : appText.exit)),
             )
           ],
         ),

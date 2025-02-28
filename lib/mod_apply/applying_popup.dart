@@ -65,7 +65,7 @@ Future<void> applyingPopup(context, bool applying, Item item, Mod mod, SubMod su
                       ],
                     ));
                   } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                    return FutureBuilderError(loadingText: applying ? appText.dText(appText.applyingMod, submod.submodName) : appText.dText(appText.restoringModBackups, submod.submodName), snapshotError: snapshot.error.toString());
+                    return FutureBuilderError(loadingText: applying ? appText.dText(appText.applyingMod, submod.submodName) : appText.dText(appText.restoringModBackups, submod.submodName), snapshotError: snapshot.error.toString(), isPopup: true,);
                   } else {
                     Navigator.of(context).pop();
                     return const SizedBox();

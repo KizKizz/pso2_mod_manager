@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
@@ -18,6 +20,7 @@ import 'package:pso2_mod_manager/v3_home/main_mod_grid.dart';
 import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:signals/signals_flutter.dart';
+import 'package:path/path.dart' as p;
 
 Signal<Widget> homepageCurrentWidget = Signal(const MainItemGrid());
 Signal<bool> sideBarCollapse = Signal<bool>(true);
@@ -59,6 +62,10 @@ class _HomepageState extends State<Homepage> {
     sideMenuAlwaysExpanded ? sideBarCollapse.value = false : sideBarCollapse.value = true;
     mainSideMenuController.changePage(defaultHomepageIndex);
     homepageCurrentWidget.value = v2Homepage.value ? homepageV2Widgets.first : homepageWidgets[defaultHomepageIndex];
+    if (Directory('${Directory.current.path}${p.separator}appUpdate').existsSync()) {
+      Directory('${Directory.current.path}${p.separator}appUpdate').deleteSync(recursive: true);
+    }
+
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       appLoadingFinished.value = true;
@@ -87,17 +94,45 @@ class _HomepageState extends State<Homepage> {
       const Icon(Icons.calendar_view_day_rounded),
       const Icon(Icons.view_carousel_outlined)
     ];
-    List<String> homepageV2WidgetNames = [appText.itemList, appText.modList, appText.modSets, appText.itemSwap, appText.aqmInject, appText.vitalGauge, appText.lineStrike];
-    List<Icon> homepageV2WidgetIcons = [
-      const Icon(Icons.list_alt),
-      const Icon(Icons.grid_view),
-      const Icon(Icons.library_books_outlined),
-      // const Icon(Icons.turned_in),
-      const Icon(Icons.swap_horizontal_circle_outlined),
-      const Icon(Icons.auto_fix_high),
-      const Icon(Icons.calendar_view_day_rounded),
-      const Icon(Icons.view_carousel_outlined)
-    ];
+    List<String> homepageV2WidgetNames =
+        showAppliedListV2.watch(context) ? [appText.itemList, appText.modList, appText.modSets, appText.itemSwap, appText.aqmInject, appText.vitalGauge, appText.lineStrike] : homepageWidgetNames;
+    List<Icon> homepageV2WidgetIcons = showAppliedListV2.watch(context)
+        ? [
+            const Icon(Icons.list_alt),
+            const Icon(Icons.grid_view),
+            const Icon(Icons.library_books_outlined),
+            // const Icon(Icons.turned_in),
+            const Icon(Icons.swap_horizontal_circle_outlined),
+            const Icon(Icons.auto_fix_high),
+            const Icon(Icons.calendar_view_day_rounded),
+            const Icon(Icons.view_carousel_outlined)
+          ]
+        : homepageWidgetIcons;
+    if (showAppliedListV2.value) {
+      homepageV2Widgets = [
+        const HomepageV2(),
+        const MainModGrid(),
+        const MainModSetGrid(),
+        // const MainAppliedModGrid(),
+        const MainItemSwapGrid(),
+        const MainItemAqmInjectGrid(),
+        const MainVitalGaugeGrid(),
+        const MainLineStrikeGrid()
+      ];
+    } else {
+      homepageV2Widgets = [
+        const HomepageV2(),
+        const MainModGrid(),
+        const MainModSetGrid(),
+        const MainAppliedModGrid(),
+        const MainItemSwapGrid(),
+        const MainItemAqmInjectGrid(),
+        const MainVitalGaugeGrid(),
+        const MainLineStrikeGrid()
+      ];
+    }
+
+    // footer
     List<String> homepageFooterWidgetNames = [appText.addMods, appText.settings];
     List<Icon> homepageFooterWidgetIcon = [
       const Icon(Icons.add_circle_outline_sharp),

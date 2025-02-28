@@ -60,7 +60,7 @@ Future<bool> lineStrikeCardApplyPopup(context, String customImagePath, LineStrik
                       ],
                     ));
                   } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                    return FutureBuilderError(loadingText: appText.dText(appText.editingMod, card.cardZeroDdsName), snapshotError: snapshot.error.toString());
+                    return FutureBuilderError(loadingText: appText.dText(appText.editingMod, card.cardZeroDdsName), snapshotError: snapshot.error.toString(), isPopup: true,);
                   } else {
                     bool result = snapshot.data;
                     Navigator.of(context).pop(result);

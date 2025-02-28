@@ -136,6 +136,21 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             prefs.setBool('v2Homepage', v2Homepage.value);
                           },
                         ),
+                        // v2 Homepage Applied list hide
+                        Visibility(visible: v2Homepage.watch(context), child: SettingsHeader(icon: Icons.highlight_alt_outlined, text: appText.hideAppliedList)),
+                        Visibility(
+                          visible: v2Homepage.watch(context),
+                          child: AnimatedHorizontalToggleLayout(
+                            taps: [appText.show, appText.hide],
+                            initialIndex: showAppliedListV2.value ? 0 : 1,
+                            width: constraints.maxWidth,
+                            onChange: (currentIndex, targetIndex) async {
+                              final prefs = await SharedPreferences.getInstance();
+                              targetIndex == 0 ? showAppliedListV2.value = true : showAppliedListV2.value = false;
+                              prefs.setBool('showAppliedListV2', showAppliedListV2.value);
+                            },
+                          ),
+                        ),
                         // Default Homepage
                         SettingsHeader(icon: Icons.home, text: appText.defaultHomepage),
                         AnimatedHorizontalToggleLayout(

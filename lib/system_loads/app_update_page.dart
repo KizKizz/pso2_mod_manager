@@ -41,11 +41,8 @@ class _AppUpdatePageState extends State<AppUpdatePage> {
           if (snapshot.connectionState != ConnectionState.done) {
             return FutureBuilderLoading(loadingText: appText.checkingAppVersion);
           } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-            return FutureBuilderError(loadingText: appText.checkingAppVersion, snapshotError: snapshot.error.toString());
+            return FutureBuilderError(loadingText: appText.checkingAppVersion, snapshotError: snapshot.error.toString(), isPopup: false,);
           } else {
-            if (Directory('${Directory.current.path}${p.separator}appUpdate').existsSync()) {
-              Directory('${Directory.current.path}${p.separator}appUpdate').deleteSync(recursive: true);
-            }
             String remoteVersion = snapshot.data.$1;
             String remotePatchNotes = snapshot.data.$2;
             if (remoteVersion.isNotEmpty && remoteVersion != curAppVersion && newAppVersionCheck(remoteVersion)) {
@@ -71,6 +68,7 @@ class _AppUpdatePageState extends State<AppUpdatePage> {
                                 children: [
                                   ElevatedButton(
                                       onPressed: () async {
+                                        await Directory('${Directory.current.path}${p.separator}appUpdate').create(recursive: true);
                                         final task = DownloadTask(
                                           url: 'https://github.com/KizKizz/pso2_mod_manager/releases/download/v$remoteVersion/PSO2NGSModManager_v$remoteVersion.zip',
                                           filename: 'PSO2NGSModManager_v$remoteVersion.zip',

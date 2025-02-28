@@ -62,7 +62,7 @@ Future<bool> vitalGaugeApplyPopup(context, String customImagePath, VitalGaugeBac
                       ],
                     ));
                   } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                    return FutureBuilderError(loadingText: appText.dText(appText.editingMod, vgDataFile.iceName), snapshotError: snapshot.error.toString());
+                    return FutureBuilderError(loadingText: appText.dText(appText.editingMod, vgDataFile.iceName), snapshotError: snapshot.error.toString(), isPopup: true,);
                   } else {
                     bool result = snapshot.data;
                     Navigator.of(context).pop(result);
@@ -127,7 +127,7 @@ Future<bool> vitalGaugeRestorePopup(context, VitalGaugeBackground vgDataFile) as
                       ],
                     ));
                   } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                    return FutureBuilderError(loadingText: appText.dText(appText.editingMod, vgDataFile.iceName), snapshotError: snapshot.error.toString());
+                    return FutureBuilderError(loadingText: appText.dText(appText.editingMod, vgDataFile.iceName), snapshotError: snapshot.error.toString(), isPopup: true,);
                   } else {
                     File downloadedFile = snapshot.data.$1;
                     String downloadedFileMd5 = snapshot.data.$2;

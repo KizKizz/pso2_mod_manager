@@ -439,7 +439,8 @@ class AppText {
       startAfter = 'Start After',
       tapToReturn = 'Tap To Return',
       homepageStyle = 'Homepage Style',
-      legacy = 'Legacy';
+      legacy = 'Legacy',
+      hideAppliedList = 'Hide Applied List';
 
   factory AppText.fromJson(Map<String, dynamic> json) => _$AppTextFromJson(json);
   Map<String, dynamic> toJson() => _$AppTextToJson(this);

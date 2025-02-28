@@ -61,7 +61,7 @@ Future<bool> lineStrikeBoardRestorePopup(context, LineStrikeBoard board, List<Li
                       ],
                     ));
                   } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                    return FutureBuilderError(loadingText: appText.dText(appText.restoringFile, board.iceDdsName), snapshotError: snapshot.error.toString());
+                    return FutureBuilderError(loadingText: appText.dText(appText.restoringFile, board.iceDdsName), snapshotError: snapshot.error.toString(), isPopup: true,);
                   } else {
                     bool result = snapshot.data;
                     Navigator.of(context).pop(result);
