@@ -45,7 +45,7 @@ class _AppVitalGaugeLoadPageState extends State<AppVitalGaugeLoadPage> {
             ),
           );
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-          return FutureBuilderError(loadingText: appText.loadingVitalGaugeBackgrounds, snapshotError: snapshot.error.toString());
+          return FutureBuilderError(loadingText: appText.loadingVitalGaugeBackgrounds, snapshotError: snapshot.error.toString(), isPopup: false,);
         } else {
           masterVitalGaugeBackgroundList = snapshot.data;
           pageIndex++;

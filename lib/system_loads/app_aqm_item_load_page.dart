@@ -45,7 +45,7 @@ class _AppAqmItemLoadPageState extends State<AppAqmItemLoadPage> {
             ),
           );
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-          return FutureBuilderError(loadingText: appText.loadingAqmInjectedItems, snapshotError: snapshot.error.toString());
+          return FutureBuilderError(loadingText: appText.loadingAqmInjectedItems, snapshotError: snapshot.error.toString(), isPopup: false,);
         } else {
           masterAqmInjectedItemList = snapshot.data;
           saveMasterAqmInjectListToJson();

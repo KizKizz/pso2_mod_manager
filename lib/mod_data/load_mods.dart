@@ -126,7 +126,7 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
               item.setNames = curJsonItemsList[itemIndex].setNames;
               //item.location = curJsonItemsList[itemIndex].location;
               //Populate modset items
-              if (item.isSet) modSetItemsFromMasterList.add(item);
+              if (item.isSet || item.setNames.isNotEmpty) modSetItemsFromMasterList.add(item);
               final curJsonModsList = curJsonItemsList[itemIndex].mods;
               for (var mod in item.mods) {
                 int modIndex = curJsonModsList.indexWhere((element) => element.modName == mod.modName);

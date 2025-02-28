@@ -25,6 +25,7 @@ Future<void> itemSwapAllPopup(context, Item item) async {
   List<ItemData> rDisplayingItemsExtra = [];
   String extraCategory = '';
   List<ItemData> displayingItems = [];
+  bool showPreviews = false;
   // List<ItemData> lDisplayingItems = [];
 
   await showDialog(
@@ -93,6 +94,20 @@ Future<void> itemSwapAllPopup(context, Item item) async {
                     spacing: 5,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      SizedBox(
+                        height: 30,
+                        child: OutlinedButton(
+                            style: ButtonStyle(
+                                backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context))),
+                                side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                            onPressed: () {
+                              showPreviews ? showPreviews = false : showPreviews = true;
+                              setState(
+                                () {},
+                              );
+                            },
+                            child: Text(showPreviews ? appText.hidePreview : appText.showPreview)),
+                      ),
                       Expanded(
                           child: SizedBox(
                         height: 30,
@@ -118,11 +133,17 @@ Future<void> itemSwapAllPopup(context, Item item) async {
                         scrollController: lScrollController,
                         submodList: availableSubmods,
                         selectedSubmods: selectedSubmods,
+                        showPreview: showPreviews, item: item,
                       )),
                       Expanded(
                           child: ItemSwapAllSelectedGridLayout(
                         itemDataList: rSelectedItemData,
                         scrollController: mScrollController,
+                        refresh: () {
+                          setState(
+                            () {},
+                          );
+                        },
                       )),
                       Expanded(
                           child: ItemSwapAllGridLayout(
@@ -204,8 +225,7 @@ Future<void> itemSwapAllPopup(context, Item item) async {
                                   itemSwapWorkingStatus.value = '';
                                   for (var mod in item.mods) {
                                     for (var submod in mod.submods.where((e) => selectedSubmods.value.contains(e))) {
-                                      final matchingItemData =
-                                          pItemData.where((e) => e.category == mod.category && submod.getModFileNames().indexWhere((f) => e.getIceDetailsWithoutKeys().contains(f)) != -1).toList();
+                                      final matchingItemData = pItemData.where((e) => submod.getModFileNames().indexWhere((f) => e.getIceDetailsWithoutKeys().contains(f)) != -1).toList();
                                       if (matchingItemData.length == 1) {
                                         lSelectedItemData.value = matchingItemData.first;
                                       } else if (matchingItemData.length > 1) {

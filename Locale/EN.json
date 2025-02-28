@@ -414,5 +414,6 @@
   "startAfter": "Start After",
   "tapToReturn": "Tap To Return",
   "homepageStyle": "Homepage Style",
-  "legacy": "Legacy"
+  "legacy": "Legacy",
+  "hideAppliedList": "Hide Applied List"
 }

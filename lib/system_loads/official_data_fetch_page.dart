@@ -45,7 +45,7 @@ class _OfficialDataFetchPageState extends State<OfficialDataFetchPage> {
             ),
           );
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-          return FutureBuilderError(loadingText: appText.fetchingDataFromSegaServers, snapshotError: snapshot.error.toString());
+          return FutureBuilderError(loadingText: appText.fetchingDataFromSegaServers, snapshotError: snapshot.error.toString(), isPopup: false,);
         } else {
           oItemData = snapshot.data.$1;
           oItemDataNA = snapshot.data.$2;

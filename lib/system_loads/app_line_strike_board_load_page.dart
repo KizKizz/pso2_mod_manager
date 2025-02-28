@@ -45,7 +45,7 @@ class _AppLineStrikeBoardLoadPageState extends State<AppLineStrikeBoardLoadPage>
             ),
           );
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-          return FutureBuilderError(loadingText: appText.loadingLineStrikeBoards, snapshotError: snapshot.error.toString());
+          return FutureBuilderError(loadingText: appText.loadingLineStrikeBoards, snapshotError: snapshot.error.toString(), isPopup: false,);
         } else {
           masterLineStrikeBoardList = snapshot.data;
           pageIndex++;

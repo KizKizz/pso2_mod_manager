@@ -85,7 +85,7 @@ class _DataUpdatePageState extends State<DataUpdatePage> {
           if (snapshot.connectionState != ConnectionState.done) {
             return FutureBuilderLoading(loadingText: appText.checkingItemDataVersion);
           } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-            return FutureBuilderError(loadingText: appText.checkingItemDataVersion, snapshotError: snapshot.error.toString());
+            return FutureBuilderError(loadingText: appText.checkingItemDataVersion, snapshotError: snapshot.error.toString(), isPopup: false,);
           } else {
             String remoteVersion = snapshot.data.$1;
             String desc = snapshot.data.$2;

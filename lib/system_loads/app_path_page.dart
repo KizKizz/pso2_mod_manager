@@ -42,7 +42,7 @@ class _AppPathPageState extends State<AppPathPage> {
         if (snapshot.connectionState != ConnectionState.done) {
           return FutureBuilderLoading(loadingText: appText.fetchingNecessaryDirPaths);
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-          return FutureBuilderError(loadingText: appText.fetchingNecessaryDirPaths, snapshotError: snapshot.error.toString());
+          return FutureBuilderError(loadingText: appText.fetchingNecessaryDirPaths, snapshotError: snapshot.error.toString(), isPopup: false,);
         } else {
           bool pso2bin = snapshot.data.$1;
           bool mainDir = snapshot.data.$2;

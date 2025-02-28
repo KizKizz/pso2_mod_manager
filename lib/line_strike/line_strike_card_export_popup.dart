@@ -66,7 +66,7 @@ Future<File?> lineStrikeCardExportPopup(context, LineStrikeCard card) async {
                     ],
                   ));
                 } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                  return FutureBuilderError(loadingText: appText.dText(appText.exportingFile, card.cardZeroDdsName), snapshotError: snapshot.error.toString());
+                  return FutureBuilderError(loadingText: appText.dText(appText.exportingFile, card.cardZeroDdsName), snapshotError: snapshot.error.toString(), isPopup: true,);
                 } else {
                   exportedFile = snapshot.data;
                   return ConstrainedBox(

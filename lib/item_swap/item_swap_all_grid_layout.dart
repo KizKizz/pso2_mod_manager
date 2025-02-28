@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/main_widgets/info_tag.dart';
+import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
+import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:signals/signals_flutter.dart';
@@ -154,10 +158,11 @@ class _ItemSwapAllGridLayoutState extends State<ItemSwapAllGridLayout> {
 }
 
 class ItemSwapAllSelectedGridLayout extends StatefulWidget {
-  const ItemSwapAllSelectedGridLayout({super.key, required this.itemDataList, required this.scrollController});
+  const ItemSwapAllSelectedGridLayout({super.key, required this.itemDataList, required this.scrollController, required this.refresh});
 
   final Signal<List<ItemData>> itemDataList;
   final ScrollController scrollController;
+  final VoidCallback refresh;
 
   @override
   State<ItemSwapAllSelectedGridLayout> createState() => _ItemSwapAllSelectedGridLayout();
@@ -281,6 +286,7 @@ class _ItemSwapAllSelectedGridLayout extends State<ItemSwapAllSelectedGridLayout
                                   ? () {
                                       selectedItemData = null;
                                       widget.itemDataList.watch(context).remove(displayingItemData[index]);
+                                      widget.refresh();
                                       setState(() {});
                                     }
                                   : null,
@@ -294,11 +300,13 @@ class _ItemSwapAllSelectedGridLayout extends State<ItemSwapAllSelectedGridLayout
 }
 
 class ItemSwapAllSubmodGridLayout extends StatefulWidget {
-  const ItemSwapAllSubmodGridLayout({super.key, required this.submodList, required this.scrollController, required this.selectedSubmods});
+  const ItemSwapAllSubmodGridLayout({super.key, required this.item, required this.submodList, required this.scrollController, required this.selectedSubmods, required this.showPreview});
 
+  final Item item;
   final List<SubMod> submodList;
   final ScrollController scrollController;
   final Signal<List<SubMod>> selectedSubmods;
+  final bool showPreview;
 
   @override
   State<ItemSwapAllSubmodGridLayout> createState() => _ItemSwapAllSubmodGridLayout();
@@ -319,6 +327,60 @@ class _ItemSwapAllSubmodGridLayout extends State<ItemSwapAllSubmodGridLayout> {
     return Column(
       spacing: 5,
       children: [
+        SizedBox(
+          height: 90,
+          child: Card(
+              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
+              color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+              margin: EdgeInsets.zero,
+              elevation: 5,
+              child: Padding(
+                  padding: const EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+                  child: Column(
+                    spacing: 5,
+                    children: [
+                      SizedBox(
+                        height: 80,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          spacing: 5,
+                          children: [
+                            AspectRatio(aspectRatio: 1, child: ItemIconBox(item: widget.item)),
+                            Expanded(
+                              child: Column(
+                                spacing: 5,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Flexible(child: Text(widget.item.getDisplayName(), style: Theme.of(context).textTheme.titleMedium)),
+                                  Row(
+                                      spacing: 2.5,
+                                      children: [
+                                        Expanded(
+                                          flex: 1,
+                                          child: InfoBox(
+                                            info: appText.dText(widget.item.mods.length > 1 ? appText.numMods : appText.numMod, widget.item.mods.length.toString()),
+                                            borderHighlight: false,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          flex: 2,
+                                          child: InfoBox(
+                                            info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedMods().toString()),
+                                            borderHighlight: widget.item.applyStatus,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ))),
+        ),
         SizedBox(
           height: 30,
           child: Stack(alignment: AlignmentDirectional.centerEnd, children: [
@@ -396,7 +458,7 @@ class _ItemSwapAllSubmodGridLayout extends State<ItemSwapAllSubmodGridLayout> {
                     return SizedBox(
                       // height: 260,
                       child: Card(
-                        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(0))),
+                        shape: const RoundedRectangleBorder(side: BorderSide(color: Colors.transparent, width: 1), borderRadius: BorderRadius.all(Radius.circular(0))),
                         color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
                         margin: EdgeInsets.zero,
                         elevation: 5,
@@ -407,44 +469,47 @@ class _ItemSwapAllSubmodGridLayout extends State<ItemSwapAllSubmodGridLayout> {
                               mainAxisSize: MainAxisSize.min,
                               spacing: 5,
                               children: [
-                                // Stack(
-                                //   alignment: AlignmentDirectional.bottomStart,
-                                //   children: [
-                                //     SubmodPreviewBox(
-                                //         imageFilePaths: displayingSubmods[index].previewImages, videoFilePaths: displayingSubmods[index].previewVideos, isNew: displayingSubmods[index].isNew),
-                                //     Visibility(
-                                //         visible: displayingSubmods[index].hasCmx! ||
-                                //             displayingSubmods[index].customAQMInjected! ||
-                                //             displayingSubmods[index].boundingRemoved! ||
-                                //             displayingSubmods[index].applyHQFilesOnly!,
-                                //         child: Padding(
-                                //           padding: const EdgeInsets.only(left: 5, bottom: 5),
-                                //           child: Row(
-                                //             spacing: 1,
-                                //             mainAxisAlignment: MainAxisAlignment.start,
-                                //             children: [
-                                //               Visibility(
-                                //                   visible: displayingSubmods[index].applyHQFilesOnly!,
-                                //                   child: Icon(Icons.high_quality_outlined, color: selectedModsApplyHQFilesOnly ? Theme.of(context).colorScheme.primary : null)),
-                                //               Visibility(visible: displayingSubmods[index].hasCmx!, child: InfoTag(info: appText.cmx, borderHighlight: displayingSubmods[index].cmxApplied!)),
-                                //               Visibility(
-                                //                   visible: displayingSubmods[index].customAQMInjected!,
-                                //                   child: InfoTag(info: appText.aqm, borderHighlight: displayingSubmods[index].customAQMInjected!)),
-                                //               Visibility(
-                                //                   visible: displayingSubmods[index].boundingRemoved!,
-                                //                   child: InfoTag(info: appText.bounding, borderHighlight: displayingSubmods[index].boundingRemoved!)),
-                                //             ],
-                                //           ),
-                                //         )),
-                                //   ],
-                                // ),
+                                Visibility(
+                                  visible: widget.showPreview,
+                                  child: Stack(
+                                    alignment: AlignmentDirectional.bottomStart,
+                                    children: [
+                                      SubmodPreviewBox(
+                                          imageFilePaths: displayingSubmods[index].previewImages, videoFilePaths: displayingSubmods[index].previewVideos, isNew: displayingSubmods[index].isNew),
+                                      Visibility(
+                                          visible: displayingSubmods[index].hasCmx! ||
+                                              displayingSubmods[index].customAQMInjected! ||
+                                              displayingSubmods[index].boundingRemoved! ||
+                                              displayingSubmods[index].applyHQFilesOnly!,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(left: 5, bottom: 5),
+                                            child: Row(
+                                              spacing: 1,
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                Visibility(
+                                                    visible: displayingSubmods[index].applyHQFilesOnly!,
+                                                    child: Icon(Icons.high_quality_outlined, color: selectedModsApplyHQFilesOnly ? Theme.of(context).colorScheme.primary : null)),
+                                                Visibility(visible: displayingSubmods[index].hasCmx!, child: InfoTag(info: appText.cmx, borderHighlight: displayingSubmods[index].cmxApplied!)),
+                                                Visibility(
+                                                    visible: displayingSubmods[index].customAQMInjected!,
+                                                    child: InfoTag(info: appText.aqm, borderHighlight: displayingSubmods[index].customAQMInjected!)),
+                                                Visibility(
+                                                    visible: displayingSubmods[index].boundingRemoved!,
+                                                    child: InfoTag(info: appText.bounding, borderHighlight: displayingSubmods[index].boundingRemoved!)),
+                                              ],
+                                            ),
+                                          )),
+                                    ],
+                                  ),
+                                ),
                                 Row(
                                   spacing: 2.5,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(displayingSubmods[index].modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleSmall),
+                                    Flexible(child: Text(displayingSubmods[index].modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleSmall)),
                                     const Icon(Icons.arrow_right),
-                                    Text(displayingSubmods[index].submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleSmall),
+                                    Flexible(child: Text(displayingSubmods[index].submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleSmall)),
                                   ],
                                 ),
                                 SizedBox(

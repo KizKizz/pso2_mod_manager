@@ -72,7 +72,7 @@ Future<void> boundingRadiusPopup(context, SubMod submod) async {
                       ],
                     ));
                   } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                    return FutureBuilderError(loadingText: appText.dText(appText.editingMod, submod.submodName), snapshotError: snapshot.error.toString());
+                    return FutureBuilderError(loadingText: appText.dText(appText.editingMod, submod.submodName), snapshotError: snapshot.error.toString(), isPopup: true,);
                   } else {
                     submod.boundingRemoved = snapshot.data;
                     finished.value = true;

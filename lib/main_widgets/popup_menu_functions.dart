@@ -257,10 +257,10 @@ Future<void> submodAddToSet(context, Item item, Mod mod, SubMod submod) async {
   mod.setNames.isNotEmpty ? mod.isSet = true : mod.isSet = false;
   item.setNames.isNotEmpty ? item.isSet = true : item.isSet = false;
 
-  if (toAddSets.isNotEmpty || toRemoveSets.isNotEmpty) {
-    saveMasterModSetListToJson();
-    saveMasterModListToJson();
-  }
+  // if (toAddSets.isNotEmpty || toRemoveSets.isNotEmpty) {
+  saveMasterModSetListToJson();
+  saveMasterModListToJson();
+  // }
 }
 
 Future<void> submodDelete(context, Item item, Mod mod, SubMod submod) async {

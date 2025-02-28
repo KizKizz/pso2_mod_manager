@@ -45,7 +45,7 @@ class _AppGitHubAccessPageState extends State<AppGitHubAccessPage> {
             ),
           );
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-          return FutureBuilderError(loadingText: appText.checkingGitHubAccess, snapshotError: snapshot.error.toString());
+          return FutureBuilderError(loadingText: appText.checkingGitHubAccess, snapshotError: snapshot.error.toString(), isPopup: false,);
         } else {
           offlineMode = snapshot.data;
           pageIndex++;

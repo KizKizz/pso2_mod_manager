@@ -45,7 +45,7 @@ class _AppQuickSwapItemsLoadPageState extends State<AppQuickSwapItemsLoadPage> {
             ),
           );
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-          return FutureBuilderError(loadingText: appText.loadingQuickSwapItems, snapshotError: snapshot.error.toString());
+          return FutureBuilderError(loadingText: appText.loadingQuickSwapItems, snapshotError: snapshot.error.toString(), isPopup: false,);
         } else {
           masterQuickSwapItemList = snapshot.data;
           pageIndex++;

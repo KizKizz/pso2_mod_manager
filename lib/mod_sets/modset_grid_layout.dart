@@ -6,11 +6,13 @@ import 'package:pso2_mod_manager/main_widgets/submod_more_functions_menu.dart';
 import 'package:pso2_mod_manager/main_widgets/quick_swap_menu.dart';
 import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
+import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_functions.dart';
 import 'package:pso2_mod_manager/mod_sets/modset_mod_view_popup.dart';
+import 'package:pso2_mod_manager/mod_sets/modset_rename_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/main_modset_grid.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
@@ -48,7 +50,7 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
     return SliverPadding(
       padding: const EdgeInsets.only(bottom: 2.5),
       sliver: SliverStickyHeader.builder(
-        sticky: widget.modSet.expanded ? true : false,
+          sticky: widget.modSet.expanded ? true : false,
           builder: (context, status) => InkWell(
                 onTap: () {
                   widget.modSet.expanded ? widget.modSet.expanded = false : widget.modSet.expanded = true;
@@ -146,6 +148,38 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
                                             side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1), borderRadius: const BorderRadius.all(Radius.circular(5))))),
                                     itemBuilder: (BuildContext context) {
                                       return [
+                                        PopupMenuItem(
+                                            enabled: widget.modSet.setItems.indexWhere((e) => e.applyStatus) == -1,
+                                            onTap: () async {
+                                              final newName = await modSetRenamePopup(context, widget.modSet.setName);
+                                              if (newName != null) {
+                                                for (var item in widget.modSet.setItems) {
+                                                  for (var mod in item.mods.where((e) => e.setNames.contains(widget.modSet.setName))) {
+                                                    for (var submod in mod.submods.where((e) => e.setNames.contains(widget.modSet.setName))) {
+                                                      submod.setNames.add(newName);
+                                                      submod.setNames.removeWhere((e) => e == widget.modSet.setName);
+                                                      if (submod.activeInSets!.contains(widget.modSet.setName)) {
+                                                        submod.activeInSets!.add(newName);
+                                                        submod.activeInSets!.removeWhere((e) => e == widget.modSet.setName);
+                                                      }
+                                                    }
+                                                    mod.setNames.add(newName);
+                                                    mod.setNames.removeWhere((e) => e == widget.modSet.setName);
+                                                  }
+                                                  item.setNames.add(newName);
+                                                  item.setNames.removeWhere((e) => e == widget.modSet.setName);
+                                                }
+                                                widget.modSet.setName = newName;
+                                                saveMasterModSetListToJson();
+                                                saveMasterModListToJson();
+                                                setState(() {});
+                                              }
+                                            },
+                                            child: MenuIconItem(
+                                              icon: Icons.edit,
+                                              text: appText.rename,
+                                              enabled: widget.modSet.setItems.indexWhere((e) => e.applyStatus) == -1,
+                                            )),
                                         PopupMenuItem(
                                             enabled: widget.modSet.setItems.indexWhere((e) => e.applyStatus) == -1,
                                             onTap: () async {

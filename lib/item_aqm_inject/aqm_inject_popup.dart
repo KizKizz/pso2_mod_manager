@@ -80,7 +80,7 @@ Future<bool> aqmInjectPopup(
                       ],
                     ));
                   } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                    return FutureBuilderError(loadingText: appText.dText(appText.editingMod, itemName), snapshotError: snapshot.error.toString());
+                    return FutureBuilderError(loadingText: appText.dText(appText.editingMod, itemName), snapshotError: snapshot.error.toString(), isPopup: true,);
                   } else {
                     result = snapshot.data;
                     finished.value = true;

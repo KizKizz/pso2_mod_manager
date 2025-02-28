@@ -70,7 +70,7 @@ Future<void> modExportPopup(context, ExportType exportType, String exportFileNam
                       ],
                     ));
                   } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                    return FutureBuilderError(loadingText: appText.exportingMods, snapshotError: snapshot.error.toString());
+                    return FutureBuilderError(loadingText: appText.exportingMods, snapshotError: snapshot.error.toString(), isPopup: true,);
                   } else {
                     File ? exportedFile = snapshot.data;
                     return CardOverlay(

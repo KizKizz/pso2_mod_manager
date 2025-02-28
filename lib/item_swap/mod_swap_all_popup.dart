@@ -174,7 +174,7 @@ Future<void> modSwapAllPopup(context, Item item, Mod mod) async {
                                   itemSwapWorkingStatus.value = '';
                                   for (var submod in mod.submods) {
                                     final matchingItemData =
-                                        pItemData.where((e) => e.category == mod.category && submod.getModFileNames().indexWhere((f) => e.getIceDetailsWithoutKeys().contains(f)) != -1).toList();
+                                        pItemData.where((e) => submod.getModFileNames().indexWhere((f) => e.getIceDetailsWithoutKeys().contains(f)) != -1).toList();
                                     if (matchingItemData.length == 1) {
                                       lSelectedItemData.value = matchingItemData.first;
                                     } else if (matchingItemData.length > 1) {

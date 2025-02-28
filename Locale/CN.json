@@ -1,4 +1,5 @@
 {
+  "hideAppliedList": "Hide Applied List",
   "modHasBeenAddedToSet": "\"%p%\" 已被添加到 \"%p%\" 组",
   "modHasBeenRemovedFromSet": "\"%p%\" 已从 \"%p%\" 组被移除",
   "addToSets": "添加到组",
