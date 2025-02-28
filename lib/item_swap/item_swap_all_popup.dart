@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_all_grid_layout.dart';
-import 'package:pso2_mod_manager/item_swap/item_swap_grid_layout.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_working_popup.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_all_motions_select_button.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_all_type_select_button.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_all_working_popup.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
-import 'package:pso2_mod_manager/mod_data/mod_class.dart';
+import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_swap_grid.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:pso2_mod_manager/v3_widgets/notifications.dart';
@@ -19,6 +18,7 @@ Future<void> itemSwapAllPopup(context, Item item) async {
   ScrollController lScrollController = ScrollController();
   ScrollController mScrollController = ScrollController();
   ScrollController rScrollController = ScrollController();
+  Signal<List<SubMod>> selectedSubmods = Signal<List<SubMod>>([]);
   Signal<ItemData?> lSelectedItemData = Signal<ItemData?>(null);
   Signal<List<ItemData>> rSelectedItemData = Signal<List<ItemData>>([]);
   Signal<bool> showNoNameItems = Signal(false);
@@ -70,6 +70,11 @@ Future<void> itemSwapAllPopup(context, Item item) async {
             rDisplayingItemsExtra = [];
           }
 
+          List<SubMod> availableSubmods = [];
+          for (var mod in item.mods) {
+            availableSubmods.addAll(mod.submods);
+          }
+
           // Data from mod
           // lDisplayingItems = pItemData.where((e) => e.category == mod.category && submod.getModFileNames().indexWhere((f) => e.getIceDetailsWithoutKeys().contains(f)) != -1).toList();
 
@@ -109,28 +114,15 @@ Future<void> itemSwapAllPopup(context, Item item) async {
                     spacing: 5,
                     children: [
                       Expanded(
-                          child: ItemSwapAllGridLayout(
-                        itemDataList: extraCategory == defaultCategoryDirs[1] ||
-                                extraCategory == defaultCategoryDirs[2] ||
-                                extraCategory == defaultCategoryDirs[7] ||
-                                extraCategory == defaultCategoryDirs[11] ||
-                                extraCategory == defaultCategoryDirs[16]
-                            ? rDisplayingItemsExtra
-                            : displayingItems,
+                          child: ItemSwapAllSubmodGridLayout(
                         scrollController: lScrollController,
-                        selectedItemData: rSelectedItemData,
+                        submodList: availableSubmods,
+                        selectedSubmods: selectedSubmods,
                       )),
                       Expanded(
-                          child: ItemSwapAllGridLayout(
-                        itemDataList: extraCategory == defaultCategoryDirs[1] ||
-                                extraCategory == defaultCategoryDirs[2] ||
-                                extraCategory == defaultCategoryDirs[7] ||
-                                extraCategory == defaultCategoryDirs[11] ||
-                                extraCategory == defaultCategoryDirs[16]
-                            ? rDisplayingItemsExtra
-                            : displayingItems,
+                          child: ItemSwapAllSelectedGridLayout(
+                        itemDataList: rSelectedItemData,
                         scrollController: mScrollController,
-                        selectedItemData: rSelectedItemData,
                       )),
                       Expanded(
                           child: ItemSwapAllGridLayout(
@@ -143,6 +135,11 @@ Future<void> itemSwapAllPopup(context, Item item) async {
                             : displayingItems,
                         scrollController: rScrollController,
                         selectedItemData: rSelectedItemData,
+                        refresh: () {
+                          setState(
+                            () {},
+                          );
+                        },
                       ))
                     ],
                   )),
@@ -204,25 +201,29 @@ Future<void> itemSwapAllPopup(context, Item item) async {
                       OutlinedButton(
                           onPressed: rSelectedItemData.watch(context).isNotEmpty
                               ? () async {
-                                  // itemSwapWorkingStatus.value = '';
-                                  // for (var submod in mod.submods) {
-                                  //   final matchingItemData =
-                                  //       pItemData.where((e) => e.category == mod.category && submod.getModFileNames().indexWhere((f) => e.getIceDetailsWithoutKeys().contains(f)) != -1).toList();
-                                  //   if (matchingItemData.length == 1) {
-                                  //     lSelectedItemData.value = matchingItemData.first;
-                                  //   } else if (matchingItemData.length > 1) {
-                                  //     int matchingIndex = matchingItemData.indexWhere((e) => e.getENName() == item.itemName || e.getJPName() == item.itemName);
-                                  //     matchingIndex != -1 ? lSelectedItemData.value = matchingItemData[matchingIndex] : lSelectedItemData.value = matchingItemData.first;
-                                  //   } else {
-                                  //     lSelectedItemData.value = null;
-                                  //   }
+                                  itemSwapWorkingStatus.value = '';
+                                  for (var mod in item.mods) {
+                                    for (var submod in mod.submods.where((e) => selectedSubmods.value.contains(e))) {
+                                      final matchingItemData =
+                                          pItemData.where((e) => e.category == mod.category && submod.getModFileNames().indexWhere((f) => e.getIceDetailsWithoutKeys().contains(f)) != -1).toList();
+                                      if (matchingItemData.length == 1) {
+                                        lSelectedItemData.value = matchingItemData.first;
+                                      } else if (matchingItemData.length > 1) {
+                                        int matchingIndex = matchingItemData.indexWhere((e) => e.getENName() == item.itemName || e.getJPName() == item.itemName);
+                                        matchingIndex != -1 ? lSelectedItemData.value = matchingItemData[matchingIndex] : lSelectedItemData.value = matchingItemData.first;
+                                      } else {
+                                        lSelectedItemData.value = null;
+                                      }
 
-                                  //   if (lSelectedItemData.value != null) {
-                                  //     await modSwapAllWorkingPopup(context, false, lSelectedItemData.value!, rSelectedItemData.value!, mod, submod);
-                                  //   } else {
-                                  //     errorNotification(appText.noMatchingFilesBetweenItemsToSwap);
-                                  //   }
-                                  // }
+                                      if (lSelectedItemData.value != null) {
+                                        for (var rItemData in rSelectedItemData.value) {
+                                          await modSwapAllWorkingPopup(context, false, lSelectedItemData.value!, rItemData, mod, submod);
+                                        }
+                                      } else {
+                                        errorNotification(appText.noMatchingFilesBetweenItemsToSwap);
+                                      }
+                                    }
+                                  }
                                 }
                               : null,
                           child: Text(appText.swapAll)),
