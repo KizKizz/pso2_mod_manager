@@ -254,7 +254,7 @@ class AppText {
       injectedAQMFile = 'Injected AQM: %p%',
       addingMods = 'Adding Mods',
       modHasBeenAddedToSet = '"%p%" has been added to "%p%" Set',
-      modHasBeenRemovedFromSet = '"%p%" has been removed from "%p%" Set', 
+      modHasBeenRemovedFromSet = '"%p%" has been removed from "%p%" Set',
       addToSets = 'Add To Sets';
 
   // Text Strings
@@ -379,6 +379,15 @@ class AppText {
       filterRemoveInfo = 'Click and hold on the filters to remove',
       firstTimeInfo = 'If this is your first time using PSO2NGS Mod Manager and your game currently contains mods, please remove them first',
       emptyModViewInfo = 'Select an item to display its mods here';
+
+  // Help menu
+  String applyRestoreMods = 'Apply - restore mods',
+      addModsToModSets = 'Add mods to Mod Sets',
+      swapItemToAnotherItem = 'Swap an item to another item',
+      swapModsToAnotherItem = 'Swap a mod to another item',
+      addModsToModManager = 'Add mods to Mod Manager',
+      addCustomImagesToVitalGauge = 'Add custom images to Vital Gauge',
+      addCustomImagesToLineStrike = 'Add custom images to Line Strike';
 
   // Settings Text
   String appSettings = 'App Settings',
