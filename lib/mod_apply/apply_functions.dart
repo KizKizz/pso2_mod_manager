@@ -77,9 +77,7 @@ Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod
   // Apply mod files to game
   if (performApply) {
     // Inject aqm
-    if (autoInjectCustomAqm && selectedCustomAQMFilePath.value.isNotEmpty && File(selectedCustomAQMFilePath.value).existsSync() && !submod.customAQMInjected!) {
-      await submodAqmInject(context, submod);
-    } else if (autoInjectCustomAqm && submod.customAQMInjected! && submod.customAQMFileName!.isNotEmpty && File(submod.customAQMFileName!).existsSync()) {
+    if (autoInjectCustomAqm && submod.customAQMInjected! && submod.customAQMFileName!.isNotEmpty && File(submod.customAQMFileName!).existsSync()) {
       String hqIcePath = '';
       String lqIcePath = '';
       for (var modFile in submod.modFiles) {
@@ -108,6 +106,8 @@ Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod
         submod.lqIcePath = lqIcePath;
         saveMasterModListToJson();
       }
+    } else if (autoInjectCustomAqm && selectedCustomAQMFilePath.value.isNotEmpty && File(selectedCustomAQMFilePath.value).existsSync() && !submod.customAQMInjected!) {
+      await submodAqmInject(context, submod);
     }
 
     // Remove bounding radius
