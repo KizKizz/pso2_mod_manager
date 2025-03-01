@@ -380,6 +380,13 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..filterRemoveInfo = json['filterRemoveInfo'] as String
   ..firstTimeInfo = json['firstTimeInfo'] as String
   ..emptyModViewInfo = json['emptyModViewInfo'] as String
+  ..applyRestoreMods = json['applyRestoreMods'] as String
+  ..addModsToModSets = json['addModsToModSets'] as String
+  ..swapItemToAnotherItem = json['swapItemToAnotherItem'] as String
+  ..swapModsToAnotherItem = json['swapModsToAnotherItem'] as String
+  ..addModsToModManager = json['addModsToModManager'] as String
+  ..addCustomImagesToVitalGauge = json['addCustomImagesToVitalGauge'] as String
+  ..addCustomImagesToLineStrike = json['addCustomImagesToLineStrike'] as String
   ..appSettings = json['appSettings'] as String
   ..uiLanguage = json['uiLanguage'] as String
   ..itemNameLanguage = json['itemNameLanguage'] as String
@@ -807,6 +814,13 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'filterRemoveInfo': instance.filterRemoveInfo,
       'firstTimeInfo': instance.firstTimeInfo,
       'emptyModViewInfo': instance.emptyModViewInfo,
+      'applyRestoreMods': instance.applyRestoreMods,
+      'addModsToModSets': instance.addModsToModSets,
+      'swapItemToAnotherItem': instance.swapItemToAnotherItem,
+      'swapModsToAnotherItem': instance.swapModsToAnotherItem,
+      'addModsToModManager': instance.addModsToModManager,
+      'addCustomImagesToVitalGauge': instance.addCustomImagesToVitalGauge,
+      'addCustomImagesToLineStrike': instance.addCustomImagesToLineStrike,
       'appSettings': instance.appSettings,
       'uiLanguage': instance.uiLanguage,
       'itemNameLanguage': instance.itemNameLanguage,

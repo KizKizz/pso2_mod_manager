@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 
 class HelpPageGrid extends StatefulWidget {
@@ -13,6 +14,7 @@ class HelpPageGrid extends StatefulWidget {
 class _HelpPageGridState extends State<HelpPageGrid> {
   double fadeInOpacity = 0;
   final Player videoPlayer = Player();
+  final helpVideos = <String, String>{appText.addModsToModManager: 'https://github.com/KizKizz/pso2_mod_manager/raw/refs/heads/main/help_data/add_mods.mp4'};
 
   @override
   void initState() {
@@ -48,11 +50,14 @@ class _HelpPageGridState extends State<HelpPageGrid> {
                 paddingValue: 5,
                 child: SingleChildScrollView(
                   child: Column(
-                    spacing: 5,
-                    children: [OutlinedButton(onPressed: () => setState(() {
-                      
-                    }), child: Text('data'))],
-                  ),
+                      spacing: 5,
+                      children: helpVideos.entries
+                          .map((e) => OutlinedButton(
+                              onPressed: () => setState(() {
+                                    playVideo(e.value);
+                                  }),
+                              child: Text(e.key)))
+                          .toList()),
                 )),
             Expanded(
                 child: CardOverlay(
