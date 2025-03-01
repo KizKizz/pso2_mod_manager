@@ -77,9 +77,9 @@ Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod
   // Apply mod files to game
   if (performApply) {
     // Inject aqm
-    if (autoBoundingRadiusRemoval && selectedCustomAQMFilePath.value.isNotEmpty && File(selectedCustomAQMFilePath.value).existsSync() && !submod.customAQMInjected!) {
+    if (autoInjectCustomAqm && selectedCustomAQMFilePath.value.isNotEmpty && File(selectedCustomAQMFilePath.value).existsSync() && !submod.customAQMInjected!) {
       await submodAqmInject(context, submod);
-    } else if (autoBoundingRadiusRemoval && submod.customAQMInjected! && submod.customAQMFileName!.isNotEmpty && File(submod.customAQMFileName!).existsSync()) {
+    } else if (autoInjectCustomAqm && submod.customAQMInjected! && submod.customAQMFileName!.isNotEmpty && File(submod.customAQMFileName!).existsSync()) {
       String hqIcePath = '';
       String lqIcePath = '';
       for (var modFile in submod.modFiles) {
