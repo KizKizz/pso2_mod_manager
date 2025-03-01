@@ -8,6 +8,7 @@ import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_functions.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_popup.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_item_class.dart';
 import 'package:pso2_mod_manager/item_bounding_radius/bounding_radius_popup.dart';
+import 'package:pso2_mod_manager/main_widgets/popup_menu_functions.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_apply/applying_popup.dart';
 import 'package:pso2_mod_manager/mod_apply/duplicate_popups.dart';
@@ -75,6 +76,40 @@ Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod
 
   // Apply mod files to game
   if (performApply) {
+    // Inject aqm
+    if (autoBoundingRadiusRemoval && selectedCustomAQMFilePath.value.isNotEmpty && File(selectedCustomAQMFilePath.value).existsSync() && !submod.customAQMInjected!) {
+      await submodAqmInject(context, submod);
+    } else if (autoBoundingRadiusRemoval && submod.customAQMInjected! && submod.customAQMFileName!.isNotEmpty && File(submod.customAQMFileName!).existsSync()) {
+      String hqIcePath = '';
+      String lqIcePath = '';
+      for (var modFile in submod.modFiles) {
+        if (hqIcePath.isEmpty) {
+          int hqIndex = pItemData.indexWhere((e) => e.category == submod.category && e.getHQIceName().contains(modFile.modFileName));
+          if (hqIndex != -1) {
+            hqIcePath = modFile.location;
+            if (lqIcePath.isNotEmpty) break;
+          }
+        }
+        if (lqIcePath.isEmpty) {
+          int lqIndex = pItemData.indexWhere((e) => e.category == submod.category && e.getLQIceName().contains(modFile.modFileName));
+          if (lqIndex != -1) {
+            lqIcePath = modFile.location;
+            if (hqIcePath.isNotEmpty) break;
+          }
+        }
+      }
+
+      bool result = await aqmInjectPopup(context, submod.customAQMFileName!, hqIcePath, lqIcePath, submod.itemName, false, false, false, false, true);
+
+      if (result) {
+        submod.customAQMInjected = true;
+        submod.customAQMFileName = p.basename(submod.customAQMFileName!);
+        submod.hqIcePath = hqIcePath;
+        submod.lqIcePath = lqIcePath;
+        saveMasterModListToJson();
+      }
+    }
+
     // Remove bounding radius
     if (autoBoundingRadiusRemoval && boundingRadiusCategoryDirs.contains(submod.category)) {
       await boundingRadiusPopup(context, submod);
