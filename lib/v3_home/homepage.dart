@@ -8,6 +8,7 @@ import 'package:pso2_mod_manager/main_widgets/first_time_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v2_home/homepage_v2.dart';
 import 'package:pso2_mod_manager/v3_functions/json_backup.dart';
+import 'package:pso2_mod_manager/v3_home/help_page_grid.dart';
 import 'package:pso2_mod_manager/v3_home/main_applied_mod_grid.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_aqm_inject_grid.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_swap_grid.dart';
@@ -46,7 +47,7 @@ List<Widget> homepageV2Widgets = [
   const MainVitalGaugeGrid(),
   const MainLineStrikeGrid()
 ];
-List<Widget> homepageFooterWidgets = [const ModAdd(), const Settings()];
+List<Widget> homepageFooterWidgets = [const ModAdd(), const Settings(), const HelpPageGrid()];
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -133,10 +134,11 @@ class _HomepageState extends State<Homepage> {
     }
 
     // footer
-    List<String> homepageFooterWidgetNames = [appText.addMods, appText.settings];
+    List<String> homepageFooterWidgetNames = [appText.addMods, appText.settings, appText.help];
     List<Icon> homepageFooterWidgetIcon = [
       const Icon(Icons.add_circle_outline_sharp),
       const Icon(Icons.settings),
+      const Icon(Icons.help_outline)
     ];
 
     return Scaffold(
@@ -167,7 +169,7 @@ class _HomepageState extends State<Homepage> {
                       ),
                       // top
                       SizedBox(
-                        height: MediaQuery.of(context).size.height - 251,
+                        height: MediaQuery.of(context).size.height - 291,
                         child: SideMenu(
                           style: SideMenuStyle(
                             displayMode: sideBarCollapse.watch(context) ? SideMenuDisplayMode.compact : SideMenuDisplayMode.open,
@@ -229,7 +231,7 @@ class _HomepageState extends State<Homepage> {
 
                       // bottom
                       SizedBox(
-                        height: 105,
+                        height: 155,
                         child: SideMenu(
                             style: SideMenuStyle(
                               displayMode: sideBarCollapse.watch(context) ? SideMenuDisplayMode.compact : SideMenuDisplayMode.open,
