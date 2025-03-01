@@ -136,7 +136,8 @@ class AppText {
       continues = 'Continue',
       imported = 'Imported',
       filters = 'Filters',
-      details = 'Details';
+      details = 'Details',
+      help = 'Help';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
