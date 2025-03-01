@@ -14,7 +14,15 @@ class HelpPageGrid extends StatefulWidget {
 class _HelpPageGridState extends State<HelpPageGrid> {
   double fadeInOpacity = 0;
   final Player videoPlayer = Player();
-  final helpVideos = <String, String>{appText.addModsToModManager: 'https://github.com/KizKizz/pso2_mod_manager/raw/refs/heads/main/help_data/add_mods.mp4'};
+  final helpVideos = <String, String>{
+    appText.addModsToModManager: 'https://github.com/KizKizz/pso2_mod_manager/raw/refs/heads/main/help_data/add_mods.mp4',
+    appText.applyRestoreMods: 'https://github.com/KizKizz/pso2_mod_manager/raw/refs/heads/main/help_data/apply_restore_mods.mp4',
+    appText.swapModsToAnotherItem: 'https://github.com/KizKizz/pso2_mod_manager/raw/refs/heads/main/help_data/mod_swaps.mp4',
+    appText.swapItemToAnotherItem: 'https://github.com/KizKizz/pso2_mod_manager/raw/refs/heads/main/help_data/item_swaps.mp4',
+    appText.addModsToModSets: 'https://github.com/KizKizz/pso2_mod_manager/raw/refs/heads/main/help_data/mod_sets.mp4',
+    appText.addCustomImagesToVitalGauge: 'https://github.com/KizKizz/pso2_mod_manager/raw/refs/heads/main/help_data/vital_gauge.mp4',
+    appText.addCustomImagesToLineStrike: 'https://github.com/KizKizz/pso2_mod_manager/raw/refs/heads/main/help_data/line_strike.mp4'
+  };
 
   @override
   void initState() {
@@ -42,29 +50,32 @@ class _HelpPageGridState extends State<HelpPageGrid> {
     return AnimatedOpacity(
         opacity: fadeInOpacity,
         duration: const Duration(milliseconds: 100),
-        child: Expanded(
-            child: Row(
+        child: Column(
           spacing: 5,
           children: [
-            CardOverlay(
-                paddingValue: 5,
-                child: SingleChildScrollView(
-                  child: Column(
-                      spacing: 5,
-                      children: helpVideos.entries
-                          .map((e) => OutlinedButton(
-                              onPressed: () => setState(() {
-                                    playVideo(e.value);
-                                  }),
-                              child: Text(e.key)))
-                          .toList()),
-                )),
             Expanded(
                 child: CardOverlay(
               paddingValue: 5,
               child: Video(controller: VideoController(videoPlayer)),
-            ))
+            )),
+            SizedBox(
+              width: double.infinity,
+              child: CardOverlay(
+                paddingValue: 5,
+                child: Wrap(
+                    spacing: 5,
+                    runSpacing: 5,
+                    alignment: WrapAlignment.center,
+                    children: helpVideos.entries
+                        .map((e) => OutlinedButton(
+                            onPressed: () => setState(() {
+                                  playVideo(e.value);
+                                }),
+                            child: Text(e.key)))
+                        .toList()),
+              ),
+            ),
           ],
-        )));
+        ));
   }
 }

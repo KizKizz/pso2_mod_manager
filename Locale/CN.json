@@ -1,4 +1,11 @@
 {
+  "applyRestoreMods": "Apply - restore mods",
+  "addModsToModSets": "Add mods to Mod Sets",
+  "swapItemToAnotherItem": "Swap an item to another item",
+  "swapModsToAnotherItem": "Swap a mod to another item",
+  "addModsToModManager": "Add mods to Mod Manager",
+  "addCustomImagesToVitalGauge": "Add custom images to Vital Gauge",
+  "addCustomImagesToLineStrike": "Add custom images to Line Strike",
   "help": "Help",
   "hideAppliedList": "Hide Applied List",
   "modHasBeenAddedToSet": "\"%p%\" 已被添加到 \"%p%\" 组",
