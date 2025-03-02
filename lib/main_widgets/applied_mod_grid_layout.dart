@@ -111,7 +111,7 @@ class _AppliedModGridLayoutState extends State<AppliedModGridLayout> {
               ? SliverPadding(
                   padding: const EdgeInsets.symmetric(vertical: 2.5),
                   sliver: SliverGrid.builder(
-                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 302, maxCrossAxisExtent: 500, mainAxisSpacing: 2.5, crossAxisSpacing: 2.5),
+                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 295, maxCrossAxisExtent: 450, mainAxisSpacing: 2.5, crossAxisSpacing: 2.5),
                       itemCount: modCardList.length,
                       itemBuilder: (context, index) => modCardList[index]),
                 )
@@ -162,17 +162,19 @@ class _ModCardLayoutState extends State<ModCardLayout> {
             ],
           ),
           Expanded(
-              child: Column(
-            spacing: 5,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(child: Text(widget.mod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
-              Visibility(
-                  // visible: widget.submod.submodName != widget.mod.modName,
-                  visible: true,
-                  child: Text(widget.submod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
-            ],
-          )),
+            child: Row(
+              spacing: 2.5,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(child: Text(widget.mod.modName, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge)),
+                const Icon(Icons.arrow_right),
+                Flexible(
+                    child: Text(widget.submod.submodName, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge)),
+              ],
+            ),
+          ),
           Row(
             spacing: 5,
             children: [

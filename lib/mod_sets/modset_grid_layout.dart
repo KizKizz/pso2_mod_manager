@@ -207,7 +207,7 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
               ? SliverPadding(
                   padding: const EdgeInsets.symmetric(vertical: 2.5),
                   sliver: SliverGrid.builder(
-                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 340, maxCrossAxisExtent: 560, mainAxisSpacing: 2.5, crossAxisSpacing: 2.5),
+                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 305, maxCrossAxisExtent: 450, mainAxisSpacing: 2.5, crossAxisSpacing: 2.5),
                       itemCount: modCardList.length,
                       itemBuilder: (context, index) => modCardList[index]),
                 )
@@ -259,17 +259,18 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
             ],
           ),
           Expanded(
-              child: Column(
-            spacing: 5,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Visibility(
-                  // visible: widget.activeMod.modName != widget.activeSubmod.submodName,
-                  visible: true,
-                  child: Text(widget.activeMod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
-              Text(widget.activeSubmod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
-            ],
-          )),
+            child: Row(
+              spacing: 2.5,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Flexible(child: Text(widget.activeMod.modName, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge)),
+                const Icon(Icons.arrow_right),
+                Flexible(child: Text(widget.activeSubmod.submodName, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge)),
+              ],
+            ),
+          ),
           Row(
             spacing: 5,
             children: [
@@ -299,8 +300,7 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
               Visibility(
                   visible:
                       widget.item.getSubmods().where((e) => e.isSet && e.setNames.contains(widget.setName)).length > 1 || widget.item.mods.where((e) => e.setNames.contains(widget.setName)).length > 1,
-                  child: Expanded(
-                    child: OutlinedButton(
+                  child: OutlinedButton(
                         onPressed: () {
                           modsetModViewPopup(context, widget.item, widget.setName);
                         },
@@ -308,7 +308,7 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
                           appText.viewVariants,
                           textAlign: TextAlign.center,
                         )),
-                  )),
+                  ),
               Expanded(
                   child: OutlinedButton(
                       onPressed: () async {

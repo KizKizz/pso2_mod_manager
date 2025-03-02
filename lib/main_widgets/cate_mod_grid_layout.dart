@@ -66,7 +66,7 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
     return SliverPadding(
       padding: const EdgeInsets.only(bottom: 2.5),
       sliver: SliverStickyHeader.builder(
-        sticky: widget.itemCate.visible ? true : false,
+          sticky: widget.itemCate.visible ? true : false,
           builder: (context, status) => InkWell(
                 onTap: () {
                   widget.itemCate.visible ? widget.itemCate.visible = false : widget.itemCate.visible = true;
@@ -104,7 +104,7 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
               ? SliverPadding(
                   padding: const EdgeInsets.symmetric(vertical: 2.5),
                   sliver: SliverGrid.builder(
-                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 335, maxCrossAxisExtent: 450, mainAxisSpacing: 2.5, crossAxisSpacing: 2.5),
+                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 295, maxCrossAxisExtent: 450, mainAxisSpacing: 2.5, crossAxisSpacing: 2.5),
                       itemCount: modCardList.length,
                       itemBuilder: (context, index) => modCardList[index]),
                 )
@@ -126,63 +126,72 @@ class ModCardLayout extends StatefulWidget {
 class _ModCardLayoutState extends State<ModCardLayout> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
-        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-        margin: EdgeInsets.zero,
-        elevation: 5,
-        child: Padding(
-          padding: const EdgeInsets.all(5),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            spacing: 5,
-            children: [
-              Row(
-                spacing: 5,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Column(
-                      spacing: 5,
-                      children: [
-                        ItemIconBox(item: widget.item),
-                        Text(widget.item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
-                      ],
+    return InkWell(
+      onTap: () async {
+        await submodViewPopup(context, widget.item, widget.mod);
+        if (mounted) setState(() {});
+      },
+      borderRadius: const BorderRadius.all(Radius.circular(5)),
+      hoverColor: Theme.of(context).colorScheme.onPrimary.withAlpha(uiBackgroundColorAlpha.watch(context)),
+      child: Card(
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
+          color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+          margin: EdgeInsets.zero,
+          elevation: 5,
+          child: Padding(
+            padding: const EdgeInsets.all(5),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              spacing: 5,
+              children: [
+                Row(
+                  spacing: 5,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        spacing: 5,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ItemIconBox(item: widget.item),
+                          Flexible(child: Text(widget.item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
+                        ],
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: SubmodPreviewBox(imageFilePaths: widget.mod.previewImages, videoFilePaths: widget.mod.previewVideos, isNew: widget.mod.isNew),
-                  )
-                ],
-              ),
-              Expanded(child: Text(widget.mod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
-              Column(
-                spacing: 5,
-                children: [
-                  InfoBox(
-                    info: appText.dText(widget.mod.submods.length > 1 ? appText.numVariants : appText.numVariant, widget.mod.submods.length.toString()),
-                    borderHighlight: false,
-                  ),
-                  InfoBox(
-                    info: appText.dText(appText.numCurrentlyApplied, widget.mod.getNumOfAppliedSubmods().toString()),
-                    borderHighlight: widget.mod.applyStatus,
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton(
-                        onPressed: () async {
-                          await submodViewPopup(context, widget.item, widget.mod);
-                          if (mounted) setState(() {});
-                        },
-                        child: Text(appText.viewVariants)),
-                  )
-                ],
-              )
-            ],
-          ),
-        ));
+                    Expanded(
+                      flex: 3,
+                      child: SubmodPreviewBox(imageFilePaths: widget.mod.previewImages, videoFilePaths: widget.mod.previewVideos, isNew: widget.mod.isNew),
+                    )
+                  ],
+                ),
+                Expanded(child: Center(child: Text(widget.mod.modName, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge))),
+                Column(
+                  spacing: 5,
+                  children: [
+                    InfoBox(
+                      info: appText.dText(widget.mod.submods.length > 1 ? appText.numVariants : appText.numVariant, widget.mod.submods.length.toString()),
+                      borderHighlight: false,
+                    ),
+                    InfoBox(
+                      info: appText.dText(appText.numCurrentlyApplied, widget.mod.getNumOfAppliedSubmods().toString()),
+                      borderHighlight: widget.mod.applyStatus,
+                    ),
+                    // SizedBox(
+                    //   width: double.infinity,
+                    //   child: OutlinedButton(
+                    //       onPressed: () async {
+                    //         await submodViewPopup(context, widget.item, widget.mod);
+                    //         if (mounted) setState(() {});
+                    //       },
+                    //       child: Text(appText.viewVariants)),
+                    // )
+                  ],
+                )
+              ],
+            ),
+          )),
+    );
   }
 }
