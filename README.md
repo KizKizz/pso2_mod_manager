@@ -2,7 +2,7 @@
  **An app to manage, swapping mods and items for Phantasy Star Online 2 New Genesis**
  
 
-![frontpage](https://github.com/user-attachments/assets/ff7f6f7c-66b2-47f0-95f4-cafaed6e8d20)
+![pso2ngs](https://github.com/user-attachments/assets/fa8593ed-d3ce-44d5-b35d-b7200e4cbe24)
 
 
 # Download
