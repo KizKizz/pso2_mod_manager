@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_board_class.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_board_original_tile.dart';
+import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 
 class LineStrikeBoardOriginalGridLayout extends StatefulWidget {
@@ -17,12 +18,12 @@ class _LineStrikeBoardOriginalGridLayoutState extends State<LineStrikeBoardOrigi
   @override
   Widget build(BuildContext context) {
     return Expanded(
-        child: ResponsiveGridList(
+        child: CardOverlay(paddingValue: 5, child: ResponsiveGridList(
             listViewBuilderOptions: ListViewBuilderOptions(controller: widget.rScrollController),
             minItemWidth: 350,
-            verticalGridMargin: 5,
+            // verticalGridMargin: 5,
             horizontalGridSpacing: 5,
             verticalGridSpacing: 5,
-            children: [for (int i = 0; i < widget.boards.length; i++) LineStrikeBoardOriginalTile(board: widget.boards[i], lineStrikeBoardList: widget.boards)]));
+            children: [for (int i = 0; i < widget.boards.length; i++) LineStrikeBoardOriginalTile(board: widget.boards[i], lineStrikeBoardList: widget.boards)])));
   }
 }
