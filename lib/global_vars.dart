@@ -109,6 +109,7 @@ final defaultWeaponTypes = [
 
 final defaultMotionTypes = ['Glide Motion', 'Jump Motion', 'Landing Motion', 'Dash Motion', 'Run Motion', 'Standby Motion', 'Swim Motion'];
 final modSortingSelections = ['Name (Alphabetical)', 'Recently Added', 'Recently Applied'];
+final win32DirNames = ['win32', 'win32reboot', 'win32_na', 'win32reboot_na'];
 String charToReplace = '[\\/:*?"<>|]';
 String charToReplaceWithoutSeparators = '[:*?"<>|]';
 

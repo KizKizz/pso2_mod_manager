@@ -137,7 +137,7 @@ class _ModCardLayoutState extends State<ModCardLayout> {
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
           color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
           margin: EdgeInsets.zero,
-          elevation: 5,
+          elevation: 2.5,
           child: Padding(
             padding: const EdgeInsets.all(5),
             child: Column(
@@ -146,13 +146,12 @@ class _ModCardLayoutState extends State<ModCardLayout> {
               spacing: 5,
               children: [
                 Row(
-                  spacing: 5,
+                  spacing: 2.5,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: Column(
-                        spacing: 5,
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           ItemIconBox(item: widget.item),
@@ -161,14 +160,14 @@ class _ModCardLayoutState extends State<ModCardLayout> {
                       ),
                     ),
                     Expanded(
-                      flex: 3,
+                      flex: 6,
                       child: SubmodPreviewBox(imageFilePaths: widget.mod.previewImages, videoFilePaths: widget.mod.previewVideos, isNew: widget.mod.isNew),
                     )
                   ],
                 ),
                 Expanded(child: Center(child: Text(widget.mod.modName, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge))),
                 Column(
-                  spacing: 5,
+                  spacing: 2.5,
                   children: [
                     InfoBox(
                       info: appText.dText(widget.mod.submods.length > 1 ? appText.numVariants : appText.numVariant, widget.mod.submods.length.toString()),

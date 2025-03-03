@@ -239,13 +239,12 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
         spacing: 5,
         children: [
           Row(
-            spacing: 5,
+            spacing: 2.5,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                flex: 1,
+                flex: 2,
                 child: Column(
-                  spacing: 5,
                   children: [
                     ItemIconBox(item: widget.item),
                     Text(widget.item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
@@ -253,7 +252,7 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
                 ),
               ),
               Expanded(
-                flex: 3,
+                flex: 6,
                 child: SubmodPreviewBox(imageFilePaths: widget.activeSubmod.previewImages, videoFilePaths: widget.activeSubmod.previewVideos, isNew: widget.activeSubmod.isNew),
               )
             ],
@@ -272,7 +271,7 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
             ),
           ),
           Row(
-            spacing: 5,
+            spacing: 2.5,
             children: [
               Expanded(
                   child: InfoBox(
