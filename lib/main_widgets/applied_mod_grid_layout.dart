@@ -74,7 +74,7 @@ class _AppliedModGridLayoutState extends State<AppliedModGridLayout> {
     return SliverPadding(
       padding: const EdgeInsets.only(bottom: 2.5),
       sliver: SliverStickyHeader.builder(
-        sticky: widget.category.visible ? true : false,
+          sticky: widget.category.visible ? true : false,
           builder: (context, status) => InkWell(
                 onTap: () {
                   widget.category.visible ? widget.category.visible = false : widget.category.visible = true;
@@ -111,7 +111,7 @@ class _AppliedModGridLayoutState extends State<AppliedModGridLayout> {
               ? SliverPadding(
                   padding: const EdgeInsets.symmetric(vertical: 2.5),
                   sliver: SliverGrid.builder(
-                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 302, maxCrossAxisExtent: 500, mainAxisSpacing: 2.5, crossAxisSpacing: 2.5),
+                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 295, maxCrossAxisExtent: 450, mainAxisSpacing: 2.5, crossAxisSpacing: 2.5),
                       itemCount: modCardList.length,
                       itemBuilder: (context, index) => modCardList[index]),
                 )
@@ -142,13 +142,12 @@ class _ModCardLayoutState extends State<ModCardLayout> {
         spacing: 5,
         children: [
           Row(
-            spacing: 5,
+            spacing: 2.5,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                flex: 1,
+                flex: 2,
                 child: Column(
-                  spacing: 5,
                   children: [
                     ItemIconBox(item: widget.item),
                     Text(widget.item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
@@ -156,23 +155,24 @@ class _ModCardLayoutState extends State<ModCardLayout> {
                 ),
               ),
               Expanded(
-                flex: 3,
+                flex: 6,
                 child: SubmodPreviewBox(imageFilePaths: widget.submod.previewImages, videoFilePaths: widget.submod.previewVideos, isNew: widget.mod.isNew),
               )
             ],
           ),
           Expanded(
-              child: Column(
-            spacing: 5,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(child: Text(widget.mod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
-              Visibility(
-                  // visible: widget.submod.submodName != widget.mod.modName,
-                  visible: true,
-                  child: Text(widget.submod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
-            ],
-          )),
+            child: Row(
+              spacing: 2.5,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(child: Text(widget.mod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
+                const Icon(Icons.arrow_right),
+                Flexible(child: Text(widget.submod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
+              ],
+            ),
+          ),
           Row(
             spacing: 5,
             children: [

@@ -70,7 +70,7 @@ Future<List<AddingMod>> modAddSort() async {
   // Remove empty root parent dir
   for (var dir in Directory(modAddTempUnpackedDirPath).listSync().whereType<Directory>()) {
     final innerDirs = dir.listSync();
-    if (innerDirs.length == 1 && FileSystemEntity.isDirectorySync(innerDirs.first.path)) {
+    if (innerDirs.length == 1 && !win32DirNames.contains(p.basename(innerDirs.first.path)) && FileSystemEntity.isDirectorySync(innerDirs.first.path)) {
       await io.copyPath(innerDirs.first.path, dir.parent.path + p.separator + p.basename(innerDirs.first.path));
       await innerDirs.first.delete(recursive: true);
     }
