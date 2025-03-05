@@ -255,7 +255,10 @@ class AppText {
       addingMods = 'Adding Mods',
       modHasBeenAddedToSet = '"%p%" has been added to "%p%" Set',
       modHasBeenRemovedFromSet = '"%p%" has been removed from "%p%" Set',
-      addToSets = 'Add To Sets';
+      addToSets = 'Add To Sets',
+      refreshItemIcon = 'Refresh Item Icons',
+      refreshingItemIcons = 'Refreshing Item Icons',
+      fetchingIconsInItem = 'Fetching Icons In "%p%"';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
