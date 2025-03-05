@@ -12,6 +12,7 @@ import 'package:signals/signals_flutter.dart';
 Future<void> itemIconsRefreshPopup() async {
   dynamic context = MaterialAppService.navigatorKey.currentContext;
   Signal<String> status = Signal('');
+  late final Future future = itemIconsRefresh(status);
   await showDialog(
       barrierDismissible: false,
       context: context,
@@ -22,9 +23,9 @@ Future<void> itemIconsRefreshPopup() async {
               insetPadding: const EdgeInsets.all(5),
               contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               content: FutureBuilder(
-                future: itemIconsRefresh(status),
+                future: future,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.connectionState != ConnectionState.done) {
+                  if (snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState != ConnectionState.done) {
                     return Center(
                         child: Column(
                       spacing: 5,

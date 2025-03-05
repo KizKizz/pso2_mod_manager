@@ -252,6 +252,9 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..modHasBeenAddedToSet = json['modHasBeenAddedToSet'] as String
   ..modHasBeenRemovedFromSet = json['modHasBeenRemovedFromSet'] as String
   ..addToSets = json['addToSets'] as String
+  ..refreshItemIcon = json['refreshItemIcon'] as String
+  ..refreshingItemIcons = json['refreshingItemIcons'] as String
+  ..fetchingIconsInItem = json['fetchingIconsInItem'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -692,6 +695,9 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'modHasBeenAddedToSet': instance.modHasBeenAddedToSet,
       'modHasBeenRemovedFromSet': instance.modHasBeenRemovedFromSet,
       'addToSets': instance.addToSets,
+      'refreshItemIcon': instance.refreshItemIcon,
+      'refreshingItemIcons': instance.refreshingItemIcons,
+      'fetchingIconsInItem': instance.fetchingIconsInItem,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,

@@ -61,7 +61,7 @@ class _HomepageState extends State<Homepage> {
   void initState() {
     footerSideMenuController.changePage(-1);
     sideMenuAlwaysExpanded ? sideBarCollapse.value = false : sideBarCollapse.value = true;
-    mainSideMenuController.changePage(defaultHomepageIndex);
+    if (!v2Homepage.value) mainSideMenuController.changePage(defaultHomepageIndex);
     homepageCurrentWidget.value = v2Homepage.value ? homepageV2Widgets.first : homepageWidgets[defaultHomepageIndex];
     if (Directory('${Directory.current.path}${p.separator}appUpdate').existsSync()) {
       Directory('${Directory.current.path}${p.separator}appUpdate').deleteSync(recursive: true);
