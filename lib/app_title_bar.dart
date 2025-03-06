@@ -3,6 +3,7 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v2_home/homepage_v2.dart';
 import 'package:pso2_mod_manager/v3_widgets/jp_game_start_btn.dart';
 import 'package:pso2_mod_manager/mod_checksum/checksum_indicator.dart';
 import 'package:pso2_mod_manager/v3_functions/pso2_version_check.dart';
@@ -91,6 +92,7 @@ class _AppTitleBarState extends State<AppTitleBar> {
                     child: OutlinedButton.icon(
                         style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
                         onPressed: () async {
+                          selectedItemV2.value = null;
                           pageIndex = 6;
                           curPage.value = appPages[pageIndex];
                         },

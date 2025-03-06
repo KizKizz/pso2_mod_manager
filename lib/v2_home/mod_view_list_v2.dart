@@ -30,7 +30,9 @@ class _ModViewListV2State extends State<ModViewListV2> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (selectedDisplaySortModView.watch(context) != selectedDisplaySortModView.peek() || mainGridStatus.watch(context) != mainGridStatus.peek()) {
+    if (selectedDisplaySortModView.watch(context) != selectedDisplaySortModView.peek() ||
+        modApplyStatus.watch(context) != modApplyStatus.peek() ||
+        mainGridStatus.watch(context) != mainGridStatus.peek()) {
       setState(
         () {},
       );
