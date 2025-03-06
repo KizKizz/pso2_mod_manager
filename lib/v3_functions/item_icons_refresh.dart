@@ -7,12 +7,12 @@ import 'package:path/path.dart' as p;
 import 'package:http/http.dart' as http;
 
 Future<bool> itemIconsRefresh(Signal<String> status) async {
-  Future.delayed(const Duration(microseconds: 10));
+  await Future.delayed(const Duration(microseconds: 100));
   for (var cateType in masterModList) {
     for (var category in cateType.categories.where((e) => markIconCategoryDirs.contains(e.categoryName))) {
       for (var item in category.items.where((e) => e.icons.isEmpty)) {
         status.value = '${appText.categoryName(category.categoryName)} > ${item.itemName}';
-        Future.delayed(const Duration(microseconds: 10));
+        await Future.delayed(const Duration(microseconds: 10));
         final modFileNames = item.getDistinctModFilePaths().map((e) => p.basenameWithoutExtension(e)).toList();
         final matchingItemData = pItemData.where((e) => e.containsIceFiles(modFileNames));
         for (var data in matchingItemData) {

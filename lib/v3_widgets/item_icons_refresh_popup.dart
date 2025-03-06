@@ -25,7 +25,7 @@ Future<void> itemIconsRefreshPopup() async {
               content: FutureBuilder(
                 future: future,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState != ConnectionState.done) {
+                  if (snapshot.connectionState != ConnectionState.done) {
                     return Center(
                         child: Column(
                       spacing: 5,
