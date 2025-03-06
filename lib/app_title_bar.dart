@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
-import 'package:pso2_mod_manager/main_widgets/jp_game_start_btn.dart';
+import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_widgets/jp_game_start_btn.dart';
 import 'package:pso2_mod_manager/mod_checksum/checksum_indicator.dart';
 import 'package:pso2_mod_manager/v3_functions/pso2_version_check.dart';
 import 'package:pso2_mod_manager/v3_home/settings.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -58,7 +60,30 @@ class _AppTitleBarState extends State<AppTitleBar> {
             spacing: 2.5,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Visibility(visible: appLoadingFinished.watch(context) && pso2RegionVersion.watch(context) == PSO2RegionVersion.jp, child: const JpGameStartBtn()),
+              Visibility(
+                  visible: appLoadingFinished.watch(context) && pso2RegionVersion.watch(context) == PSO2RegionVersion.jp,
+                  child: const Padding(
+                    padding: EdgeInsets.only(right: 2.5),
+                    child: JpGameStartBtn(),
+                  )),
+              Visibility(
+                  // visible: appLoadingFinished.watch(context),
+                  visible: false,
+                  child: SizedBox(
+                    height: 20,
+                    child: OutlinedButton.icon(
+                        style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+                        onPressed: () async {
+                          final prefs = await SharedPreferences.getInstance();
+                          showPreviewBox.value ? showPreviewBox.value = false : showPreviewBox.value = true;
+                          prefs.setBool('showPreviewBox', showPreviewBox.value);
+                        },
+                        icon: const Icon(
+                          Icons.preview,
+                          size: 18,
+                        ),
+                        label: Text(showPreviewBox.watch(context) ? appText.hidePreview : appText.showPreview)),
+                  )),
               Visibility(
                   visible: appLoadingFinished.watch(context),
                   child: SizedBox(
@@ -75,23 +100,6 @@ class _AppTitleBarState extends State<AppTitleBar> {
                         ),
                         label: Text(appText.refresh)),
                   )),
-              // Visibility(
-              //     visible: appLoadingFinished.watch(context),
-              //     child: SizedBox(
-              //       height: 20,
-              //       child: OutlinedButton.icon(
-              //           style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
-              //           onPressed: () async {
-              //             final prefs = await SharedPreferences.getInstance();
-              //             showPreviewBox.value ? showPreviewBox.value = false : showPreviewBox.value = true;
-              //             prefs.setBool('showPreviewBox', showPreviewBox.value);
-              //           },
-              //           icon: const Icon(
-              //             Icons.preview,
-              //             size: 18,
-              //           ),
-              //           label: Text(showPreviewBox.watch(context) ? appText.hidePreview : appText.showPreview)),
-              //     )),
               Visibility(visible: appLoadingFinished.watch(context), child: const ChecksumIndicator())
             ],
           )

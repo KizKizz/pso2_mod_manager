@@ -14,6 +14,7 @@ import 'package:pso2_mod_manager/v3_home/homepage.dart';
 import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:pso2_mod_manager/v3_widgets/animated_hori_toggle_layout.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
+import 'package:pso2_mod_manager/v3_widgets/item_icons_refresh_popup.dart';
 import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
@@ -187,6 +188,16 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             targetIndex == 0 ? itemIconSlides.value = true : itemIconSlides.value = false;
                             prefs.setBool('itemIconSlides', itemIconSlides.value);
                           },
+                        ),
+                        // Item Icons Refresh
+                        SettingsHeader(icon: Icons.replay_circle_filled_sharp, text: appText.refreshItemIcon),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton(
+                              onPressed: () async {
+                                await itemIconsRefreshPopup();
+                              },
+                              child: Text(appText.refresh)),
                         ),
                         // Hide empty cate
                         SettingsHeader(icon: Icons.hide_source, text: appText.hideEmptyCategories),

@@ -1,4 +1,7 @@
 {
+  "refreshItemIcon": "アイテムのアイコンをリフレッシュ",
+  "refreshingItemIcons": "アイテムアイコンのリフレッシュ",
+  "fetchingIconsInItem": "\"%p%\"内のアイコンを取得中",
   "applyRestoreMods": "適用 - 修正内容の復元",
   "addModsToModSets": "MODセットにMODを追加する",
   "swapItemToAnotherItem": "アイテムを別のアイテムと交換する",

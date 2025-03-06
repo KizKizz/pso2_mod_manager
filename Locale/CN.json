@@ -1,4 +1,7 @@
 {
+  "refreshItemIcon": "Refresh Item Icons",
+  "refreshingItemIcons": "Refreshing Item Icons",
+  "fetchingIconsInItem": "Fetching Icons In \"%p%\"",
   "applyRestoreMods": "Apply - restore mods",
   "addModsToModSets": "Add mods to Mod Sets",
   "swapItemToAnotherItem": "Swap an item to another item",

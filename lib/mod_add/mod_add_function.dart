@@ -424,8 +424,6 @@ Future<Item> newItemsFetcher(String catePath, String itemPath, bool addingToSet,
   final imagesFoundInItemDir = Directory(itemPath).listSync().whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png').toList();
   if (imagesFoundInItemDir.isNotEmpty) {
     itemIcons = imagesFoundInItemDir.map((e) => e.path).toList();
-  } else {
-    itemIcons = ['assets/img/placeholdersquare.png'];
   }
 
   Item newItem = Item(p.basename(itemPath), [], itemIcons, '', '', '', false, p.basename(catePath), Uri.file(itemPath).toFilePath(), false, DateTime(0), 0, false, addingToSet ? true : false, true,
