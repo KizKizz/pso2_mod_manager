@@ -81,14 +81,16 @@ Future<(bool, List<ModFile>)> duplicateAppliedModPopup(context, Item dupItem, Mo
                         ],
                       )),
                   const Icon(Icons.arrow_downward),
-                  CardOverlay(
-                      paddingValue: 5,
-                      child: SingleChildScrollView(
-                          child: Column(
-                        spacing: 5,
-                        mainAxisSize: MainAxisSize.min,
-                        children: conflictingIceFileNames.map((e) => Text(e)).toList(),
-                      ))),
+                  Flexible(
+                    child: CardOverlay(
+                        paddingValue: 5,
+                        child: SingleChildScrollView(
+                            child: Column(
+                          spacing: 5,
+                          mainAxisSize: MainAxisSize.min,
+                          children: conflictingIceFileNames.map((e) => Text(e)).toList(),
+                        ))),
+                  ),
                   const Icon(Icons.arrow_upward),
                   CardOverlay(
                       paddingValue: 5,

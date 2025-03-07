@@ -34,7 +34,7 @@ class _PopupItemInfoState extends State<PopupItemInfo> {
           style: Theme.of(context).textTheme.titleLarge,
         ),
         Row(
-          spacing: 5,
+          spacing: widget.showModInfo ? 5 : 0,
           children: [
             Visibility(
               visible: widget.showModInfo,
