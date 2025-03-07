@@ -15,6 +15,7 @@ import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:pso2_mod_manager/v3_widgets/animated_hori_toggle_layout.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:pso2_mod_manager/v3_widgets/item_icons_refresh_popup.dart';
+import 'package:pso2_mod_manager/v3_widgets/popup_dismissed_delay_popup.dart';
 import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
@@ -55,9 +56,22 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              appText.appSettings,
-              style: Theme.of(context).textTheme.titleLarge,
+            InkWell(
+              hoverColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              mouseCursor: MouseCursor.defer,
+              onLongPress: () async {
+                final delayValue = await popupDismissedDelayPopup(context);
+                if (delayValue != null) {
+                  popupAfterDismissWaitDelayMilli = delayValue;
+                  final prefs = await SharedPreferences.getInstance();
+                  prefs.setInt('popupAfterDismissWaitDelayMilli', popupAfterDismissWaitDelayMilli);
+                }
+              },
+              child: Text(
+                appText.appSettings,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
             ),
             const HoriDivider(),
             Expanded(

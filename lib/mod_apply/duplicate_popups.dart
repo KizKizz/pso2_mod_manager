@@ -57,6 +57,7 @@ Future<(bool, List<ModFile>)> duplicateAppliedModPopup(context, Item dupItem, Mo
                             children: [
                               Column(
                                 spacing: 5,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   ItemIconBox(item: applyingItem),
                                   Text(applyingItem.itemName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
@@ -68,21 +69,28 @@ Future<(bool, List<ModFile>)> duplicateAppliedModPopup(context, Item dupItem, Mo
                               )
                             ],
                           ),
-                          Text(applyingSubmod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
-                          Visibility(
-                              visible: applyingSubmod.submodName != applyingSubmod.modName,
-                              child: Text(applyingSubmod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
+                          Row(
+                            spacing: 2.5,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(applyingSubmod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                              const Icon(Icons.arrow_right),
+                              Text(applyingSubmod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                            ],
+                          )
                         ],
                       )),
                   const Icon(Icons.arrow_downward),
-                  CardOverlay(
-                      paddingValue: 5,
-                      child: SingleChildScrollView(
-                          child: Column(
-                        spacing: 5,
-                        mainAxisSize: MainAxisSize.min,
-                        children: conflictingIceFileNames.map((e) => Text(e)).toList(),
-                      ))),
+                  Flexible(
+                    child: CardOverlay(
+                        paddingValue: 5,
+                        child: SingleChildScrollView(
+                            child: Column(
+                          spacing: 5,
+                          mainAxisSize: MainAxisSize.min,
+                          children: conflictingIceFileNames.map((e) => Text(e)).toList(),
+                        ))),
+                  ),
                   const Icon(Icons.arrow_upward),
                   CardOverlay(
                       paddingValue: 5,
@@ -108,8 +116,15 @@ Future<(bool, List<ModFile>)> duplicateAppliedModPopup(context, Item dupItem, Mo
                               )
                             ],
                           ),
-                          Text(dupSubmod.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
-                          Visibility(visible: dupSubmod.submodName != dupSubmod.modName, child: Text(dupSubmod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
+                          Row(
+                            spacing: 2.5,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(dupSubmod.modName, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge),
+                              const Icon(Icons.arrow_right),
+                              Text(dupSubmod.submodName, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge),
+                            ],
+                          )
                         ],
                       ))
                 ],

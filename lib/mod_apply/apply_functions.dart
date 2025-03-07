@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/app_paths/sega_file_paths.dart';
@@ -68,7 +70,20 @@ Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod
     List<ModFile> modFilesToRestore = [];
     (performApply, modFilesToRestore) = await duplicateAppliedModPopup(context, dupItem, dupMod, dupSubmod, item, submod);
     if (performApply) {
+      bool barrierShown = false;
       await modUnapplySequence(context, false, dupItem, dupMod, dupSubmod, modFilesToRestore);
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext builderContext) {
+            barrierShown = true;
+            return const AlertDialog();
+          });
+      await Future.delayed(Duration(milliseconds: popupAfterDismissWaitDelayMilli));
+      if (barrierShown) {
+        barrierShown = false;
+        Navigator.of(context).pop();
+      }
     } else {
       return;
     }

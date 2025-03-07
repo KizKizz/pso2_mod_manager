@@ -9,7 +9,6 @@ import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_grid_layout.dart';
-import 'package:pso2_mod_manager/v3_widgets/vertical_divider.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
@@ -91,7 +90,12 @@ Future<void> modViewPopup(context, Item item) async {
                                   ],
                                 ),
                               ),
-                              const VertDivider(),
+                              const VerticalDivider(
+                              width: 10,
+                              thickness: 2,
+                              endIndent: 5,
+                              indent: 5,
+                            ),
                               Expanded(
                                 flex: 3,
                                 child: selectedMod == null

@@ -13,6 +13,8 @@ import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
 import 'package:signals/signals_flutter.dart';
 
 Future<void> applyingPopup(context, bool applying, Item item, Mod mod, SubMod submod, List<ModFile> extraModFiles) async {
+  late final Future applyMods = modBackupApply(item, mod, submod, extraModFiles);
+  late final Future restoreMods = modUnapplyRestore(item, mod, submod, extraModFiles);
   await showDialog(
       barrierDismissible: false,
       context: context,
@@ -23,7 +25,7 @@ Future<void> applyingPopup(context, bool applying, Item item, Mod mod, SubMod su
               insetPadding: const EdgeInsets.all(5),
               contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               content: FutureBuilder(
-                future: applying ? modBackupApply(item, mod, submod, extraModFiles) : modUnapplyRestore(item, mod, submod, extraModFiles),
+                future: applying ? applyMods : restoreMods,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return Center(
