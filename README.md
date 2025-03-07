@@ -1,7 +1,8 @@
 # PSO2NGS Mod Manager ver.3
  **An app to manage, swapping mods and items for Phantasy Star Online 2 New Genesis**
  
-![image](https://github.com/user-attachments/assets/0e7245fb-92db-4ecc-bb2c-6967cec2426e)
+
+![pso2ngs](https://github.com/user-attachments/assets/fa8593ed-d3ce-44d5-b35d-b7200e4cbe24)
 
 
 # Download
@@ -11,6 +12,7 @@ Check back for latest releases
 
 # Features
 
+- Available in English, Japanese and Chinese (by [augurz](https://github.com/augurz))
 - Auto replace checksum on startup and when applying mods
 - Auto sort and categorize mods by associated items upon adding
 - Mods can be added to Mod Sets to be applied together
