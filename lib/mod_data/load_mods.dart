@@ -328,12 +328,12 @@ Future<List<Item>> itemsFetcher(context, String catePath, bool reload) async {
       //     }
       //   }
       // }
-      if (iconFilesInDir.where((element) => p.basenameWithoutExtension(element.path) == p.basename(dir.path)).isNotEmpty) {
-        itemIcons.addAll(iconFilesInDir.where((e) => e.existsSync()).map((e) => e.path));
-      }
-      if (itemIcons.isEmpty) {
-        // itemIcons.add('assets/img/placeholdersquare.png');
-      }
+      // if (iconFilesInDir.where((element) => p.basenameWithoutExtension(element.path) == p.basename(dir.path)).isNotEmpty) {
+      itemIcons.addAll(iconFilesInDir.where((e) => e.existsSync()).map((e) => e.path));
+      // }
+      // if (itemIcons.isEmpty) {
+      // itemIcons.add('assets/img/placeholdersquare.png');
+      // }
     }
 
     items.add(Item(p.basename(dir.path), nameVariants, itemIcons, '', '', '', false, p.basename(catePath), Uri.file(dir.path).toFilePath(), false, DateTime(0), 0, false, false, false, [], modList));

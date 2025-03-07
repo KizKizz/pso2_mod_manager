@@ -45,6 +45,7 @@ double splitViewFlexValue0 = 1;
 double splitViewFlexValue1 = 1;
 double splitViewFlexValue2 = 1;
 Signal<bool> showAppliedListV2 = Signal(true);
+int popupAfterDismissWaitDelayMilli = 10;
 
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
@@ -188,4 +189,7 @@ Future<void> prefsLoad() async {
   splitViewFlexValue0 = prefs.getDouble('splitViewFlexValue0') ?? 1;
   splitViewFlexValue1 = prefs.getDouble('splitViewFlexValue1') ?? 1;
   splitViewFlexValue2 = prefs.getDouble('splitViewFlexValue2') ?? 1;
+
+  // popup After delay after dismissed
+  popupAfterDismissWaitDelayMilli = prefs.getInt('popupAfterDismissWaitDelayMilli') ?? 50;
 }
