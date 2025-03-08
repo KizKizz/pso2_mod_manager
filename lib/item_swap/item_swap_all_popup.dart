@@ -6,6 +6,7 @@ import 'package:pso2_mod_manager/item_swap/item_swap_working_popup.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_all_motions_select_button.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_all_type_select_button.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_all_working_popup.dart';
+import 'package:pso2_mod_manager/material_app_service.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
@@ -82,7 +83,7 @@ Future<void> itemSwapAllPopup(context, Item item) async {
           return AlertDialog(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
-            insetPadding: const EdgeInsets.only(top: 25),
+            insetPadding: EdgeInsets.zero,
             contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
             content: SizedBox(
               width: MediaQuery.of(context).size.width,
@@ -133,7 +134,8 @@ Future<void> itemSwapAllPopup(context, Item item) async {
                         scrollController: lScrollController,
                         submodList: availableSubmods,
                         selectedSubmods: selectedSubmods,
-                        showPreview: showPreviews, item: item,
+                        showPreview: showPreviews,
+                        item: item,
                       )),
                       Expanded(
                           child: ItemSwapAllSelectedGridLayout(
@@ -237,7 +239,8 @@ Future<void> itemSwapAllPopup(context, Item item) async {
 
                                       if (lSelectedItemData.value != null) {
                                         for (var rItemData in rSelectedItemData.value) {
-                                          await modSwapAllWorkingPopup(context, false, lSelectedItemData.value!, rItemData, mod, submod);
+                                          await modSwapAllWorkingPopup(MaterialAppService.navigatorKey.currentContext, false, lSelectedItemData.value!, rItemData, mod, submod);
+                                          await Future.delayed(const Duration(milliseconds: 100));
                                         }
                                       } else {
                                         errorNotification(appText.noMatchingFilesBetweenItemsToSwap);

@@ -8,12 +8,10 @@ import 'package:pso2_mod_manager/item_swap/item_swap_cate_select_button.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_acc_functions.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_emote_functions.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_general_functions.dart';
-import 'package:pso2_mod_manager/mod_add/adding_mod_class.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
+import 'package:pso2_mod_manager/mod_add/mod_add_popup.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
-import 'package:pso2_mod_manager/v3_home/homepage.dart';
-import 'package:pso2_mod_manager/v3_home/mod_add.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
@@ -145,17 +143,18 @@ Future<void> itemSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemDat
                         visible: swapOutputDir.existsSync(),
                         child: OutlinedButton(
                             onPressed: () async {
-                              modAddDragDropPaths.add(swapOutputDir.path);
-                              mainSideMenuController.changePage(-1);
-                              footerSideMenuController.changePage(0);
-                              homepageCurrentWidget.value = const ModAdd();
-                              itemSwapWorkingStatus.value = '';
-                              curModAddDragDropStatus.value = ModAddDragDropState.fileInList;
-                              Navigator.of(context).pop();
-                              if (!isVanillaSwap) {
-                                Navigator.of(context).pop();
-                                Navigator.of(context).pop();
-                              }
+                              await modAddPopup(context, swapOutputDir.path);
+                              // modAddDragDropPaths.add(swapOutputDir.path);
+                              // mainSideMenuController.changePage(-1);
+                              // footerSideMenuController.changePage(0);
+                              // homepageCurrentWidget.value = const ModAdd();
+                              // itemSwapWorkingStatus.value = '';
+                              // curModAddDragDropStatus.value = ModAddDragDropState.fileInList;
+                              // Navigator.of(context).pop();
+                              // if (!isVanillaSwap) {
+                              //   Navigator.of(context).pop();
+                              //   Navigator.of(context).pop();
+                              // }
                             },
                             child: Text(appText.addToModManager)),
                       ),
