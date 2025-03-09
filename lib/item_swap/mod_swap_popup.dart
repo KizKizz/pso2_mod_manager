@@ -27,6 +27,7 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
   String extraCategory = '';
   List<ItemData> displayingItems = [];
   List<ItemData> lDisplayingItems = [];
+  List<(ItemData, ItemData)> emoteSwapQueue = [];
 
   await showDialog(
       barrierDismissible: false,
@@ -34,7 +35,6 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (dialogContext, setState) {
-          
           displayingItems = pItemData
               .where((e) => showNoNameItems.watch(context) || (!showNoNameItems.watch(context) && e.getName().isNotEmpty))
               .where((e) => submod.category == defaultCategoryDirs[1]
@@ -210,14 +210,23 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                     spacing: 5,
                     overflowSpacing: 5,
                     children: [
-                      OutlinedButton(
-                          onPressed: lSelectedItemData.watch(context) != null && rSelectedItemData.watch(context) != null
-                              ? () async {
-                                  itemSwapWorkingStatus.value = '';
-                                  await itemSwapWorkingPopup(context, false, lSelectedItemData.value!, rSelectedItemData.value!, mod, submod);
-                                }
-                              : null,
-                          child: Text(appText.next)),
+                      if (submod.category == defaultCategoryDirs[7] && lDisplayingItems.length > 1)
+                        OutlinedButton(
+                            onPressed: emoteSwapQueue.isNotEmpty
+                                ? () async {
+                                    
+                                  }
+                                : null,
+                            child: Text(appText.next)),
+                      if (submod.category != defaultCategoryDirs[7] || submod.category == defaultCategoryDirs[7] && lDisplayingItems.length == 1)
+                        OutlinedButton(
+                            onPressed: lSelectedItemData.watch(context) != null && rSelectedItemData.watch(context) != null
+                                ? () async {
+                                    itemSwapWorkingStatus.value = '';
+                                    await itemSwapWorkingPopup(context, false, lSelectedItemData.value!, rSelectedItemData.value!, mod, submod);
+                                  }
+                                : null,
+                            child: Text(appText.next)),
                       OutlinedButton(
                           onPressed: () {
                             Navigator.of(context).pop();
