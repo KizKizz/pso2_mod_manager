@@ -15,8 +15,8 @@ import 'package:pso2_mod_manager/v3_home/main_item_swap_grid.dart';
 Future<Directory> modSwapAccessories(
     context, bool isVanillaItemSwap, Mod fromMod, SubMod fromSubmod, List<String> lItemAvailableIces, List<String> rItemAvailableIces, String rItemName, String rItemID) async {
   // Clean and create temp dirs
-  await modSwapTempDirsRemove();
-  await modSwapTempDirsCreate();
+  // await modSwapTempDirsRemove();
+  // await modSwapTempDirsCreate();
 
   String tempSubmodPathF = Uri.file('$modSwapTempLItemDirPath/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath();
   String tempSubmodPathT = Uri.file('$modSwapTempRItemDirPath/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath();

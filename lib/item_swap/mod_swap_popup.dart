@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/item_swap/emote_queue_swap_working_popup.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_grid_layout.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_motions_select_button.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_type_select_button.dart';
@@ -10,12 +11,15 @@ import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
+import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_swap_grid.dart';
+import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
+import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:signals/signals_flutter.dart';
-
-Signal<bool> closeModSwapPopup = Signal(false);
+import 'package:super_sliver_list/super_sliver_list.dart';
 
 Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
   ScrollController lScrollController = ScrollController();
@@ -27,6 +31,8 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
   String extraCategory = '';
   List<ItemData> displayingItems = [];
   List<ItemData> lDisplayingItems = [];
+  List<(ItemData, ItemData)> emoteSwapQueue = [];
+  bool showEmoteQueue = false;
 
   await showDialog(
       barrierDismissible: false,
@@ -34,7 +40,6 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (dialogContext, setState) {
-          
           displayingItems = pItemData
               .where((e) => showNoNameItems.watch(context) || (!showNoNameItems.watch(context) && e.getName().isNotEmpty))
               .where((e) => submod.category == defaultCategoryDirs[1]
@@ -77,7 +82,7 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
           return AlertDialog(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
-            insetPadding: const EdgeInsets.only(top: 25),
+            insetPadding: EdgeInsets.zero,
             contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
             content: SizedBox(
               width: MediaQuery.of(context).size.width,
@@ -121,6 +126,7 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                             submod: submod,
                             scrollController: lScrollController,
                             selectedItemData: lSelectedItemData,
+                            emoteSwapQueue: emoteSwapQueue,
                           )),
                           Row(
                             spacing: 5,
@@ -142,16 +148,81 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                         ],
                       )),
                       Expanded(
-                          child: ItemSwapGridLayout(
-                        itemDataList: extraCategory == defaultCategoryDirs[1] ||
-                                extraCategory == defaultCategoryDirs[2] ||
-                                extraCategory == defaultCategoryDirs[7] ||
-                                extraCategory == defaultCategoryDirs[11] ||
-                                extraCategory == defaultCategoryDirs[16]
-                            ? rDisplayingItemsExtra
-                            : displayingItems,
-                        scrollController: rScrollController,
-                        selectedItemData: rSelectedItemData,
+                          child: Column(
+                        spacing: 5,
+                        children: [
+                          Expanded(
+                              flex: 2,
+                              child: ItemSwapGridLayout(
+                                itemDataList: extraCategory == defaultCategoryDirs[1] ||
+                                        extraCategory == defaultCategoryDirs[2] ||
+                                        extraCategory == defaultCategoryDirs[7] ||
+                                        extraCategory == defaultCategoryDirs[11] ||
+                                        extraCategory == defaultCategoryDirs[16]
+                                    ? rDisplayingItemsExtra
+                                    : displayingItems,
+                                scrollController: rScrollController,
+                                selectedItemData: rSelectedItemData,
+                                emoteSwapQueue: emoteSwapQueue,
+                              )),
+
+                          // emote queue
+                          if (showEmoteQueue)
+                            Expanded(
+                                child: CardOverlay(
+                                    paddingValue: 5,
+                                    child: SuperListView.separated(
+                                        itemBuilder: (context, index) {
+                                          return ListTileTheme(
+                                              data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                                              child: ListTile(
+                                                title: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    // left data
+                                                    ModManTooltip(
+                                                      message: emoteSwapQueue[index].$1.getModSwapDetails(submod).map((e) => e).join('\n'),
+                                                      child: Row(
+                                                        spacing: 5,
+                                                        children: [
+                                                          GenericItemIconBox(iconImagePaths: [emoteSwapQueue[index].$1.iconImagePath], boxSize: const Size(80, 80), isNetwork: true),
+                                                          Text(
+                                                            emoteSwapQueue[index].$1.getName(),
+                                                            style: const TextStyle(fontWeight: FontWeight.w500),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    // right data
+                                                    const Icon(Icons.arrow_forward_outlined),
+                                                    ModManTooltip(
+                                                      message: emoteSwapQueue[index].$2.getDetails().map((e) => e).join('\n'),
+                                                      child: Row(
+                                                        spacing: 5,
+                                                        children: [
+                                                          GenericItemIconBox(iconImagePaths: [emoteSwapQueue[index].$2.iconImagePath], boxSize: const Size(80, 80), isNetwork: true),
+                                                          Text(
+                                                            emoteSwapQueue[index].$2.getName(),
+                                                            style: const TextStyle(fontWeight: FontWeight.w500),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                leading: IconButton(
+                                                    onPressed: () {
+                                                      emoteSwapQueue.removeAt(index);
+                                                      setState(
+                                                        () {},
+                                                      );
+                                                    },
+                                                    icon: const Icon(Icons.close)),
+                                              ));
+                                        },
+                                        separatorBuilder: (context, index) => const SizedBox(height: 5),
+                                        itemCount: emoteSwapQueue.length)))
+                        ],
                       )),
                     ],
                   )),
@@ -210,14 +281,49 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                     spacing: 5,
                     overflowSpacing: 5,
                     children: [
-                      OutlinedButton(
-                          onPressed: lSelectedItemData.watch(context) != null && rSelectedItemData.watch(context) != null
-                              ? () async {
-                                  itemSwapWorkingStatus.value = '';
-                                  await itemSwapWorkingPopup(context, false, lSelectedItemData.value!, rSelectedItemData.value!, mod, submod);
-                                }
-                              : null,
-                          child: Text(appText.next)),
+                      if (submod.category == defaultCategoryDirs[7] && lDisplayingItems.length > 1)
+                        OutlinedButton(
+                            onPressed: () {
+                              showEmoteQueue ? showEmoteQueue = false : showEmoteQueue = true;
+                              setState(
+                                () {},
+                              );
+                            },
+                            child: Text(showEmoteQueue ? appText.hideQueue : appText.viewQueue)),
+                      if (submod.category == defaultCategoryDirs[7] && lDisplayingItems.length > 1)
+                        OutlinedButton(
+                            onPressed: lSelectedItemData.watch(context) != null && rSelectedItemData.watch(context) != null
+                                ? () async {
+                                    if (emoteSwapQueue.indexWhere((e) => e.$1 == lSelectedItemData.value) == -1) {
+                                      emoteSwapQueue.add((lSelectedItemData.value!, rSelectedItemData.value!));
+                                      lSelectedItemData.value = null;
+                                      rSelectedItemData.value = null;
+                                      if (emoteSwapQueue.isNotEmpty) showEmoteQueue = true;
+                                      setState(
+                                        () {},
+                                      );
+                                    }
+                                  }
+                                : null,
+                            child: Text(appText.addToQueue)),
+                      if (submod.category == defaultCategoryDirs[7] && lDisplayingItems.length > 1)
+                        OutlinedButton(
+                            onPressed: emoteSwapQueue.isNotEmpty
+                                ? () async {
+                                    itemSwapWorkingStatus.value = '';
+                                    await emoteQueueSwapWorkingPopup(context, false, emoteSwapQueue, mod, submod);
+                                  }
+                                : null,
+                            child: Text(appText.next)),
+                      if (submod.category != defaultCategoryDirs[7] || submod.category == defaultCategoryDirs[7] && lDisplayingItems.length == 1)
+                        OutlinedButton(
+                            onPressed: lSelectedItemData.watch(context) != null && rSelectedItemData.watch(context) != null
+                                ? () async {
+                                    itemSwapWorkingStatus.value = '';
+                                    await itemSwapWorkingPopup(context, false, lSelectedItemData.value!, rSelectedItemData.value!, mod, submod);
+                                  }
+                                : null,
+                            child: Text(appText.next)),
                       OutlinedButton(
                           onPressed: () {
                             Navigator.of(context).pop();

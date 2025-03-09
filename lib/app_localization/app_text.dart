@@ -258,7 +258,11 @@ class AppText {
       addToSets = 'Add To Sets',
       refreshItemIcon = 'Refresh Item Icons',
       refreshingItemIcons = 'Refreshing Item Icons',
-      fetchingIconsInItem = 'Fetching Icons In "%p%"';
+      fetchingIconsInItem = 'Fetching Icons In "%p%"',
+      selectAll = 'Select All',
+      viewQueue = 'View Queue',
+      hideQueue = 'Hide Queue',
+      addToQueue = 'Add To Queue';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',

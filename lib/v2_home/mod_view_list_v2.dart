@@ -32,6 +32,7 @@ class _ModViewListV2State extends State<ModViewListV2> {
     // Refresh
     if (selectedDisplaySortModView.watch(context) != selectedDisplaySortModView.peek() ||
         modApplyStatus.watch(context) != modApplyStatus.peek() ||
+        modPopupStatus.watch(context) != modPopupStatus.peek() ||
         mainGridStatus.watch(context) != mainGridStatus.peek()) {
       setState(
         () {},

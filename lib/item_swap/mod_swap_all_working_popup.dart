@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -8,6 +10,7 @@ import 'package:pso2_mod_manager/item_swap/item_swap_working_popup.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_acc_functions.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_emote_functions.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_general_functions.dart';
+import 'package:pso2_mod_manager/item_swap/mod_swap_helper_functions.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_add/mod_add_function.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
@@ -32,6 +35,9 @@ Future<void> modSwapAllWorkingPopup(context, bool isVanillaSwap, ItemData lItemD
             WidgetsBinding.instance.addPostFrameCallback((_) async {
               taskWorking = true;
               swapOutputDir = Directory('');
+              // Clean and create temp dirs
+              await modSwapTempDirsRemove();
+              await modSwapTempDirsCreate();
               if (submod.category == defaultCategoryDirs[0]) {
                 swapOutputDir = await modSwapAccessories(context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), rItemData.getItemID());
               } else if (submod.category == defaultCategoryDirs[14] || submod.category == defaultCategoryDirs[7]) {
@@ -43,7 +49,6 @@ Future<void> modSwapAllWorkingPopup(context, bool isVanillaSwap, ItemData lItemD
               if (swapOutputDir.existsSync()) {
                 // Add to mod manager
                 modAddDragDropPaths.add(swapOutputDir.path);
-                // ignore: use_build_context_synchronously
                 await modAddUnpack(context, modAddDragDropPaths.toList());
                 modAddDragDropPaths.clear();
                 modAddingList = await modAddSort();
@@ -51,8 +56,7 @@ Future<void> modSwapAllWorkingPopup(context, bool isVanillaSwap, ItemData lItemD
               }
 
               mainGridStatus.value = '"${submod.modName}" is swapped';
-              taskWorking = false; 
-              // ignore: use_build_context_synchronously
+              taskWorking = false;
               Navigator.of(context).pop();
             });
           }

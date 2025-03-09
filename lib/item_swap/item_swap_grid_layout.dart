@@ -9,11 +9,12 @@ import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 class ItemSwapGridLayout extends StatefulWidget {
-  const ItemSwapGridLayout({super.key, required this.itemDataList, required this.scrollController, required this.selectedItemData});
+  const ItemSwapGridLayout({super.key, required this.itemDataList, required this.scrollController, required this.selectedItemData, required this.emoteSwapQueue});
 
   final List<ItemData> itemDataList;
   final ScrollController scrollController;
   final Signal<ItemData?> selectedItemData;
+  final List<(ItemData, ItemData)> emoteSwapQueue;
 
   @override
   State<ItemSwapGridLayout> createState() => _ItemSwapGridLayoutState();
@@ -123,6 +124,7 @@ class _ItemSwapGridLayoutState extends State<ItemSwapGridLayout> {
                                 )
                               : null,
                           selected: widget.selectedItemData.watch(context) == displayingItemData[index],
+                          enabled: widget.emoteSwapQueue.indexWhere((e) => e.$2 == displayingItemData[index]) == -1,
                           onTap: () {
                             widget.selectedItemData.value = displayingItemData[index];
                           },

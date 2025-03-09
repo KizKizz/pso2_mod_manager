@@ -10,12 +10,13 @@ import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 class ModSwapGridLayout extends StatefulWidget {
-  const ModSwapGridLayout({super.key, required this.itemDataList, required this.submod, required this.scrollController, required this.selectedItemData});
+  const ModSwapGridLayout({super.key, required this.itemDataList, required this.submod, required this.scrollController, required this.selectedItemData, required this.emoteSwapQueue});
 
   final List<ItemData> itemDataList;
   final SubMod submod;
   final ScrollController scrollController;
   final Signal<ItemData?> selectedItemData;
+  final List<(ItemData, ItemData)> emoteSwapQueue;
 
   @override
   State<ModSwapGridLayout> createState() => _ModSwapGridLayoutState();
@@ -83,7 +84,7 @@ class _ModSwapGridLayoutState extends State<ModSwapGridLayout> {
               child: Padding(
                 padding: const EdgeInsets.only(right: 2),
                 child: IconButton(
-                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                    visualDensity: VisualDensity.adaptivePlatformDensity,
                     onPressed: itemSwapSearchTextController.value.text.isNotEmpty
                         ? () {
                             itemSwapSearchTextController.clear();
@@ -125,6 +126,7 @@ class _ModSwapGridLayoutState extends State<ModSwapGridLayout> {
                                 )
                               : null,
                           selected: widget.selectedItemData.watch(context) == displayingItemData[index],
+                          enabled: widget.emoteSwapQueue.indexWhere((e) => e.$1 == displayingItemData[index]) == -1,
                           onTap: () {
                             widget.selectedItemData.value = displayingItemData[index];
                           },

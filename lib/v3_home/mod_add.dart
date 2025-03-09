@@ -12,7 +12,9 @@ Signal<bool> modAddDropBoxShow = Signal(true);
 List<AddingMod> modAddingList = [];
 
 class ModAdd extends StatefulWidget {
-  const ModAdd({super.key});
+  const ModAdd({super.key, required this.isPopup});
+
+  final bool isPopup;
 
   @override
   State<ModAdd> createState() => _ModAddState();
@@ -33,6 +35,8 @@ class _ModAddState extends State<ModAdd> {
 
   @override
   Widget build(BuildContext context) {
+    if (curModAddDragDropStatus.value == ModAddDragDropState.fileInList) modAddDropBoxShow.value = true;
+    
     return Row(
       spacing: 5,
       mainAxisSize: MainAxisSize.min,
@@ -44,12 +48,8 @@ class _ModAddState extends State<ModAdd> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Row(
-                  spacing: modAddDropBoxShow.watch(context) ? 1 : 0, 
-                  children: [
-                  Visibility(
-                    visible: modAddDropBoxShow.watch(context),
-                    child: Expanded(child: DragDropBoxLayout(dragDropFileTypes: dragDropSupportedExts))),
+                child: Row(spacing: modAddDropBoxShow.watch(context) ? 1 : 0, children: [
+                  Visibility(visible: modAddDropBoxShow.watch(context), child: Expanded(child: DragDropBoxLayout(dragDropFileTypes: dragDropSupportedExts))),
                   SizedBox(
                       width: 15,
                       height: double.infinity,
@@ -62,23 +62,24 @@ class _ModAddState extends State<ModAdd> {
                             onPressed: () {
                               modAddDropBoxShow.value ? modAddDropBoxShow.value = false : modAddDropBoxShow.value = true;
                             },
-                            icon: Icon(modAddDropBoxShow.watch(context) ? Icons.arrow_back_ios_new_rounded : Icons.arrow_forward_ios_rounded, size: 16,)),
+                            icon: Icon(
+                              modAddDropBoxShow.watch(context) ? Icons.arrow_back_ios_new_rounded : Icons.arrow_forward_ios_rounded,
+                              size: 16,
+                            )),
                       )),
                 ]),
               ),
-              Visibility(
-                visible: modAddDropBoxShow.watch(context),
-                child: ModAddDragDropButtons(dragDropFileTypes: dragDropSupportedExts)),
+              Visibility(visible: modAddDropBoxShow.watch(context), child: ModAddDragDropButtons(dragDropFileTypes: dragDropSupportedExts)),
             ],
           ),
         ),
-        const Expanded(
+        Expanded(
           flex: 2,
           child: Column(
             spacing: 5,
             children: [
-              Expanded(child: ModAddGrid()),
-              ModAddProcessedButtons(),
+              const Expanded(child: ModAddGrid()),
+              ModAddProcessedButtons(showReturnButton: widget.isPopup),
             ],
           ),
         )

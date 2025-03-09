@@ -108,12 +108,9 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
                                   mod: widget.mod,
                                   onDelete: () async {
                                     await modDelete(context, widget.item, widget.mod);
-                                    modPopupStatus.value = '${widget.mod.modName} deleted';
                                     widget.item.isNew = widget.item.getModsIsNewState();
-                                    if (widget.item.mods.isEmpty) {
-                                      mainGridStatus.value = '"${widget.mod.modName}" in "${widget.item.getDisplayName()}" is empty and removed';
-                                      if (selectedItemV2.value == widget.item) selectedItemV2.value = null;
-                                    }
+                                    mainGridStatus.value = '"${widget.mod.modName}" in "${widget.item.getDisplayName()}" is empty and removed';
+                                    if (selectedItemV2.value == widget.item && widget.item.mods.isEmpty) selectedItemV2.value = null;
                                   },
                                 ),
                                 Icon(expanded || widget.expandAll ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down)

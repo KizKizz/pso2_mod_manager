@@ -1,4 +1,8 @@
 {
+  "selectAll": "Select All",
+  "viewQueue": "View Queue",
+  "hideQueue": "Hide Queue",
+  "addToQueue": "Add To Queue",
   "refreshItemIcon": "刷新物品图标",
   "refreshingItemIcons": "刷新物品图标",
   "fetchingIconsInItem": "获取\"%p%\"图标",

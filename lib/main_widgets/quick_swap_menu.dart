@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
-import 'package:pso2_mod_manager/item_swap/mod_swap_popup.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_more_functions_menu.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
@@ -54,7 +53,6 @@ class _QuickSwapMenuState extends State<QuickSwapMenu> {
                     List<ItemData> lItemData =
                         pItemData.where((e) => e.category == widget.submod.category && widget.submod.getModFileNames().indexWhere((f) => e.getIceDetailsWithoutKeys().contains(f)) != -1).toList();
                     quickSwapWorkingPopup(context, false, lItemData.first, selectedQuickSwapItems[i], widget.mod, widget.submod);
-                    closeModSwapPopup.value = true;
                   },
                   child: Row(
                     spacing: 10,

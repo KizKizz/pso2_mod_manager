@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -8,6 +10,7 @@ import 'package:pso2_mod_manager/item_swap/item_swap_working_popup.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_acc_functions.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_emote_functions.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_general_functions.dart';
+import 'package:pso2_mod_manager/item_swap/mod_swap_helper_functions.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_add/mod_add_function.dart';
 import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
@@ -20,7 +23,6 @@ import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
-
 
 void quickSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, ItemData rItemData, Mod mod, SubMod submod) {
   Directory swapOutputDir = Directory('');
@@ -35,6 +37,9 @@ void quickSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, Item
             WidgetsBinding.instance.addPostFrameCallback((_) async {
               taskWorking = true;
               swapOutputDir = Directory('');
+              // Clean and create temp dirs
+              await modSwapTempDirsRemove();
+              await modSwapTempDirsCreate();
               if (submod.category == defaultCategoryDirs[0]) {
                 swapOutputDir = await modSwapAccessories(context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), rItemData.getItemID());
               } else if (submod.category == defaultCategoryDirs[14] || submod.category == defaultCategoryDirs[7]) {
@@ -46,7 +51,6 @@ void quickSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, Item
               if (swapOutputDir.existsSync()) {
                 // Add to mod manager
                 modAddDragDropPaths.add(swapOutputDir.path);
-                // ignore: use_build_context_synchronously
                 await modAddUnpack(context, modAddDragDropPaths.toList());
                 modAddDragDropPaths.clear();
                 modAddingList = await modAddSort();
@@ -55,10 +59,8 @@ void quickSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, Item
                 Item applyItem = addedItems.firstWhere((e) => e.itemName == rItemData.getENName() || e.itemName == rItemData.getJPName());
                 Mod applyMod = applyItem.mods.firstWhere((e) => e.modName == mod.modName);
                 SubMod applySubmod = applyMod.submods.firstWhere((e) => e.submodName == submod.submodName);
-                // ignore: use_build_context_synchronously
                 await modToGameData(context, true, applyItem, applyMod, applySubmod);
               }
-              // ignore: use_build_context_synchronously
               Navigator.of(context).pop();
               mainGridStatus.value = '"${submod.modName}" is swapped and applied';
               taskWorking = false;

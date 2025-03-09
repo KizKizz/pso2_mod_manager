@@ -255,6 +255,10 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..refreshItemIcon = json['refreshItemIcon'] as String
   ..refreshingItemIcons = json['refreshingItemIcons'] as String
   ..fetchingIconsInItem = json['fetchingIconsInItem'] as String
+  ..selectAll = json['selectAll'] as String
+  ..viewQueue = json['viewQueue'] as String
+  ..hideQueue = json['hideQueue'] as String
+  ..addToQueue = json['addToQueue'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -698,6 +702,10 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'refreshItemIcon': instance.refreshItemIcon,
       'refreshingItemIcons': instance.refreshingItemIcons,
       'fetchingIconsInItem': instance.fetchingIconsInItem,
+      'selectAll': instance.selectAll,
+      'viewQueue': instance.viewQueue,
+      'hideQueue': instance.hideQueue,
+      'addToQueue': instance.addToQueue,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,
