@@ -136,7 +136,7 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                   child: ItemSwapGridLayout(
                 itemDataList: displayingItems,
                 scrollController: lScrollController,
-                selectedItemData: lSelectedItemData,
+                selectedItemData: lSelectedItemData, emoteSwapQueue: const [],
               )),
               Expanded(
                   child: ItemSwapGridLayout(
@@ -148,7 +148,7 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                     ? rDisplayingItemsExtra
                     : displayingItems,
                 scrollController: rScrollController,
-                selectedItemData: rSelectedItemData,
+                selectedItemData: rSelectedItemData, emoteSwapQueue: const [],
               )),
             ],
           )),

@@ -34,6 +34,7 @@ class _AppliedListV2State extends State<AppliedListV2> {
     // Refresh
     if (modApplyStatus.watch(context) != modApplyStatus.peek() ||
         mainGridStatus.watch(context) != mainGridStatus.peek() ||
+        selectedDisplaySortAppliedList.watch(context) != selectedDisplaySortAppliedList.peek() ||
         selectedDisplayCategoryAppliedList.watch(context) != selectedDisplayCategoryAppliedList.peek()) {
       setState(
         () {},
@@ -64,7 +65,7 @@ class _AppliedListV2State extends State<AppliedListV2> {
         }
       }
     }
-    filteredItems.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
+    // filteredItems.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
 
     // Filter
     List<Category> categories = [];

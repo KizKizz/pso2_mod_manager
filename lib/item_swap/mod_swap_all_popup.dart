@@ -112,7 +112,7 @@ Future<void> modSwapAllPopup(context, Item item, Mod mod) async {
                         ? rDisplayingItemsExtra
                         : displayingItems,
                     scrollController: rScrollController,
-                    selectedItemData: rSelectedItemData,
+                    selectedItemData: rSelectedItemData, emoteSwapQueue: const [],
                   )),
                 ],
               ),

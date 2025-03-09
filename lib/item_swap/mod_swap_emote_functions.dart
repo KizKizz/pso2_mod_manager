@@ -15,9 +15,7 @@ final validCharacters = RegExp(r'^[a-zA-Z0-9]+$');
 Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, SubMod fromSubmod, String rSelectedItemName, List<String> lItemAvailableIces, List<String> rItemAvailableIces,
     List<String> emoteSwapQueuePaths) async {
   String newToSelectedItemName = rSelectedItemName;
-  // Clean and create temp dirs
-  await modSwapTempDirsRemove();
-  await modSwapTempDirsCreate();
+  
 
   String tempSubmodPathF = Uri.file('$modSwapTempLItemDirPath/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath();
   String tempSubmodPathT = Uri.file('$modSwapTempRItemDirPath/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath();
