@@ -44,7 +44,7 @@ Future<Directory> modSwapGeneral(
     return Directory(Uri.file('$modSwapTempOutputDirPath/$rItemName').toFilePath());
   }
 
-  for (var pair in iceSwappingList) {
+  for (var pair in iceSwappingList.where((e) => p.extension(e[0]) == '' && p.extension(e[0]) == '')) {
     //F ice prep
     String lItemIceName = pair[0];
     String rItemIceName = pair[1];
@@ -53,6 +53,104 @@ Future<Directory> modSwapGeneral(
     List<File> extractedGroup1FilesT = [];
     List<File> extractedGroup2FilesT = [];
 
+    // Weapon specific swaps
+    if (fromSubmod.category == defaultCategoryDirs[17]) {
+      //copy or download files to temp fromitem dir
+      File lItemIceFileInTemp = File('');
+      if (isVanillaItemSwap) {
+        //get ice path
+        final matchedlItemData = oItemData.firstWhere(
+          (e) => p.basenameWithoutExtension(e.path) == lItemIceName,
+          orElse: () => OfficialIceFile('', '', 0, ''),
+        );
+        lItemIceFileInTemp = await modSwapOriginalFileDownload(matchedlItemData.path, matchedlItemData.server, modSwapTempLItemDirPath);
+      } else {
+        int modFileIndexF = fromSubmod.modFiles.indexWhere((element) => element.modFileName == lItemIceName);
+        if (modFileIndexF != -1) {
+          final modFileF = fromSubmod.modFiles[modFileIndexF];
+          lItemIceFileInTemp = await File(modFileF.location).copy(Uri.file('$modSwapTempLItemDirPath/$lItemIceName').toFilePath());
+        }
+      }
+
+      if (lItemIceFileInTemp.existsSync()) {
+        //pack
+        rItemName = rItemName.replaceAll(RegExp(charToReplace), '_').trim();
+        String packDirPath = '';
+        if (fromSubmod.modName == fromSubmod.submodName) {
+          packDirPath = Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath();
+        } else {
+          packDirPath = Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName}/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}')
+              .toFilePath();
+        }
+        Directory(packDirPath).createSync(recursive: true);
+        await lItemIceFileInTemp.rename(packDirPath + p.separator + p.basenameWithoutExtension(rItemIceName));
+        //mod previews
+        //image
+        for (var imagePath in fromMod.previewImages) {
+          if (Directory(Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath())
+              .listSync()
+              .whereType<File>()
+              .where((element) => p.basename(element.path) == p.basename(imagePath))
+              .isEmpty) {
+            File(imagePath).copySync(Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}/${p.basename(imagePath)}').toFilePath());
+          }
+        }
+        //video
+        for (var videoPath in fromMod.previewVideos) {
+          if (Directory(Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath())
+              .listSync()
+              .whereType<File>()
+              .where((element) => p.basename(element.path) == p.basename(videoPath))
+              .isEmpty) {
+            File(videoPath).copySync(Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}/${p.basename(videoPath)}').toFilePath());
+          }
+        }
+        //submod previews
+        //image
+        for (var imagePath in fromSubmod.previewImages) {
+          if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(imagePath)).isEmpty) {
+            File(imagePath).copySync(Uri.file('$packDirPath/${p.basename(imagePath)}').toFilePath());
+          }
+        }
+        //video
+        for (var videoPath in fromSubmod.previewVideos) {
+          if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(videoPath)).isEmpty) {
+            File(videoPath).copySync(Uri.file('$packDirPath/${p.basename(videoPath)}').toFilePath());
+          }
+        }
+        //modfile previews
+        //image
+        for (var imagePaths in fromSubmod.modFiles.map((e) => e.previewImages!).toList()) {
+          for (var imagePath in imagePaths) {
+            if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(imagePath)).isEmpty) {
+              File(imagePath).copySync(Uri.file('$packDirPath/${p.basename(imagePath)}').toFilePath());
+            }
+          }
+        }
+        //video
+        for (var videoPaths in fromSubmod.modFiles.map((e) => e.previewVideos!).toList()) {
+          for (var videoPath in videoPaths) {
+            if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(videoPath)).isEmpty) {
+              File(videoPath).copySync(Uri.file('$packDirPath/${p.basename(videoPath)}').toFilePath());
+            }
+          }
+        }
+        //cmx
+        if (fromSubmod.hasCmx! && fromSubmod.cmxFile!.isNotEmpty && File(fromSubmod.cmxFile!).existsSync()) {
+          File cmxFileF = File(fromSubmod.cmxFile!);
+          String cmxData = await cmxFileF.readAsString();
+          String newCmxData = cmxData.replaceFirst(lItemId, rItemId);
+          File cmxFileT = File(Uri.file('$packDirPath/${p.basename(cmxFileF.path).replaceFirst(lItemId, rItemId)}').toFilePath());
+          if (!cmxFileT.existsSync()) {
+            await cmxFileT.create(recursive: true);
+          }
+          await cmxFileT.writeAsString(newCmxData);
+        }
+      }
+      continue;
+    }
+
+    // Normal swaps
     //copy or download files to temp fromitem dir
     File lItemIceFileInTemp = File('');
     if (isVanillaItemSwap) {

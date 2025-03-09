@@ -26,7 +26,10 @@ class _ItemListV2State extends State<ItemListV2> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (selectedDisplaySort.watch(context) != selectedDisplaySort.peek() || modApplyStatus.watch(context) != modApplyStatus.peek() || mainGridStatus.watch(context) != mainGridStatus.peek()) {
+    if (selectedDisplaySort.watch(context) != selectedDisplaySort.peek() ||
+        modPopupStatus.watch(context) != modPopupStatus.peek() ||
+        modApplyStatus.watch(context) != modApplyStatus.peek() ||
+        mainGridStatus.watch(context) != mainGridStatus.peek()) {
       setState(
         () {},
       );

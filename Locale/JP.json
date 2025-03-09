@@ -1,4 +1,8 @@
 {
+  "selectAll": "すべて選択",
+  "viewQueue": "キューを表示",
+  "hideQueue": "キューを非表示",
+  "addToQueue": "キューに追加",
   "refreshItemIcon": "アイテムのアイコンをリフレッシュ",
   "refreshingItemIcons": "アイテムアイコンのリフレッシュ",
   "fetchingIconsInItem": "\"%p%\"内のアイコンを取得中",

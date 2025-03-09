@@ -165,6 +165,8 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                                 selectedItemData: rSelectedItemData,
                                 emoteSwapQueue: emoteSwapQueue,
                               )),
+
+                          // emote queue
                           if (showEmoteQueue)
                             Expanded(
                                 child: CardOverlay(
@@ -281,15 +283,13 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                     children: [
                       if (submod.category == defaultCategoryDirs[7] && lDisplayingItems.length > 1)
                         OutlinedButton(
-                            onPressed: emoteSwapQueue.isNotEmpty
-                                ? () {
-                                    showEmoteQueue ? showEmoteQueue = false : showEmoteQueue = true;
-                                    setState(
-                                      () {},
-                                    );
-                                  }
-                                : null,
-                            child: Text(appText.viewQueue)),
+                            onPressed: () {
+                              showEmoteQueue ? showEmoteQueue = false : showEmoteQueue = true;
+                              setState(
+                                () {},
+                              );
+                            },
+                            child: Text(showEmoteQueue ? appText.hideQueue : appText.viewQueue)),
                       if (submod.category == defaultCategoryDirs[7] && lDisplayingItems.length > 1)
                         OutlinedButton(
                             onPressed: lSelectedItemData.watch(context) != null && rSelectedItemData.watch(context) != null

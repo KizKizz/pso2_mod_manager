@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
@@ -11,8 +12,8 @@ part 'item_class.g.dart';
 
 @JsonSerializable()
 class Item with ChangeNotifier {
-  Item(this.itemName, this.variantNames, this.icons, this.iconPath, this.overlayedIconPath, this.backupIconPath, this.isOverlayedIconApplied, this.category, this.location,
-      this.applyStatus, this.applyDate, this.position, this.isFavorite, this.isSet, this.isNew, this.setNames, this.mods);
+  Item(this.itemName, this.variantNames, this.icons, this.iconPath, this.overlayedIconPath, this.backupIconPath, this.isOverlayedIconApplied, this.category, this.location, this.applyStatus,
+      this.applyDate, this.position, this.isFavorite, this.isSet, this.isNew, this.setNames, this.mods);
   String itemName;
   // String? itemNameJP;
   List<String> variantNames;
@@ -48,7 +49,11 @@ class Item with ChangeNotifier {
     // if (itemNameLanguage == ItemNameLanguage.jp && itemNameJP!.isNotEmpty) {
     //   return itemNameJP!.replaceFirst('_ ', ':').replaceFirst('_', '/');
     // }
-    return itemName.replaceFirst('_ ', ': ').replaceFirst('_', '/').trim();
+    if (category == defaultCategoryDirs[17]) {
+      return itemName.replaceFirst('_ ', '* ').trim();
+    } else {
+      return itemName.replaceFirst('_ ', ': ').replaceFirst('_', '/').trim();
+    }
   }
 
   void removeMod(Mod mod) {
