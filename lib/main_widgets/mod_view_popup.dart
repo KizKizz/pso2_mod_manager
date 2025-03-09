@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
-import 'package:pso2_mod_manager/item_swap/mod_swap_popup.dart';
 import 'package:pso2_mod_manager/main_widgets/popup_item_info.dart';
 import 'package:pso2_mod_manager/main_widgets/popup_list_tile.dart';
 import 'package:pso2_mod_manager/main_widgets/popup_menu_functions.dart';
@@ -26,11 +25,7 @@ Future<void> modViewPopup(context, Item item) async {
               () {},
             );
           }
-          if (closeModSwapPopup.watch(context) == true) {
-            closeModSwapPopup.value = false;
-            Navigator.of(context).pop();
-            Navigator.of(context).pop();
-          }
+          
           return AlertDialog(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),

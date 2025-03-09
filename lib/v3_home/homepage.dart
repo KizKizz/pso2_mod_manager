@@ -47,7 +47,7 @@ List<Widget> homepageV2Widgets = [
   const MainVitalGaugeGrid(),
   const MainLineStrikeGrid()
 ];
-List<Widget> homepageFooterWidgets = [const ModAdd(), const Settings(), const HelpPageGrid()];
+List<Widget> homepageFooterWidgets = [const ModAdd(isPopup: false), const Settings(), const HelpPageGrid()];
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});

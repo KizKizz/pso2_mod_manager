@@ -324,6 +324,10 @@ class _ItemSwapAllSubmodGridLayout extends State<ItemSwapAllSubmodGridLayout> {
       displayingSubmods = widget.submodList.where((e) => e.submodName.toLowerCase().contains(itemSwapAllSubmodSearchTextController.value.text.toLowerCase())).toList();
     }
 
+    for (var displayingSubmod in displayingSubmods) {
+      if (!widget.selectedSubmods.value.contains(displayingSubmod)) widget.selectedSubmods.value.add(displayingSubmod);
+    }
+
     return Column(
       spacing: 5,
       children: [
@@ -354,24 +358,24 @@ class _ItemSwapAllSubmodGridLayout extends State<ItemSwapAllSubmodGridLayout> {
                                 children: [
                                   Flexible(child: Text(widget.item.getDisplayName(), style: Theme.of(context).textTheme.titleMedium)),
                                   Row(
-                                      spacing: 2.5,
-                                      children: [
-                                        Expanded(
-                                          flex: 1,
-                                          child: InfoBox(
-                                            info: appText.dText(widget.item.mods.length > 1 ? appText.numMods : appText.numMod, widget.item.mods.length.toString()),
-                                            borderHighlight: false,
-                                          ),
+                                    spacing: 2.5,
+                                    children: [
+                                      Expanded(
+                                        flex: 1,
+                                        child: InfoBox(
+                                          info: appText.dText(widget.item.mods.length > 1 ? appText.numMods : appText.numMod, widget.item.mods.length.toString()),
+                                          borderHighlight: false,
                                         ),
-                                        Expanded(
-                                          flex: 2,
-                                          child: InfoBox(
-                                            info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedMods().toString()),
-                                            borderHighlight: widget.item.applyStatus,
-                                          ),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: InfoBox(
+                                          info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedMods().toString()),
+                                          borderHighlight: widget.item.applyStatus,
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
+                                  ),
                                 ],
                               ),
                             )
@@ -443,6 +447,27 @@ class _ItemSwapAllSubmodGridLayout extends State<ItemSwapAllSubmodGridLayout> {
               ),
             )
           ]),
+        ),
+        Row(
+          spacing: 5,
+          children: [
+            Expanded(
+                child: OutlinedButton(
+                    onPressed: () {
+                      for (var displayingSubmod in displayingSubmods) {
+                        if (!widget.selectedSubmods.value.contains(displayingSubmod)) widget.selectedSubmods.value.add(displayingSubmod);
+                      }
+                      setState(() {});
+                    },
+                    child: Text(appText.selectAll))),
+            Expanded(
+                child: OutlinedButton(
+                    onPressed: () {
+                      widget.selectedSubmods.value.clear();
+                      setState(() {});
+                    },
+                    child: Text(appText.removeAll))),
+          ],
         ),
         Expanded(
             child: CardOverlay(

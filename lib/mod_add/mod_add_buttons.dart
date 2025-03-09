@@ -131,7 +131,9 @@ class _ModAddDragDropButtonsState extends State<ModAddDragDropButtons> {
 }
 
 class ModAddProcessedButtons extends StatefulWidget {
-  const ModAddProcessedButtons({super.key});
+  const ModAddProcessedButtons({super.key, required this.showReturnButton});
+
+  final bool showReturnButton;
 
   @override
   State<ModAddProcessedButtons> createState() => _ModAddProcessedButtonsState();
@@ -187,7 +189,14 @@ class _ModAddProcessedButtonsState extends State<ModAddProcessedButtons> {
                 appText.add,
                 textAlign: TextAlign.center,
               )),
-        )
+        ),
+        if (widget.showReturnButton)
+          OutlinedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                appText.returns,
+                textAlign: TextAlign.center,
+              ))
       ],
     );
   }
