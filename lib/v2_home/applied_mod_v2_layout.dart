@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/main_widgets/item_more_functions_menu.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_grid_layout.dart';
@@ -40,7 +41,13 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
     if (widget.searchString.isEmpty) {
       for (var mod in widget.item.mods.where((e) => e.applyStatus)) {
         for (var submod in mod.submods.where((e) => e.applyStatus)) {
-          displayingSubmodCards.add(SubmodCardLayout(item: widget.item, mod: mod, submod: submod, modSetName: '', isInPopup: false,));
+          displayingSubmodCards.add(SubmodCardLayout(
+            item: widget.item,
+            mod: mod,
+            submod: submod,
+            modSetName: '',
+            isInPopup: false,
+          ));
         }
       }
     } else {
@@ -48,7 +55,13 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
         for (var submod in mod.submods.where((e) =>
             e.applyStatus &&
             (e.getModFileNames().where((i) => i.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty || e.submodName.toLowerCase().contains(widget.searchString.toLowerCase())))) {
-          displayingSubmodCards.add(SubmodCardLayout(item: widget.item, mod: mod, submod: submod, modSetName: '', isInPopup: false,));
+          displayingSubmodCards.add(SubmodCardLayout(
+            item: widget.item,
+            mod: mod,
+            submod: submod,
+            modSetName: '',
+            isInPopup: false,
+          ));
         }
       }
     }
@@ -73,7 +86,7 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                   expanded ? expanded = false : expanded = true;
                 }),
                 child: SizedBox(
-                  height: 90,
+                  height: 93,
                   child: Card(
                       shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
                       color: !status.isPinned
@@ -91,13 +104,31 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                                 mainAxisSize: MainAxisSize.min,
                                 spacing: 5,
                                 children: [
-                                  AspectRatio(aspectRatio: 1, child: ItemIconBox(item: widget.item)),
+                                  AspectRatio(aspectRatio: 1, child: ItemIconBox(item: widget.item, showSubCategory: false,)),
                                   Column(
                                     spacing: 5,
+                                    mainAxisSize: MainAxisSize.max,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(widget.item.getDisplayName(), style: Theme.of(context).textTheme.labelLarge),
+                                      Row(
+                                        spacing: 5,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(widget.item.getDisplayName(), overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge),
+                                          Visibility(
+                                            visible: !aqmInjectCategoryDirs.contains(widget.item.category) && widget.item.subCategory!.isNotEmpty,
+                                              child: InfoBox(
+                                                    info: widget.item.category == defaultCategoryDirs[14]
+                                                        ? appText.motionTypeName(widget.item.subCategory!)
+                                                        : widget.item.category == defaultCategoryDirs[17]
+                                                            ? appText.weaponTypeName(widget.item.subCategory!.split('* ').last)
+                                                            : widget.item.subCategory!,
+                                                    borderHighlight: false),
+                                          ),
+                                        ],
+                                      ),
                                       Row(
                                         spacing: 5,
                                         mainAxisSize: MainAxisSize.min,

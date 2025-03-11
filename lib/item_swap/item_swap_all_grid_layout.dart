@@ -349,7 +349,7 @@ class _ItemSwapAllSubmodGridLayout extends State<ItemSwapAllSubmodGridLayout> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           spacing: 5,
                           children: [
-                            AspectRatio(aspectRatio: 1, child: ItemIconBox(item: widget.item)),
+                            AspectRatio(aspectRatio: 1, child: ItemIconBox(item: widget.item, showSubCategory: false,)),
                             Expanded(
                               child: Column(
                                 spacing: 5,

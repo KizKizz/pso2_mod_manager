@@ -122,7 +122,7 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
               mainAxisSize: MainAxisSize.min,
               spacing: 5,
               children: [
-                AspectRatio(aspectRatio: 1, child: ItemIconBox(item: widget.item)),
+                AspectRatio(aspectRatio: 1, child: ItemIconBox(item: widget.item, showSubCategory: true,)),
                 Expanded(child: Center(child: Text(widget.item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge))),
                 Column(
                   spacing: 2.5,

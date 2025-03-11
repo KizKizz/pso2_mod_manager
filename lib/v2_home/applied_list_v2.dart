@@ -34,6 +34,7 @@ class _AppliedListV2State extends State<AppliedListV2> {
     // Refresh
     if (modApplyStatus.watch(context) != modApplyStatus.peek() ||
         mainGridStatus.watch(context) != mainGridStatus.peek() ||
+        modPopupStatus.watch(context) != modPopupStatus.peek() ||
         selectedDisplaySortAppliedList.watch(context) != selectedDisplaySortAppliedList.peek() ||
         selectedDisplayCategoryAppliedList.watch(context) != selectedDisplayCategoryAppliedList.peek()) {
       setState(
@@ -227,13 +228,13 @@ class _AppliedListV2State extends State<AppliedListV2> {
                                         mainAxisSize: MainAxisSize.min,
                                         spacing: 5,
                                         children: [
-                                          SizedBox(width: 75, height: 75, child: ItemIconBox(item: e)),
+                                          SizedBox(width: 75, height: 75, child: ItemIconBox(item: e, showSubCategory: true,)),
                                           Column(
                                             spacing: 5,
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Text(e.itemName.replaceFirst('_', '/').trim(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                                              Text(e.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
                                               Row(
                                                 spacing: 5,
                                                 children: [

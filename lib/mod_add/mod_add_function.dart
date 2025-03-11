@@ -426,9 +426,10 @@ Future<Item> newItemsFetcher(String catePath, String itemPath, bool addingToSet,
     itemIcons = imagesFoundInItemDir.map((e) => e.path).toList();
   }
 
-  Item newItem = Item(p.basename(itemPath), [], itemIcons, '', '', '', false, p.basename(catePath), Uri.file(itemPath).toFilePath(), false, DateTime(0), 0, false, addingToSet ? true : false, true,
+  Item newItem = Item(p.basename(itemPath), '', [], itemIcons, '', '', '', false, p.basename(catePath), Uri.file(itemPath).toFilePath(), false, DateTime(0), 0, false, addingToSet ? true : false, true,
       addingToSet ? modSetNames : [], await newModsFetcher(itemPath, p.basename(catePath), [], addingToSet, modSetNames));
   newItem.setLatestCreationDate();
+  newItem.subCategory = newItem.getSubCategory();
 
   return newItem;
 }
