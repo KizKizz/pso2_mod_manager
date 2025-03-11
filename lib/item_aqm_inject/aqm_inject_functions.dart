@@ -256,7 +256,11 @@ Future<bool> itemCustomAqmRestoreAqm(String hqIcePath, String lqIcePath, bool fr
       modAqmInjectingStatus.value = appText.dText(appText.extractingFile, p.basename(file.path));
       await Future.delayed(const Duration(milliseconds: 10));
       //extract files
-      await Process.run('$zamboniExePath -outdir "$modAqmInjectTempDirPath"', [file.path]);
+      if (Platform.isLinux) {
+        await Process.run('wine $zamboniExePath -outdir "$modAqmInjectTempDirPath"', [file.path]);
+      } else {
+        await Process.run('$zamboniExePath -outdir "$modAqmInjectTempDirPath"', [file.path]);
+      }
       String extractedGroup2Path = Uri.file('$modAqmInjectTempDirPath/${p.basenameWithoutExtension(file.path)}_ext/group2').toFilePath();
       if (Directory(extractedGroup2Path).existsSync()) {
         //get id from aqp file

@@ -60,14 +60,22 @@ Future<bool> customVgBackgroundApply(context, String imgPath, VitalGaugeBackgrou
   String newTempIcePath = Uri.file('$modVitalGaugeTempDirPath/${vgDataFile.iceName}/group2').toFilePath();
   Directory(newTempIcePath).createSync(recursive: true);
   if (Directory(newTempIcePath).existsSync()) {
-    await Process.run(pngDdsConvExePath, [imgPath, Uri.file('$newTempIcePath/${vgDataFile.ddsName}.dds').toFilePath(), '-pngtodds']);
+    if (Platform.isLinux) {
+      await Process.run('wine $pngDdsConvExePath', [imgPath, Uri.file('$newTempIcePath/${vgDataFile.ddsName}.dds').toFilePath(), '-pngtodds']);
+    } else {
+      await Process.run(pngDdsConvExePath, [imgPath, Uri.file('$newTempIcePath/${vgDataFile.ddsName}.dds').toFilePath(), '-pngtodds']);
+    }
     vitalGaugeStatus.value = appText.dText(appText.convertingFileToDds, p.basename(imgPath));
     Future.delayed(const Duration(microseconds: 10));
     // logs += 'Create: $newTempIcePath\n';
   }
   if (File(Uri.file('$newTempIcePath/${vgDataFile.ddsName}.dds').toFilePath()).existsSync()) {
     // logs += 'Convert: ${Uri.file('$newTempIcePath/${vgDataFile.ddsName}.dds').toFilePath().toString()}\n';
-    await Process.run('$zamboniExePath -c -pack -outdir "$modVitalGaugeTempDirPath"', [Uri.file('$modVitalGaugeTempDirPath/${vgDataFile.iceName}').toFilePath()]);
+    if (Platform.isLinux) {
+      await Process.run('wine $zamboniExePath -c -pack -outdir "$modVitalGaugeTempDirPath"', [Uri.file('$modVitalGaugeTempDirPath/${vgDataFile.iceName}').toFilePath()]);
+    } else {
+      await Process.run('$zamboniExePath -c -pack -outdir "$modVitalGaugeTempDirPath"', [Uri.file('$modVitalGaugeTempDirPath/${vgDataFile.iceName}').toFilePath()]);
+    }
     Directory(Uri.file('$modVitalGaugeTempDirPath/${vgDataFile.iceName}').toFilePath()).deleteSync(recursive: true);
     vitalGaugeStatus.value = appText.generatingIceFile;
     Future.delayed(const Duration(microseconds: 10));

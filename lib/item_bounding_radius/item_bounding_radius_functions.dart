@@ -29,7 +29,11 @@ Future<bool> itemBoundingRadiusRemove(context, SubMod submod) async {
       List<File> extractedGroup1Files = [];
       List<File> extractedGroup2Files = [];
       //extract files
-      await Process.run('$zamboniExePath -outdir "$modBoundingRadiusTempDirPath"', [modFile.location]);
+      if (Platform.isLinux) {
+        await Process.run('wine $zamboniExePath -outdir "$modBoundingRadiusTempDirPath"', [modFile.location]);
+      } else {
+        await Process.run('$zamboniExePath -outdir "$modBoundingRadiusTempDirPath"', [modFile.location]);
+      }
       String extractedGroup1Path = Uri.file('$modBoundingRadiusTempDirPath/${modFile.modFileName}_ext/group1').toFilePath();
       if (Directory(extractedGroup1Path).existsSync()) {
         extractedGroup1Files = Directory(extractedGroup1Path).listSync(recursive: true).whereType<File>().toList();
@@ -66,7 +70,11 @@ Future<bool> itemBoundingRadiusRemove(context, SubMod submod) async {
               while (!File(Uri.file('${p.dirname(aqpFile.parent.path)}.ice').toFilePath()).existsSync()) {
                 modRemovingBoundingStatus.value = appText.dText(appText.repackingFile, p.basenameWithoutExtension(aqpFile.parent.path));
                 await Future.delayed(const Duration(milliseconds: 10));
-                await Process.run('$zamboniExePath -c -pack -outdir "${p.dirname(aqpFile.parent.path)}"', [Uri.file(p.dirname(aqpFile.parent.path)).toFilePath()]);
+                if (Platform.isLinux) {
+                  await Process.run('wine $zamboniExePath -c -pack -outdir "${p.dirname(aqpFile.parent.path)}"', [Uri.file(p.dirname(aqpFile.parent.path)).toFilePath()]);
+                } else {
+                  await Process.run('$zamboniExePath -c -pack -outdir "${p.dirname(aqpFile.parent.path)}"', [Uri.file(p.dirname(aqpFile.parent.path)).toFilePath()]);
+                }
                 packRetries++;
                 if (packRetries == 5) {
                   break;
