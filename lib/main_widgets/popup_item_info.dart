@@ -24,7 +24,7 @@ class _PopupItemInfoState extends State<PopupItemInfo> {
     return Column(
       spacing: 5,
       children: [
-        ItemIconBox(item: widget.item),
+        ItemIconBox(item: widget.item, showSubCategory: true,),
         Text(
           appText.categoryName(widget.item.category),
           style: Theme.of(context).textTheme.titleMedium,

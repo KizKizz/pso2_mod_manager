@@ -59,7 +59,7 @@ Future<(bool, List<ModFile>)> duplicateAppliedModPopup(context, Item dupItem, Mo
                                 spacing: 5,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  ItemIconBox(item: applyingItem),
+                                  ItemIconBox(item: applyingItem, showSubCategory: true,),
                                   Text(applyingItem.itemName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
                                 ],
                               ),
@@ -106,7 +106,7 @@ Future<(bool, List<ModFile>)> duplicateAppliedModPopup(context, Item dupItem, Mo
                               Column(
                                 spacing: 5,
                                 children: [
-                                  ItemIconBox(item: dupItem),
+                                  ItemIconBox(item: dupItem, showSubCategory: true,),
                                   Text(dupItem.itemName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
                                 ],
                               ),

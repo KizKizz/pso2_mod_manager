@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
-import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
 import 'package:pso2_mod_manager/main_widgets/mod_more_functions_menu.dart';
 import 'package:pso2_mod_manager/main_widgets/popup_menu_functions.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_grid_layout.dart';
@@ -10,6 +9,7 @@ import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v2_home/homepage_v2.dart';
+import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
@@ -89,9 +89,9 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
                                   spacing: 5,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    HeaderInfoBox(
+                                    InfoBox(
                                         info: appText.dText(widget.mod.submods.length > 1 ? appText.numVariants : appText.numVariant, widget.mod.submods.length.toString()), borderHighlight: false),
-                                    HeaderInfoBox(
+                                    InfoBox(
                                       info: appText.dText(appText.numCurrentlyApplied, widget.mod.getNumOfAppliedSubmods().toString()),
                                       borderHighlight: widget.mod.applyStatus,
                                     ),

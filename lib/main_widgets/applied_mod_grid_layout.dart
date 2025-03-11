@@ -149,7 +149,7 @@ class _ModCardLayoutState extends State<ModCardLayout> {
                 flex: 2,
                 child: Column(
                   children: [
-                    ItemIconBox(item: widget.item),
+                    ItemIconBox(item: widget.item, showSubCategory: true,),
                     Text(widget.item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
                   ],
                 ),

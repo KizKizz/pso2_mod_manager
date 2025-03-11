@@ -102,13 +102,35 @@ class _ModViewListV2State extends State<ModViewListV2> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             spacing: 5,
                             children: [
-                              AspectRatio(aspectRatio: 1, child: ItemIconBox(item: widget.item!)),
+                              AspectRatio(
+                                  aspectRatio: 1,
+                                  child: ItemIconBox(
+                                    item: widget.item!,
+                                    showSubCategory: false,
+                                  )),
                               Expanded(
                                 child: Column(
                                   spacing: 5,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Expanded(child: Text(widget.item!.getDisplayName(), style: Theme.of(context).textTheme.titleMedium)),
+                                    Row(
+                                      spacing: 5,
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(child: Text(widget.item!.getDisplayName(), style: Theme.of(context).textTheme.titleMedium)),
+                                        Visibility(
+                                          visible: !aqmInjectCategoryDirs.contains(widget.item!.category) && widget.item!.subCategory!.isNotEmpty,
+                                          child: InfoBox(
+                                              info: widget.item!.category == defaultCategoryDirs[14]
+                                                  ? appText.motionTypeName(widget.item!.subCategory!)
+                                                  : widget.item!.category == defaultCategoryDirs[17]
+                                                      ? appText.weaponTypeName(widget.item!.subCategory!.split('* ').last)
+                                                      : widget.item!.subCategory!,
+                                              borderHighlight: false),
+                                        ),
+                                      ],
+                                    ),
                                     Expanded(
                                       child: Row(
                                         spacing: 2.5,

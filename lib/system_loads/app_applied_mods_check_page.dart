@@ -140,7 +140,7 @@ class _AppAppliedModsLoadPageState extends State<AppAppliedModsLoadPage> {
                           child: Column(
                             spacing: 5,
                             children: [
-                              ItemIconBox(item: item),
+                              ItemIconBox(item: item, showSubCategory: true,),
                               Text(item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
                             ],
                           ),

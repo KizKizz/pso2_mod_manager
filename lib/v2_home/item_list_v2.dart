@@ -172,7 +172,7 @@ class _ItemListV2State extends State<ItemListV2> {
                                         mainAxisSize: MainAxisSize.min,
                                         spacing: 5,
                                         children: [
-                                          SizedBox(width: 75, height: 75, child: ItemIconBox(item: e)),
+                                          SizedBox(width: 75, height: 75, child: ItemIconBox(item: e, showSubCategory: true,)),
                                           Column(
                                             spacing: 5,
                                             mainAxisAlignment: MainAxisAlignment.center,

@@ -113,6 +113,7 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
             if (itemIndex != -1) {
               item.applyDate = curJsonItemsList[itemIndex].applyDate;
               item.applyStatus = curJsonItemsList[itemIndex].applyStatus;
+              curJsonItemsList[itemIndex].subCategory == null ? item.subCategory = item.getSubCategory() : item.subCategory = curJsonItemsList[itemIndex].subCategory;
               //item.category = curJsonItemsList[itemIndex].category;
               //item.itemName = curJsonItemsList[itemIndex].itemName;
               //item.icon = curJsonItemsList[itemIndex].icon;
@@ -336,7 +337,7 @@ Future<List<Item>> itemsFetcher(context, String catePath, bool reload) async {
       // }
     }
 
-    items.add(Item(p.basename(dir.path), nameVariants, itemIcons, '', '', '', false, p.basename(catePath), Uri.file(dir.path).toFilePath(), false, DateTime(0), 0, false, false, false, [], modList));
+    items.add(Item(p.basename(dir.path), '', nameVariants, itemIcons, '', '', '', false, p.basename(catePath), Uri.file(dir.path).toFilePath(), false, DateTime(0), 0, false, false, false, [], modList));
   }
   // clearModAdderDirs();
 

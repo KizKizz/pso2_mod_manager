@@ -7,15 +7,16 @@ import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_functions.dart';
+import 'package:path/path.dart' as p;
 
 part 'item_class.g.dart';
 
 @JsonSerializable()
 class Item with ChangeNotifier {
-  Item(this.itemName, this.variantNames, this.icons, this.iconPath, this.overlayedIconPath, this.backupIconPath, this.isOverlayedIconApplied, this.category, this.location, this.applyStatus,
+  Item(this.itemName, this.subCategory, this.variantNames, this.icons, this.iconPath, this.overlayedIconPath, this.backupIconPath, this.isOverlayedIconApplied, this.category, this.location, this.applyStatus,
       this.applyDate, this.position, this.isFavorite, this.isSet, this.isNew, this.setNames, this.mods);
   String itemName;
-  // String? itemNameJP;
+  String? subCategory = '';
   List<String> variantNames;
   List<String> icons;
   String? iconPath = '';
@@ -117,6 +118,16 @@ class Item with ChangeNotifier {
       submods.addAll(mod.submods);
     }
     return submods;
+  }
+
+  String getSubCategory() {
+    final iceFiles = getDistinctModFilePaths().map((e) => p.basenameWithoutExtension(e));
+    final matchingItemDataIndex = pItemData.indexWhere((e) => e.category == category && e.containsIceFiles(iceFiles.toList()));
+    if (matchingItemDataIndex != -1) {
+      return pItemData[matchingItemDataIndex].subCategory.trim();
+    } else {
+      return '';
+    }
   }
 
   (Mod?, SubMod?) getActiveInSet(String setName) {

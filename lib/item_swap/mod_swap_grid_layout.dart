@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
@@ -112,9 +114,25 @@ class _ModSwapGridLayoutState extends State<ModSwapGridLayout> {
                             spacing: 5,
                             children: [
                               GenericItemIconBox(iconImagePaths: [displayingItemData[index].iconImagePath], boxSize: const Size(80, 80), isNetwork: true),
-                              Text(
-                                displayingItemData[index].getName(),
-                                style: const TextStyle(fontWeight: FontWeight.w500),
+                              Column(
+                                spacing: 5,
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    displayingItemData[index].getName(),
+                                    style: const TextStyle(fontWeight: FontWeight.w500),
+                                  ),
+                                  Visibility(
+                                      visible: !aqmInjectCategoryDirs.contains(displayingItemData[index].category) && displayingItemData[index].subCategory.isNotEmpty,
+                                      child: InfoBox(
+                                          info: displayingItemData[index].category == defaultCategoryDirs[14]
+                                              ? appText.motionTypeName(displayingItemData[index].subCategory)
+                                              : displayingItemData[index].category == defaultCategoryDirs[17]
+                                                  ? appText.weaponTypeName(displayingItemData[index].subCategory.split('* ').last)
+                                                  : displayingItemData[index].subCategory,
+                                          borderHighlight: false)),
+                                ],
                               )
                             ],
                           ),

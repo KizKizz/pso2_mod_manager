@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
-import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/main_widgets/item_more_functions_menu.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
@@ -83,9 +83,9 @@ class _CategoryItemLayoutState extends State<CategoryItemLayout> {
                                   spacing: 5,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    HeaderInfoBox(
+                                    InfoBox(
                                         info: appText.dText(widget.category.items.length > 1 ? appText.numItems : appText.numItem, widget.category.items.length.toString()), borderHighlight: false),
-                                    HeaderInfoBox(info: appText.dText(appText.numCurrentlyApplied, widget.category.items.where((e) => e.applyStatus).length.toString()), borderHighlight: false),
+                                    InfoBox(info: appText.dText(appText.numCurrentlyApplied, widget.category.items.where((e) => e.applyStatus).length.toString()), borderHighlight: false),
                                   ],
                                 )
                               ],
@@ -139,16 +139,38 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 spacing: 5,
                 children: [
-                  AspectRatio(aspectRatio: 1, child: ItemIconBox(item: widget.item)),
+                  AspectRatio(aspectRatio: 1, child: ItemIconBox(item: widget.item, showSubCategory: false,)),
                   Expanded(
                     child: Column(
                       spacing: 5,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(child: Text(widget.item.getDisplayName(), style: Theme.of(context).textTheme.labelLarge)),
-                        InfoBox(
-                          info: appText.dText(widget.item.mods.length > 1 ? appText.numMods : appText.numMod, widget.item.mods.length.toString()),
-                          borderHighlight: false,
+                        Row(
+                          spacing: 5,
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              flex: !aqmInjectCategoryDirs.contains(widget.item.category) && widget.item.subCategory!.isNotEmpty ? 0 : 1,
+                              child: InfoBox(
+                                info: appText.dText(widget.item.mods.length > 1 ? appText.numMods : appText.numMod, widget.item.mods.length.toString()),
+                                borderHighlight: false,
+                              ),
+                            ),
+                            Visibility(
+                              visible: !aqmInjectCategoryDirs.contains(widget.item.category) && widget.item.subCategory!.isNotEmpty,
+                              child: Expanded(
+                                child: InfoBox(
+                                    info: widget.item.category == defaultCategoryDirs[14]
+                                        ? appText.motionTypeName(widget.item.subCategory!)
+                                        : widget.item.category == defaultCategoryDirs[17]
+                                            ? appText.weaponTypeName(widget.item.subCategory!.split('* ').last)
+                                            : widget.item.subCategory!,
+                                    borderHighlight: false),
+                              ),
+                            ),
+                          ],
                         ),
                         InfoBox(
                           info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedMods().toString()),
@@ -176,7 +198,10 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
                               Icons.folder_open,
                             )),
                       ),
-                      ItemMoreFunctionsMenu(item: widget.item, isInsidePopup: false,)
+                      ItemMoreFunctionsMenu(
+                        item: widget.item,
+                        isInsidePopup: false,
+                      )
                     ],
                   )
                 ],
