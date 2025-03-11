@@ -52,8 +52,8 @@ Future<List<LineStrikeCard>> lineStrikeCardsFetch() async {
 
   for (var data in csvCardZeroData.where((e) => cardData.indexWhere((c) => e.iconImagePath.contains(c.cardZeroDdsName)) == -1)) {
     await Future.delayed(const Duration(milliseconds: 50));
-    ItemData cardZeroIconData = csvCardZeroIconData.firstWhere((e) => e.iconImagePath.contains(p.basenameWithoutExtension(data.iconImagePath).replaceFirst('card', 'icon')));
-    String cardOneString = p.basenameWithoutExtension(data.iconImagePath).replaceRange(p.basenameWithoutExtension(data.iconImagePath).length - 1, null, '1');
+    ItemData cardZeroIconData = csvCardZeroIconData.firstWhere((e) => e.iconImagePath.contains(p.basenameWithoutExtension(data.iconImagePath.replaceAll('\\', p.separator)).replaceFirst('card', 'icon')));
+    String cardOneString = p.basenameWithoutExtension(data.iconImagePath.replaceAll('\\', p.separator)).replaceRange(p.basenameWithoutExtension(data.iconImagePath.replaceAll('\\', p.separator)).length - 1, null, '1');
     ItemData cardOneData = csvCardOneData.firstWhere((e) => e.iconImagePath.contains(cardOneString));
     ItemData cardOneIconData = csvCardOneIconData.firstWhere((e) => e.iconImagePath.contains(cardOneString.replaceFirst('card', 'icon')));
 

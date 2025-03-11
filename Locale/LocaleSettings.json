@@ -2,19 +2,19 @@
   {
     "language": "EN",
     "version": 1,
-    "translationFilePath": "E:\\Flutter project\\pso2_mod_manager\\Locale\\EN.json",
+    "translationFilePath": "/home/kizkizz/pso2_mod_manager/Locale/EN.json",
     "isActive": true
   },
   {
     "language": "JP",
     "version": 1,
-    "translationFilePath": "E:\\Flutter project\\pso2_mod_manager\\Locale\\JP.json",
+    "translationFilePath": "/home/kizkizz/pso2_mod_manager/Locale/JP.json",
     "isActive": false
   },
   {
     "language": "CN",
     "version": 2,
-    "translationFilePath": "E:\\Flutter project\\pso2_mod_manager\\Locale\\CN.json",
+    "translationFilePath": "/home/kizkizz/pso2_mod_manager/Locale/CN.json",
     "isActive": false
   }
 ]
