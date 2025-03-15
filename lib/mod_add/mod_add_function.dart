@@ -35,14 +35,9 @@ Future<void> modAddUnpack(context, List<String> addedPaths) async {
         await extractFileToDisk(path, unpackedDirPath);
       } else if (p.extension(path) == '.rar') {
         if (Platform.isLinux) {
-          Directory(unpackedDirPath).createSync(recursive: true);
-          await Process.run('unrar', ['e', path, (unpackedDirPath)]);
+          await Process.run('wine $sevenZipExePath', ['x', path, '-o $unpackedDirPath', '-r']);
         } else {
-          if (Platform.isLinux) {
-            await Process.run('wine $sevenZipExePath', ['x', path, '-o$unpackedDirPath', '-r']);
-          } else {
-            await Process.run(sevenZipExePath, ['x', path, '-o$unpackedDirPath', '-r']);
-          }
+          await Process.run(sevenZipExePath, ['x', path, '-o$unpackedDirPath', '-r']);
         }
       } else if (p.extension(path) == '.7z') {
         if (Platform.isLinux) {
