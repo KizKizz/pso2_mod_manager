@@ -20,26 +20,42 @@ class ItemData {
   Map<String, String> infos = {};
 
   String getJPNameOriginal() {
-    return infos.entries.firstWhere((element) => element.key.contains('JP Name') || element.key.contains('Japanese Name')).value.trim();
+    return infos.entries.firstWhere((element) => element.key.contains('JP Name') || element.key.contains('Japanese Name'), orElse: () => const MapEntry('', '')).value.trim();
   }
 
   String getENNameOriginal() {
-    return infos.entries.firstWhere((element) => element.key.contains('EN Name') || element.key.contains('English Name')).value.trim();
+    return infos.entries.firstWhere((element) => element.key.contains('EN Name') || element.key.contains('English Name'), orElse: () => const MapEntry('', '')).value.trim();
   }
 
   String getJPName() {
-    return infos.entries.firstWhere((element) => element.key.contains('JP Name') || element.key.contains('Japanese Name')).value.replaceAll(RegExp(charToReplace), '_').trim();
+    return infos.entries
+        .firstWhere((element) => element.key.contains('JP Name') || element.key.contains('Japanese Name'), orElse: () => const MapEntry('', ''))
+        .value
+        .replaceAll(RegExp(charToReplace), '_')
+        .trim();
   }
 
   String getENName() {
-    return infos.entries.firstWhere((element) => element.key.contains('EN Name') || element.key.contains('English Name')).value.replaceAll(RegExp(charToReplace), '_').trim();
+    return infos.entries
+        .firstWhere((element) => element.key.contains('EN Name') || element.key.contains('English Name'), orElse: () => const MapEntry('', ''))
+        .value
+        .replaceAll(RegExp(charToReplace), '_')
+        .trim();
   }
 
   String getName() {
     if (itemNameLanguage == ItemNameLanguage.jp) {
-      return infos.entries.firstWhere((element) => element.key.contains('JP Name') || element.key.contains('Japanese Name')).value;
+      return infos.entries.firstWhere((element) => element.key.contains('JP Name') || element.key.contains('Japanese Name'), orElse: () => const MapEntry('', '')).value;
     } else {
-      return infos.entries.firstWhere((element) => element.key.contains('EN Name') || element.key.contains('English Name')).value;
+      return infos.entries.firstWhere((element) => element.key.contains('EN Name') || element.key.contains('English Name'), orElse: () => const MapEntry('', '')).value;
+    }
+  }
+
+  String getEmoteGender() {
+    if (category == defaultCategoryDirs[7]) {
+      return infos.entries.firstWhere((e) => e.key.contains('Gender'), orElse: () => const MapEntry('', '')).value;
+    } else {
+      return '';
     }
   }
 

@@ -209,7 +209,7 @@ Future<List<Item>> modAddToMasterList(bool addingToSet, List<ModSet> modSets) as
           sameItemIceNames.addAll(sameItem.value);
         }
 
-        if (modAddCategorizeModsByItems) {
+        if (modAddCategorizeModsByItems && category != defaultCategoryDirs[13]) {
           for (var submodDir in modAddingItem.submods.where((e) => e.existsSync())) {
             var allFiles = submodDir.listSync(recursive: true).whereType<File>();
             for (var file in allFiles) {

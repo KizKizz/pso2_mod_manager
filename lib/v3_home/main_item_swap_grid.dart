@@ -141,10 +141,12 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
             children: [
               Expanded(
                   child: ItemSwapGridLayout(
-                itemDataList: emoteSwapQueue.isEmpty ? displayingItems : displayingItems.where((e) => e.category == emoteSwapQueue.first.$1.category && e.getName() == emoteSwapQueue.first.$1.getName()).toList(),
+                itemDataList: emoteSwapQueue.isEmpty
+                    ? displayingItems
+                    : displayingItems.where((e) => e.category == emoteSwapQueue.first.$1.category && e.getName() == emoteSwapQueue.first.$1.getName()).toList(),
                 scrollController: lScrollController,
                 selectedItemData: lSelectedItemData,
-                emoteSwapQueue: const [],
+                emoteSwapQueue: emoteSwapQueue,
               )),
               Expanded(
                   child: Column(
@@ -162,8 +164,9 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                             : displayingItems,
                         scrollController: rScrollController,
                         selectedItemData: rSelectedItemData,
-                        emoteSwapQueue: const [],
+                        emoteSwapQueue: emoteSwapQueue,
                       )),
+
                   // emote queue
                   if (showEmoteQueue)
                     Expanded(
@@ -172,7 +175,10 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                             child: SuperListView.separated(
                                 itemBuilder: (context, index) {
                                   return ListTileTheme(
-                                      data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                                      data: ListTileThemeData(
+                                          visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+                                          minVerticalPadding: 1,
+                                          selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
                                       child: ListTile(
                                         title: Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -183,10 +189,20 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                                               child: Row(
                                                 spacing: 5,
                                                 children: [
-                                                  GenericItemIconBox(iconImagePaths: [emoteSwapQueue[index].$1.iconImagePath], boxSize: const Size(80, 80), isNetwork: true),
-                                                  Text(
-                                                    emoteSwapQueue[index].$1.getName(),
-                                                    style: const TextStyle(fontWeight: FontWeight.w500),
+                                                  GenericItemIconBox(iconImagePaths: [emoteSwapQueue[index].$1.iconImagePath], boxSize: const Size(35, 35), isNetwork: true),
+                                                  Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      Text(
+                                                        emoteSwapQueue[index].$1.getName(),
+                                                        style: const TextStyle(fontWeight: FontWeight.w500),
+                                                      ),
+                                                      Text(
+                                                        emoteSwapQueue[index].$1.getEmoteGender(),
+                                                        style: const TextStyle(fontSize: 13),
+                                                      )
+                                                    ],
                                                   )
                                                 ],
                                               ),
@@ -198,10 +214,20 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                                               child: Row(
                                                 spacing: 5,
                                                 children: [
-                                                  GenericItemIconBox(iconImagePaths: [emoteSwapQueue[index].$2.iconImagePath], boxSize: const Size(80, 80), isNetwork: true),
-                                                  Text(
-                                                    emoteSwapQueue[index].$2.getName(),
-                                                    style: const TextStyle(fontWeight: FontWeight.w500),
+                                                  GenericItemIconBox(iconImagePaths: [emoteSwapQueue[index].$2.iconImagePath], boxSize: const Size(35, 35), isNetwork: true),
+                                                  Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      Text(
+                                                        emoteSwapQueue[index].$2.getName(),
+                                                        style: const TextStyle(fontWeight: FontWeight.w500),
+                                                      ),
+                                                      Text(
+                                                        emoteSwapQueue[index].$2.getEmoteGender(),
+                                                        style: const TextStyle(fontSize: 13),
+                                                      )
+                                                    ],
                                                   )
                                                 ],
                                               ),
@@ -282,6 +308,15 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                           );
                         },
                         child: Text(showEmoteQueue ? appText.hideQueue : appText.viewQueue)),
+                  if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7])
+                    ElevatedButton(
+                        onPressed: emoteSwapQueue.isNotEmpty
+                            ? () {
+                                emoteSwapQueue.clear();
+                                setState(() {});
+                              }
+                            : null,
+                        child: Text(appText.clearAll)),
                   if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7])
                     ElevatedButton(
                         onPressed: lSelectedItemData.watch(context) != null && rSelectedItemData.watch(context) != null
