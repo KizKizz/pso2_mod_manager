@@ -52,8 +52,8 @@ Future<List<LineStrikeCard>> lineStrikeCardsFetch() async {
 
   for (var data in csvCardZeroData.where((e) => cardData.indexWhere((c) => e.iconImagePath.contains(c.cardZeroDdsName)) == -1)) {
     await Future.delayed(const Duration(milliseconds: 50));
-    ItemData cardZeroIconData = csvCardZeroIconData.firstWhere((e) => e.iconImagePath.contains(p.basenameWithoutExtension(data.iconImagePath).replaceFirst('card', 'icon')));
-    String cardOneString = p.basenameWithoutExtension(data.iconImagePath).replaceRange(p.basenameWithoutExtension(data.iconImagePath).length - 1, null, '1');
+    ItemData cardZeroIconData = csvCardZeroIconData.firstWhere((e) => e.iconImagePath.contains(p.basenameWithoutExtension(data.iconImagePath.replaceAll('\\', p.separator)).replaceFirst('card', 'icon')));
+    String cardOneString = p.basenameWithoutExtension(data.iconImagePath.replaceAll('\\', p.separator)).replaceRange(p.basenameWithoutExtension(data.iconImagePath.replaceAll('\\', p.separator)).length - 1, null, '1');
     ItemData cardOneData = csvCardOneData.firstWhere((e) => e.iconImagePath.contains(cardOneString));
     ItemData cardOneIconData = csvCardOneIconData.firstWhere((e) => e.iconImagePath.contains(cardOneString.replaceFirst('card', 'icon')));
 
@@ -491,11 +491,19 @@ Future<File?> cardArtReplace(context, img.Image? replaceImage, String icePath, S
 
     await File(Uri.file(downloadedIconWebPath).toFilePath()).writeAsBytes(img.encodePng(ogCard));
 
-    await Process.run(pngDdsConvExePath, [Uri.file(downloadedIconWebPath).toFilePath(), Uri.file('${File(downloadedIconWebPath).parent.path}/$ddsName.dds').toFilePath(), '-pngtodds']);
+    if (Platform.isLinux) {
+      await Process.run('wine $pngDdsConvExePath', [Uri.file(downloadedIconWebPath).toFilePath(), Uri.file('${File(downloadedIconWebPath).parent.path}/$ddsName.dds').toFilePath(), '-pngtodds']);
+    } else {
+      await Process.run(pngDdsConvExePath, [Uri.file(downloadedIconWebPath).toFilePath(), Uri.file('${File(downloadedIconWebPath).parent.path}/$ddsName.dds').toFilePath(), '-pngtodds']);
+    }
     await File(Uri.file(downloadedIconWebPath).toFilePath()).delete();
 
     if (File(Uri.file('${File(downloadedIconWebPath).parent.path}/$ddsName.dds').toFilePath()).existsSync()) {
-      await Process.run('$zamboniExePath -c -pack -outdir "$lineStrikeCardTempDirPath"', [Uri.file('$lineStrikeCardTempDirPath/${p.basename(icePath)}').toFilePath()]);
+      if (Platform.isLinux) {
+        await Process.run('wine $zamboniExePath -c -pack -outdir "$lineStrikeCardTempDirPath"', [Uri.file('$lineStrikeCardTempDirPath/${p.basename(icePath)}').toFilePath()]);
+      } else {
+        await Process.run('$zamboniExePath -c -pack -outdir "$lineStrikeCardTempDirPath"', [Uri.file('$lineStrikeCardTempDirPath/${p.basename(icePath)}').toFilePath()]);
+      }
       Directory(Uri.file('$lineStrikeCardTempDirPath/${p.basename(icePath)}').toFilePath()).deleteSync(recursive: true);
 
       File renamedFile = await File(Uri.file('$lineStrikeCardTempDirPath/${p.basename(icePath)}.ice').toFilePath()).rename(Uri.file('$lineStrikeCardTempDirPath/${p.basename(icePath)}').toFilePath());
@@ -530,13 +538,22 @@ Future<File?> cardIconArtReplace(img.Image? resizedIconImage, String iconIcePath
 
       await File(Uri.file(downloadedSquareIconWebPath).toFilePath()).writeAsBytes(img.encodePng(ogCardIcon!));
 
-      await Process.run(pngDdsConvExePath,
+      if (Platform.isLinux) {
+        await Process.run('wine $pngDdsConvExePath',
           [Uri.file(downloadedSquareIconWebPath).toFilePath(), Uri.file(downloadedSquareIconWebPath.replaceFirst(p.extension(downloadedSquareIconWebPath), '.dds')).toFilePath(), '-pngtodds']);
+      } else {
+        await Process.run(pngDdsConvExePath,
+          [Uri.file(downloadedSquareIconWebPath).toFilePath(), Uri.file(downloadedSquareIconWebPath.replaceFirst(p.extension(downloadedSquareIconWebPath), '.dds')).toFilePath(), '-pngtodds']);
+      }
       await File(Uri.file(downloadedSquareIconWebPath).toFilePath()).delete();
     }
 
     if (File(Uri.file(downloadedSquareIconWebPath.replaceFirst(p.extension(downloadedSquareIconWebPath), '.dds')).toFilePath()).existsSync()) {
-      await Process.run('$zamboniExePath -c -pack -outdir "$lineStrikeCardTempDirPath"', [Uri.file('$lineStrikeCardTempDirPath/${p.basename(iconIcePath)}').toFilePath()]);
+      if (Platform.isLinux) {
+        await Process.run('wine $zamboniExePath -c -pack -outdir "$lineStrikeCardTempDirPath"', [Uri.file('$lineStrikeCardTempDirPath/${p.basename(iconIcePath)}').toFilePath()]);
+      } else {
+        await Process.run('$zamboniExePath -c -pack -outdir "$lineStrikeCardTempDirPath"', [Uri.file('$lineStrikeCardTempDirPath/${p.basename(iconIcePath)}').toFilePath()]);
+      }
       Directory(Uri.file('$lineStrikeCardTempDirPath/${p.basename(iconIcePath)}').toFilePath()).deleteSync(recursive: true);
 
       File renamedFile =
@@ -556,14 +573,22 @@ Future<File?> cardExport(LineStrikeCard card) async {
     lineStrikeStatus.value = appText.dText(appText.extractingFile, p.basename(copiedIce.path));
     Future.delayed(const Duration(microseconds: 10));
 
-    await Process.run('$zamboniExePath -outdir "$lineStrikeCardTempDirPath"', [copiedIce.path]);
+    if (Platform.isLinux) {
+      await Process.run('wine $zamboniExePath -outdir "$lineStrikeCardTempDirPath"', [copiedIce.path]);
+    } else {
+      await Process.run('$zamboniExePath -outdir "$lineStrikeCardTempDirPath"', [copiedIce.path]);
+    }
     File ddsFile = File(Uri.file('$lineStrikeCardTempDirPath/${p.basename(copiedIce.path)}_ext/group2/${card.cardZeroDdsName}.dds').toFilePath());
     if (ddsFile.existsSync()) {
       // Status
       lineStrikeStatus.value = appText.dText(appText.convertingFileToPng, p.basename(copiedIce.path));
       Future.delayed(const Duration(microseconds: 10));
 
-      await Process.run(pngDdsConvExePath, [ddsFile.path, ddsFile.path.replaceFirst(p.extension(ddsFile.path), '.png'), '-ddstopng']);
+      if (Platform.isLinux) {
+        await Process.run('wine $pngDdsConvExePath', [ddsFile.path, ddsFile.path.replaceFirst(p.extension(ddsFile.path), '.png'), '-ddstopng']);
+      } else {
+        await Process.run(pngDdsConvExePath, [ddsFile.path, ddsFile.path.replaceFirst(p.extension(ddsFile.path), '.png'), '-ddstopng']);
+      }
       img.Image? pngFile = await img.decodePngFile(ddsFile.path.replaceFirst(p.extension(ddsFile.path), '.png'));
 
       img.Image croppedImage = img.copyCrop(

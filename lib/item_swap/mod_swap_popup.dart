@@ -174,7 +174,10 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                                     child: SuperListView.separated(
                                         itemBuilder: (context, index) {
                                           return ListTileTheme(
-                                              data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                                              data: ListTileThemeData(
+                                                  visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+                                                  minVerticalPadding: 1,
+                                                  selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
                                               child: ListTile(
                                                 title: Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -185,10 +188,20 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                                                       child: Row(
                                                         spacing: 5,
                                                         children: [
-                                                          GenericItemIconBox(iconImagePaths: [emoteSwapQueue[index].$1.iconImagePath], boxSize: const Size(80, 80), isNetwork: true),
-                                                          Text(
-                                                            emoteSwapQueue[index].$1.getName(),
-                                                            style: const TextStyle(fontWeight: FontWeight.w500),
+                                                          GenericItemIconBox(iconImagePaths: [emoteSwapQueue[index].$1.iconImagePath], boxSize: const Size(35, 35), isNetwork: true),
+                                                          Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            children: [
+                                                              Text(
+                                                                emoteSwapQueue[index].$1.getName(),
+                                                                style: const TextStyle(fontWeight: FontWeight.w500),
+                                                              ),
+                                                              Text(
+                                                                emoteSwapQueue[index].$1.getEmoteGender(),
+                                                                style: const TextStyle(fontSize: 13),
+                                                              )
+                                                            ],
                                                           )
                                                         ],
                                                       ),
@@ -200,10 +213,20 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                                                       child: Row(
                                                         spacing: 5,
                                                         children: [
-                                                          GenericItemIconBox(iconImagePaths: [emoteSwapQueue[index].$2.iconImagePath], boxSize: const Size(80, 80), isNetwork: true),
-                                                          Text(
-                                                            emoteSwapQueue[index].$2.getName(),
-                                                            style: const TextStyle(fontWeight: FontWeight.w500),
+                                                          GenericItemIconBox(iconImagePaths: [emoteSwapQueue[index].$2.iconImagePath], boxSize: const Size(35, 35), isNetwork: true),
+                                                          Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            children: [
+                                                              Text(
+                                                                emoteSwapQueue[index].$2.getName(),
+                                                                style: const TextStyle(fontWeight: FontWeight.w500),
+                                                              ),
+                                                              Text(
+                                                                emoteSwapQueue[index].$2.getEmoteGender(),
+                                                                style: const TextStyle(fontSize: 13),
+                                                              )
+                                                            ],
                                                           )
                                                         ],
                                                       ),
@@ -211,6 +234,7 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                                                   ],
                                                 ),
                                                 leading: IconButton(
+                                                    visualDensity: VisualDensity.adaptivePlatformDensity,
                                                     onPressed: () {
                                                       emoteSwapQueue.removeAt(index);
                                                       setState(
@@ -220,7 +244,7 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                                                     icon: const Icon(Icons.close)),
                                               ));
                                         },
-                                        separatorBuilder: (context, index) => const SizedBox(height: 5),
+                                        separatorBuilder: (context, index) => const SizedBox(height: 1),
                                         itemCount: emoteSwapQueue.length)))
                         ],
                       )),
@@ -290,6 +314,17 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                               );
                             },
                             child: Text(showEmoteQueue ? appText.hideQueue : appText.viewQueue)),
+                      if (submod.category == defaultCategoryDirs[7] && lDisplayingItems.length > 1)
+                        OutlinedButton(
+                            onPressed: emoteSwapQueue.isNotEmpty
+                                ? () {
+                                    emoteSwapQueue.clear();
+                                    setState(
+                                      () {},
+                                    );
+                                  }
+                                : null,
+                            child: Text(appText.clearAll)),
                       if (submod.category == defaultCategoryDirs[7] && lDisplayingItems.length > 1)
                         OutlinedButton(
                             onPressed: lSelectedItemData.watch(context) != null && rSelectedItemData.watch(context) != null

@@ -35,13 +35,16 @@ Future<void> modAddUnpack(context, List<String> addedPaths) async {
         await extractFileToDisk(path, unpackedDirPath);
       } else if (p.extension(path) == '.rar') {
         if (Platform.isLinux) {
-          Directory(unpackedDirPath).createSync(recursive: true);
-          await Process.run('unrar', ['e', path, (unpackedDirPath)]);
+          await Process.run('wine $sevenZipExePath', ['x', path, '-o $unpackedDirPath', '-r']);
         } else {
           await Process.run(sevenZipExePath, ['x', path, '-o$unpackedDirPath', '-r']);
         }
       } else if (p.extension(path) == '.7z') {
-        await Process.run(sevenZipExePath, ['x', path, '-o$unpackedDirPath', '-r']);
+        if (Platform.isLinux) {
+          await Process.run('wine $sevenZipExePath', ['x', path, '-o$unpackedDirPath', '-r']);
+        } else {
+          await Process.run(sevenZipExePath, ['x', path, '-o$unpackedDirPath', '-r']);
+        }
       } else if (p.extension(path) == '.pmm') {
         await Directory(modAddTempUnpackedDirPath).create(recursive: true);
         File copiedFile = await File(path).copy('$modAddTempUnpackedDirPath${p.separator}${p.basenameWithoutExtension(path)}.zip');
@@ -206,7 +209,7 @@ Future<List<Item>> modAddToMasterList(bool addingToSet, List<ModSet> modSets) as
           sameItemIceNames.addAll(sameItem.value);
         }
 
-        if (modAddCategorizeModsByItems) {
+        if (modAddCategorizeModsByItems && category != defaultCategoryDirs[13]) {
           for (var submodDir in modAddingItem.submods.where((e) => e.existsSync())) {
             var allFiles = submodDir.listSync(recursive: true).whereType<File>();
             for (var file in allFiles) {

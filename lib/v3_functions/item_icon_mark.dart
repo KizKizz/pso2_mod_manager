@@ -88,7 +88,11 @@ Future<bool> markedItemIconApply(Item item) async {
       modApplyStatus.value = appText.dText(appText.editingMod, itemIconIceName);
       Future.delayed(const Duration(microseconds: 10));
       if (downloadedIconIce.path.isNotEmpty && downloadedIconIce.existsSync()) {
-        await Process.run('$zamboniExePath -outdir "$modItemIconTempDirPath"', [downloadedIconIce.path]);
+        if (Platform.isLinux) {
+          await Process.run('wine $zamboniExePath -outdir "$modItemIconTempDirPath"', [downloadedIconIce.path]);
+        } else {
+          await Process.run('$zamboniExePath -outdir "$modItemIconTempDirPath"', [downloadedIconIce.path]);
+        }
         Directory extractedIceDir = Directory(Uri.file('$modItemIconTempDirPath/${p.basenameWithoutExtension(itemIconIceName)}_ext').toFilePath());
         if (extractedIceDir.existsSync()) {
           File ddsFile = extractedIceDir.listSync(recursive: true).whereType<File>().firstWhere(
@@ -96,17 +100,29 @@ Future<bool> markedItemIconApply(Item item) async {
                 orElse: () => File(''),
               );
           if (ddsFile.existsSync()) {
-            await Process.run(pngDdsConvExePath, [ddsFile.path, Uri.file('${p.dirname(ddsFile.path)}/${p.basenameWithoutExtension(ddsFile.path)}.png').toFilePath(), '-ddstopng']);
+            if (Platform.isLinux) {
+              await Process.run('wine $pngDdsConvExePath', [ddsFile.path, Uri.file('${p.dirname(ddsFile.path)}/${p.basenameWithoutExtension(ddsFile.path)}.png').toFilePath(), '-ddstopng']);
+            } else {
+              await Process.run(pngDdsConvExePath, [ddsFile.path, Uri.file('${p.dirname(ddsFile.path)}/${p.basenameWithoutExtension(ddsFile.path)}.png').toFilePath(), '-ddstopng']);
+            }
             File convertedPng = File(Uri.file('${p.dirname(ddsFile.path)}/${p.basenameWithoutExtension(ddsFile.path)}.png').toFilePath());
             if (convertedPng.existsSync()) {
               ddsFile.deleteSync();
               File? overlayedPng = await itemIconOverlay(convertedPng.path);
               if (overlayedPng != null) {
-                await Process.run(pngDdsConvExePath, [overlayedPng.path, Uri.file('${p.dirname(overlayedPng.path)}/${p.basenameWithoutExtension(overlayedPng.path)}.dds').toFilePath(), '-pngtodds']);
+                if (Platform.isLinux) {
+                  await Process.run('wine $pngDdsConvExePath', [overlayedPng.path, Uri.file('${p.dirname(overlayedPng.path)}/${p.basenameWithoutExtension(overlayedPng.path)}.dds').toFilePath(), '-pngtodds']);
+                } else {
+                  await Process.run(pngDdsConvExePath, [overlayedPng.path, Uri.file('${p.dirname(overlayedPng.path)}/${p.basenameWithoutExtension(overlayedPng.path)}.dds').toFilePath(), '-pngtodds']);
+                }
                 await overlayedPng.delete();
                 modApplyStatus.value = appText.dText(appText.repackingFile, itemIconIceName);
                 Future.delayed(const Duration(microseconds: 10));
-                await Process.run('$zamboniExePath -c -pack -outdir "$modItemIconTempDirPath"', [Uri.file('$modItemIconTempDirPath/${p.basenameWithoutExtension(itemIconIceName)}_ext').toFilePath()]);
+                if (Platform.isLinux) {
+                  await Process.run('wine $zamboniExePath -c -pack -outdir "$modItemIconTempDirPath"', [Uri.file('$modItemIconTempDirPath/${p.basenameWithoutExtension(itemIconIceName)}_ext').toFilePath()]);
+                } else {
+                  await Process.run('$zamboniExePath -c -pack -outdir "$modItemIconTempDirPath"', [Uri.file('$modItemIconTempDirPath/${p.basenameWithoutExtension(itemIconIceName)}_ext').toFilePath()]);
+                }
                 Directory(markedItemIconsDirPath).createSync(recursive: true);
                 File renamedIconFile = await File(Uri.file('${downloadedIconIce.path}_ext.ice').toFilePath())
                     .rename(Uri.file(downloadedIconIce.path.replaceFirst(modItemIconTempDirPath, markedItemIconsDirPath)).toFilePath());
@@ -170,7 +186,11 @@ Future<bool> markedAqmItemIconApply(String iconIceWebPath) async {
     modApplyStatus.value = appText.dText(appText.editingMod, p.basename(iconIceWebPath));
     Future.delayed(const Duration(microseconds: 10));
     if (downloadedIconIce.path.isNotEmpty && downloadedIconIce.existsSync()) {
-      await Process.run('$zamboniExePath -outdir "$modItemIconTempDirPath"', [downloadedIconIce.path]);
+      if (Platform.isLinux) {
+        await Process.run('wine $zamboniExePath -outdir "$modItemIconTempDirPath"', [downloadedIconIce.path]);
+      } else {
+        await Process.run('$zamboniExePath -outdir "$modItemIconTempDirPath"', [downloadedIconIce.path]);
+      }
       Directory extractedIceDir = Directory(Uri.file('$modItemIconTempDirPath/${p.basenameWithoutExtension(iconIceWebPath)}_ext').toFilePath());
       if (extractedIceDir.existsSync()) {
         File ddsFile = extractedIceDir.listSync(recursive: true).whereType<File>().firstWhere(
@@ -178,17 +198,29 @@ Future<bool> markedAqmItemIconApply(String iconIceWebPath) async {
               orElse: () => File(''),
             );
         if (ddsFile.existsSync()) {
-          await Process.run(pngDdsConvExePath, [ddsFile.path, Uri.file('${p.dirname(ddsFile.path)}/${p.basenameWithoutExtension(ddsFile.path)}.png').toFilePath(), '-ddstopng']);
+          if (Platform.isLinux) {
+            await Process.run('wine $pngDdsConvExePath', [ddsFile.path, Uri.file('${p.dirname(ddsFile.path)}/${p.basenameWithoutExtension(ddsFile.path)}.png').toFilePath(), '-ddstopng']);
+          } else {
+            await Process.run(pngDdsConvExePath, [ddsFile.path, Uri.file('${p.dirname(ddsFile.path)}/${p.basenameWithoutExtension(ddsFile.path)}.png').toFilePath(), '-ddstopng']);
+          }
           File convertedPng = File(Uri.file('${p.dirname(ddsFile.path)}/${p.basenameWithoutExtension(ddsFile.path)}.png').toFilePath());
           if (convertedPng.existsSync()) {
             ddsFile.deleteSync();
             File? overlayedPng = await itemIconOverlay(convertedPng.path);
             if (overlayedPng != null) {
-              await Process.run(pngDdsConvExePath, [overlayedPng.path, Uri.file('${p.dirname(overlayedPng.path)}/${p.basenameWithoutExtension(overlayedPng.path)}.dds').toFilePath(), '-pngtodds']);
+              if (Platform.isLinux) {
+                await Process.run('wine $pngDdsConvExePath', [overlayedPng.path, Uri.file('${p.dirname(overlayedPng.path)}/${p.basenameWithoutExtension(overlayedPng.path)}.dds').toFilePath(), '-pngtodds']);
+              } else {
+                await Process.run(pngDdsConvExePath, [overlayedPng.path, Uri.file('${p.dirname(overlayedPng.path)}/${p.basenameWithoutExtension(overlayedPng.path)}.dds').toFilePath(), '-pngtodds']);
+              }
               await overlayedPng.delete();
               modApplyStatus.value = appText.dText(appText.repackingFile, p.basenameWithoutExtension(iconIceWebPath));
               Future.delayed(const Duration(microseconds: 10));
-              await Process.run('$zamboniExePath -c -pack -outdir "$modItemIconTempDirPath"', [Uri.file('$modItemIconTempDirPath/${p.basenameWithoutExtension(iconIceWebPath)}_ext').toFilePath()]);
+              if (Platform.isLinux) {
+                await Process.run('wine $zamboniExePath -c -pack -outdir "$modItemIconTempDirPath"', [Uri.file('$modItemIconTempDirPath/${p.basenameWithoutExtension(iconIceWebPath)}_ext').toFilePath()]);
+              } else {
+                await Process.run('$zamboniExePath -c -pack -outdir "$modItemIconTempDirPath"', [Uri.file('$modItemIconTempDirPath/${p.basenameWithoutExtension(iconIceWebPath)}_ext').toFilePath()]);
+              }
               Directory(markedItemIconsDirPath).createSync(recursive: true);
               File renamedIconFile = await File(Uri.file('${downloadedIconIce.path}_ext.ice').toFilePath())
                   .rename(Uri.file(downloadedIconIce.path.replaceFirst(modItemIconTempDirPath, markedItemIconsDirPath)).toFilePath());

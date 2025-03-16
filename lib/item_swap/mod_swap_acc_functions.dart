@@ -73,7 +73,11 @@ Future<Directory> modSwapAccessories(
     }
     //extract F ice to
     if (lItemIceFileInTemp.path.isNotEmpty) {
-      await Process.run('$zamboniExePath -outdir "$tempSubmodPathF"', [lItemIceFileInTemp.path]);
+      if (Platform.isLinux) {
+        await Process.run('wine $zamboniExePath -outdir "$tempSubmodPathF"', [lItemIceFileInTemp.path]);
+      } else {
+        await Process.run('$zamboniExePath -outdir "$tempSubmodPathF"', [lItemIceFileInTemp.path]);
+      }
       String extractedGroup1PathF = Uri.file('$tempSubmodPathF/${lItemIceName}_ext/group1').toFilePath();
       if (Directory(extractedGroup1PathF).existsSync()) {
         extractedGroup1FilesF = Directory(extractedGroup1PathF).listSync(recursive: true).whereType<File>().toList();
@@ -94,7 +98,11 @@ Future<Directory> modSwapAccessories(
       //final iceFileInTempT = await File(icePathFromOgDataT).copy(Uri.file('$modSwapTempRItemDirPath/${p.basename(icePathFromOgDataT)}').toFilePath());
       //download from file from server
       final iceFileInTempT = await modSwapOriginalFileDownload(icePathFromOgDataT, matchedrItemData.server, modSwapTempRItemDirPath);
-      await Process.run('$zamboniExePath -outdir "$tempSubmodPathT"', [iceFileInTempT.path]);
+      if (Platform.isLinux) {
+        await Process.run('wine $zamboniExePath -outdir "$tempSubmodPathT"', [iceFileInTempT.path]);
+      } else {
+        await Process.run('$zamboniExePath -outdir "$tempSubmodPathT"', [iceFileInTempT.path]);
+      }
       String extractedGroup1PathT = Uri.file('$tempSubmodPathT/${rItemIceName}_ext/group1').toFilePath();
       if (Directory(extractedGroup1PathT).existsSync()) {
         extractedGroup1FilesT = Directory(extractedGroup1PathT).listSync(recursive: true).whereType<File>().toList();
@@ -308,7 +316,11 @@ Future<Directory> modSwapAccessories(
           Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName}/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath();
     }
     Directory(packDirPath).createSync(recursive: true);
-    await Process.run('$zamboniExePath -c -pack -outdir "$packDirPath"', [Uri.file('$tempSubmodPathF/${lItemIceName}_ext').toFilePath()]);
+    if (Platform.isLinux) {
+      await Process.run('wine $zamboniExePath -c -pack -outdir "$packDirPath"', [Uri.file('$tempSubmodPathF/${lItemIceName}_ext').toFilePath()]);
+    } else {
+      await Process.run('$zamboniExePath -c -pack -outdir "$packDirPath"', [Uri.file('$tempSubmodPathF/${lItemIceName}_ext').toFilePath()]);
+    }
     if (File(Uri.file('$tempSubmodPathF/${lItemIceName}_ext.ice').toFilePath()).existsSync()) {
       File(Uri.file('$tempSubmodPathF/${lItemIceName}_ext.ice').toFilePath()).renameSync(Uri.file('$packDirPath/$rItemIceName').toFilePath());
     }

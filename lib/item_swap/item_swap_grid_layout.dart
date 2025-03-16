@@ -142,7 +142,7 @@ class _ItemSwapGridLayoutState extends State<ItemSwapGridLayout> {
                                 )
                               : null,
                           selected: widget.selectedItemData.watch(context) == displayingItemData[index],
-                          enabled: widget.emoteSwapQueue.indexWhere((e) => e.$2 == displayingItemData[index]) == -1,
+                          enabled: widget.emoteSwapQueue.indexWhere((e) => e.$1 == displayingItemData[index] || e.$2 == displayingItemData[index]) == -1,
                           onTap: () {
                             widget.selectedItemData.value = displayingItemData[index];
                           },

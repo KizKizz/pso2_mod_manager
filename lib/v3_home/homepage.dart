@@ -61,8 +61,9 @@ class _HomepageState extends State<Homepage> {
   void initState() {
     footerSideMenuController.changePage(-1);
     sideMenuAlwaysExpanded ? sideBarCollapse.value = false : sideBarCollapse.value = true;
-    if (!v2Homepage.value) mainSideMenuController.changePage(defaultHomepageIndex);
-    homepageCurrentWidget.value = v2Homepage.value ? homepageV2Widgets.first : homepageWidgets[defaultHomepageIndex];
+    // if (!v2Homepage.value)
+    mainSideMenuController.changePage(defaultHomepageIndex);
+    homepageCurrentWidget.value = v2Homepage.value && defaultHomepageIndex == 0 ? homepageV2Widgets.first : homepageWidgets[defaultHomepageIndex];
     if (Directory('${Directory.current.path}${p.separator}appUpdate').existsSync()) {
       Directory('${Directory.current.path}${p.separator}appUpdate').deleteSync(recursive: true);
     }
@@ -135,11 +136,7 @@ class _HomepageState extends State<Homepage> {
 
     // footer
     List<String> homepageFooterWidgetNames = [appText.addMods, appText.settings, appText.help];
-    List<Icon> homepageFooterWidgetIcon = [
-      const Icon(Icons.add_circle_outline_sharp),
-      const Icon(Icons.settings),
-      const Icon(Icons.help_outline)
-    ];
+    List<Icon> homepageFooterWidgetIcon = [const Icon(Icons.add_circle_outline_sharp), const Icon(Icons.settings), const Icon(Icons.help_outline)];
 
     return Scaffold(
       backgroundColor: Colors.transparent,

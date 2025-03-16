@@ -1,4 +1,6 @@
 {
+  "latestBackup": "最新のバックアップ: %p%",
+  "modConfigsRestore": "MOD設定を復元",
   "selectAll": "すべて選択",
   "viewQueue": "キューを表示",
   "hideQueue": "キューを非表示",

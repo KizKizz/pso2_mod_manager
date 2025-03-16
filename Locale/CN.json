@@ -1,4 +1,6 @@
 {
+  "latestBackup": "Latest Backup: %p%",
+  "modConfigsRestore": "Mod Configs Restore",
   "selectAll": "选择全部",
   "viewQueue": "查看队列",
   "hideQueue": "隐藏队列",

@@ -75,12 +75,21 @@ Future<bool> customBoardImageApply(String imgPath, LineStrikeBoard boardDataFile
   //download and replace
   //icon
   File downloadedIconIceFile = await originalIceDownload('${boardDataFile.iconIcePath.replaceFirst(pso2binDirPath + p.separator, '')}.pat', lineStrikeBoardTempDirPath, lineStrikeStatus);
-  await Process.run('$zamboniExePath -outdir "$lineStrikeBoardTempDirPath"', [downloadedIconIceFile.path]);
+  if (Platform.isLinux) {
+    await Process.run('wine $zamboniExePath -outdir "$lineStrikeBoardTempDirPath"', [downloadedIconIceFile.path]);
+  } else {
+    await Process.run('$zamboniExePath -outdir "$lineStrikeBoardTempDirPath"', [downloadedIconIceFile.path]);
+  }
   String newTempIconIcePath = Uri.file('$lineStrikeBoardTempDirPath/${p.basename(boardDataFile.iconIcePath)}_ext/group2').toFilePath();
 
   if (Directory(newTempIconIcePath).existsSync()) {
-    await Process.run(pngDdsConvExePath,
+    if (Platform.isLinux) {
+      await Process.run('wine $pngDdsConvExePath',
         [Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.dds').toFilePath(), Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath(), '-ddstopng']);
+    } else {
+      await Process.run(pngDdsConvExePath,
+        [Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.dds').toFilePath(), Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath(), '-ddstopng']);
+    }
     img.Image? iconImage = await img.decodePngFile(Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath());
     for (var templatePixel in iconTemplate!.data!) {
       if (templatePixel.a > 0) {
@@ -95,13 +104,22 @@ Future<bool> customBoardImageApply(String imgPath, LineStrikeBoard boardDataFile
 
     await File(Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath()).writeAsBytes(img.encodePng(iconImage!));
 
-    await Process.run(pngDdsConvExePath,
+    if (Platform.isLinux) {
+      await Process.run('wine $pngDdsConvExePath',
         [Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath(), Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.dds').toFilePath(), '-pngtodds']);
+    } else {
+      await Process.run(pngDdsConvExePath,
+        [Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath(), Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.dds').toFilePath(), '-pngtodds']);
+    }
     await File(Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath()).delete();
   }
 
   if (File(Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.dds').toFilePath()).existsSync()) {
-    await Process.run('$zamboniExePath -c -pack -outdir "$lineStrikeBoardTempDirPath"', [Uri.file('$lineStrikeBoardTempDirPath/${p.basename(boardDataFile.iconIcePath)}_ext').toFilePath()]);
+    if (Platform.isLinux) {
+      await Process.run('wine $zamboniExePath -c -pack -outdir "$lineStrikeBoardTempDirPath"', [Uri.file('$lineStrikeBoardTempDirPath/${p.basename(boardDataFile.iconIcePath)}_ext').toFilePath()]);
+    } else {
+      await Process.run('$zamboniExePath -c -pack -outdir "$lineStrikeBoardTempDirPath"', [Uri.file('$lineStrikeBoardTempDirPath/${p.basename(boardDataFile.iconIcePath)}_ext').toFilePath()]);
+    }
     Directory(Uri.file('$lineStrikeBoardTempDirPath/${p.basename(boardDataFile.iconIcePath)}').toFilePath()).deleteSync(recursive: true);
 
     File renamedFile = await File(Uri.file('$lineStrikeBoardTempDirPath/${p.basename(boardDataFile.iconIcePath)}_ext.ice').toFilePath())
@@ -156,13 +174,21 @@ Future<bool> customBoardImageApply(String imgPath, LineStrikeBoard boardDataFile
 
     await File(Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath()).writeAsBytes(img.encodePng(boardTemplate));
 
-    await Process.run(
+    if (Platform.isLinux) {
+      await Process.run('wine $pngDdsConvExePath', [Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath(), Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.dds').toFilePath(), '-pngtodds']);
+    } else {
+      await Process.run(
         pngDdsConvExePath, [Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath(), Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.dds').toFilePath(), '-pngtodds']);
+    }
     await File(Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath()).delete();
   }
 
   if (File(Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.dds').toFilePath()).existsSync()) {
-    await Process.run('$zamboniExePath -c -pack -outdir "$lineStrikeBoardTempDirPath"', [Uri.file('$lineStrikeBoardTempDirPath/${p.basename(boardDataFile.icePath)}').toFilePath()]);
+    if (Platform.isLinux) {
+      await Process.run('wine $zamboniExePath -c -pack -outdir "$lineStrikeBoardTempDirPath"', [Uri.file('$lineStrikeBoardTempDirPath/${p.basename(boardDataFile.icePath)}').toFilePath()]);
+    } else {
+      await Process.run('$zamboniExePath -c -pack -outdir "$lineStrikeBoardTempDirPath"', [Uri.file('$lineStrikeBoardTempDirPath/${p.basename(boardDataFile.icePath)}').toFilePath()]);
+    }
     Directory(Uri.file('$lineStrikeBoardTempDirPath/${p.basename(boardDataFile.icePath)}').toFilePath()).deleteSync(recursive: true);
 
     File renamedFile = await File(Uri.file('$lineStrikeBoardTempDirPath/${p.basename(boardDataFile.icePath)}.ice').toFilePath())
