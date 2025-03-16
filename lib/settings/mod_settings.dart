@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/custom_aqm_file_select_button.dart';
+import 'package:pso2_mod_manager/settings/mod_configs_restore_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_functions/json_backup.dart';
 import 'package:pso2_mod_manager/v3_functions/profanity_remove.dart';
 import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:pso2_mod_manager/v3_widgets/animated_hori_toggle_layout.dart';
@@ -16,6 +18,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:path/path.dart' as p;
+import 'package:url_launcher/url_launcher_string.dart';
 
 class ModSettingsLayout extends StatefulWidget {
   const ModSettingsLayout({super.key});
@@ -25,6 +28,14 @@ class ModSettingsLayout extends StatefulWidget {
 }
 
 class _ModSettingsLayoutState extends State<ModSettingsLayout> {
+  String latestJsonBackupDate = '';
+
+  @override
+  void initState() {
+    latestJsonBackupDate = getLatestBackupDate();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     // Refresh
@@ -161,7 +172,11 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
                       message: appText.applyHQOnlyInfo,
                       child: AnimatedHorizontalToggleLayout(
                         taps: [appText.allPossible, appText.selectedOnly, appText.off],
-                        initialIndex: modAlwaysApplyHQFiles ? 0 : selectedModsApplyHQFilesOnly ? 1 : 2,
+                        initialIndex: modAlwaysApplyHQFiles
+                            ? 0
+                            : selectedModsApplyHQFilesOnly
+                                ? 1
+                                : 2,
                         width: constraints.maxWidth,
                         onChange: (currentIndex, targetIndex) async {
                           final prefs = await SharedPreferences.getInstance();
@@ -171,6 +186,44 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
                           prefs.setBool('selectedModsApplyHQFilesOnly', selectedModsApplyHQFilesOnly);
                         },
                       ),
+                    ),
+                    // jsons backup
+                    SettingsHeader(icon: Icons.backup_table_sharp, text: appText.dText(appText.modConfigsLastSaveDate, latestJsonBackupDate)),
+                    Row(
+                      spacing: 5,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                              onPressed: () async {
+                                await jsonManualBackup();
+                                latestJsonBackupDate = getLatestBackupDate();
+                                setState(() {});
+                              },
+                              child: Text(appText.backupNow)),
+                        ),
+                        Expanded(
+                          child: OutlinedButton(
+                              onPressed: () async {
+                                List<File> configBackups = Directory(jsonBackupDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.zip').toList();
+                                configBackups.sort(
+                                  (a, b) => b.statSync().modified.compareTo(a.statSync().modified),
+                                );
+                                if (configBackups.isNotEmpty) {
+                                  await modConfigsRestorePopup(context, latestJsonBackupDate, configBackups);
+                                }
+                              },
+                              child: Text(appText.restore)),
+                        ),
+                        ModManTooltip(
+                          message: appText.openInFileExplorer,
+                          child: OutlinedButton.icon(
+                              onPressed: () async {
+                                launchUrlString(jsonBackupDirPath);
+                              },
+                              label: const Icon(Icons.folder_open)),
+                        ),
+                      ],
                     ),
                   ],
                 ),

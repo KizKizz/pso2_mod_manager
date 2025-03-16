@@ -262,7 +262,8 @@ class AppText {
       selectAll = 'Select All',
       viewQueue = 'View Queue',
       hideQueue = 'Hide Queue',
-      addToQueue = 'Add To Queue';
+      addToQueue = 'Add To Queue',
+      latestBackup = 'Latest Backup: %p%';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -350,7 +351,8 @@ class AppText {
       replaceConflictedFilesOnly = 'Replace Conflicted Files Only',
       skipConflictedFiles = 'Skip Conflicted Files',
       conflictingFiles = 'Conflicting files:',
-      categorizeModsByItems = 'Categorize Mods By Items';
+      categorizeModsByItems = 'Categorize Mods By Items',
+      modConfigsRestore = 'Mod Configs Restore';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',

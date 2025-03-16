@@ -259,6 +259,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..viewQueue = json['viewQueue'] as String
   ..hideQueue = json['hideQueue'] as String
   ..addToQueue = json['addToQueue'] as String
+  ..latestBackup = json['latestBackup'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -351,6 +352,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..skipConflictedFiles = json['skipConflictedFiles'] as String
   ..conflictingFiles = json['conflictingFiles'] as String
   ..categorizeModsByItems = json['categorizeModsByItems'] as String
+  ..modConfigsRestore = json['modConfigsRestore'] as String
   ..failedToFetchRemoteLocaleData =
       json['failedToFetchRemoteLocaleData'] as String
   ..unableToUpdateFile = json['unableToUpdateFile'] as String
@@ -706,6 +708,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'viewQueue': instance.viewQueue,
       'hideQueue': instance.hideQueue,
       'addToQueue': instance.addToQueue,
+      'latestBackup': instance.latestBackup,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,
@@ -794,6 +797,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'skipConflictedFiles': instance.skipConflictedFiles,
       'conflictingFiles': instance.conflictingFiles,
       'categorizeModsByItems': instance.categorizeModsByItems,
+      'modConfigsRestore': instance.modConfigsRestore,
       'failedToFetchRemoteLocaleData': instance.failedToFetchRemoteLocaleData,
       'unableToUpdateFile': instance.unableToUpdateFile,
       'unableToGetAppVersionDataFromGitHub':

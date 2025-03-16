@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
@@ -17,7 +16,10 @@ Future<bool> repathConfirmPopup(context, isPso2bin, String curPath) async {
             insetPadding: const EdgeInsets.all(5),
             titlePadding: const EdgeInsets.only(top: 5),
             title: Column(children: [
-              Text(appText.reselectPath, style: TextStyle(color: Theme.of(context).colorScheme.primary),),
+              Text(
+                appText.reselectPath,
+                style: TextStyle(color: Theme.of(context).colorScheme.primary),
+              ),
               const HoriDivider()
             ]),
             contentPadding: const EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 10),
@@ -37,8 +39,9 @@ Future<bool> repathConfirmPopup(context, isPso2bin, String curPath) async {
                 overflowSpacing: 5,
                 children: [
                   OutlinedButton(
-                        
-                      onPressed: () { Navigator.of(context).pop(true); },
+                      onPressed: () {
+                        Navigator.of(context).pop(true);
+                      },
                       child: Text(appText.continues)),
                   OutlinedButton(
                       onPressed: () {
