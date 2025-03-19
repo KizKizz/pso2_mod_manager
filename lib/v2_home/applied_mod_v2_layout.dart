@@ -104,7 +104,12 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                                 mainAxisSize: MainAxisSize.min,
                                 spacing: 5,
                                 children: [
-                                  AspectRatio(aspectRatio: 1, child: ItemIconBox(item: widget.item, showSubCategory: false,)),
+                                  AspectRatio(
+                                      aspectRatio: 1,
+                                      child: ItemIconBox(
+                                        item: widget.item,
+                                        showSubCategory: false,
+                                      )),
                                   Column(
                                     spacing: 5,
                                     mainAxisSize: MainAxisSize.max,
@@ -119,13 +124,13 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                                           Text(widget.item.getDisplayName(), overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge),
                                           Visibility(
                                             visible: !aqmInjectCategoryDirs.contains(widget.item.category) && widget.item.subCategory!.isNotEmpty,
-                                              child: InfoBox(
-                                                    info: widget.item.category == defaultCategoryDirs[14]
-                                                        ? appText.motionTypeName(widget.item.subCategory!)
-                                                        : widget.item.category == defaultCategoryDirs[17]
-                                                            ? appText.weaponTypeName(widget.item.subCategory!.split('* ').last)
-                                                            : widget.item.subCategory!,
-                                                    borderHighlight: false),
+                                            child: InfoBox(
+                                                info: widget.item.category == defaultCategoryDirs[14]
+                                                    ? appText.motionTypeName(widget.item.subCategory!)
+                                                    : widget.item.category == defaultCategoryDirs[17]
+                                                        ? appText.weaponTypeName(widget.item.subCategory!.split('* ').last)
+                                                        : widget.item.subCategory!,
+                                                borderHighlight: false),
                                           ),
                                         ],
                                       ),
@@ -155,7 +160,7 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                                                 child: Text(appText.details)),
                                           ),
                                           Visibility(
-                                            visible: widget.item.getNumOfAppliedMods() == 1,
+                                            visible: widget.item.getSubmods().where((e) => e.applyStatus).length == 1,
                                             child: ModManTooltip(
                                               message: firstAppliedModName,
                                               child: SizedBox(

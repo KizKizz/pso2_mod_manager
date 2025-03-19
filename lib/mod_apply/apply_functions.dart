@@ -30,7 +30,7 @@ import 'package:pso2_mod_manager/v3_widgets/notifications.dart';
 Future<void> modToGameData(context, bool applying, Item item, Mod mod, SubMod submod) async {
   applying ? modPopupStatus.value = 'Applying files from "${submod.submodName}" to the game' : modPopupStatus.value = 'Removing files from "${submod.submodName}" to the game';
   if (applying) {
-    await modApplySequence(context, applying, item, mod, submod);
+    await modApplySequence(context, applying, item, mod, submod, []);
     submod.applyStatus ? applySuccessNotification(submod.submodName) : applyFailedNotification(submod.submodName);
   } else {
     await modUnapplySequence(context, applying, item, mod, submod, []);
@@ -39,14 +39,14 @@ Future<void> modToGameData(context, bool applying, Item item, Mod mod, SubMod su
   modPopupStatus.value = 'Done!';
 }
 
-Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod submod) async {
+Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod submod, List<ModFile> modFiles) async {
   bool performApply = true;
 
   // Paste checksum
   await checksumToGameData();
 
   // Checking for duplicates in Aqm Inject
-  AqmInjectedItem? dupAqmItem = duplicateAqmInjectedFilesCheck(submod);
+  AqmInjectedItem? dupAqmItem = duplicateAqmInjectedFilesCheck(submod, modFiles);
 
   if (dupAqmItem != null) {
     performApply = await duplicateAqmInjectedFilesPopup(context, dupAqmItem);
@@ -64,11 +64,11 @@ Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod
   Item? dupItem;
   Mod? dupMod;
   SubMod? dupSubmod;
-  (dupItem, dupMod, dupSubmod) = duplicateAppliedModCheck(submod);
+  (dupItem, dupMod, dupSubmod) = duplicateAppliedModCheck(submod, modFiles);
 
   if (dupItem != null && dupMod != null && dupSubmod != null) {
     List<ModFile> modFilesToRestore = [];
-    (performApply, modFilesToRestore) = await duplicateAppliedModPopup(context, dupItem, dupMod, dupSubmod, item, submod);
+    (performApply, modFilesToRestore) = await duplicateAppliedModPopup(context, dupItem, dupMod, dupSubmod, item, submod, modFiles);
     if (performApply) {
       bool barrierShown = false;
       await modUnapplySequence(context, false, dupItem, dupMod, dupSubmod, modFilesToRestore);
@@ -131,7 +131,9 @@ Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod
       submod.boundingRemoved = true;
     }
 
-    if (submod.applyHQFilesOnly! && selectedModsApplyHQFilesOnly || modAlwaysApplyHQFiles && applyHQFilesCategoryDirs.contains(submod.category)) {
+    if (modFiles.isNotEmpty) {
+      await applyingPopup(context, applying, item, mod, submod, modFiles);
+    } else if (submod.applyHQFilesOnly! && selectedModsApplyHQFilesOnly || modAlwaysApplyHQFiles && applyHQFilesCategoryDirs.contains(submod.category)) {
       List<ItemData> matchingItemData = pItemData.where((e) => e.category == submod.category && submod.getModFileNames().contains(e.getHQIceName())).toList();
       List<ModFile> hqIces = submod.modFiles.where((e) => matchingItemData.indexWhere((data) => data.getHQIceName() == e.modFileName) != -1).toList();
       hqIces.isNotEmpty ? await applyingPopup(context, applying, item, mod, submod, hqIces) : await applyingPopup(context, applying, item, mod, submod, []);
@@ -239,14 +241,18 @@ Future<void> modApply(Item item, Mod mod, SubMod submod, ModFile modFile, Offici
   }
 }
 
-(Item?, Mod?, SubMod?) duplicateAppliedModCheck(SubMod newSubmod) {
+(Item?, Mod?, SubMod?) duplicateAppliedModCheck(SubMod newSubmod, List<ModFile> modFiles) {
   for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
     for (var cate in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0)) {
       for (var item in cate.items.where((e) => e.applyStatus)) {
         for (var mod in item.mods.where((e) => e.applyStatus)) {
           for (var submod in mod.submods.where((e) => e.applyStatus)) {
             final appliedModFileNames = submod.modFiles.where((e) => e.applyStatus).map((e) => e.modFileName);
-            if (appliedModFileNames.where((e) => newSubmod.getModFileNames().contains(e)).isNotEmpty) {
+            if (appliedModFileNames
+                .where((e) =>
+                    (newSubmod.getModFileNames().contains(e) && submod.location != newSubmod.location) ||
+                    (modFiles.map((e) => e.modFileName).contains(e) && !modFiles.map((e) => p.dirname(e.location)).contains(submod.location)))
+                .isNotEmpty) {
               return (item, mod, submod);
             }
           }
@@ -258,10 +264,17 @@ Future<void> modApply(Item item, Mod mod, SubMod submod, ModFile modFile, Offici
   return (null, null, null);
 }
 
-AqmInjectedItem? duplicateAqmInjectedFilesCheck(SubMod newSubmod) {
+AqmInjectedItem? duplicateAqmInjectedFilesCheck(SubMod newSubmod, List<ModFile> modFiles) {
   for (var item in masterAqmInjectedItemList) {
-    if (newSubmod.getModFileNames().contains(p.basenameWithoutExtension(item.hqIcePath)) || newSubmod.getModFileNames().contains(p.basenameWithoutExtension(item.lqIcePath))) {
-      return item;
+    if (modFiles.isEmpty) {
+      if (newSubmod.getModFileNames().contains(p.basenameWithoutExtension(item.hqIcePath)) || newSubmod.getModFileNames().contains(p.basenameWithoutExtension(item.lqIcePath))) {
+        return item;
+      }
+    } else {
+      final extIceFileNames = modFiles.map((e) => e.modFileName).toList();
+      if (extIceFileNames.contains(p.basenameWithoutExtension(item.hqIcePath)) || extIceFileNames.contains(p.basenameWithoutExtension(item.lqIcePath))) {
+        return item;
+      }
     }
   }
   return null;

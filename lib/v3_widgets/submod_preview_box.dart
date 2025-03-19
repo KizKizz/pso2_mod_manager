@@ -154,10 +154,10 @@ class SubmodVideoBox extends StatefulWidget {
   final Function(bool finished) videoCompleted;
 
   @override
-  State<SubmodVideoBox> createState() => _SubmodVideoBOxState();
+  State<SubmodVideoBox> createState() => _SubmodVideoBoxState();
 }
 
-class _SubmodVideoBOxState extends State<SubmodVideoBox> {
+class _SubmodVideoBoxState extends State<SubmodVideoBox> {
   late final Player videoPlayer;
 
   @override
@@ -273,7 +273,13 @@ class _SubmodImageBoxState extends State<SubmodImageBox> {
                     slideIndicator: CircularWaveSlideIndicator(
                         slideIndicatorOptions: SlideIndicatorOptions(
                             itemSpacing: 10, indicatorRadius: 4, currentIndicatorColor: Theme.of(context).colorScheme.primary, indicatorBackgroundColor: Theme.of(context).hintColor.withAlpha(200)))),
-                items: imagePaths.where((e) => File(e).existsSync()).map((e) => Image.file(File(e), filterQuality: FilterQuality.none,)).toList(),
+                items: imagePaths
+                    .where((e) => File(e).existsSync())
+                    .map((e) => Image.file(
+                          File(e),
+                          filterQuality: FilterQuality.none,
+                        ))
+                    .toList(),
               ),
               Visibility(
                   visible: imagePaths.isNotEmpty,
