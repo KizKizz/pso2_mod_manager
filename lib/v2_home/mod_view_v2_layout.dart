@@ -79,25 +79,28 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
                         padding: const EdgeInsets.all(5),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.max,
                           children: [
-                            Column(
-                              spacing: 5,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(widget.mod.modName, style: Theme.of(context).textTheme.titleMedium),
-                                Row(
-                                  spacing: 5,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    InfoBox(
-                                        info: appText.dText(widget.mod.submods.length > 1 ? appText.numVariants : appText.numVariant, widget.mod.submods.length.toString()), borderHighlight: false),
-                                    InfoBox(
-                                      info: appText.dText(appText.numCurrentlyApplied, widget.mod.getNumOfAppliedSubmods().toString()),
-                                      borderHighlight: widget.mod.applyStatus,
-                                    ),
-                                  ],
-                                )
-                              ],
+                            Flexible(
+                              child: Column(
+                                spacing: 5,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(widget.mod.modName, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.titleMedium),
+                                  Row(
+                                    spacing: 5,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      InfoBox(
+                                          info: appText.dText(widget.mod.submods.length > 1 ? appText.numVariants : appText.numVariant, widget.mod.submods.length.toString()), borderHighlight: false),
+                                      InfoBox(
+                                        info: appText.dText(appText.numCurrentlyApplied, widget.mod.getNumOfAppliedSubmods().toString()),
+                                        borderHighlight: widget.mod.applyStatus,
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
                             Row(
                               spacing: 2.5,

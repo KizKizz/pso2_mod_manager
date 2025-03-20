@@ -34,9 +34,11 @@ String jsonBackupDirPath = '$mainDataDirPath${p.separator}Json Backup';
 String modCustomAqmsDirPath = '$mainDataDirPath${p.separator}Custom AQMs';
 String vitalGaugeDirPath = '$mainDataDirPath${p.separator}Vital Gauge';
 String modChecksumFilePath = '$mainDataDirPath${p.separator}Checksum${p.separator}d4455ebc2bef618f29106da7692ebc1a';
-String modifiedIceListFilePath = '$mainDataDirPath${p.separator}modifiedIceList.txt';
 String modAddFilterListFilePath = '$mainDataDirPath${p.separator}modAddFilterList.txt';
 String exportedModsDirPath = '$mainDataDirPath${p.separator}Exported Mods';
+
+String savedAppliedModFileDirPath = '';
+String modifiedIceListFilePath = '';
 
 String lineStrikeExportedCardsDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}ExportedCards';
 String lineStrikeCardsDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}Cards';
@@ -136,6 +138,12 @@ Future<void> createMainDirs() async {
 
     // Main quick swap list
     mainQuickSwapListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManQuickSwapApplyItemList.json';
+
+    // Saved Mod Files Dir
+    savedAppliedModFileDirPath = '$mainDataDirPath${p.separator}SavedAppliedModFiles';
+
+    // Modified File List
+    modifiedIceListFilePath = '$mainDataDirPath${p.separator}modifiedIceList.txt';
   }
 
   // Profile 2
@@ -171,6 +179,12 @@ Future<void> createMainDirs() async {
 
     // Main quick swap list
     mainQuickSwapListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManQuickSwapApplyItemList_profile2.json';
+
+    // Saved Mod Files Dir
+    savedAppliedModFileDirPath = '$mainDataDirPath${p.separator}SavedAppliedModFiles_profile2';
+
+    // Modified File List
+    modifiedIceListFilePath = '$mainDataDirPath${p.separator}modifiedIceList_profile2.txt';
   }
 
   // Creates files
@@ -193,6 +207,7 @@ Future<void> createMainDirs() async {
   if (!Directory(lineStrikeCardsDirPath).existsSync()) Directory(lineStrikeCardsDirPath).createSync(recursive: true);
   if (!Directory(lineStrikeBoardsDirPath).existsSync()) Directory(lineStrikeBoardsDirPath).createSync(recursive: true);
   if (!Directory(lineStrikeSleevesDirPath).existsSync()) Directory(lineStrikeSleevesDirPath).createSync(recursive: true);
+  if (!Directory(savedAppliedModFileDirPath).existsSync()) Directory(savedAppliedModFileDirPath).createSync(recursive: true);
 
   // Other checks
   checksumAvailability.value = await checksumFileFetch();

@@ -148,3 +148,4 @@ List<String> modAddFilterList = [];
 Signal<bool> appLoadingFinished = Signal(false);
 Signal<int> uiDialogBackgroundColorAlpha = Signal(uiBackgroundColorAlpha.value + 50 <= 255 ? uiBackgroundColorAlpha.value + 50 : uiBackgroundColorAlpha.value);
 Signal<bool> showMessageOnInactiveOverlay = Signal(false);
+Signal<bool> saveRestoreAppliedModsActive = Signal(false);

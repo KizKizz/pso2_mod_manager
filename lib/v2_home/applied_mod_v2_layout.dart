@@ -116,23 +116,25 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Row(
-                                        spacing: 5,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(widget.item.getDisplayName(), overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge),
-                                          Visibility(
-                                            visible: !aqmInjectCategoryDirs.contains(widget.item.category) && widget.item.subCategory!.isNotEmpty,
-                                            child: InfoBox(
-                                                info: widget.item.category == defaultCategoryDirs[14]
-                                                    ? appText.motionTypeName(widget.item.subCategory!)
-                                                    : widget.item.category == defaultCategoryDirs[17]
-                                                        ? appText.weaponTypeName(widget.item.subCategory!.split('* ').last)
-                                                        : widget.item.subCategory!,
-                                                borderHighlight: false),
-                                          ),
-                                        ],
+                                      Flexible(
+                                        child: Row(
+                                          spacing: 5,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(widget.item.getDisplayName(), overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge),
+                                            Visibility(
+                                              visible: !aqmInjectCategoryDirs.contains(widget.item.category) && widget.item.subCategory!.isNotEmpty,
+                                              child: InfoBox(
+                                                  info: widget.item.category == defaultCategoryDirs[14]
+                                                      ? appText.motionTypeName(widget.item.subCategory!)
+                                                      : widget.item.category == defaultCategoryDirs[17]
+                                                          ? appText.weaponTypeName(widget.item.subCategory!.split('* ').last)
+                                                          : widget.item.subCategory!,
+                                                  borderHighlight: false),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                       Row(
                                         spacing: 5,
