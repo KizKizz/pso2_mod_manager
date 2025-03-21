@@ -168,16 +168,18 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                                               child: SizedBox(
                                                 height: 25,
                                                 child: OutlinedButton(
-                                                    onPressed: () async {
-                                                      int modIndex = widget.item.mods.indexWhere((e) => e.applyStatus);
-                                                      if (modIndex != -1) {
-                                                        Mod appliedMod = widget.item.mods[modIndex];
-                                                        int submodIndex = appliedMod.submods.indexWhere((e) => e.applyStatus);
-                                                        if (submodIndex != -1) {
-                                                          await modToGameData(context, false, widget.item, appliedMod, appliedMod.submods[submodIndex]);
-                                                        }
-                                                      }
-                                                    },
+                                                    onPressed: !saveRestoreAppliedModsActive.watch(context)
+                                                        ? () async {
+                                                            int modIndex = widget.item.mods.indexWhere((e) => e.applyStatus);
+                                                            if (modIndex != -1) {
+                                                              Mod appliedMod = widget.item.mods[modIndex];
+                                                              int submodIndex = appliedMod.submods.indexWhere((e) => e.applyStatus);
+                                                              if (submodIndex != -1) {
+                                                                await modToGameData(context, false, widget.item, appliedMod, appliedMod.submods[submodIndex]);
+                                                              }
+                                                            }
+                                                          }
+                                                        : null,
                                                     child: Text(appText.restore)),
                                               ),
                                             ),

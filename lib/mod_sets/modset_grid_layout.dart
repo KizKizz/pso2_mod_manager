@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_more_functions_menu.dart';
 import 'package:pso2_mod_manager/main_widgets/quick_swap_menu.dart';
@@ -81,26 +82,28 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
                                   child: SizedBox(
                                       height: 25,
                                       child: OutlinedButton(
-                                          onPressed: () async {
-                                            for (var item in widget.modSet.setItems) {
-                                              int modIndex = item.mods.indexWhere((e) =>
-                                                  e.isSet &&
-                                                  e.setNames.contains(widget.modSet.setName) &&
-                                                  e.submods.indexWhere((s) => s.activeInSets!.contains(widget.modSet.setName)) != -1 &&
-                                                  !e.applyStatus);
-                                              if (modIndex != -1) {
-                                                Mod mod = item.mods[modIndex];
-                                                int submodIndex = mod.submods
-                                                    .indexWhere((e) => e.isSet && e.setNames.contains(widget.modSet.setName) && e.activeInSets!.contains(widget.modSet.setName) && !e.applyStatus);
-                                                if (submodIndex != -1) {
-                                                  await modToGameData(context, true, item, mod, mod.submods[submodIndex]);
-                                                  setState(() {
-                                                    modSetRefreshSignal.value = 'Applied ${mod.submods[submodIndex].submodName} in ${item.getDisplayName()} in ${widget.modSet.setName} Set';
-                                                  });
+                                          onPressed: !saveRestoreAppliedModsActive.watch(context)
+                                              ? () async {
+                                                  for (var item in widget.modSet.setItems) {
+                                                    int modIndex = item.mods.indexWhere((e) =>
+                                                        e.isSet &&
+                                                        e.setNames.contains(widget.modSet.setName) &&
+                                                        e.submods.indexWhere((s) => s.activeInSets!.contains(widget.modSet.setName)) != -1 &&
+                                                        !e.applyStatus);
+                                                    if (modIndex != -1) {
+                                                      Mod mod = item.mods[modIndex];
+                                                      int submodIndex = mod.submods.indexWhere(
+                                                          (e) => e.isSet && e.setNames.contains(widget.modSet.setName) && e.activeInSets!.contains(widget.modSet.setName) && !e.applyStatus);
+                                                      if (submodIndex != -1) {
+                                                        await modToGameData(context, true, item, mod, mod.submods[submodIndex]);
+                                                        setState(() {
+                                                          modSetRefreshSignal.value = 'Applied ${mod.submods[submodIndex].submodName} in ${item.getDisplayName()} in ${widget.modSet.setName} Set';
+                                                        });
+                                                      }
+                                                    }
+                                                  }
                                                 }
-                                              }
-                                            }
-                                          },
+                                              : null,
                                           child: Text(appText.applyThisSet))),
                                 ),
                                 Visibility(
@@ -108,26 +111,28 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
                                   child: SizedBox(
                                       height: 25,
                                       child: OutlinedButton(
-                                          onPressed: () async {
-                                            for (var item in widget.modSet.setItems.where((e) => e.applyStatus)) {
-                                              int modIndex = item.mods.indexWhere((e) =>
-                                                  e.isSet &&
-                                                  e.setNames.contains(widget.modSet.setName) &&
-                                                  e.submods.indexWhere((s) => s.activeInSets!.contains(widget.modSet.setName)) != -1 &&
-                                                  e.applyStatus);
-                                              if (modIndex != -1) {
-                                                Mod mod = item.mods[modIndex];
-                                                int submodIndex = mod.submods
-                                                    .indexWhere((e) => e.isSet && e.setNames.contains(widget.modSet.setName) && e.activeInSets!.contains(widget.modSet.setName) && e.applyStatus);
-                                                if (submodIndex != -1) {
-                                                  await modToGameData(context, false, item, mod, mod.submods[submodIndex]);
-                                                  setState(() {
-                                                    modSetRefreshSignal.value = 'Restored ${mod.submods[submodIndex].submodName} in ${item.getDisplayName()} in ${widget.modSet.setName} Set';
-                                                  });
+                                          onPressed: !saveRestoreAppliedModsActive.watch(context)
+                                              ? () async {
+                                                  for (var item in widget.modSet.setItems.where((e) => e.applyStatus)) {
+                                                    int modIndex = item.mods.indexWhere((e) =>
+                                                        e.isSet &&
+                                                        e.setNames.contains(widget.modSet.setName) &&
+                                                        e.submods.indexWhere((s) => s.activeInSets!.contains(widget.modSet.setName)) != -1 &&
+                                                        e.applyStatus);
+                                                    if (modIndex != -1) {
+                                                      Mod mod = item.mods[modIndex];
+                                                      int submodIndex = mod.submods
+                                                          .indexWhere((e) => e.isSet && e.setNames.contains(widget.modSet.setName) && e.activeInSets!.contains(widget.modSet.setName) && e.applyStatus);
+                                                      if (submodIndex != -1) {
+                                                        await modToGameData(context, false, item, mod, mod.submods[submodIndex]);
+                                                        setState(() {
+                                                          modSetRefreshSignal.value = 'Restored ${mod.submods[submodIndex].submodName} in ${item.getDisplayName()} in ${widget.modSet.setName} Set';
+                                                        });
+                                                      }
+                                                    }
+                                                  }
                                                 }
-                                              }
-                                            }
-                                          },
+                                              : null,
                                           child: Text(appText.restoreThisSet))),
                                 ),
                                 HeaderInfoBox(
@@ -246,7 +251,10 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
                 flex: 2,
                 child: Column(
                   children: [
-                    ItemIconBox(item: widget.item, showSubCategory: true,),
+                    ItemIconBox(
+                      item: widget.item,
+                      showSubCategory: true,
+                    ),
                     Text(widget.item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
                   ],
                 ),
@@ -297,29 +305,31 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
             spacing: 5,
             children: [
               Visibility(
-                  visible:
-                      widget.item.getSubmods().where((e) => e.isSet && e.setNames.contains(widget.setName)).length > 1 || widget.item.mods.where((e) => e.setNames.contains(widget.setName)).length > 1,
-                  child: OutlinedButton(
-                        onPressed: () {
-                          modsetModViewPopup(context, widget.item, widget.setName);
-                        },
-                        child: Text(
-                          appText.viewVariants,
-                          textAlign: TextAlign.center,
-                        )),
-                  ),
+                visible:
+                    widget.item.getSubmods().where((e) => e.isSet && e.setNames.contains(widget.setName)).length > 1 || widget.item.mods.where((e) => e.setNames.contains(widget.setName)).length > 1,
+                child: OutlinedButton(
+                    onPressed: () {
+                      modsetModViewPopup(context, widget.item, widget.setName);
+                    },
+                    child: Text(
+                      appText.viewVariants,
+                      textAlign: TextAlign.center,
+                    )),
+              ),
               Expanded(
                   child: OutlinedButton(
-                      onPressed: () async {
-                        if (!widget.activeSubmod.applyStatus) {
-                          await modToGameData(context, true, widget.item, widget.activeMod, widget.activeSubmod);
-                          modSetRefreshSignal.value = '${widget.activeSubmod.submodName} in ${widget.item.getDisplayName()} in ${widget.setName} Set was applied';
-                        } else {
-                          await modToGameData(context, false, widget.item, widget.activeMod, widget.activeSubmod);
-                          modSetRefreshSignal.value = '${widget.activeSubmod.submodName} in ${widget.item.getDisplayName()} in ${widget.setName} Set was restored';
-                        }
-                        setState(() {});
-                      },
+                      onPressed: !saveRestoreAppliedModsActive.watch(context)
+                          ? () async {
+                              if (!widget.activeSubmod.applyStatus) {
+                                await modToGameData(context, true, widget.item, widget.activeMod, widget.activeSubmod);
+                                modSetRefreshSignal.value = '${widget.activeSubmod.submodName} in ${widget.item.getDisplayName()} in ${widget.setName} Set was applied';
+                              } else {
+                                await modToGameData(context, false, widget.item, widget.activeMod, widget.activeSubmod);
+                                modSetRefreshSignal.value = '${widget.activeSubmod.submodName} in ${widget.item.getDisplayName()} in ${widget.setName} Set was restored';
+                              }
+                              setState(() {});
+                            }
+                          : null,
                       child: Text(widget.activeSubmod.applyStatus ? appText.restore : appText.apply))),
 
               // Quick swap Menu

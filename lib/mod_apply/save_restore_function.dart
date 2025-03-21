@@ -16,6 +16,7 @@ void saveRestoreAppliedModsCheck() {
 
 Future<bool> saveRestoreAllAppliedMods() async {
   bool result = false;
+  await Directory(savedAppliedModFileDirPath).create(recursive: true);
   for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
     for (var cate in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0)) {
       for (var item in cate.items.where((e) => e.applyStatus)) {
@@ -24,9 +25,27 @@ Future<bool> saveRestoreAllAppliedMods() async {
           for (var submod in mod.submods.where((e) => e.applyStatus)) {
             for (var appliedModFile in submod.modFiles.where((e) => e.applyStatus)) {
               for (var path in appliedModFile.ogLocations) {
+                // save
                 String saveFilePath = path.replaceFirst(pso2DataDirPath, savedAppliedModFileDirPath);
                 await Directory(p.dirname(saveFilePath)).create(recursive: true);
                 await File(path).copy(saveFilePath);
+                // restore
+                if (originalFilesBackupsFromSega) {
+                  String iceWebPath = ('${path.replaceFirst(pso2binDirPath + p.separator, '')}.pat').replaceAll(p.separator, '/');
+                  File downloadedFile = await originalIceDownload(iceWebPath, p.dirname(path), modApplyStatus);
+                  if (!downloadedFile.existsSync()) {
+                    File localBackupFile = File(path.replaceFirst(pso2DataDirPath, backupDirPath));
+                    if (localBackupFile.existsSync()) {
+                      await localBackupFile.copy(path);
+                    }
+                  }
+                } else {
+                  File localBackupFile = File(path.replaceFirst(pso2DataDirPath, backupDirPath));
+                  if (localBackupFile.existsSync()) {
+                    await localBackupFile.copy(path);
+                  }
+                }
+
                 if (!result) result = true;
                 if (!modFilesCopied) modFilesCopied = true;
               }
@@ -46,4 +65,14 @@ Future<bool> saveRestoreAllAppliedMods() async {
     }
   }
   return result;
+}
+
+Future<void> reApplySavedMods() async {
+  List<File> savedFiles = Directory(savedAppliedModFileDirPath).listSync(recursive: true).whereType<File>().toList();
+  for (var file in savedFiles) {
+    String dataFilePath = file.path.replaceFirst(savedAppliedModFileDirPath, pso2DataDirPath);
+    await Directory(p.dirname(dataFilePath)).create(recursive: true);
+    await file.copy(dataFilePath);
+  }
+  await Directory(savedAppliedModFileDirPath).delete(recursive: true);
 }

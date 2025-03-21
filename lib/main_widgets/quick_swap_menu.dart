@@ -32,6 +32,7 @@ class _QuickSwapMenuState extends State<QuickSwapMenu> {
         menuPadding: EdgeInsets.zero,
         icon: const Icon(Icons.add),
         tooltip: '',
+        enabled: !saveRestoreAppliedModsActive.watch(context),
         elevation: 5,
         style: ButtonStyle(
             visualDensity: VisualDensity.adaptivePlatformDensity,

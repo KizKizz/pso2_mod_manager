@@ -117,13 +117,15 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
               Row(spacing: 5, children: [
                 Expanded(
                     child: OutlinedButton(
-                        onPressed: () async {
-                          if (!widget.submod.applyStatus) {
-                            await modToGameData(context, true, widget.item, widget.mod, widget.submod);
-                          } else {
-                            await modToGameData(context, false, widget.item, widget.mod, widget.submod);
-                          }
-                        },
+                        onPressed: !saveRestoreAppliedModsActive.watch(context)
+                            ? () async {
+                                if (!widget.submod.applyStatus) {
+                                  await modToGameData(context, true, widget.item, widget.mod, widget.submod);
+                                } else {
+                                  await modToGameData(context, false, widget.item, widget.mod, widget.submod);
+                                }
+                              }
+                            : null,
                         child: Text(widget.submod.applyStatus ? appText.restore : appText.apply))),
                 Visibility(
                     visible: widget.modSetName.isNotEmpty,

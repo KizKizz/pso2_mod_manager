@@ -50,21 +50,25 @@ Future<void> modFileListPopup(context, Item item, Mod mod, SubMod submod) async 
                                 contentPadding: EdgeInsets.zero,
                                 title: Text(submod.modFiles[index].modFileName),
                                 trailing: OutlinedButton(
-                                    onPressed: () async {
-                                      if (!submod.modFiles[index].applyStatus) {
-                                        await modApplySequence(context, true, item, mod, submod, [submod.modFiles[index]]);
-                                        submod.modFiles[index].applyStatus ? applySuccessNotification(submod.modFiles[index].modFileName) : applyFailedNotification(submod.modFiles[index].modFileName);
-                                      } else {
-                                        await modUnapplySequence(context, false, item, mod, submod, [submod.modFiles[index]]);
-                                        !submod.modFiles[index].applyStatus
-                                            ? restoreSuccessNotification(submod.modFiles[index].modFileName)
-                                            : restoreFailedNotification(submod.modFiles[index].modFileName);
-                                      }
-                                      modPopupStatus.value = 'Done!';
-                                      setState(
-                                        () {},
-                                      );
-                                    },
+                                    onPressed: !saveRestoreAppliedModsActive.watch(context)
+                                        ? () async {
+                                            if (!submod.modFiles[index].applyStatus) {
+                                              await modApplySequence(context, true, item, mod, submod, [submod.modFiles[index]]);
+                                              submod.modFiles[index].applyStatus
+                                                  ? applySuccessNotification(submod.modFiles[index].modFileName)
+                                                  : applyFailedNotification(submod.modFiles[index].modFileName);
+                                            } else {
+                                              await modUnapplySequence(context, false, item, mod, submod, [submod.modFiles[index]]);
+                                              !submod.modFiles[index].applyStatus
+                                                  ? restoreSuccessNotification(submod.modFiles[index].modFileName)
+                                                  : restoreFailedNotification(submod.modFiles[index].modFileName);
+                                            }
+                                            modPopupStatus.value = 'Done!';
+                                            setState(
+                                              () {},
+                                            );
+                                          }
+                                        : null,
                                     child: Text(submod.modFiles[index].applyStatus ? appText.restore : appText.apply)),
                               )),
                     ),

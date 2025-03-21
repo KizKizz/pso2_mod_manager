@@ -1,4 +1,8 @@
 {
+  "saveAndRestoreAllAppliedMods": "適用済みのすべてのMODを保存&復元",
+  "reApplyAllSavedMods": "保存されたすべてのMODを再適用",
+  "savingModFilesAndRestoringOriginalFiles": "MODファイルの保存とオリジナルファイルの復元",
+  "reApplyingSavedModFiles": "保存されたMODファイルを再適用",
   "latestBackup": "最新のバックアップ: %p%",
   "modConfigsRestore": "MOD設定を復元",
   "selectAll": "すべて選択",

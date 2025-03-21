@@ -203,8 +203,8 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                         style: ButtonStyle(
                             backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
                             side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                        onPressed: numOfAppliedMods > 0 ? () {} : null,
-                        onLongPress: numOfAppliedMods > 0
+                        onPressed: numOfAppliedMods > 0 && !saveRestoreAppliedModsActive.watch(context) ? () {} : null,
+                        onLongPress: numOfAppliedMods > 0 && !saveRestoreAppliedModsActive.watch(context)
                             ? () async {
                                 List<Item> appliedItems = await appliedModsFetch();
                                 for (var item in appliedItems) {

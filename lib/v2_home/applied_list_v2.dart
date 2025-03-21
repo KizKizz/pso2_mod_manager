@@ -136,8 +136,8 @@ class _AppliedListV2State extends State<AppliedListV2> {
                                     style: ButtonStyle(
                                         backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
                                         side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                                    onPressed: numOfAppliedMods > 0 ? () {} : null,
-                                    onLongPress: numOfAppliedMods > 0
+                                    onPressed: numOfAppliedMods > 0 && !saveRestoreAppliedModsActive.watch(context) ? () {} : null,
+                                    onLongPress: numOfAppliedMods > 0 && !saveRestoreAppliedModsActive.watch(context)
                                         ? () async {
                                             List<Item> appliedItems = await appliedModsFetch();
                                             for (var item in appliedItems) {
@@ -228,7 +228,13 @@ class _AppliedListV2State extends State<AppliedListV2> {
                                         mainAxisSize: MainAxisSize.min,
                                         spacing: 5,
                                         children: [
-                                          SizedBox(width: 75, height: 75, child: ItemIconBox(item: e, showSubCategory: true,)),
+                                          SizedBox(
+                                              width: 75,
+                                              height: 75,
+                                              child: ItemIconBox(
+                                                item: e,
+                                                showSubCategory: true,
+                                              )),
                                           Column(
                                             spacing: 5,
                                             mainAxisAlignment: MainAxisAlignment.center,
