@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_add/mod_add_function.dart';
+import 'package:pso2_mod_manager/mod_apply/save_restore_function.dart';
 import 'package:pso2_mod_manager/mod_checksum/checksum_functions.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:path/path.dart' as p;
@@ -214,6 +215,7 @@ Future<void> createMainDirs() async {
   modAddFilterList = await modAddFilterListFetch();
   pso2RegionVersion.value = await pso2RegionCheck();
   await modifiedIceFetch();
+  saveRestoreAppliedModsCheck();
   if (backgroundImageFiles.value.isEmpty || !backgroundImageFiles.value.first.path.contains(mainModDirPath)) backgroundImageFiles.value = backgroundImageFetch();
 
   // Clear Temps

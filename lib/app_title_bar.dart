@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/mod_apply/save_restore_function.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v2_home/homepage_v2.dart';
 import 'package:pso2_mod_manager/v3_widgets/jp_game_start_btn.dart';
@@ -85,6 +86,26 @@ class _AppTitleBarState extends State<AppTitleBar> {
                         ),
                         label: Text(showPreviewBox.watch(context) ? appText.hidePreview : appText.showPreview)),
                   )),
+              Visibility(
+                visible: appLoadingFinished.watch(context),
+                child: SizedBox(
+                  height: 20,
+                  child: OutlinedButton.icon(
+                      style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+                      onPressed: () async {
+                        if (saveRestoreAppliedModsActive.value) {
+                        } else {
+                          bool result = await saveRestoreAllAppliedMods();
+                          result ? saveRestoreAppliedModsActive.value = true : saveRestoreAppliedModsActive.value = false;
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.preview,
+                        size: 18,
+                      ),
+                      label: Text(saveRestoreAppliedModsActive.watch(context) ? appText.reApplyAllSavedMods : appText.saveAndRestoreAllAppliedMods)),
+                ),
+              ),
               Visibility(
                   visible: appLoadingFinished.watch(context),
                   child: SizedBox(
