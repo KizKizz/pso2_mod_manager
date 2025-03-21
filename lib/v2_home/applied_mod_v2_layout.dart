@@ -104,30 +104,37 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                                 mainAxisSize: MainAxisSize.min,
                                 spacing: 5,
                                 children: [
-                                  AspectRatio(aspectRatio: 1, child: ItemIconBox(item: widget.item, showSubCategory: false,)),
+                                  AspectRatio(
+                                      aspectRatio: 1,
+                                      child: ItemIconBox(
+                                        item: widget.item,
+                                        showSubCategory: false,
+                                      )),
                                   Column(
                                     spacing: 5,
                                     mainAxisSize: MainAxisSize.max,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Row(
-                                        spacing: 5,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(widget.item.getDisplayName(), overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge),
-                                          Visibility(
-                                            visible: !aqmInjectCategoryDirs.contains(widget.item.category) && widget.item.subCategory!.isNotEmpty,
+                                      Flexible(
+                                        child: Row(
+                                          spacing: 5,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(widget.item.getDisplayName(), overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge),
+                                            Visibility(
+                                              visible: !aqmInjectCategoryDirs.contains(widget.item.category) && widget.item.subCategory!.isNotEmpty,
                                               child: InfoBox(
-                                                    info: widget.item.category == defaultCategoryDirs[14]
-                                                        ? appText.motionTypeName(widget.item.subCategory!)
-                                                        : widget.item.category == defaultCategoryDirs[17]
-                                                            ? appText.weaponTypeName(widget.item.subCategory!.split('* ').last)
-                                                            : widget.item.subCategory!,
-                                                    borderHighlight: false),
-                                          ),
-                                        ],
+                                                  info: widget.item.category == defaultCategoryDirs[14]
+                                                      ? appText.motionTypeName(widget.item.subCategory!)
+                                                      : widget.item.category == defaultCategoryDirs[17]
+                                                          ? appText.weaponTypeName(widget.item.subCategory!.split('* ').last)
+                                                          : widget.item.subCategory!,
+                                                  borderHighlight: false),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                       Row(
                                         spacing: 5,
@@ -155,22 +162,24 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                                                 child: Text(appText.details)),
                                           ),
                                           Visibility(
-                                            visible: widget.item.getNumOfAppliedMods() == 1,
+                                            visible: widget.item.getSubmods().where((e) => e.applyStatus).length == 1,
                                             child: ModManTooltip(
                                               message: firstAppliedModName,
                                               child: SizedBox(
                                                 height: 25,
                                                 child: OutlinedButton(
-                                                    onPressed: () async {
-                                                      int modIndex = widget.item.mods.indexWhere((e) => e.applyStatus);
-                                                      if (modIndex != -1) {
-                                                        Mod appliedMod = widget.item.mods[modIndex];
-                                                        int submodIndex = appliedMod.submods.indexWhere((e) => e.applyStatus);
-                                                        if (submodIndex != -1) {
-                                                          await modToGameData(context, false, widget.item, appliedMod, appliedMod.submods[submodIndex]);
-                                                        }
-                                                      }
-                                                    },
+                                                    onPressed: !saveRestoreAppliedModsActive.watch(context)
+                                                        ? () async {
+                                                            int modIndex = widget.item.mods.indexWhere((e) => e.applyStatus);
+                                                            if (modIndex != -1) {
+                                                              Mod appliedMod = widget.item.mods[modIndex];
+                                                              int submodIndex = appliedMod.submods.indexWhere((e) => e.applyStatus);
+                                                              if (submodIndex != -1) {
+                                                                await modToGameData(context, false, widget.item, appliedMod, appliedMod.submods[submodIndex]);
+                                                              }
+                                                            }
+                                                          }
+                                                        : null,
                                                     child: Text(appText.restore)),
                                               ),
                                             ),

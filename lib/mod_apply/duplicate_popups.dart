@@ -14,13 +14,13 @@ import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:signals/signals_flutter.dart';
 
-Future<(bool, List<ModFile>)> duplicateAppliedModPopup(context, Item dupItem, Mod dupMod, SubMod dupSubmod, Item applyingItem, SubMod applyingSubmod) async {
+Future<(bool, List<ModFile>)> duplicateAppliedModPopup(context, Item dupItem, Mod dupMod, SubMod dupSubmod, Item applyingItem, SubMod applyingSubmod, List<ModFile> applyingModFiles) async {
   return await showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (dialogContext, setState) {
-          List<String> conflictingIceFileNames = applyingSubmod.getModFileNames();
+          List<String> conflictingIceFileNames = applyingModFiles.isNotEmpty ? applyingModFiles.map((e) => e.modFileName).toList() : applyingSubmod.getModFileNames();
           conflictingIceFileNames.retainWhere((e) => dupSubmod.getModFileNames().contains(e));
 
           return AlertDialog(
@@ -59,7 +59,10 @@ Future<(bool, List<ModFile>)> duplicateAppliedModPopup(context, Item dupItem, Mo
                                 spacing: 5,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  ItemIconBox(item: applyingItem, showSubCategory: true,),
+                                  ItemIconBox(
+                                    item: applyingItem,
+                                    showSubCategory: true,
+                                  ),
                                   Text(applyingItem.itemName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
                                 ],
                               ),
@@ -106,7 +109,10 @@ Future<(bool, List<ModFile>)> duplicateAppliedModPopup(context, Item dupItem, Mo
                               Column(
                                 spacing: 5,
                                 children: [
-                                  ItemIconBox(item: dupItem, showSubCategory: true,),
+                                  ItemIconBox(
+                                    item: dupItem,
+                                    showSubCategory: true,
+                                  ),
                                   Text(dupItem.itemName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
                                 ],
                               ),
@@ -143,12 +149,15 @@ Future<(bool, List<ModFile>)> duplicateAppliedModPopup(context, Item dupItem, Mo
                         Navigator.of(context).pop((true, emptyList));
                       },
                       child: Text(appText.replaceTheEntireMod)),
-                  OutlinedButton(
-                      onPressed: () {
-                        List<ModFile> conflictingFileList = dupSubmod.modFiles.where((e) => conflictingIceFileNames.contains(e.modFileName)).toList();
-                        Navigator.of(context).pop((true, conflictingFileList));
-                      },
-                      child: Text(appText.replaceConflictedFilesOnly)),
+                  Visibility(
+                    visible: applyingSubmod.modFiles.length <= dupSubmod.modFiles.length || (applyingModFiles.isNotEmpty && applyingModFiles.length <= dupSubmod.modFiles.length),
+                    child: OutlinedButton(
+                        onPressed: () {
+                          List<ModFile> conflictingFileList = dupSubmod.modFiles.where((e) => conflictingIceFileNames.contains(e.modFileName)).toList();
+                          Navigator.of(context).pop((true, conflictingFileList));
+                        },
+                        child: Text(appText.replaceConflictedFilesOnly)),
+                  ),
                   OutlinedButton(
                       onPressed: () {
                         List<ModFile> nonconfictedFileList = applyingSubmod.modFiles.where((e) => !conflictingIceFileNames.contains(e.modFileName)).toList();

@@ -74,21 +74,24 @@ class _CategoryItemLayoutState extends State<CategoryItemLayout> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
-                              spacing: 5,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('${appText.categoryTypeName(widget.category.group)} - ${appText.categoryName(widget.category.categoryName)}', style: Theme.of(context).textTheme.titleMedium),
-                                Row(
-                                  spacing: 5,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    InfoBox(
-                                        info: appText.dText(widget.category.items.length > 1 ? appText.numItems : appText.numItem, widget.category.items.length.toString()), borderHighlight: false),
-                                    InfoBox(info: appText.dText(appText.numCurrentlyApplied, widget.category.items.where((e) => e.applyStatus).length.toString()), borderHighlight: false),
-                                  ],
-                                )
-                              ],
+                            Flexible(
+                              child: Column(
+                                spacing: 5,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('${appText.categoryTypeName(widget.category.group)} - ${appText.categoryName(widget.category.categoryName)}',
+                                      overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.titleMedium),
+                                  Row(
+                                    spacing: 5,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      InfoBox(
+                                          info: appText.dText(widget.category.items.length > 1 ? appText.numItems : appText.numItem, widget.category.items.length.toString()), borderHighlight: false),
+                                      InfoBox(info: appText.dText(appText.numCurrentlyApplied, widget.category.items.where((e) => e.applyStatus).length.toString()), borderHighlight: false),
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
                             Visibility(visible: widget.category.items.isNotEmpty, child: Icon(widget.category.visible ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down))
                           ],
@@ -139,13 +142,18 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 spacing: 5,
                 children: [
-                  AspectRatio(aspectRatio: 1, child: ItemIconBox(item: widget.item, showSubCategory: false,)),
+                  AspectRatio(
+                      aspectRatio: 1,
+                      child: ItemIconBox(
+                        item: widget.item,
+                        showSubCategory: false,
+                      )),
                   Expanded(
                     child: Column(
                       spacing: 5,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(child: Text(widget.item.getDisplayName(), style: Theme.of(context).textTheme.labelLarge)),
+                        Expanded(child: Text(widget.item.getDisplayName(), overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge)),
                         Row(
                           spacing: 5,
                           mainAxisSize: MainAxisSize.min,
@@ -158,9 +166,10 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
                                 borderHighlight: false,
                               ),
                             ),
-                            Visibility(
-                              visible: !aqmInjectCategoryDirs.contains(widget.item.category) && widget.item.subCategory!.isNotEmpty,
-                              child: Expanded(
+                            // Visibility(
+                            // visible: !aqmInjectCategoryDirs.contains(widget.item.category) && widget.item.subCategory!.isNotEmpty,
+                            if (!aqmInjectCategoryDirs.contains(widget.item.category) && widget.item.subCategory!.isNotEmpty)
+                              Expanded(
                                 child: InfoBox(
                                     info: widget.item.category == defaultCategoryDirs[14]
                                         ? appText.motionTypeName(widget.item.subCategory!)
@@ -169,7 +178,7 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
                                             : widget.item.subCategory!,
                                     borderHighlight: false),
                               ),
-                            ),
+                            // ),
                           ],
                         ),
                         InfoBox(

@@ -352,7 +352,11 @@ class AppText {
       skipConflictedFiles = 'Skip Conflicted Files',
       conflictingFiles = 'Conflicting files:',
       categorizeModsByItems = 'Categorize Mods By Items',
-      modConfigsRestore = 'Mod Configs Restore';
+      modConfigsRestore = 'Mod Configs Restore',
+      saveAndRestoreAllAppliedMods = 'Save & Restore All Applied Mods',
+      reApplyAllSavedMods = 'Re-Apply All Saved Mods',
+      savingModFilesAndRestoringOriginalFiles = 'Saving Mod Files And Restoring Original Files',
+      reApplyingSavedModFiles = 'Re-Applying Saved Mod Files';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',

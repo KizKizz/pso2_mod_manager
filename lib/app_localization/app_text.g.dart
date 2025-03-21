@@ -353,6 +353,12 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..conflictingFiles = json['conflictingFiles'] as String
   ..categorizeModsByItems = json['categorizeModsByItems'] as String
   ..modConfigsRestore = json['modConfigsRestore'] as String
+  ..saveAndRestoreAllAppliedMods =
+      json['saveAndRestoreAllAppliedMods'] as String
+  ..reApplyAllSavedMods = json['reApplyAllSavedMods'] as String
+  ..savingModFilesAndRestoringOriginalFiles =
+      json['savingModFilesAndRestoringOriginalFiles'] as String
+  ..reApplyingSavedModFiles = json['reApplyingSavedModFiles'] as String
   ..failedToFetchRemoteLocaleData =
       json['failedToFetchRemoteLocaleData'] as String
   ..unableToUpdateFile = json['unableToUpdateFile'] as String
@@ -798,6 +804,11 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'conflictingFiles': instance.conflictingFiles,
       'categorizeModsByItems': instance.categorizeModsByItems,
       'modConfigsRestore': instance.modConfigsRestore,
+      'saveAndRestoreAllAppliedMods': instance.saveAndRestoreAllAppliedMods,
+      'reApplyAllSavedMods': instance.reApplyAllSavedMods,
+      'savingModFilesAndRestoringOriginalFiles':
+          instance.savingModFilesAndRestoringOriginalFiles,
+      'reApplyingSavedModFiles': instance.reApplyingSavedModFiles,
       'failedToFetchRemoteLocaleData': instance.failedToFetchRemoteLocaleData,
       'unableToUpdateFile': instance.unableToUpdateFile,
       'unableToGetAppVersionDataFromGitHub':

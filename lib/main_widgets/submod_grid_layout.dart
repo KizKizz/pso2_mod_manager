@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/info_tag.dart';
+import 'package:pso2_mod_manager/main_widgets/mod_file_list_popup.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_more_functions_menu.dart';
 import 'package:pso2_mod_manager/main_widgets/quick_swap_menu.dart';
 import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
@@ -44,7 +45,8 @@ class _SubmodGridLayoutState extends State<SubmodGridLayout> {
                       submod: e,
                       item: widget.item,
                       mod: widget.mod,
-                      modSetName: widget.modSetName, isInPopup: widget.isPopup,
+                      modSetName: widget.modSetName,
+                      isInPopup: widget.isPopup,
                     ))
                 .toList()
             : widget.submods
@@ -54,7 +56,8 @@ class _SubmodGridLayoutState extends State<SubmodGridLayout> {
                       item: widget.item,
                       mod: widget.mod,
                       submod: e,
-                      modSetName: widget.modSetName, isInPopup: widget.isPopup,
+                      modSetName: widget.modSetName,
+                      isInPopup: widget.isPopup,
                     ))
                 .toList());
   }
@@ -114,13 +117,15 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
               Row(spacing: 5, children: [
                 Expanded(
                     child: OutlinedButton(
-                        onPressed: () async {
-                          if (!widget.submod.applyStatus) {
-                            await modToGameData(context, true, widget.item, widget.mod, widget.submod);
-                          } else {
-                            await modToGameData(context, false, widget.item, widget.mod, widget.submod);
-                          }
-                        },
+                        onPressed: !saveRestoreAppliedModsActive.watch(context)
+                            ? () async {
+                                if (!widget.submod.applyStatus) {
+                                  await modToGameData(context, true, widget.item, widget.mod, widget.submod);
+                                } else {
+                                  await modToGameData(context, false, widget.item, widget.mod, widget.submod);
+                                }
+                              }
+                            : null,
                         child: Text(widget.submod.applyStatus ? appText.restore : appText.apply))),
                 Visibility(
                     visible: widget.modSetName.isNotEmpty,
@@ -146,6 +151,10 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                           icon: Icon(widget.submod.activeInSets!.contains(widget.modSetName) ? Icons.check_box_outlined : Icons.check_box_outline_blank_rounded,
                               color: widget.submod.activeInSets!.contains(widget.modSetName) ? Theme.of(context).colorScheme.primary : null)),
                     )),
+                // Ice file list button
+                IconButton.outlined(
+                    visualDensity: VisualDensity.adaptivePlatformDensity, onPressed: () => modFileListPopup(context, widget.item, widget.mod, widget.submod), icon: const Icon(Icons.list)),
+
                 // Quick swap Menu
                 QuickSwapMenu(item: widget.item, mod: widget.mod, submod: widget.submod),
 

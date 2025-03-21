@@ -1,4 +1,8 @@
 {
+  "saveAndRestoreAllAppliedMods": "Save & Restore All Applied Mods",
+  "reApplyAllSavedMods": "Re-Apply All Saved Mods",
+  "savingModFilesAndRestoringOriginalFiles": "Saving Mod Files And Restoring Original Files",
+  "reApplyingSavedModFiles": "Re-Applying Saved Mod Files",
   "latestBackup": "Latest Backup: %p%",
   "modConfigsRestore": "Mod Configs Restore",
   "selectAll": "选择全部",
