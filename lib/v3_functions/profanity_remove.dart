@@ -22,6 +22,7 @@ Future<void> profanityRemove() async {
             url: '$url$networkFilePath',
             filename: p.basenameWithoutExtension(networkFilePath),
             headers: {"User-Agent": "AQUA_HTTP"},
+            baseDirectory: BaseDirectory.root,
             directory: p.dirname(win32FilterFile.path),
             updates: Updates.none,
             allowPause: false);
@@ -30,11 +31,12 @@ Future<void> profanityRemove() async {
         if (result.status == TaskStatus.complete) break;
       }
     }
-    if (!win32NAFilterFile.existsSync()) {
+    if (!win32NAFilterFile.existsSync() && Directory(p.dirname(win32NAFilterFile.path)).existsSync()) {
       final task = DownloadTask(
           url: 'https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/refs/heads/main/profanityFilterNA/ffbff2ac5b7a7948961212cefd4d402c',
           filename: p.basenameWithoutExtension(win32NAFilterFile.path),
           headers: {"User-Agent": "AQUA_HTTP"},
+          baseDirectory: BaseDirectory.root,
           directory: p.dirname(win32NAFilterFile.path),
           updates: Updates.none,
           allowPause: false);

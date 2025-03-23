@@ -14,6 +14,7 @@ Future<File> originalIceDownload(String networkFilePath, String saveDirLocation,
           url: '$url$networkFilePath',
           filename: p.basenameWithoutExtension(networkFilePath),
           headers: {"User-Agent": "AQUA_HTTP"},
+          baseDirectory: BaseDirectory.root,
           directory: saveDirLocation,
           updates: Updates.statusAndProgress,
           allowPause: false);
