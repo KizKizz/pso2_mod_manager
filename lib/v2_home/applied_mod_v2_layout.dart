@@ -47,6 +47,7 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
             submod: submod,
             modSetName: '',
             isInPopup: false,
+            isInEditingMode: false,
           ));
         }
       }
@@ -61,6 +62,7 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
             submod: submod,
             modSetName: '',
             isInPopup: false,
+            isInEditingMode: false,
           ));
         }
       }

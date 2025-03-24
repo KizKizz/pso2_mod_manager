@@ -13,6 +13,7 @@ import 'package:super_sliver_list/super_sliver_list.dart';
 
 Future<void> modViewPopup(context, Item item) async {
   Mod? selectedMod = item.mods.first;
+  bool isInEditingMode = false;
   await showDialog(
       barrierDismissible: false,
       barrierColor: Colors.transparent,
@@ -25,7 +26,7 @@ Future<void> modViewPopup(context, Item item) async {
               () {},
             );
           }
-          
+
           return AlertDialog(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
@@ -50,7 +51,16 @@ Future<void> modViewPopup(context, Item item) async {
                                 child: Column(
                                   spacing: 5,
                                   children: [
-                                    PopupItemInfo(item: item, showModInfo: true),
+                                    PopupItemInfo(
+                                        item: item,
+                                        showModInfo: true,
+                                        onEditing: (editingState) {
+                                          setState(
+                                            () {
+                                              isInEditingMode = editingState;
+                                            },
+                                          );
+                                        }),
                                     const HoriDivider(),
                                     Expanded(
                                         child: CustomScrollView(physics: const SuperRangeMaintainingScrollPhysics(), slivers: [
@@ -69,7 +79,7 @@ Future<void> modViewPopup(context, Item item) async {
                                                 );
                                               },
                                               onDelete: () async {
-                                                await modDelete(context, item, mod);
+                                                await modDelete(context, item, mod, false);
                                                 modPopupStatus.value = '${mod.modName} deleted';
                                                 item.isNew = item.getModsIsNewState();
                                                 selectedMod = null;
@@ -79,6 +89,7 @@ Future<void> modViewPopup(context, Item item) async {
                                                   Navigator.of(context).pop();
                                                 }
                                               },
+                                              isInEditingMode: isInEditingMode,
                                             );
                                           })
                                     ]))
@@ -86,11 +97,11 @@ Future<void> modViewPopup(context, Item item) async {
                                 ),
                               ),
                               const VerticalDivider(
-                              width: 10,
-                              thickness: 2,
-                              endIndent: 5,
-                              indent: 5,
-                            ),
+                                width: 10,
+                                thickness: 2,
+                                endIndent: 5,
+                                indent: 5,
+                              ),
                               Expanded(
                                 flex: 3,
                                 child: selectedMod == null
@@ -110,6 +121,7 @@ Future<void> modViewPopup(context, Item item) async {
                                             // searchString: searchTextController.value.text,
                                             searchString: '',
                                             modSetName: '', isPopup: true,
+                                            isInEditingMode: isInEditingMode,
                                           )
                                         ],
                                       ),

@@ -3,6 +3,7 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/info_tag.dart';
 import 'package:pso2_mod_manager/main_widgets/mod_file_list_popup.dart';
+import 'package:pso2_mod_manager/main_widgets/submod_bulk_delete_checkbox.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_more_functions_menu.dart';
 import 'package:pso2_mod_manager/main_widgets/quick_swap_menu.dart';
 import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
@@ -18,7 +19,8 @@ import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:signals/signals_flutter.dart';
 
 class SubmodGridLayout extends StatefulWidget {
-  const SubmodGridLayout({super.key, required this.item, required this.mod, required this.submods, required this.searchString, required this.modSetName, required this.isPopup});
+  const SubmodGridLayout(
+      {super.key, required this.item, required this.mod, required this.submods, required this.searchString, required this.modSetName, required this.isPopup, required this.isInEditingMode});
 
   final Item item;
   final Mod mod;
@@ -26,6 +28,7 @@ class SubmodGridLayout extends StatefulWidget {
   final String searchString;
   final String modSetName;
   final bool isPopup;
+  final bool isInEditingMode;
 
   @override
   State<SubmodGridLayout> createState() => _SubmodGridLayoutState();
@@ -47,6 +50,7 @@ class _SubmodGridLayoutState extends State<SubmodGridLayout> {
                       mod: widget.mod,
                       modSetName: widget.modSetName,
                       isInPopup: widget.isPopup,
+                      isInEditingMode: widget.isInEditingMode,
                     ))
                 .toList()
             : widget.submods
@@ -58,19 +62,21 @@ class _SubmodGridLayoutState extends State<SubmodGridLayout> {
                       submod: e,
                       modSetName: widget.modSetName,
                       isInPopup: widget.isPopup,
+                      isInEditingMode: widget.isInEditingMode,
                     ))
                 .toList());
   }
 }
 
 class SubmodCardLayout extends StatefulWidget {
-  const SubmodCardLayout({super.key, required this.item, required this.mod, required this.submod, required this.modSetName, required this.isInPopup});
+  const SubmodCardLayout({super.key, required this.item, required this.mod, required this.submod, required this.modSetName, required this.isInPopup, required this.isInEditingMode});
 
   final Item item;
   final Mod mod;
   final SubMod submod;
   final String modSetName;
   final bool isInPopup;
+  final bool isInEditingMode;
 
   @override
   State<SubmodCardLayout> createState() => _SubmodCardLayoutState();
@@ -159,15 +165,17 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                 QuickSwapMenu(item: widget.item, mod: widget.mod, submod: widget.submod),
 
                 // Function menu
-                SubmodMoreFunctionsMenu(
-                  item: widget.item,
-                  mod: widget.mod,
-                  submod: widget.submod,
-                  isInPopup: widget.isInPopup,
-                  refresh: () {
-                    setState(() {});
-                  },
-                )
+                if (!widget.isInEditingMode)
+                  SubmodMoreFunctionsMenu(
+                    item: widget.item,
+                    mod: widget.mod,
+                    submod: widget.submod,
+                    isInPopup: widget.isInPopup,
+                    refresh: () {
+                      setState(() {});
+                    },
+                  ),
+                if (widget.isInEditingMode) SubmodBulkDeleteCheckbox(item: widget.item, mod: widget.mod, submod: widget.submod, enabled: !widget.submod.applyStatus)
               ]),
             ],
           )),

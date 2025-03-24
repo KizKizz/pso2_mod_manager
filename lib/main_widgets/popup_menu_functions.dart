@@ -263,8 +263,8 @@ Future<void> submodAddToSet(context, Item item, Mod mod, SubMod submod) async {
   // }
 }
 
-Future<void> submodDelete(context, Item item, Mod mod, SubMod submod) async {
-  final result = await deleteConfirmPopup(context, submod.submodName);
+Future<void> submodDelete(context, Item item, Mod mod, SubMod submod, bool isBulkDelete) async {
+  final result = isBulkDelete ? true : await deleteConfirmPopup(context, submod.submodName);
   if (result) {
     if (Directory(submod.location).existsSync()) await Directory(submod.location).delete(recursive: true);
     if (!Directory(submod.location).existsSync()) {
@@ -296,8 +296,8 @@ Future<void> submodDelete(context, Item item, Mod mod, SubMod submod) async {
   }
 }
 
-Future<void> modDelete(context, Item item, Mod mod) async {
-  final result = await deleteConfirmPopup(context, mod.modName);
+Future<void> modDelete(context, Item item, Mod mod, bool isBulkDelete) async {
+  final result = isBulkDelete ? true : await deleteConfirmPopup(context, mod.modName);
   if (result) {
     if (Directory(mod.location).existsSync()) await Directory(mod.location).delete(recursive: true);
     if (!Directory(mod.location).existsSync()) {
