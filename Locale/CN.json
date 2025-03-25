@@ -1,4 +1,8 @@
 {
+  "holdToDeleteSelected": "Hold To Delete Selected",
+  "holdToDeleteAll": "Hold To Delete All",
+  "mainItems": "Main items",
+  "itemsToBeReplacedByMainItems": "Items to be replaced by main items",
   "saveAndRestoreAllAppliedMods": "Save & Restore All Applied Mods",
   "reApplyAllSavedMods": "Re-Apply All Saved Mods",
   "savingModFilesAndRestoringOriginalFiles": "Saving Mod Files And Restoring Original Files",

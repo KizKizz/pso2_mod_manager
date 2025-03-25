@@ -12,7 +12,7 @@ import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 Future<void> modViewPopup(context, Item item) async {
-  Mod? selectedMod = item.mods.first;
+  Mod? selectedMod = item.mods.isNotEmpty ? item.mods.first : null;
   bool isInEditingMode = false;
   await showDialog(
       barrierDismissible: false,
@@ -26,6 +26,7 @@ Future<void> modViewPopup(context, Item item) async {
               () {},
             );
           }
+          if (selectedMod != null && !item.mods.contains(selectedMod)) selectedMod = null;
 
           return AlertDialog(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),

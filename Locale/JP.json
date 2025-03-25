@@ -1,4 +1,8 @@
 {
+  "holdToDeleteSelected": "選択項目を長押しで削除",
+  "holdToDeleteAll": "長押しで全削除",
+  "mainItems": "メインアイテム",
+  "itemsToBeReplacedByMainItems": "メインアイテムに置き換えられるアイテム",
   "saveAndRestoreAllAppliedMods": "適用済みのすべてのMODを保存&復元",
   "reApplyAllSavedMods": "保存されたすべてのMODを再適用",
   "savingModFilesAndRestoringOriginalFiles": "MODファイルの保存とオリジナルファイルの復元",

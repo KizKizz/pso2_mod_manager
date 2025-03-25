@@ -61,7 +61,7 @@ class _ModBulkDeleteButtonState extends State<ModBulkDeleteButton> {
         }
       },
       child: Text(
-        appText.holdToDeleteAll,
+        appText.holdToDeleteSelected,
         style: TextStyle(color: widget.enabled ? Colors.redAccent : Theme.of(context).disabledColor),
       ),
     );
