@@ -265,6 +265,7 @@ Future<File> modSwapOriginalFileDownload(String networkFilePath, String server, 
           url: '$url$networkFilePath',
           filename: p.basenameWithoutExtension(networkFilePath),
           headers: {"User-Agent": "AQUA_HTTP"},
+          baseDirectory: BaseDirectory.root,
           directory: saveLocation,
           updates: Updates.statusAndProgress,
           allowPause: false);

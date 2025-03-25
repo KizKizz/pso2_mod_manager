@@ -114,6 +114,7 @@ class _DataUpdatePageState extends State<DataUpdatePage> {
                                         task = DownloadTask(
                                             url: 'https://raw.githubusercontent.com/KizKizz/pso2ngs_file_downloader/main/json/playerItemData.json',
                                             filename: 'playerItemData.json',
+                                            baseDirectory: BaseDirectory.root,
                                             directory: '${Directory.current.path}${p.separator}itemData',
                                             updates: Updates.statusAndProgress,
                                             retries: 2,

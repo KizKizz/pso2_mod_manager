@@ -192,7 +192,7 @@ class _SubmodMoreFunctionsMenuState extends State<SubmodMoreFunctionsMenu> {
           PopupMenuItem(
               enabled: !widget.submod.applyStatus && widget.submod.location != widget.mod.location,
               onTap: () async {
-                await submodDelete(context, widget.item, widget.mod, widget.submod);
+                await submodDelete(context, widget.item, widget.mod, widget.submod, false);
                 widget.mod.isNew = widget.mod.getSubmodsIsNewState();
                 widget.item.isNew = widget.item.getModsIsNewState();
                 modPopupStatus.value = '${widget.submod.submodName} deleted';

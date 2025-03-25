@@ -51,7 +51,7 @@ Future<void> modsetModViewPopup(context, Item item, String setName) async {
                               child: Column(
                                 spacing: 5,
                                 children: [
-                                  PopupItemInfo(item: item, showModInfo: false),
+                                  PopupItemInfo(item: item, showModInfo: false, onEditing: (bool editingState) {  },),
                                   const HoriDivider(),
                                   Expanded(
                                       child: CustomScrollView(physics: const SuperRangeMaintainingScrollPhysics(), slivers: [
@@ -70,7 +70,7 @@ Future<void> modsetModViewPopup(context, Item item, String setName) async {
                                               );
                                             },
                                             onDelete: () async {
-                                              await modDelete(context, item, mod);
+                                              await modDelete(context, item, mod, false);
                                               modPopupStatus.value = '${mod.modName} deleted';
                                               item.isNew = item.getModsIsNewState();
                                               selectedMod = null;
@@ -79,7 +79,7 @@ Future<void> modsetModViewPopup(context, Item item, String setName) async {
                                                 // ignore: use_build_context_synchronously
                                                 Navigator.of(context).pop();
                                               }
-                                            },
+                                            }, isInEditingMode: false,
                                           );
                                         })
                                   ]))
@@ -105,6 +105,7 @@ Future<void> modsetModViewPopup(context, Item item, String setName) async {
                                           submods: selectedMod!.submods.where((e) => e.isSet && e.setNames.contains(setName)).toList(),
                                           searchString: searchTextController.value.text,
                                           modSetName: setName, isPopup: true,
+                                          isInEditingMode: false,
                                         )
                                       ],
                                     ),

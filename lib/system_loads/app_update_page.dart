@@ -72,6 +72,7 @@ class _AppUpdatePageState extends State<AppUpdatePage> {
                                         final task = DownloadTask(
                                           url: 'https://github.com/KizKizz/pso2_mod_manager/releases/download/v$remoteVersion/PSO2NGSModManager_v$remoteVersion.zip',
                                           filename: 'PSO2NGSModManager_v$remoteVersion.zip',
+                                          baseDirectory: BaseDirectory.root,
                                           directory: '${Directory.current.path}${p.separator}appUpdate',
                                           updates: Updates.statusAndProgress,
                                           retries: 2,
@@ -80,6 +81,7 @@ class _AppUpdatePageState extends State<AppUpdatePage> {
                                         final updaterTask = DownloadTask(
                                           url: 'https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/refs/heads/main/updater/updater.exe',
                                           filename: 'updater.exe',
+                                          baseDirectory: BaseDirectory.root,
                                           directory: '${Directory.current.path}${p.separator}appUpdate',
                                           updates: Updates.statusAndProgress,
                                           retries: 2,

@@ -356,7 +356,11 @@ class AppText {
       saveAndRestoreAllAppliedMods = 'Save & Restore All Applied Mods',
       reApplyAllSavedMods = 'Re-Apply All Saved Mods',
       savingModFilesAndRestoringOriginalFiles = 'Saving Mod Files And Restoring Original Files',
-      reApplyingSavedModFiles = 'Re-Applying Saved Mod Files';
+      reApplyingSavedModFiles = 'Re-Applying Saved Mod Files',
+      holdToDeleteAll = 'Hold To Delete All',
+      holdToDeleteSelected = 'Hold To Delete Selected',
+      mainItems = 'Main items',
+      itemsToBeReplacedByMainItems = 'Items to be replaced by main items';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',

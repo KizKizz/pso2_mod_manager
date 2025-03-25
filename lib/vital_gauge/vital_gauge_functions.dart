@@ -122,6 +122,7 @@ Future<(File, String)> vitalGaugeOriginalFileDownload(String filePath) async {
           url: '$url$networkFilePath',
           filename: p.basenameWithoutExtension(networkFilePath),
           headers: {"User-Agent": "AQUA_HTTP"},
+          baseDirectory: BaseDirectory.root,
           directory: p.dirname(filePath),
           updates: Updates.statusAndProgress,
           allowPause: false);

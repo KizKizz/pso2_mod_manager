@@ -12,7 +12,8 @@ import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 Future<void> submodViewPopup(context, Item item, Mod mod) async {
-  Mod? selectedMod = mod;
+  Mod? selectedMod = item.mods.contains(mod) ? mod : null;
+  bool isInEditingMode = false;
   await showDialog(
       barrierDismissible: false,
       barrierColor: Colors.transparent,
@@ -25,7 +26,8 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
               () {},
             );
           }
-         
+          if (selectedMod != null && !item.mods.contains(selectedMod)) selectedMod = null;
+
           return AlertDialog(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
@@ -50,7 +52,17 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
                               child: Column(
                                 spacing: 5,
                                 children: [
-                                  PopupItemInfo(item: item, showModInfo: false),
+                                  PopupItemInfo(
+                                    item: item,
+                                    showModInfo: false,
+                                    onEditing: (bool editingState) {
+                                      setState(
+                                        () {
+                                          isInEditingMode = editingState;
+                                        },
+                                      );
+                                    },
+                                  ),
                                   const HoriDivider(),
                                   Expanded(
                                       child: CustomScrollView(physics: const SuperRangeMaintainingScrollPhysics(), slivers: [
@@ -68,7 +80,7 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
                                               );
                                             },
                                             onDelete: () async {
-                                              await modDelete(context, item, mod);
+                                              await modDelete(context, item, mod, false);
                                               modPopupStatus.value = '${mod.modName} deleted';
                                               selectedMod = null;
                                               item.isNew = item.getModsIsNewState();
@@ -78,6 +90,7 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
                                               Navigator.of(context).pop();
                                               // }
                                             },
+                                            isInEditingMode: isInEditingMode,
                                           );
                                         })
                                   ]))
@@ -108,7 +121,7 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
                                           searchString: '',
                                           item: item,
                                           mod: selectedMod!,
-                                          modSetName: '', isPopup: true,
+                                          modSetName: '', isPopup: true, isInEditingMode: isInEditingMode,
                                         )
                                       ],
                                     ),

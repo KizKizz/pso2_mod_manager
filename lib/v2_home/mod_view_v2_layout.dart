@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/main_widgets/mod_bulk_delete_checkbox.dart';
 import 'package:pso2_mod_manager/main_widgets/mod_more_functions_menu.dart';
 import 'package:pso2_mod_manager/main_widgets/popup_menu_functions.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_grid_layout.dart';
@@ -14,12 +15,13 @@ import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 class ModViewV2Layout extends StatefulWidget {
-  const ModViewV2Layout({super.key, required this.item, required this.mod, required this.searchString, required this.expandAll, required this.scrollController});
+  const ModViewV2Layout({super.key, required this.item, required this.mod, required this.searchString, required this.expandAll, required this.isInEditingMode, required this.scrollController});
 
   final Item item;
   final Mod mod;
   final String searchString;
   final bool expandAll;
+  final bool isInEditingMode;
   final ScrollController scrollController;
 
   @override
@@ -43,6 +45,7 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
                   submod: e,
                   modSetName: '',
                   isInPopup: false,
+                  isInEditingMode: widget.isInEditingMode,
                 ))
             .toList()
         : widget.mod.submods
@@ -55,7 +58,7 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
                   mod: widget.mod,
                   submod: e,
                   modSetName: '',
-                  isInPopup: false,
+                  isInPopup: false, isInEditingMode: widget.isInEditingMode,
                 ))
             .toList();
 
@@ -106,16 +109,18 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
                               spacing: 2.5,
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                ModMoreFunctionsMenu(
-                                  item: widget.item,
-                                  mod: widget.mod,
-                                  onDelete: () async {
-                                    await modDelete(context, widget.item, widget.mod);
-                                    widget.item.isNew = widget.item.getModsIsNewState();
-                                    mainGridStatus.value = '"${widget.mod.modName}" in "${widget.item.getDisplayName()}" is empty and removed';
-                                    if (selectedItemV2.value == widget.item && widget.item.mods.isEmpty) selectedItemV2.value = null;
-                                  },
-                                ),
+                                if (!widget.isInEditingMode)
+                                  ModMoreFunctionsMenu(
+                                    item: widget.item,
+                                    mod: widget.mod,
+                                    onDelete: () async {
+                                      await modDelete(context, widget.item, widget.mod, false);
+                                      widget.item.isNew = widget.item.getModsIsNewState();
+                                      mainGridStatus.value = '"${widget.mod.modName}" in "${widget.item.getDisplayName()}" is empty and removed';
+                                      if (selectedItemV2.value == widget.item && widget.item.mods.isEmpty) selectedItemV2.value = null;
+                                    },
+                                  ),
+                                if (widget.isInEditingMode) ModBulkDeleteCheckbox(item: widget.item, mod: widget.mod, enabled: !widget.mod.applyStatus,),
                                 Icon(expanded || widget.expandAll ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down)
                               ],
                             )

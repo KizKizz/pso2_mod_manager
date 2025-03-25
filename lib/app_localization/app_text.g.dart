@@ -359,6 +359,11 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..savingModFilesAndRestoringOriginalFiles =
       json['savingModFilesAndRestoringOriginalFiles'] as String
   ..reApplyingSavedModFiles = json['reApplyingSavedModFiles'] as String
+  ..holdToDeleteAll = json['holdToDeleteAll'] as String
+  ..holdToDeleteSelected = json['holdToDeleteSelected'] as String
+  ..mainItems = json['mainItems'] as String
+  ..itemsToBeReplacedByMainItems =
+      json['itemsToBeReplacedByMainItems'] as String
   ..failedToFetchRemoteLocaleData =
       json['failedToFetchRemoteLocaleData'] as String
   ..unableToUpdateFile = json['unableToUpdateFile'] as String
@@ -809,6 +814,10 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'savingModFilesAndRestoringOriginalFiles':
           instance.savingModFilesAndRestoringOriginalFiles,
       'reApplyingSavedModFiles': instance.reApplyingSavedModFiles,
+      'holdToDeleteAll': instance.holdToDeleteAll,
+      'holdToDeleteSelected': instance.holdToDeleteSelected,
+      'mainItems': instance.mainItems,
+      'itemsToBeReplacedByMainItems': instance.itemsToBeReplacedByMainItems,
       'failedToFetchRemoteLocaleData': instance.failedToFetchRemoteLocaleData,
       'unableToUpdateFile': instance.unableToUpdateFile,
       'unableToGetAppVersionDataFromGitHub':

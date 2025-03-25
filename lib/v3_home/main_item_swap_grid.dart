@@ -140,13 +140,22 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
             spacing: 5,
             children: [
               Expanded(
-                  child: ItemSwapGridLayout(
-                itemDataList: emoteSwapQueue.isEmpty
-                    ? displayingItems
-                    : displayingItems.where((e) => e.category == emoteSwapQueue.first.$1.category && e.getName() == emoteSwapQueue.first.$1.getName()).toList(),
-                scrollController: lScrollController,
-                selectedItemData: lSelectedItemData,
-                emoteSwapQueue: emoteSwapQueue,
+                  child: Stack(
+                alignment: AlignmentDirectional.topEnd,
+                children: [
+                  ItemSwapGridLayout(
+                    itemDataList: emoteSwapQueue.isEmpty
+                        ? displayingItems
+                        : displayingItems.where((e) => e.category == emoteSwapQueue.first.$1.category && e.getName() == emoteSwapQueue.first.$1.getName()).toList(),
+                    scrollController: lScrollController,
+                    selectedItemData: lSelectedItemData,
+                    emoteSwapQueue: emoteSwapQueue,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 35, right: 5),
+                    child: Text(appText.mainItems, style: TextStyle(color: Theme.of(context).colorScheme.primary.withAlpha(170))),
+                  )
+                ],
               )),
               Expanded(
                   child: Column(
@@ -154,17 +163,26 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                 children: [
                   Expanded(
                       flex: 2,
-                      child: ItemSwapGridLayout(
-                        itemDataList: extraCategory == defaultCategoryDirs[1] ||
-                                extraCategory == defaultCategoryDirs[2] ||
-                                extraCategory == defaultCategoryDirs[7] ||
-                                extraCategory == defaultCategoryDirs[11] ||
-                                extraCategory == defaultCategoryDirs[16]
-                            ? rDisplayingItemsExtra
-                            : displayingItems,
-                        scrollController: rScrollController,
-                        selectedItemData: rSelectedItemData,
-                        emoteSwapQueue: emoteSwapQueue,
+                      child: Stack(
+                        alignment: AlignmentDirectional.topEnd,
+                        children: [
+                          ItemSwapGridLayout(
+                            itemDataList: extraCategory == defaultCategoryDirs[1] ||
+                                    extraCategory == defaultCategoryDirs[2] ||
+                                    extraCategory == defaultCategoryDirs[7] ||
+                                    extraCategory == defaultCategoryDirs[11] ||
+                                    extraCategory == defaultCategoryDirs[16]
+                                ? rDisplayingItemsExtra
+                                : displayingItems,
+                            scrollController: rScrollController,
+                            selectedItemData: rSelectedItemData,
+                            emoteSwapQueue: emoteSwapQueue,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 35, right: 5),
+                            child: Text(appText.itemsToBeReplacedByMainItems, style: TextStyle(color: Theme.of(context).colorScheme.primary.withAlpha(170))),
+                          )
+                        ],
                       )),
 
                   // emote queue
