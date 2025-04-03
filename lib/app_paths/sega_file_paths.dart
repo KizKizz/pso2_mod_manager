@@ -96,8 +96,9 @@ Future<(List<OfficialIceFile>, List<OfficialIceFile>, String, String, String, St
               officialListNA.add(OfficialIceFile(path.replaceFirst(pso2binDirPath, ''), '', 0, 'm'));
             }
           }
+          // debugPrint(officialList.map((e) => e.path).toString());
 
-          return (officialList, officialListNA, masterURL.toString(), masterBackupURL, patchURL, patchBackupURL);
+          return (officialList, officialListNA, masterURL, masterBackupURL, patchURL, patchBackupURL);
         }
       }
     }
