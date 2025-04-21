@@ -257,7 +257,7 @@ Future<void> modSwapTempDirsRemove() async {
   }
 }
 
-Future<File> modSwapOriginalFileDownload(String networkFilePath, String server, String saveLocation) async {
+Future<File?> modSwapOriginalFileDownload(String networkFilePath, String server, String saveLocation) async {
   if (networkFilePath.isNotEmpty) {
     final serverURLs = [segaMasterServerURL, segaPatchServerURL, segaMasterServerBackupURL, segaPatchServerBackupURL];
     for (var url in serverURLs) {
@@ -283,7 +283,7 @@ Future<File> modSwapOriginalFileDownload(String networkFilePath, String server, 
     }
   }
 
-  return File('');
+  return null;
 }
 
 SubMod lItemSubmodGet(ItemData lItemData) {

@@ -32,8 +32,8 @@ Future<bool> saveRestoreAllAppliedMods() async {
                 // restore
                 if (originalFilesBackupsFromSega) {
                   String iceWebPath = ('${path.replaceFirst(pso2binDirPath + p.separator, '')}.pat').replaceAll(p.separator, '/');
-                  File downloadedFile = await originalIceDownload(iceWebPath, p.dirname(path), modApplyStatus);
-                  if (!downloadedFile.existsSync()) {
+                  File? downloadedFile = await originalIceDownload(iceWebPath, p.dirname(path), modApplyStatus);
+                  if (downloadedFile != null) {
                     File localBackupFile = File(path.replaceFirst(pso2DataDirPath, backupDirPath));
                     if (localBackupFile.existsSync()) {
                       await localBackupFile.copy(path);

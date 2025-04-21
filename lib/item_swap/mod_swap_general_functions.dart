@@ -56,7 +56,7 @@ Future<Directory> modSwapGeneral(
     // Weapon specific swaps
     if (fromSubmod.category == defaultCategoryDirs[17]) {
       //copy or download files to temp fromitem dir
-      File lItemIceFileInTemp = File('');
+      File? lItemIceFileInTemp;
       if (isVanillaItemSwap) {
         //get ice path
         final matchedlItemData = oItemData.firstWhere(
@@ -72,7 +72,7 @@ Future<Directory> modSwapGeneral(
         }
       }
 
-      if (lItemIceFileInTemp.existsSync()) {
+      if (lItemIceFileInTemp != null) {
         //pack
         rItemName = rItemName.replaceAll(RegExp(charToReplace), '_').trim();
         String packDirPath = '';
@@ -152,7 +152,7 @@ Future<Directory> modSwapGeneral(
 
     // Normal swaps
     //copy or download files to temp fromitem dir
-    File lItemIceFileInTemp = File('');
+    File? lItemIceFileInTemp;
     if (isVanillaItemSwap) {
       //get ice path
       final matchedlItemData = oItemData.firstWhere(
@@ -168,7 +168,7 @@ Future<Directory> modSwapGeneral(
       }
     }
     //extract F ice to
-    if (lItemIceFileInTemp.path.isNotEmpty && lItemIceFileInTemp.existsSync()) {
+    if (lItemIceFileInTemp != null) {
       if (Platform.isLinux) {
         await Process.run('wine $zamboniExePath -outdir "$tempSubmodPathF"', [lItemIceFileInTemp.path]);
       } else {
@@ -193,11 +193,13 @@ Future<Directory> modSwapGeneral(
     if (icePathFromOgDataT.isNotEmpty) {
       //final iceFileInTempT = await File(icePathFromOgDataT).copy(Uri.file('$modSwapTempRItemDirPath/${p.basename(icePathFromOgDataT)}').toFilePath());
       //download from file from server
-      final iceFileInTempT = await modSwapOriginalFileDownload(icePathFromOgDataT, matchedrItemData.server, modSwapTempRItemDirPath);
-      if (Platform.isLinux) {
-        await Process.run('wine $zamboniExePath -outdir "$tempSubmodPathT"', [iceFileInTempT.path]);
-      } else {
-        await Process.run('$zamboniExePath -outdir "$tempSubmodPathT"', [iceFileInTempT.path]);
+      File? iceFileInTempT = await modSwapOriginalFileDownload(icePathFromOgDataT, matchedrItemData.server, modSwapTempRItemDirPath);
+      if (iceFileInTempT != null) {
+        if (Platform.isLinux) {
+          await Process.run('wine $zamboniExePath -outdir "$tempSubmodPathT"', [iceFileInTempT.path]);
+        } else {
+          await Process.run('$zamboniExePath -outdir "$tempSubmodPathT"', [iceFileInTempT.path]);
+        }
       }
       String extractedGroup1PathT = Uri.file('$tempSubmodPathT/${rItemIceName}_ext/group1').toFilePath();
       if (Directory(extractedGroup1PathT).existsSync()) {

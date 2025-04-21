@@ -96,16 +96,16 @@ Future<bool> itemCustomAqmInject(context, String customAQMFilePath, String hqIce
       File copiedFile = await localHQIce.copy(modAqmInjectTempDirPath + p.separator + p.basename(hqIcePath));
       downloadedFiles.add(copiedFile);
     } else {
-      File dlFile = await originalIceDownload('$hqIcePath.pat', modAqmInjectTempDirPath, modAqmInjectingStatus);
-      downloadedFiles.add(dlFile);
+      File? dlFile = await originalIceDownload('$hqIcePath.pat', modAqmInjectTempDirPath, modAqmInjectingStatus);
+      if (dlFile != null) downloadedFiles.add(dlFile);
     }
     localLQIce = File(pso2binDirPath + p.separator + lqIcePath.replaceAll('/', p.separator));
     if (localLQIce.existsSync()) {
       File copiedFile = await localLQIce.copy(modAqmInjectTempDirPath + p.separator + p.basename(lqIcePath));
       downloadedFiles.add(copiedFile);
     } else {
-      File dlFile = await originalIceDownload('$lqIcePath.pat', modAqmInjectTempDirPath, modAqmInjectingStatus);
-      downloadedFiles.add(dlFile);
+      File? dlFile = await originalIceDownload('$lqIcePath.pat', modAqmInjectTempDirPath, modAqmInjectingStatus);
+      if (dlFile != null) downloadedFiles.add(dlFile);
     }
   }
 
@@ -203,8 +203,8 @@ Future<bool> itemCustomAqmRestoreAll(String hqIcePath, String lqIcePath) async {
   for (var filePath in filePaths) {
     if (filePath.isNotEmpty) {
       modAqmInjectingStatus.value = appText.dText(appText.restoringFile, p.basename(filePath));
-      File downloadedFile = await originalIceDownload('$filePath.pat', pso2binDirPath + p.separator + p.dirname(filePath.replaceAll('/', p.separator)), modAqmInjectingStatus);
-      if (downloadedFile.existsSync()) restoredCheck[filePaths.indexOf(filePath)] = true;
+      File? downloadedFile = await originalIceDownload('$filePath.pat', pso2binDirPath + p.separator + p.dirname(filePath.replaceAll('/', p.separator)), modAqmInjectingStatus);
+      if (downloadedFile != null) restoredCheck[filePaths.indexOf(filePath)] = true;
     }
   }
 

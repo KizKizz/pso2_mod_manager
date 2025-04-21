@@ -6,7 +6,7 @@ import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:path/path.dart' as p;
 
-Future<File> originalIceDownload(String networkFilePath, String saveDirLocation, Signal status) async {
+Future<File?> originalIceDownload(String networkFilePath, String saveDirLocation, Signal status) async {
   if (networkFilePath.isNotEmpty) {
     final serverURLs = [segaMasterServerURL, segaPatchServerURL, segaMasterServerBackupURL, segaPatchServerBackupURL];
     for (var url in serverURLs) {
@@ -17,7 +17,8 @@ Future<File> originalIceDownload(String networkFilePath, String saveDirLocation,
           baseDirectory: BaseDirectory.root,
           directory: saveDirLocation,
           updates: Updates.statusAndProgress,
-          allowPause: false);
+          allowPause: false,
+          );
 
       final result = await FileDownloader()
           .download(task, onProgress: (progress) => status.value = '${appText.dText(appText.downloadingFileName, p.basenameWithoutExtension(networkFilePath))} [ ${(progress * 100).round()}% ]');
@@ -25,12 +26,12 @@ Future<File> originalIceDownload(String networkFilePath, String saveDirLocation,
       switch (result.status) {
         case TaskStatus.complete:
           status.value = appText.fileDownloadSuccessful;
-          return File(saveDirLocation + p.separator + p.basenameWithoutExtension(networkFilePath));
+          return File(saveDirLocation + p.separator + p.basenameWithoutExtension(networkFilePath));          
         default:
           status.value = appText.fileDownloadFailed;
       }
     }
   }
 
-  return File('');
+  return null;
 }

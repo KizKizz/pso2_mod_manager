@@ -1,6 +1,5 @@
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:elegant_notification/resources/arrays.dart';
-import 'package:elegant_notification/resources/stacked_options.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/material_app_service.dart';
@@ -10,11 +9,11 @@ dynamic _context = MaterialAppService.navigatorKey.currentContext!;
 void errorNotification(message) {
   ElegantNotification.error(
     width: 360,
-    stackedOptions: StackedOptions(
-      key: 'bottomRightE',
-      type: StackedType.below,
-      itemOffset: const Offset(0, 5),
-    ),
+    // stackedOptions: StackedOptions(
+    //   key: 'bottomRightE',
+    //   type: StackedType.below,
+    //   itemOffset: const Offset(0, 5),
+    // ),
     background: Theme.of(_context).scaffoldBackgroundColor.withAlpha(50),
     notificationMargin: 1,
     border: Border.all(width: 1, color: Theme.of(_context).colorScheme.outline),
@@ -36,11 +35,11 @@ void errorNotification(message) {
 void deletedNotification(name) {
   ElegantNotification.success(
     width: 360,
-    stackedOptions: StackedOptions(
-      key: 'bottomRight',
-      type: StackedType.below,
-      itemOffset: const Offset(0, 5),
-    ),
+    // stackedOptions: StackedOptions(
+    //   key: 'bottomRight',
+    //   type: StackedType.below,
+    //   itemOffset: const Offset(0, 5),
+    // ),
     background: Theme.of(_context).scaffoldBackgroundColor.withAlpha(50),
     notificationMargin: 1,
     border: Border.all(width: 1, color: Theme.of(_context).colorScheme.outline),
@@ -62,11 +61,11 @@ void deletedNotification(name) {
 void restoreSuccessNotification(name) {
   ElegantNotification.success(
     width: 360,
-    stackedOptions: StackedOptions(
-      key: 'bottomRight',
-      type: StackedType.below,
-      itemOffset: const Offset(0, 5),
-    ),
+    // stackedOptions: StackedOptions(
+    //   key: 'bottomRight',
+    //   type: StackedType.below,
+    //   itemOffset: const Offset(0, 5),
+    // ),
     background: Theme.of(_context).scaffoldBackgroundColor.withAlpha(50),
     notificationMargin: 1,
     border: Border.all(width: 1, color: Theme.of(_context).colorScheme.outline),
@@ -88,11 +87,11 @@ void restoreSuccessNotification(name) {
 void restoreFailedNotification(name) {
   ElegantNotification.error(
     width: 360,
-    stackedOptions: StackedOptions(
-      key: 'bottomRightE',
-      type: StackedType.below,
-      itemOffset: const Offset(0, 5),
-    ),
+    // stackedOptions: StackedOptions(
+    //   key: 'bottomRightE',
+    //   type: StackedType.below,
+    //   itemOffset: const Offset(0, 5),
+    // ),
     background: Theme.of(_context).scaffoldBackgroundColor.withAlpha(50),
     notificationMargin: 1,
     border: Border.all(width: 1, color: Theme.of(_context).colorScheme.outline),
@@ -114,11 +113,11 @@ void restoreFailedNotification(name) {
 void applySuccessNotification(name) {
   ElegantNotification.success(
     width: 360,
-    stackedOptions: StackedOptions(
-      key: 'bottomRight',
-      type: StackedType.below,
-      itemOffset: const Offset(0, 5),
-    ),
+    // stackedOptions: StackedOptions(
+    //   key: 'bottomRight',
+    //   type: StackedType.below,
+    //   itemOffset: const Offset(0, 5),
+    // ),
     background: Theme.of(_context).scaffoldBackgroundColor.withAlpha(50),
     notificationMargin: 1,
     border: Border.all(width: 1, color: Theme.of(_context).colorScheme.outline),
@@ -140,11 +139,11 @@ void applySuccessNotification(name) {
 void applyFailedNotification(name) {
   ElegantNotification.error(
     width: 360,
-    stackedOptions: StackedOptions(
-      key: 'bottomRightE',
-      type: StackedType.below,
-      itemOffset: const Offset(0, 5),
-    ),
+    // stackedOptions: StackedOptions(
+    //   key: 'bottomRightE',
+    //   type: StackedType.below,
+    //   itemOffset: const Offset(0, 5),
+    // ),
     background: Theme.of(_context).scaffoldBackgroundColor.withAlpha(50),
     notificationMargin: 1,
     border: Border.all(width: 1, color: Theme.of(_context).colorScheme.outline),
@@ -167,11 +166,11 @@ void applyFailedNotification(name) {
 void addToSetSuccessNotification(String names, String modSetName) {
   ElegantNotification.success(
     width: 360,
-    stackedOptions: StackedOptions(
-      key: 'bottomRight',
-      type: StackedType.below,
-      itemOffset: const Offset(0, 5),
-    ),
+    // stackedOptions: StackedOptions(
+    //   key: 'bottomRight',
+    //   type: StackedType.below,
+    //   itemOffset: const Offset(0, 5),
+    // ),
     background: Theme.of(_context).scaffoldBackgroundColor.withAlpha(50),
     notificationMargin: 1,
     border: Border.all(width: 1, color: Theme.of(_context).colorScheme.outline),
@@ -192,11 +191,11 @@ void addToSetSuccessNotification(String names, String modSetName) {
 void removeFromSetSuccessNotification(String names, String modSetName) {
   ElegantNotification.success(
     width: 360,
-    stackedOptions: StackedOptions(
-      key: 'bottomRight',
-      type: StackedType.below,
-      itemOffset: const Offset(0, 5),
-    ),
+    // stackedOptions: StackedOptions(
+    //   key: 'bottomRight',
+    //   type: StackedType.below,
+    //   itemOffset: const Offset(0, 5),
+    // ),
     background: Theme.of(_context).scaffoldBackgroundColor.withAlpha(50),
     notificationMargin: 1,
     border: Border.all(width: 1, color: Theme.of(_context).colorScheme.outline),

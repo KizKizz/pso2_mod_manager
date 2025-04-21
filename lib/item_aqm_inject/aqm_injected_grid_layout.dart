@@ -8,7 +8,7 @@ import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_popup.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
-import 'package:pso2_mod_manager/v3_functions/item_icon_mark.dart';
+import 'package:pso2_mod_manager/mod_apply/item_icon_mark.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';

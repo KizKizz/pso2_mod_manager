@@ -618,18 +618,18 @@ Future<File?> cardExport(LineStrikeCard card) async {
 }
 
 Future<bool> customImageRemove(LineStrikeCard card, List<LineStrikeCard> lineStrikeCardList) async {
-  File downloadedCardZeroIceFile =
+  File? downloadedCardZeroIceFile =
       await originalIceDownload('${card.cardZeroIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(card.cardZeroIcePath), lineStrikeStatus);
-  File downloadedCardZeroIconIceFile =
+  File? downloadedCardZeroIconIceFile =
       await originalIceDownload('${card.cardZeroIconIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(card.cardZeroIconIcePath), lineStrikeStatus);
-  File downloadedCardOneIceFile = await originalIceDownload('${card.cardOneIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(card.cardOneIcePath), lineStrikeStatus);
-  File downloadedCardOneIconIceFile =
+  File? downloadedCardOneIceFile = await originalIceDownload('${card.cardOneIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(card.cardOneIcePath), lineStrikeStatus);
+  File? downloadedCardOneIconIceFile =
       await originalIceDownload('${card.cardOneIconIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(card.cardOneIconIcePath), lineStrikeStatus);
   //remove settings
-  if (downloadedCardZeroIceFile.existsSync()) card.cardZeroReplacedIceMd5 = '';
-  if (downloadedCardZeroIconIceFile.existsSync()) card.cardZeroReplacedIconIceMd5 = '';
-  if (downloadedCardOneIceFile.existsSync()) card.cardOneReplacedIceMd5 = '';
-  if (downloadedCardOneIconIceFile.existsSync()) card.cardOneReplacedIconIceMd5 = '';
+  if (downloadedCardZeroIceFile != null) card.cardZeroReplacedIceMd5 = '';
+  if (downloadedCardZeroIconIceFile != null) card.cardZeroReplacedIconIceMd5 = '';
+  if (downloadedCardOneIceFile != null) card.cardOneReplacedIceMd5 = '';
+  if (downloadedCardOneIconIceFile != null) card.cardOneReplacedIconIceMd5 = '';
   if (card.cardZeroReplacedIceMd5.isEmpty && card.cardZeroReplacedIconIceMd5.isEmpty && card.cardOneReplacedIceMd5.isEmpty && card.cardOneReplacedIconIceMd5.isEmpty) {
     card.replacedImagePath = '';
     card.isReplaced = false;

@@ -74,7 +74,8 @@ Future<bool> customBoardImageApply(String imgPath, LineStrikeBoard boardDataFile
 
   //download and replace
   //icon
-  File downloadedIconIceFile = await originalIceDownload('${boardDataFile.iconIcePath.replaceFirst(pso2binDirPath + p.separator, '')}.pat', lineStrikeBoardTempDirPath, lineStrikeStatus);
+  File? downloadedIconIceFile = await originalIceDownload('${boardDataFile.iconIcePath.replaceFirst(pso2binDirPath + p.separator, '')}.pat', lineStrikeBoardTempDirPath, lineStrikeStatus);
+  if (downloadedIconIceFile == null) return false;
   if (Platform.isLinux) {
     await Process.run('wine $zamboniExePath -outdir "$lineStrikeBoardTempDirPath"', [downloadedIconIceFile.path]);
   } else {
@@ -85,10 +86,10 @@ Future<bool> customBoardImageApply(String imgPath, LineStrikeBoard boardDataFile
   if (Directory(newTempIconIcePath).existsSync()) {
     if (Platform.isLinux) {
       await Process.run('wine $pngDdsConvExePath',
-        [Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.dds').toFilePath(), Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath(), '-ddstopng']);
+          [Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.dds').toFilePath(), Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath(), '-ddstopng']);
     } else {
       await Process.run(pngDdsConvExePath,
-        [Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.dds').toFilePath(), Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath(), '-ddstopng']);
+          [Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.dds').toFilePath(), Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath(), '-ddstopng']);
     }
     img.Image? iconImage = await img.decodePngFile(Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath());
     for (var templatePixel in iconTemplate!.data!) {
@@ -106,10 +107,10 @@ Future<bool> customBoardImageApply(String imgPath, LineStrikeBoard boardDataFile
 
     if (Platform.isLinux) {
       await Process.run('wine $pngDdsConvExePath',
-        [Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath(), Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.dds').toFilePath(), '-pngtodds']);
+          [Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath(), Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.dds').toFilePath(), '-pngtodds']);
     } else {
       await Process.run(pngDdsConvExePath,
-        [Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath(), Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.dds').toFilePath(), '-pngtodds']);
+          [Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath(), Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.dds').toFilePath(), '-pngtodds']);
     }
     await File(Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath()).delete();
   }
@@ -175,10 +176,11 @@ Future<bool> customBoardImageApply(String imgPath, LineStrikeBoard boardDataFile
     await File(Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath()).writeAsBytes(img.encodePng(boardTemplate));
 
     if (Platform.isLinux) {
-      await Process.run('wine $pngDdsConvExePath', [Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath(), Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.dds').toFilePath(), '-pngtodds']);
+      await Process.run(
+          'wine $pngDdsConvExePath', [Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath(), Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.dds').toFilePath(), '-pngtodds']);
     } else {
       await Process.run(
-        pngDdsConvExePath, [Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath(), Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.dds').toFilePath(), '-pngtodds']);
+          pngDdsConvExePath, [Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath(), Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.dds').toFilePath(), '-pngtodds']);
     }
     await File(Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath()).delete();
   }
@@ -223,11 +225,11 @@ Future<bool> customBoardImageApply(String imgPath, LineStrikeBoard boardDataFile
 }
 
 Future<bool> customBoardImageRemove(LineStrikeBoard board, List<LineStrikeBoard> lineStrikeBoardList) async {
-  File downloadedIceFile = await originalIceDownload('${board.icePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(board.icePath), lineStrikeStatus);
-  File downloadedIconIceFile = await originalIceDownload('${board.iconIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(board.iconIcePath), lineStrikeStatus);
+  File? downloadedIceFile = await originalIceDownload('${board.icePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(board.icePath), lineStrikeStatus);
+  File? downloadedIconIceFile = await originalIceDownload('${board.iconIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(board.iconIcePath), lineStrikeStatus);
 
-  if (downloadedIceFile.existsSync()) board.replacedIceMd5 = '';
-  if (downloadedIconIceFile.existsSync()) board.replacedIconIceMd5 = '';
+  if (downloadedIceFile != null) board.replacedIceMd5 = '';
+  if (downloadedIconIceFile != null) board.replacedIconIceMd5 = '';
   if (board.replacedIceMd5.isEmpty && board.replacedIconIceMd5.isEmpty) {
     board.replacedImagePath = '';
     board.isReplaced = false;
