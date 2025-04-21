@@ -74,9 +74,10 @@ Future<bool> customSleeveImageApply(String imgPath, LineStrikeSleeve sleeveDataF
 
   //download and replace
   //icon
-  File downloadedIconIceFile = await originalIceDownload('${sleeveDataFile.iconIcePath.replaceFirst(pso2binDirPath + p.separator, '')}.pat', lineStrikeSleeveTempDirPath, lineStrikeStatus);
+  File? downloadedIconIceFile = await originalIceDownload('${sleeveDataFile.iconIcePath.replaceFirst(pso2binDirPath + p.separator, '')}.pat', lineStrikeSleeveTempDirPath, lineStrikeStatus);
+  if (downloadedIconIceFile == null) return false;
   if (Platform.isLinux) {
-     await Process.run('wine $zamboniExePath -outdir "$lineStrikeSleeveTempDirPath"', [downloadedIconIceFile.path]);
+    await Process.run('wine $zamboniExePath -outdir "$lineStrikeSleeveTempDirPath"', [downloadedIconIceFile.path]);
   } else {
     await Process.run('$zamboniExePath -outdir "$lineStrikeSleeveTempDirPath"', [downloadedIconIceFile.path]);
   }
@@ -85,10 +86,10 @@ Future<bool> customSleeveImageApply(String imgPath, LineStrikeSleeve sleeveDataF
   if (Directory(newTempIconIcePath).existsSync()) {
     if (Platform.isLinux) {
       await Process.run('wine $pngDdsConvExePath',
-        [Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.dds').toFilePath(), Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.png').toFilePath(), '-ddstopng']);
+          [Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.dds').toFilePath(), Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.png').toFilePath(), '-ddstopng']);
     } else {
       await Process.run(pngDdsConvExePath,
-        [Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.dds').toFilePath(), Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.png').toFilePath(), '-ddstopng']);
+          [Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.dds').toFilePath(), Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.png').toFilePath(), '-ddstopng']);
     }
     img.Image? iconImage = await img.decodePngFile(Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.png').toFilePath());
     for (var templatePixel in iconTemplate!.data!) {
@@ -101,10 +102,10 @@ Future<bool> customSleeveImageApply(String imgPath, LineStrikeSleeve sleeveDataF
 
     if (Platform.isLinux) {
       await Process.run('wine $pngDdsConvExePath',
-        [Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.png').toFilePath(), Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.dds').toFilePath(), '-pngtodds']);
+          [Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.png').toFilePath(), Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.dds').toFilePath(), '-pngtodds']);
     } else {
       await Process.run(pngDdsConvExePath,
-        [Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.png').toFilePath(), Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.dds').toFilePath(), '-pngtodds']);
+          [Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.png').toFilePath(), Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.dds').toFilePath(), '-pngtodds']);
     }
     await File(Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.png').toFilePath()).delete();
   }
@@ -166,10 +167,11 @@ Future<bool> customSleeveImageApply(String imgPath, LineStrikeSleeve sleeveDataF
     await File(Uri.file('$newTempIcePath/${sleeveDataFile.iceDdsName}.png').toFilePath()).writeAsBytes(img.encodePng(sleeveTemplate));
 
     if (Platform.isLinux) {
-      await Process.run('wine $pngDdsConvExePath', [Uri.file('$newTempIcePath/${sleeveDataFile.iceDdsName}.png').toFilePath(), Uri.file('$newTempIcePath/${sleeveDataFile.iceDdsName}.dds').toFilePath(), '-pngtodds']);
+      await Process.run('wine $pngDdsConvExePath',
+          [Uri.file('$newTempIcePath/${sleeveDataFile.iceDdsName}.png').toFilePath(), Uri.file('$newTempIcePath/${sleeveDataFile.iceDdsName}.dds').toFilePath(), '-pngtodds']);
     } else {
       await Process.run(
-        pngDdsConvExePath, [Uri.file('$newTempIcePath/${sleeveDataFile.iceDdsName}.png').toFilePath(), Uri.file('$newTempIcePath/${sleeveDataFile.iceDdsName}.dds').toFilePath(), '-pngtodds']);
+          pngDdsConvExePath, [Uri.file('$newTempIcePath/${sleeveDataFile.iceDdsName}.png').toFilePath(), Uri.file('$newTempIcePath/${sleeveDataFile.iceDdsName}.dds').toFilePath(), '-pngtodds']);
     }
     await File(Uri.file('$newTempIcePath/${sleeveDataFile.iceDdsName}.png').toFilePath()).delete();
   }
@@ -215,11 +217,11 @@ Future<bool> customSleeveImageApply(String imgPath, LineStrikeSleeve sleeveDataF
 }
 
 Future<bool> customSleeveImageRemove(LineStrikeSleeve sleeve, List<LineStrikeSleeve> lineStrikeSleeveList) async {
-  File downloadedIceFile = await originalIceDownload('${sleeve.icePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(sleeve.icePath), lineStrikeStatus);
-  File downloadedIconIceFile = await originalIceDownload('${sleeve.iconIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(sleeve.iconIcePath), lineStrikeStatus);
+  File? downloadedIceFile = await originalIceDownload('${sleeve.icePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(sleeve.icePath), lineStrikeStatus);
+  File? downloadedIconIceFile = await originalIceDownload('${sleeve.iconIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(sleeve.iconIcePath), lineStrikeStatus);
 
-  if (downloadedIceFile.existsSync()) sleeve.replacedIceMd5 = '';
-  if (downloadedIconIceFile.existsSync()) sleeve.replacedIconIceMd5 = '';
+  if (downloadedIceFile != null) sleeve.replacedIceMd5 = '';
+  if (downloadedIconIceFile != null) sleeve.replacedIconIceMd5 = '';
   if (sleeve.replacedIceMd5.isEmpty && sleeve.replacedIconIceMd5.isEmpty) {
     sleeve.replacedImagePath = '';
     sleeve.isReplaced = false;

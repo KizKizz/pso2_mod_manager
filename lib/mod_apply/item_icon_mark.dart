@@ -84,10 +84,10 @@ Future<bool> markedItemIconApply(Item item) async {
       }
     } else if (itemIconIceName.isNotEmpty && !cachedIconIceFile.existsSync()) {
       String iconIceWebPath = oItemData.firstWhere((e) => e.path.contains(itemIconIceName)).path;
-      File downloadedIconIce = await originalIceDownload(iconIceWebPath, modItemIconTempDirPath, modApplyStatus);
+      File? downloadedIconIce = await originalIceDownload(iconIceWebPath, modItemIconTempDirPath, modApplyStatus);
       modApplyStatus.value = appText.dText(appText.editingMod, itemIconIceName);
       Future.delayed(const Duration(microseconds: 10));
-      if (downloadedIconIce.path.isNotEmpty && downloadedIconIce.existsSync()) {
+      if (downloadedIconIce != null) {
         if (Platform.isLinux) {
           await Process.run('wine $zamboniExePath -outdir "$modItemIconTempDirPath"', [downloadedIconIce.path]);
         } else {
@@ -111,7 +111,8 @@ Future<bool> markedItemIconApply(Item item) async {
               File? overlayedPng = await itemIconOverlay(convertedPng.path);
               if (overlayedPng != null) {
                 if (Platform.isLinux) {
-                  await Process.run('wine $pngDdsConvExePath', [overlayedPng.path, Uri.file('${p.dirname(overlayedPng.path)}/${p.basenameWithoutExtension(overlayedPng.path)}.dds').toFilePath(), '-pngtodds']);
+                  await Process.run(
+                      'wine $pngDdsConvExePath', [overlayedPng.path, Uri.file('${p.dirname(overlayedPng.path)}/${p.basenameWithoutExtension(overlayedPng.path)}.dds').toFilePath(), '-pngtodds']);
                 } else {
                   await Process.run(pngDdsConvExePath, [overlayedPng.path, Uri.file('${p.dirname(overlayedPng.path)}/${p.basenameWithoutExtension(overlayedPng.path)}.dds').toFilePath(), '-pngtodds']);
                 }
@@ -119,9 +120,11 @@ Future<bool> markedItemIconApply(Item item) async {
                 modApplyStatus.value = appText.dText(appText.repackingFile, itemIconIceName);
                 Future.delayed(const Duration(microseconds: 10));
                 if (Platform.isLinux) {
-                  await Process.run('wine $zamboniExePath -c -pack -outdir "$modItemIconTempDirPath"', [Uri.file('$modItemIconTempDirPath/${p.basenameWithoutExtension(itemIconIceName)}_ext').toFilePath()]);
+                  await Process.run(
+                      'wine $zamboniExePath -c -pack -outdir "$modItemIconTempDirPath"', [Uri.file('$modItemIconTempDirPath/${p.basenameWithoutExtension(itemIconIceName)}_ext').toFilePath()]);
                 } else {
-                  await Process.run('$zamboniExePath -c -pack -outdir "$modItemIconTempDirPath"', [Uri.file('$modItemIconTempDirPath/${p.basenameWithoutExtension(itemIconIceName)}_ext').toFilePath()]);
+                  await Process.run(
+                      '$zamboniExePath -c -pack -outdir "$modItemIconTempDirPath"', [Uri.file('$modItemIconTempDirPath/${p.basenameWithoutExtension(itemIconIceName)}_ext').toFilePath()]);
                 }
                 Directory(markedItemIconsDirPath).createSync(recursive: true);
                 File renamedIconFile = await File(Uri.file('${downloadedIconIce.path}_ext.ice').toFilePath())
@@ -151,15 +154,17 @@ Future<bool> markedItemIconApply(Item item) async {
 
 Future<bool> markedItemIconRestore(Item item) async {
   String iconWebPath = ('${p.withoutExtension(item.iconPath!).replaceFirst(pso2binDirPath + p.separator, '')}.pat').replaceAll(p.separator, '/');
-  File downloadedFile = await originalIceDownload(iconWebPath, p.dirname(item.iconPath!), modApplyStatus);
-  modApplyStatus.value = appText.dText(appText.copyingIconFileToGameData, p.basenameWithoutExtension(downloadedFile.path));
-  Future.delayed(const Duration(microseconds: 10));
-  if (await downloadedFile.getMd5Hash() != await File(item.overlayedIconPath!).getMd5Hash()) {
-    item.iconPath = '';
-    item.backupIconPath = '';
-    item.isOverlayedIconApplied = false;
-    saveMasterModListToJson();
-    return true;
+  File? downloadedFile = await originalIceDownload(iconWebPath, p.dirname(item.iconPath!), modApplyStatus);
+  if (downloadedFile != null) {
+    if (await downloadedFile.getMd5Hash() != await File(item.overlayedIconPath!).getMd5Hash()) {
+      modApplyStatus.value = appText.dText(appText.copyingIconFileToGameData, p.basenameWithoutExtension(downloadedFile.path));
+      Future.delayed(const Duration(microseconds: 10));
+      item.iconPath = '';
+      item.backupIconPath = '';
+      item.isOverlayedIconApplied = false;
+      saveMasterModListToJson();
+      return true;
+    }
   }
   return false;
 }
@@ -182,10 +187,10 @@ Future<bool> markedAqmItemIconApply(String iconIceWebPath) async {
       return true;
     }
   } else {
-    File downloadedIconIce = await originalIceDownload('$iconIceWebPath.pat', modItemIconTempDirPath, modApplyStatus);
+    File? downloadedIconIce = await originalIceDownload('$iconIceWebPath.pat', modItemIconTempDirPath, modApplyStatus);
     modApplyStatus.value = appText.dText(appText.editingMod, p.basename(iconIceWebPath));
     Future.delayed(const Duration(microseconds: 10));
-    if (downloadedIconIce.path.isNotEmpty && downloadedIconIce.existsSync()) {
+    if (downloadedIconIce != null) {
       if (Platform.isLinux) {
         await Process.run('wine $zamboniExePath -outdir "$modItemIconTempDirPath"', [downloadedIconIce.path]);
       } else {
@@ -209,7 +214,8 @@ Future<bool> markedAqmItemIconApply(String iconIceWebPath) async {
             File? overlayedPng = await itemIconOverlay(convertedPng.path);
             if (overlayedPng != null) {
               if (Platform.isLinux) {
-                await Process.run('wine $pngDdsConvExePath', [overlayedPng.path, Uri.file('${p.dirname(overlayedPng.path)}/${p.basenameWithoutExtension(overlayedPng.path)}.dds').toFilePath(), '-pngtodds']);
+                await Process.run(
+                    'wine $pngDdsConvExePath', [overlayedPng.path, Uri.file('${p.dirname(overlayedPng.path)}/${p.basenameWithoutExtension(overlayedPng.path)}.dds').toFilePath(), '-pngtodds']);
               } else {
                 await Process.run(pngDdsConvExePath, [overlayedPng.path, Uri.file('${p.dirname(overlayedPng.path)}/${p.basenameWithoutExtension(overlayedPng.path)}.dds').toFilePath(), '-pngtodds']);
               }
@@ -217,7 +223,8 @@ Future<bool> markedAqmItemIconApply(String iconIceWebPath) async {
               modApplyStatus.value = appText.dText(appText.repackingFile, p.basenameWithoutExtension(iconIceWebPath));
               Future.delayed(const Duration(microseconds: 10));
               if (Platform.isLinux) {
-                await Process.run('wine $zamboniExePath -c -pack -outdir "$modItemIconTempDirPath"', [Uri.file('$modItemIconTempDirPath/${p.basenameWithoutExtension(iconIceWebPath)}_ext').toFilePath()]);
+                await Process.run(
+                    'wine $zamboniExePath -c -pack -outdir "$modItemIconTempDirPath"', [Uri.file('$modItemIconTempDirPath/${p.basenameWithoutExtension(iconIceWebPath)}_ext').toFilePath()]);
               } else {
                 await Process.run('$zamboniExePath -c -pack -outdir "$modItemIconTempDirPath"', [Uri.file('$modItemIconTempDirPath/${p.basenameWithoutExtension(iconIceWebPath)}_ext').toFilePath()]);
               }
@@ -244,8 +251,11 @@ Future<bool> markedAqmItemIconApply(String iconIceWebPath) async {
 
 Future<bool> markedAqmItemIconRestore(String gameDataIconIcePath) async {
   String iconWebPath = ('${p.withoutExtension(gameDataIconIcePath).replaceFirst(pso2binDirPath + p.separator, '')}.pat').replaceAll(p.separator, '/');
-  File downloadedFile = await originalIceDownload(iconWebPath, p.dirname(gameDataIconIcePath), modApplyStatus);
-  modAqmInjectingStatus.value = appText.dText(appText.copyingIconFileToGameData, p.basenameWithoutExtension(downloadedFile.path));
-  Future.delayed(const Duration(microseconds: 10));
+  File? downloadedFile = await originalIceDownload(iconWebPath, p.dirname(gameDataIconIcePath), modApplyStatus);
+  if (downloadedFile != null) {
+    modAqmInjectingStatus.value = appText.dText(appText.copyingIconFileToGameData, p.basenameWithoutExtension(downloadedFile.path));
+    Future.delayed(const Duration(microseconds: 10));
+    return true;
+  }
   return false;
 }

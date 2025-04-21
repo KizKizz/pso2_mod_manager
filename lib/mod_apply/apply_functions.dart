@@ -23,7 +23,7 @@ import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/shared_prefs.dart';
-import 'package:pso2_mod_manager/v3_functions/item_icon_mark.dart';
+import 'package:pso2_mod_manager/mod_apply/item_icon_mark.dart';
 import 'package:pso2_mod_manager/v3_functions/modified_ice_file_save.dart';
 import 'package:pso2_mod_manager/v3_widgets/notifications.dart';
 
