@@ -95,7 +95,7 @@ Future<String?> newModSetNamePopup(context) async {
                 overflowSpacing: 5,
                 children: [
                   OutlinedButton(
-                      onPressed: newName.value.text.isNotEmpty
+                      onPressed: newName.value.text.isNotEmpty && nameFormKey.currentState != null && nameFormKey.currentState!.validate()
                           ? () {
                               Navigator.of(context).pop(newName.value.text);
                             }
