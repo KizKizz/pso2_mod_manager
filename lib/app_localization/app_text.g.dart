@@ -300,6 +300,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..showNoNameItems = json['showNoNameItems'] as String
   ..hideNoNameItems = json['hideNoNameItems'] as String
   ..swapToIdleMotions = json['swapToIdleMotions'] as String
+  ..swapIdleMotionsToEmotes = json['swapIdleMotionsToEmotes'] as String
+  ..swapToMotions = json['swapToMotions'] as String
   ..swapToEmotes = json['swapToEmotes'] as String
   ..swapToBasewears = json['swapToBasewears'] as String
   ..swapToSetwears = json['swapToSetwears'] as String
@@ -758,6 +760,8 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'showNoNameItems': instance.showNoNameItems,
       'hideNoNameItems': instance.hideNoNameItems,
       'swapToIdleMotions': instance.swapToIdleMotions,
+      'swapIdleMotionsToEmotes': instance.swapIdleMotionsToEmotes,
+      'swapToMotions': instance.swapToMotions,
       'swapToEmotes': instance.swapToEmotes,
       'swapToBasewears': instance.swapToBasewears,
       'swapToSetwears': instance.swapToSetwears,

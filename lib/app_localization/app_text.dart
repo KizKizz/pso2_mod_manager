@@ -302,6 +302,8 @@ class AppText {
       showNoNameItems = 'Show No Name Items',
       hideNoNameItems = 'Hide No Name Items',
       swapToIdleMotions = 'Swap To Idle Motions',
+      swapIdleMotionsToEmotes = 'Swap Idle Motions To Emotes',
+      swapToMotions = 'Swap To Motions',
       swapToEmotes = 'Swap To Emotes',
       swapToBasewears = 'Swap To Basewears',
       swapToSetwears = 'Swap To Setwears',

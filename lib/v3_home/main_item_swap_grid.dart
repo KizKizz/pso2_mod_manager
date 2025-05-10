@@ -19,6 +19,7 @@ import 'package:super_sliver_list/super_sliver_list.dart';
 
 bool replaceLQTexturesWithHQ = false;
 bool emoteToIdleMotion = false;
+bool idleMotionToEmote = false;
 
 class MainItemSwapGrid extends StatefulWidget {
   const MainItemSwapGrid({super.key});
@@ -80,7 +81,9 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                           ? e.category == defaultCategoryDirs[11]
                           : extraCategory == defaultCategoryDirs[11]
                               ? e.category == defaultCategoryDirs[2]
-                              : true)
+                              : extraCategory == defaultCategoryDirs[14]
+                                  ? e.category == defaultCategoryDirs[7]
+                                  : true)
           .where((e) => selectedItemSwapTypeCategory.watch(context) == 'Both' || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.watch(context).toLowerCase())
           .toList();
       rDisplayingItemsExtra.sort((a, b) => a.getName().compareTo(b.getName()));
@@ -171,6 +174,7 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                                     extraCategory == defaultCategoryDirs[2] ||
                                     extraCategory == defaultCategoryDirs[7] ||
                                     extraCategory == defaultCategoryDirs[11] ||
+                                    extraCategory == defaultCategoryDirs[14] ||
                                     extraCategory == defaultCategoryDirs[16]
                                 ? rDisplayingItemsExtra
                                 : displayingItems,
@@ -291,12 +295,14 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                           selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[2] ||
                           selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7] ||
                           selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[11] ||
+                          selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[14] && lSelectedItemData.value != null && lSelectedItemData.value!.subCategory == 'Standby Motion' ||
                           selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[16],
                       child: ElevatedButton(
                           onPressed: () {
                             setState(() {
                               extraCategory.isEmpty ? extraCategory = selectedDisplayItemSwapCategory.watch(context) : extraCategory = '';
-                              selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[11] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
+                              extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
+                              extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
                               rScrollController.jumpTo(0);
                             });
                           },
@@ -308,9 +314,11 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                                       ? Text(extraCategory == defaultCategoryDirs[7] ? appText.swapToEmotes : appText.swapToIdleMotions)
                                       : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[11]
                                           ? Text(extraCategory == defaultCategoryDirs[11] ? appText.swapToInnerwears : appText.swapToBodyPaints)
-                                          : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[16]
-                                              ? Text(extraCategory == defaultCategoryDirs[16] ? appText.swapToSetwears : appText.swapToBasewears)
-                                              : null)),
+                                          : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[14]
+                                              ? Text(extraCategory == defaultCategoryDirs[14] ? appText.swapToMotions : appText.swapIdleMotionsToEmotes)
+                                              : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[16]
+                                                  ? Text(extraCategory == defaultCategoryDirs[16] ? appText.swapToSetwears : appText.swapToBasewears)
+                                                  : null)),
                 ],
               ),
               Row(
@@ -356,6 +364,8 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                         onPressed: emoteSwapQueue.isNotEmpty
                             ? () async {
                                 itemSwapWorkingStatus.value = '';
+                                extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
+                                extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
                                 await emoteQueueSwapWorkingPopup(context, true, emoteSwapQueue, lItemModGet(), lItemSubmodGet(emoteSwapQueue.first.$1));
                               }
                             : null,
@@ -365,6 +375,8 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                         onPressed: lSelectedItemData.watch(context) != null && rSelectedItemData.watch(context) != null
                             ? () {
                                 itemSwapWorkingStatus.value = '';
+                                extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
+                                extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
                                 itemSwapWorkingPopup(context, true, lSelectedItemData.value!, rSelectedItemData.value!, lItemModGet(), lItemSubmodGet(lSelectedItemData.value!));
                               }
                             : null,
