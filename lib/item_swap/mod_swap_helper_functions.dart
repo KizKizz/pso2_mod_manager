@@ -140,12 +140,20 @@ Future<List<File>> modSwapRename(List<File> lItemFiles, List<File> rItemFiles, L
   return renamedFiles;
 }
 
-Future<List<File>> emoteSwapRename(List<File> lItemFiles, List<File> rItemFiles, bool isEmotesToStandbyMotions) async {
+Future<List<File>> emoteSwapRename(List<File> lItemFiles, List<File> rItemFiles, bool isEmotesToStandbyMotions, bool isIdleMotionsToEmotes) async {
   List<File> renamedFiles = [];
   for (var fileF in lItemFiles) {
     List<String> fileNamePartsF = p.basenameWithoutExtension(fileF.path).split('_');
     File matchingFileT = File('');
-    if (p.extension(fileF.path) == '.bti') {
+    if (isIdleMotionsToEmotes) {
+      if (p.extension(fileF.path) == '.aqm') {
+        final fileFNameParts = p.basenameWithoutExtension(fileF.path).split('_');
+        if (fileFNameParts.isNotEmpty && fileFNameParts[0] == 'pl' && fileFNameParts[1] == 'std' && fileFNameParts.last == 'lp') {
+          matchingFileT =
+              rItemFiles.firstWhere((e) => p.extension(e.path) == '.aqm' && p.basenameWithoutExtension(e.path).split('_')[0] == 'pl' && p.basenameWithoutExtension(e.path).split('_')[1] == 'hum', orElse: () => File(''));
+        }
+      }
+    } else if (p.extension(fileF.path) == '.bti') {
       matchingFileT = rItemFiles.firstWhere(
           (element) =>
               p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&

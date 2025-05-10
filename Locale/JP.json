@@ -1,4 +1,6 @@
 {
+  "swapIdleMotionsToEmotes": "アイドルモーションをエモーションに切り替える",
+  "swapToMotions": "スワップからモーションへ",
   "holdToDeleteSelected": "選択項目を長押しで削除",
   "holdToDeleteAll": "長押しで全削除",
   "mainItems": "メインアイテム",

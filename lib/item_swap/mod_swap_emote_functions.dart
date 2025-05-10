@@ -14,6 +14,7 @@ final validCharacters = RegExp(r'^[a-zA-Z0-9]+$');
 
 Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, SubMod fromSubmod, String rSelectedItemName, List<String> lItemAvailableIces, List<String> rItemAvailableIces,
     List<String> emoteSwapQueuePaths) async {
+  List<String> iceTypes = ['human hash', 'fig hash', 'vfx hash'];
   String newToSelectedItemName = rSelectedItemName;
 
   String tempSubmodPathF = Uri.file('$modSwapTempLItemDirPath/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath();
@@ -24,18 +25,14 @@ Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, Su
   rItemAvailableIces.isEmpty ? itemSwapWorkingStatus.value = appText.noMatchingFilesBetweenItemsToSwap : appText.sortingFileData;
 
   //map coresponding files to swap
-  for (var itemT in rItemAvailableIces) {
-    String curIceType = '';
-    //change T ices to HD types
-    // if (isReplacingNQWithHQ) {
-    //   String tempIceTypeT = itemT.replaceFirst('Normal Quality', 'High Quality');
-    //   curIceType = tempIceTypeT.split(': ').first;
-    // } else {
-    curIceType = itemT.split(': ').first;
-    // }
-    int matchingItemFIndex = lItemAvailableIces.indexWhere((element) => element.split(': ').first.contains(curIceType));
-    if (matchingItemFIndex != -1) {
-      iceSwappingList.add([p.basename(lItemAvailableIces[matchingItemFIndex].split(': ').last), p.basename(itemT.split(': ').last)]);
+  for (var rItem in rItemAvailableIces) {
+    String curIceType = rItem.split(': ').first.toLowerCase();
+    int rItemTypeIndex = iceTypes.indexWhere((e) => curIceType.contains(e));
+    if (rItemTypeIndex != -1) {
+      int lItemMatchingIndex = lItemAvailableIces.indexWhere((e) => e.split(': ').first.toLowerCase().contains(iceTypes[rItemTypeIndex]));
+      if (lItemMatchingIndex != -1) {
+        iceSwappingList.add([p.basename(lItemAvailableIces[lItemMatchingIndex].split(': ').last), p.basename(rItem.split(': ').last)]);
+      }
     }
   }
 
@@ -124,11 +121,11 @@ Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, Su
     //group2 > group2
     List<File> renamedExtractedGroup2Files = [];
     if (extractedGroup2FilesF.isNotEmpty && extractedGroup2FilesT.isNotEmpty) {
-      renamedExtractedGroup2Files = await emoteSwapRename(extractedGroup2FilesF, extractedGroup2FilesT, emoteToIdleMotion);
+      renamedExtractedGroup2Files = await emoteSwapRename(extractedGroup2FilesF, extractedGroup2FilesT, emoteToIdleMotion, idleMotionToEmote);
     } else if (extractedGroup2FilesF.isEmpty && extractedGroup2FilesT.isNotEmpty) {
-      renamedExtractedGroup2Files = await emoteSwapRename(extractedGroup1FilesF, extractedGroup2FilesT, emoteToIdleMotion);
+      renamedExtractedGroup2Files = await emoteSwapRename(extractedGroup1FilesF, extractedGroup2FilesT, emoteToIdleMotion, idleMotionToEmote);
     } else if (extractedGroup2FilesF.isNotEmpty && extractedGroup2FilesT.isEmpty) {
-      renamedExtractedGroup2Files = await emoteSwapRename(extractedGroup2FilesF, extractedGroup1FilesT, emoteToIdleMotion);
+      renamedExtractedGroup2Files = await emoteSwapRename(extractedGroup2FilesF, extractedGroup1FilesT, emoteToIdleMotion, idleMotionToEmote);
       String extractedGroup1PathF = Uri.file('$tempSubmodPathF/${lItemIceName}_ext/group1').toFilePath();
       if (!Directory(extractedGroup1PathF).existsSync()) {
         Directory(extractedGroup1PathF).createSync();
@@ -141,16 +138,34 @@ Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, Su
     //group1 > group1
     List<File> renamedExtractedGroup1Files = [];
     if (extractedGroup1FilesF.isNotEmpty && extractedGroup1FilesT.isNotEmpty) {
-      renamedExtractedGroup1Files = await emoteSwapRename(extractedGroup1FilesF, extractedGroup1FilesT, emoteToIdleMotion);
+      renamedExtractedGroup1Files = await emoteSwapRename(extractedGroup1FilesF, extractedGroup1FilesT, emoteToIdleMotion, idleMotionToEmote);
     } else if (extractedGroup1FilesF.isEmpty && extractedGroup1FilesT.isNotEmpty) {
-      renamedExtractedGroup1Files = await emoteSwapRename(extractedGroup2FilesF, extractedGroup1FilesT, emoteToIdleMotion);
+      renamedExtractedGroup1Files = await emoteSwapRename(extractedGroup2FilesF, extractedGroup1FilesT, emoteToIdleMotion, idleMotionToEmote);
     } else if (extractedGroup1FilesF.isNotEmpty && extractedGroup1FilesT.isEmpty) {
-      renamedExtractedGroup1Files = await emoteSwapRename(extractedGroup1FilesF, extractedGroup2FilesT, emoteToIdleMotion);
+      renamedExtractedGroup1Files = await emoteSwapRename(extractedGroup1FilesF, extractedGroup2FilesT, emoteToIdleMotion, idleMotionToEmote);
       String extractedGroup2PathF = Uri.file('$tempSubmodPathF/${lItemIceName}_ext/group2').toFilePath();
       if (!Directory(extractedGroup2PathF).existsSync()) {
         Directory(extractedGroup2PathF).createSync();
         for (var file in renamedExtractedGroup1Files) {
           file.renameSync(Uri.file('$extractedGroup2PathF/${p.basename(file.path)}').toFilePath());
+        }
+      }
+      // extra step for renaming .bti for idles to emotes
+      if (idleMotionToEmote) {
+        File btiToRename = extractedGroup1FilesF.firstWhere(
+            (e) =>
+                p.extension(e.path) == '.bti' &&
+                p.basenameWithoutExtension(e.path).split('_')[0] == 'pl' &&
+                p.basenameWithoutExtension(e.path).split('_')[1] == 'std' &&
+                p.basenameWithoutExtension(e.path).split('_').last == 'lp',
+            orElse: () => File(''));
+        if (btiToRename.path.isNotEmpty && btiToRename.existsSync()) {
+          File matchingAQMFile = extractedGroup2FilesT.firstWhere(
+              (e) => p.extension(e.path) == '.aqm' && p.basenameWithoutExtension(e.path).split('_')[0] == 'pl' && p.basenameWithoutExtension(e.path).split('_')[1] == 'hum',
+              orElse: () => File(''));
+          if (matchingAQMFile.path.isNotEmpty && matchingAQMFile.existsSync()) {
+            await btiToRename.rename(btiToRename.path.replaceFirst(p.basenameWithoutExtension(btiToRename.path), p.basenameWithoutExtension(matchingAQMFile.path)));
+          }
         }
       }
     }

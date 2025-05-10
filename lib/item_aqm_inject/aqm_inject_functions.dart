@@ -84,10 +84,10 @@ Future<bool> itemCustomAqmInject(context, String customAQMFilePath, String hqIce
   if (fromSubmod) {
     localHQIce = File(hqIcePath);
     localLQIce = File(lqIcePath);
-    if (localHQIce.existsSync()) {
+    if (localHQIce.path.isNotEmpty && localHQIce.existsSync()) {
       downloadedFiles.add(localHQIce);
     }
-    if (localLQIce.existsSync()) {
+    if (localLQIce.path.isNotEmpty && localLQIce.existsSync()) {
       downloadedFiles.add(localLQIce);
     }
   } else {
@@ -230,10 +230,10 @@ Future<bool> itemCustomAqmRestoreAqm(String hqIcePath, String lqIcePath, bool fr
   if (fromSubmod) {
     localHQIce = File(hqIcePath);
     localLQIce = File(lqIcePath);
-    if (localHQIce.existsSync()) {
+    if (localHQIce.path.isNotEmpty && localHQIce.existsSync()) {
       filesToRemove.add(localHQIce);
     }
-    if (localLQIce.existsSync()) {
+    if (localLQIce.path.isNotEmpty && localLQIce.existsSync()) {
       filesToRemove.add(localLQIce);
     }
   } else {

@@ -67,7 +67,9 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                                 ? e.category == defaultCategoryDirs[11]
                                 : extraCategory == defaultCategoryDirs[11]
                                     ? e.category == defaultCategoryDirs[2]
-                                    : true)
+                                    : extraCategory == defaultCategoryDirs[14]
+                                        ? e.category == defaultCategoryDirs[7]
+                                        : true)
                 .where((e) => selectedItemSwapTypeCategory.watch(context) == 'Both' || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.watch(context).toLowerCase())
                 .toList();
             rDisplayingItemsExtra.sort((a, b) => a.getName().compareTo(b.getName()));
@@ -158,6 +160,7 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                                         extraCategory == defaultCategoryDirs[2] ||
                                         extraCategory == defaultCategoryDirs[7] ||
                                         extraCategory == defaultCategoryDirs[11] ||
+                                        extraCategory == defaultCategoryDirs[14] ||
                                         extraCategory == defaultCategoryDirs[16]
                                     ? rDisplayingItemsExtra
                                     : displayingItems,
@@ -279,12 +282,14 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                               submod.category == defaultCategoryDirs[2] ||
                               submod.category == defaultCategoryDirs[7] ||
                               submod.category == defaultCategoryDirs[11] ||
+                              submod.category == defaultCategoryDirs[14] && item.subCategory! == 'Standby Motion' ||
                               submod.category == defaultCategoryDirs[16],
                           child: ElevatedButton(
                               onPressed: () {
                                 setState(() {
                                   extraCategory.isEmpty ? extraCategory = submod.category : extraCategory = '';
-                                  submod.category == defaultCategoryDirs[7] && !emoteToIdleMotion ? emoteToIdleMotion = true : emoteToIdleMotion = false;
+                                  extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
+                                  extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
                                   rScrollController.jumpTo(0);
                                 });
                               },
@@ -296,9 +301,11 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                                           ? Text(extraCategory == defaultCategoryDirs[7] ? appText.swapToEmotes : appText.swapToIdleMotions)
                                           : submod.category == defaultCategoryDirs[11]
                                               ? Text(extraCategory == defaultCategoryDirs[11] ? appText.swapToInnerwears : appText.swapToBodyPaints)
-                                              : submod.category == defaultCategoryDirs[16]
-                                                  ? Text(extraCategory == defaultCategoryDirs[16] ? appText.swapToSetwears : appText.swapToBasewears)
-                                                  : null)),
+                                              : submod.category == defaultCategoryDirs[14]
+                                                  ? Text(extraCategory == defaultCategoryDirs[14] ? appText.swapToMotions : appText.swapToEmotes)
+                                                  : submod.category == defaultCategoryDirs[16]
+                                                      ? Text(extraCategory == defaultCategoryDirs[16] ? appText.swapToSetwears : appText.swapToBasewears)
+                                                      : null)),
                     ],
                   ),
                   OverflowBar(
@@ -346,6 +353,8 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                             onPressed: emoteSwapQueue.isNotEmpty
                                 ? () async {
                                     itemSwapWorkingStatus.value = '';
+                                    extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
+                                    extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
                                     await emoteQueueSwapWorkingPopup(context, false, emoteSwapQueue, mod, submod);
                                   }
                                 : null,
@@ -355,6 +364,8 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                             onPressed: lSelectedItemData.watch(context) != null && rSelectedItemData.watch(context) != null
                                 ? () async {
                                     itemSwapWorkingStatus.value = '';
+                                    extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
+                                    extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
                                     await itemSwapWorkingPopup(context, false, lSelectedItemData.value!, rSelectedItemData.value!, mod, submod);
                                   }
                                 : null,

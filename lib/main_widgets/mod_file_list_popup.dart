@@ -63,7 +63,9 @@ Future<void> modFileListPopup(context, Item item, Mod mod, SubMod submod) async 
                                                   ? restoreSuccessNotification(submod.modFiles[index].modFileName)
                                                   : restoreFailedNotification(submod.modFiles[index].modFileName);
                                             }
-                                            modPopupStatus.value = 'Done!';
+                                            modPopupStatus.value = submod.modFiles[index].applyStatus
+                                                ? '${submod.modName} > ${submod.submodName} > ${submod.modFiles[index].modFileName} applied'
+                                                : '${submod.modName} > ${submod.submodName} > ${submod.modFiles[index].modFileName} restored';
                                             setState(
                                               () {},
                                             );
