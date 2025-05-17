@@ -15,6 +15,7 @@ String backupDirPath = '';
 String mainModListJsonPath = '';
 String mainModSetListJsonPath = '';
 String mainAqmInjectListJsonPath = '';
+String mainCmlItemListJsonPath = '';
 String mainVitalGaugeListJsonPath = '';
 String mainLineStrikeCardListJsonPath = '';
 String mainLineStrikeBoardListJsonPath = '';
@@ -37,6 +38,7 @@ String vitalGaugeDirPath = '$mainDataDirPath${p.separator}Vital Gauge';
 String modChecksumFilePath = '$mainDataDirPath${p.separator}Checksum${p.separator}d4455ebc2bef618f29106da7692ebc1a';
 String modAddFilterListFilePath = '$mainDataDirPath${p.separator}modAddFilterList.txt';
 String exportedModsDirPath = '$mainDataDirPath${p.separator}Exported Mods';
+String modCustomCmlsDirPath = '$mainDataDirPath${p.separator}Custom CMLs';
 
 String savedAppliedModFileDirPath = '';
 String modifiedIceListFilePath = '';
@@ -97,6 +99,7 @@ Future<void> createMainDirs() async {
   modifiedIceListFilePath = '$mainDataDirPath${p.separator}modifiedIceList.txt';
   modAddFilterListFilePath = '$mainDataDirPath${p.separator}modAddFilterList.txt';
   exportedModsDirPath = '$mainDataDirPath${p.separator}Exported Mods';
+  modCustomCmlsDirPath = '$mainDataDirPath${p.separator}Custom CMLs';
   lineStrikeExportedCardsDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}ExportedCards';
   lineStrikeCardsDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}Cards';
   lineStrikeCardTempDirPath = '$mainDataDirPath${p.separator}LineStrikeTemp${p.separator}Card';
@@ -124,6 +127,9 @@ Future<void> createMainDirs() async {
 
     // Main aqm inject list
     mainAqmInjectListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManAqmInjectedList.json';
+
+    // Main cml replace list
+    mainCmlItemListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManCmlItemList.json';
 
     // Main vital gauge list
     mainVitalGaugeListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManVitalGaugeList.json';
@@ -165,6 +171,9 @@ Future<void> createMainDirs() async {
 
     // Main aqm inject list
     mainAqmInjectListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManAqmInjectedList_profile2.json';
+
+    // Main cml replace list
+    mainCmlItemListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManCmlItemList_profile2.json';
 
     // Main vital gauge list
     mainVitalGaugeListJsonPath = '$mainDataDirPath${p.separator}PSO2ModManVitalGaugeList_profile2.json';
@@ -209,6 +218,7 @@ Future<void> createMainDirs() async {
   if (!Directory(lineStrikeBoardsDirPath).existsSync()) Directory(lineStrikeBoardsDirPath).createSync(recursive: true);
   if (!Directory(lineStrikeSleevesDirPath).existsSync()) Directory(lineStrikeSleevesDirPath).createSync(recursive: true);
   if (!Directory(savedAppliedModFileDirPath).existsSync()) Directory(savedAppliedModFileDirPath).createSync(recursive: true);
+  if (!Directory(modCustomCmlsDirPath).existsSync()) Directory(modCustomCmlsDirPath).createSync(recursive: true);
 
   // Other checks
   checksumAvailability.value = await checksumFileFetch();

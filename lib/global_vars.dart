@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_paths/sega_file_paths.dart';
+import 'package:pso2_mod_manager/cml/cml_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_functions/pso2_version_check.dart';
@@ -138,6 +139,7 @@ List<LineStrikeBoard> masterLineStrikeBoardList = [];
 List<LineStrikeSleeve> masterLineStrikeSleeveList = [];
 List<Item> masterUnappliedItemList = [];
 List<AqmInjectedItem> masterUnappliedAQMItemList = [];
+List<Cml> masterCMLItemList = [];
 // List<File> modCustomAQMFiles = [];
 Signal<String> mainGridStatus = Signal('');
 Signal<bool> checksumAvailability = Signal(false);

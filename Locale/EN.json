@@ -248,6 +248,7 @@
   "hideQueue": "Hide Queue",
   "addToQueue": "Add To Queue",
   "latestBackup": "Latest Backup: %p%",
+  "cmlReplace": "CML Replace",
   "loadingUILanguage": "Loading UI Language",
   "selectUILanguage": "Select UI language",
   "selectItemNameLanguage": "Select item name language",

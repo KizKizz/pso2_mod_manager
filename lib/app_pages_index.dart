@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/system_loads/app_applied_mods_check_page.dart';
 import 'package:pso2_mod_manager/system_loads/app_aqm_item_load_page.dart';
 import 'package:pso2_mod_manager/system_loads/app_aqm_items_check_page.dart';
+import 'package:pso2_mod_manager/system_loads/app_cml_item_load_page.dart';
 import 'package:pso2_mod_manager/system_loads/app_github_access_page.dart';
 import 'package:pso2_mod_manager/system_loads/app_line_strike_applied_check_page.dart';
 import 'package:pso2_mod_manager/system_loads/app_line_strike_board_load_page.dart';
@@ -36,6 +37,7 @@ final List<Widget> appPages = [
   const AppAppliedModsLoadPage(),
   const AppAqmItemLoadPage(),
   const AppAqmItemsCheckPage(),
+  const AppCmlItemLoadPage(),
   const AppVitalGaugeLoadPage(),
   const AppVitalGaugeAppliedCheckPage(),
   const AppLineStrikeCardLoadPage(),

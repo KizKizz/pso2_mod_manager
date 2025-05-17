@@ -62,6 +62,10 @@ class ItemData {
   String getItemID() {
     return infos.entries.firstWhere((e) => e.key.toLowerCase() == 'id', orElse: () => const MapEntry('', '')).value;
   }
+  
+  String getItemAdjustedID() {
+    return infos.entries.firstWhere((e) => e.key.toLowerCase() == 'adjusted id', orElse: () => const MapEntry('', '')).value;
+  }
 
   List<String> getItemIDs() {
     List<String> ids = [];
