@@ -10,6 +10,7 @@ import 'package:pso2_mod_manager/v2_home/homepage_v2.dart';
 import 'package:pso2_mod_manager/v3_functions/json_backup.dart';
 import 'package:pso2_mod_manager/v3_home/help_page_grid.dart';
 import 'package:pso2_mod_manager/v3_home/main_applied_mod_grid.dart';
+import 'package:pso2_mod_manager/v3_home/main_cml_replace_grid.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_aqm_inject_grid.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_swap_grid.dart';
 import 'package:pso2_mod_manager/v3_home/main_line_strike_grid.dart';
@@ -34,6 +35,7 @@ List<Widget> homepageWidgets = [
   const MainAppliedModGrid(),
   const MainItemSwapGrid(),
   const MainItemAqmInjectGrid(),
+  const MainCmlReplaceGrid(),
   const MainVitalGaugeGrid(),
   const MainLineStrikeGrid()
 ];
@@ -44,6 +46,7 @@ List<Widget> homepageV2Widgets = [
   // const MainAppliedModGrid(),
   const MainItemSwapGrid(),
   const MainItemAqmInjectGrid(),
+  const MainCmlReplaceGrid(),
   const MainVitalGaugeGrid(),
   const MainLineStrikeGrid()
 ];
@@ -85,7 +88,7 @@ class _HomepageState extends State<Homepage> {
         () {},
       );
     }
-    List<String> homepageWidgetNames = [appText.itemList, appText.modList, appText.modSets, appText.appliedList, appText.itemSwap, appText.aqmInject, appText.vitalGauge, appText.lineStrike];
+    List<String> homepageWidgetNames = [appText.itemList, appText.modList, appText.modSets, appText.appliedList, appText.itemSwap, appText.aqmInject, appText.cmlReplace, appText.vitalGauge, appText.lineStrike];
     List<Icon> homepageWidgetIcons = [
       const Icon(Icons.list_alt),
       const Icon(Icons.grid_view),
@@ -93,11 +96,12 @@ class _HomepageState extends State<Homepage> {
       const Icon(Icons.turned_in),
       const Icon(Icons.swap_horizontal_circle_outlined),
       const Icon(Icons.auto_fix_high),
+      const Icon(Icons.accessibility_new_outlined),
       const Icon(Icons.calendar_view_day_rounded),
       const Icon(Icons.view_carousel_outlined)
     ];
     List<String> homepageV2WidgetNames =
-        showAppliedListV2.watch(context) ? [appText.itemList, appText.modList, appText.modSets, appText.itemSwap, appText.aqmInject, appText.vitalGauge, appText.lineStrike] : homepageWidgetNames;
+        showAppliedListV2.watch(context) ? [appText.itemList, appText.modList, appText.modSets, appText.itemSwap, appText.aqmInject, appText.cmlReplace, appText.vitalGauge, appText.lineStrike] : homepageWidgetNames;
     List<Icon> homepageV2WidgetIcons = showAppliedListV2.watch(context)
         ? [
             const Icon(Icons.list_alt),
@@ -106,6 +110,7 @@ class _HomepageState extends State<Homepage> {
             // const Icon(Icons.turned_in),
             const Icon(Icons.swap_horizontal_circle_outlined),
             const Icon(Icons.auto_fix_high),
+            const Icon(Icons.accessibility_new_outlined),
             const Icon(Icons.calendar_view_day_rounded),
             const Icon(Icons.view_carousel_outlined)
           ]
@@ -118,6 +123,7 @@ class _HomepageState extends State<Homepage> {
         // const MainAppliedModGrid(),
         const MainItemSwapGrid(),
         const MainItemAqmInjectGrid(),
+        const MainCmlReplaceGrid(),
         const MainVitalGaugeGrid(),
         const MainLineStrikeGrid()
       ];
@@ -129,6 +135,7 @@ class _HomepageState extends State<Homepage> {
         const MainAppliedModGrid(),
         const MainItemSwapGrid(),
         const MainItemAqmInjectGrid(),
+        const MainCmlReplaceGrid(),
         const MainVitalGaugeGrid(),
         const MainLineStrikeGrid()
       ];

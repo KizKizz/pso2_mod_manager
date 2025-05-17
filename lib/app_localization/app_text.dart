@@ -263,7 +263,8 @@ class AppText {
       viewQueue = 'View Queue',
       hideQueue = 'Hide Queue',
       addToQueue = 'Add To Queue',
-      latestBackup = 'Latest Backup: %p%';
+      latestBackup = 'Latest Backup: %p%',
+      cmlReplace = 'CML Replace';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
