@@ -149,7 +149,7 @@ class _CmlItemListLayoutState extends State<CmlFileListLayout> {
                                     saveMasterCmlItemListToJson();
                                   }
                                   widget.cmlFileList.value = Directory(modCustomCmlsDirPath).listSync(recursive: true).whereType<File>().where((e) => p.extension(e.path) == '.cml').toList();
-                                  setState(() {});
+                                  mainGridStatus.value = '$oldName.cml has been renamed to $newName';
                                 }
                               },
                               icon: Icon(Icons.edit),

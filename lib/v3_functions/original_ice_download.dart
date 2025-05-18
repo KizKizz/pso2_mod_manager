@@ -8,7 +8,7 @@ import 'package:path/path.dart' as p;
 
 Future<File?> originalIceDownload(String networkFilePath, String saveDirLocation, Signal status) async {
   if (networkFilePath.isNotEmpty) {
-    final serverURLs = [segaMasterServerURL, segaPatchServerURL, segaMasterServerBackupURL, segaPatchServerBackupURL];
+    final serverURLs = [segaPatchServerURL, segaPatchServerBackupURL, segaMasterServerURL, segaMasterServerBackupURL];
     for (var url in serverURLs) {
       final task = DownloadTask(
           url: '$url$networkFilePath',

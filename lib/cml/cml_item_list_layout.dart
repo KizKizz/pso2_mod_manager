@@ -147,6 +147,7 @@ class _CmlItemListLayoutState extends State<CmlItemListLayout> {
                             OutlinedButton(
                                 onPressed: displayingCml[index].isReplaced
                                     ? () async {
+                                        await cmlReplaceWorkingPopup(context, true, displayingCml[index], null);
                                         setState(() {});
                                       }
                                     : null,

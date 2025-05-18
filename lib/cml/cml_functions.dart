@@ -8,6 +8,7 @@ import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/mod_apply/item_icon_mark.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_functions/original_ice_download.dart';
 
 File makerIceFile = File('$pso2DataDirPath${p.separator}win32${p.separator}1c5f7a7fbcdd873336048eaf6e26cd87');
 
@@ -30,6 +31,13 @@ Future<List<Cml>> cmlItemsLoad() async {
     cmlList.add(Cml().fromItemData(data));
   }
 
+  // Fetch origin on launch
+  if (Directory('$modCMLReplaceTempDirPath${p.separator}original').existsSync()) Directory('$modCMLReplaceTempDirPath${p.separator}original').deleteSync(recursive: true);
+  File? downloadedMakerIce = await originalIceDownload('data/win32/1c5f7a7fbcdd873336048eaf6e26cd87.pat', '$modCMLReplaceTempDirPath${p.separator}original', modApplyStatus);
+  if (downloadedMakerIce!.existsSync()) {
+    await Process.run('$zamboniExePath -outdir "$modCMLReplaceTempDirPath${p.separator}original"', [downloadedMakerIce.path]);
+  }
+
   return cmlList;
 }
 
@@ -41,22 +49,24 @@ void saveMasterCmlItemListToJson() {
 }
 
 Future<bool> cmlFileReplacement(Cml cmlItem, File cmlReplacementFile) async {
-  if (Directory('$modCMLReplaceTempDirPath${p.separator}replace').existsSync()) Directory('$modCMLReplaceTempDirPath${p.separator}replace').deleteSync(recursive: true);
+  if (await Directory('$modCMLReplaceTempDirPath${p.separator}replace').exists()) Directory('$modCMLReplaceTempDirPath${p.separator}replace').deleteSync(recursive: true);
   await Directory('$modCMLReplaceTempDirPath${p.separator}replace').create(recursive: true);
-  if (makerIceFile.existsSync()) {
+  if (await makerIceFile.exists()) {
     await Process.run('$zamboniExePath -outdir "$modCMLReplaceTempDirPath${p.separator}replace"', [makerIceFile.path]);
+    await Future.delayed(Duration(milliseconds: 10));
     final extractedIcePath = '$modCMLReplaceTempDirPath${p.separator}replace${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}_ext${p.separator}group1';
-    if (Directory(extractedIcePath).existsSync()) {
+    if (await Directory(extractedIcePath).exists()) {
       File cmlFile = File('$extractedIcePath${p.separator}pl_cp_${cmlItem.aId}.cml');
-      if (cmlFile.existsSync()) await cmlFile.delete();
+      if (await cmlFile.exists()) await cmlFile.delete();
       File copiedFile = await cmlReplacementFile.copy(p.dirname(cmlFile.path) + p.separator + p.basename(cmlReplacementFile.path));
       File renamedFile = await copiedFile.rename(cmlFile.path);
-      if (renamedFile.existsSync()) {
+      if (await renamedFile.exists()) {
         // pack
         await Process.run('$zamboniExePath -c -pack -outdir "$modCMLReplaceTempDirPath${p.separator}replace"',
             ['$modCMLReplaceTempDirPath${p.separator}replace${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}_ext']);
+        await Future.delayed(Duration(milliseconds: 10));
         File packedIceFile = File('$modCMLReplaceTempDirPath${p.separator}replace${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}_ext.ice');
-        if (packedIceFile.existsSync()) {
+        if (await packedIceFile.exists()) {
           File renamedIceFile = await packedIceFile.rename('$modCMLReplaceTempDirPath${p.separator}replace${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}');
           renamedIceFile.copy(makerIceFile.path);
           if (replaceItemIconOnApplied && !cmlItem.itemIconReplaced) {
@@ -65,6 +75,46 @@ Future<bool> cmlFileReplacement(Cml cmlItem, File cmlReplacementFile) async {
         }
 
         return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+Future<bool> cmFileRestore(Cml cmlItem) async {
+  Directory extractedOriginDir = Directory('$modCMLReplaceTempDirPath${p.separator}original${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}_ext${p.separator}group1');
+  if (await extractedOriginDir.exists()) {
+    File originalCmlFile = File('${extractedOriginDir.path}${p.separator}pl_cp_${cmlItem.aId}.cml');
+    if (await originalCmlFile.exists()) {
+      if (await Directory('$modCMLReplaceTempDirPath${p.separator}replace').exists()) Directory('$modCMLReplaceTempDirPath${p.separator}replace').deleteSync(recursive: true);
+      await Directory('$modCMLReplaceTempDirPath${p.separator}replace').create(recursive: true);
+      if (await makerIceFile.exists()) {
+        await Process.run('$zamboniExePath -outdir "$modCMLReplaceTempDirPath${p.separator}replace"', [makerIceFile.path]);
+        await Future.delayed(Duration(milliseconds: 10));
+        final extractedIcePath = '$modCMLReplaceTempDirPath${p.separator}replace${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}_ext${p.separator}group1';
+        if (await Directory(extractedIcePath).exists()) {
+          File cmlFile = File('$extractedIcePath${p.separator}pl_cp_${cmlItem.aId}.cml');
+          if (await cmlFile.exists()) await cmlFile.delete();
+          File copiedFile = await originalCmlFile.copy(p.dirname(cmlFile.path) + p.separator + p.basename(originalCmlFile.path));
+          if (await copiedFile.exists()) {
+            // pack
+            await Process.run('$zamboniExePath -c -pack -outdir "$modCMLReplaceTempDirPath${p.separator}replace"',
+                ['$modCMLReplaceTempDirPath${p.separator}replace${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}_ext']);
+            await Future.delayed(Duration(milliseconds: 10));
+            File packedIceFile = File('$modCMLReplaceTempDirPath${p.separator}replace${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}_ext.ice');
+            if (await packedIceFile.exists()) {
+              File renamedIceFile = await packedIceFile.rename('$modCMLReplaceTempDirPath${p.separator}replace${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}');
+              renamedIceFile.copy(makerIceFile.path);
+              if (cmlItem.itemIconReplaced) {
+                final result = await markedAqmItemIconRestore('$pso2binDirPath${p.separator}${cmlItem.itemIconWebPath}'.replaceAll('/', p.separator));
+                result ? cmlItem.itemIconReplaced = false : cmlItem.itemIconReplaced = true;
+              }
+            }
+
+            return true;
+          }
+        }
       }
     }
   }

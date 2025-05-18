@@ -59,7 +59,8 @@ Future<void> createNewBackupFile(Directory newBackupDir) async {
       File('$mainDataDirPath${p.separator}PSO2ModManLSCardList.json'),
       File('$mainDataDirPath${p.separator}PSO2ModManLSBoardList.json'),
       File('$mainDataDirPath${p.separator}PSO2ModManLSSleeveList.json'),
-      File('$mainDataDirPath${p.separator}PSO2ModManQuickSwapApplyItemList.json')
+      File('$mainDataDirPath${p.separator}PSO2ModManQuickSwapApplyItemList.json'),
+      File('$mainDataDirPath${p.separator}PSO2ModManCmlItemList.json')
     ];
 
     // Profile 1

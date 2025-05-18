@@ -36,6 +36,13 @@ class _MainCmlReplaceGridState extends State<MainCmlReplaceGrid> {
 
   @override
   Widget build(BuildContext context) {
+    // Refresh
+    if (mainGridStatus.watch(context) != mainGridStatus.peek()) {
+      setState(
+        () {},
+      );
+    }
+
     // Sort item data
     displayingItems = masterCMLItemList;
     displayingItems.sort((a, b) => a.getName().compareTo(b.getName()));

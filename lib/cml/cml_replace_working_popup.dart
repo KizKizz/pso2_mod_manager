@@ -30,7 +30,7 @@ Future<void> cmlReplaceWorkingPopup(context, bool isRestoring, Cml cmlItem, File
               insetPadding: const EdgeInsets.all(5),
               contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               content: FutureBuilder(
-                future: cmlFileReplacement(cmlItem, cmlReplacementFile!),
+                future: isRestoring ? cmFileRestore(cmlItem) : cmlFileReplacement(cmlItem, cmlReplacementFile!),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return Center(
@@ -81,7 +81,12 @@ Future<void> cmlReplaceWorkingPopup(context, bool isRestoring, Cml cmlItem, File
                     bool result = snapshot.data;
                     if (!isRestoring && result) {
                       cmlItem.isReplaced = true;
-                      cmlItem.replacedCmlFileName = p.basename(cmlReplacementFile.path);
+                      cmlItem.replacedCmlFileName = p.basename(cmlReplacementFile!.path);
+                      saveMasterCmlItemListToJson();
+                    }
+                    if (isRestoring && result) {
+                      cmlItem.isReplaced = false;
+                      cmlItem.replacedCmlFileName = '';
                       saveMasterCmlItemListToJson();
                     }
                     finished.value = true;

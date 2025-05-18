@@ -14,6 +14,7 @@ import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:signals/signals_flutter.dart';
 
 import 'package:path/path.dart' as p;
+import 'package:url_launcher/url_launcher_string.dart';
 
 class DataUpdatePage extends StatefulWidget {
   const DataUpdatePage({super.key});
@@ -53,8 +54,20 @@ class _DataUpdatePageState extends State<DataUpdatePage> {
                 Column(
                   spacing: 5,
                   mainAxisSize: MainAxisSize.min,
-                  children: [Text(appText.step1), OutlinedButton(onPressed: () {}, child: Text(appText.downloadItemData)),
-                  Text(appText.step2), OutlinedButton(onPressed: () {}, child: Text(appText.browseDownloadedItemDataLocation))],
+                  children: [
+                    Text(appText.step1),
+                    OutlinedButton(
+                        onPressed: () async {
+                          await launchUrlString('https://github.com/KizKizz/pso2ngs_file_downloader/blob/main/json/playerItemData.json');
+                        },
+                        child: Text(appText.downloadItemData)),
+                    Text(appText.step2),
+                    OutlinedButton(
+                        onPressed: () async {
+                          await launchUrlString('${Directory.current.path}${p.separator}itemData');
+                        },
+                        child: Text(appText.browseDownloadedItemDataLocation))
+                  ],
                 ),
                 const SizedBox(width: 350, child: HoriDivider()),
                 Row(
@@ -85,14 +98,19 @@ class _DataUpdatePageState extends State<DataUpdatePage> {
           if (snapshot.connectionState != ConnectionState.done) {
             return FutureBuilderLoading(loadingText: appText.checkingItemDataVersion);
           } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-            return FutureBuilderError(loadingText: appText.checkingItemDataVersion, snapshotError: snapshot.error.toString(), isPopup: false,);
+            return FutureBuilderError(
+              loadingText: appText.checkingItemDataVersion,
+              snapshotError: snapshot.error.toString(),
+              isPopup: false,
+            );
           } else {
             String remoteVersion = snapshot.data.$1;
             String desc = snapshot.data.$2;
             File itemDataLocalVersionFile = File('${Directory.current.path}${p.separator}itemData${p.separator}itemDataLocalVersion.json');
             Map<String, dynamic> curItemDataVersion = jsonDecode(itemDataLocalVersionFile.readAsStringSync());
-            if (!File('${Directory.current.path}${p.separator}itemData${p.separator}playerItemData.json').existsSync() || (remoteVersion.isNotEmpty &&
-                int.parse(remoteVersion) > int.parse(curItemDataVersion.entries.firstWhere((e) => e.key == 'version', orElse: () => const MapEntry('version', '0')).value))) {
+            if (!File('${Directory.current.path}${p.separator}itemData${p.separator}playerItemData.json').existsSync() ||
+                (remoteVersion.isNotEmpty &&
+                    int.parse(remoteVersion) > int.parse(curItemDataVersion.entries.firstWhere((e) => e.key == 'version', orElse: () => const MapEntry('version', '0')).value))) {
               return Center(
                   child: CardOverlay(
                       paddingValue: 15,

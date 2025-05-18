@@ -267,7 +267,7 @@ Future<void> modSwapTempDirsRemove() async {
 
 Future<File?> modSwapOriginalFileDownload(String networkFilePath, String server, String saveLocation) async {
   if (networkFilePath.isNotEmpty) {
-    final serverURLs = [segaMasterServerURL, segaPatchServerURL, segaMasterServerBackupURL, segaPatchServerBackupURL];
+    final serverURLs = [segaPatchServerURL, segaPatchServerBackupURL, segaMasterServerURL, segaMasterServerBackupURL];
     for (var url in serverURLs) {
       final task = DownloadTask(
           url: '$url$networkFilePath',
