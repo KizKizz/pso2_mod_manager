@@ -1,4 +1,6 @@
 {
+  "replacedCMLFile": "Replaced CML: %p%",
+  "loadingCmlItems": "Loading CML Items",
   "cmlReplace": "CML Replace",
   "swapIdleMotionsToEmotes": "アイドルモーションをエモーションに切り替える",
   "swapToMotions": "スワップからモーションへ",

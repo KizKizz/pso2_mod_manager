@@ -82,6 +82,7 @@ Future<void> cmlReplaceWorkingPopup(context, bool isRestoring, Cml cmlItem, File
                     if (!isRestoring && result) {
                       cmlItem.isReplaced = true;
                       cmlItem.replacedCmlFileName = p.basename(cmlReplacementFile.path);
+                      saveMasterCmlItemListToJson();
                     }
                     finished.value = true;
                     return const SizedBox();

@@ -1,4 +1,6 @@
 {
+  "replacedCMLFile": "Replaced CML: %p%",
+  "loadingCmlItems": "Loading CML Items",
   "cmlReplace": "CML Replace",
   "swapIdleMotionsToEmotes": "Swap Idle Motions To Emotes",
   "swapToMotions": "Swap To Motions",
