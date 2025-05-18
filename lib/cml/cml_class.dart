@@ -1,7 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pso2_mod_manager/app_localization/item_locale.dart';
+import 'package:pso2_mod_manager/app_paths/sega_file_paths.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:path/path.dart' as p;
 
 part 'cml_class.g.dart';
 
@@ -16,7 +19,8 @@ class Cml {
   bool isReplaced = false;
   String replacedCmlFileName = '';
   String cloudItemIconPath = '';
-  String itemIconIceName = '';
+  String itemIconWebPath = '';
+  bool itemIconReplaced = false;
 
   Cml fromItemData(ItemData data) {
     id = data.getItemID();
@@ -24,7 +28,12 @@ class Cml {
     itemNameEN = data.getENName();
     itemNameJP = data.getJPName();
     cloudItemIconPath = data.iconImagePath;
-    itemIconIceName = data.getIconIceName();
+    itemIconWebPath = p.withoutExtension(oItemData
+        .firstWhere(
+          (e) => e.path.contains(data.getIconIceName()),
+          orElse: () => OfficialIceFile.empty(),
+        )
+        .path);
     return this;
   }
 

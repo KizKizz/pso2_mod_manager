@@ -36,7 +36,7 @@ class _AppAqmItemLoadPageState extends State<AppCmlItemLoadPage> {
                   Padding(
                     padding: const EdgeInsets.only(top: 10),
                     child: Text(
-                      appText.loadingAqmInjectedItems,
+                      appText.loadingCmlItems,
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                   ),
@@ -46,7 +46,7 @@ class _AppAqmItemLoadPageState extends State<AppCmlItemLoadPage> {
           );
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
           return FutureBuilderError(
-            loadingText: appText.loadingAqmInjectedItems,
+            loadingText: appText.loadingCmlItems,
             snapshotError: snapshot.error.toString(),
             isPopup: false,
           );

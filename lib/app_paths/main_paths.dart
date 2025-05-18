@@ -39,6 +39,7 @@ String modChecksumFilePath = '$mainDataDirPath${p.separator}Checksum${p.separato
 String modAddFilterListFilePath = '$mainDataDirPath${p.separator}modAddFilterList.txt';
 String exportedModsDirPath = '$mainDataDirPath${p.separator}Exported Mods';
 String modCustomCmlsDirPath = '$mainDataDirPath${p.separator}Custom CMLs';
+String modCMLReplaceTempDirPath = '$mainDataDirPath${p.separator}CMLReplaceTemp';
 
 String savedAppliedModFileDirPath = '';
 String modifiedIceListFilePath = '';
@@ -100,6 +101,7 @@ Future<void> createMainDirs() async {
   modAddFilterListFilePath = '$mainDataDirPath${p.separator}modAddFilterList.txt';
   exportedModsDirPath = '$mainDataDirPath${p.separator}Exported Mods';
   modCustomCmlsDirPath = '$mainDataDirPath${p.separator}Custom CMLs';
+  modCMLReplaceTempDirPath = '$mainDataDirPath${p.separator}CMLReplaceTemp';
   lineStrikeExportedCardsDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}ExportedCards';
   lineStrikeCardsDirPath = '$mainDataDirPath${p.separator}Line Strike${p.separator}Cards';
   lineStrikeCardTempDirPath = '$mainDataDirPath${p.separator}LineStrikeTemp${p.separator}Card';

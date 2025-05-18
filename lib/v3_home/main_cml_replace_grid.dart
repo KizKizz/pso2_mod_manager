@@ -50,15 +50,15 @@ class _MainCmlReplaceGridState extends State<MainCmlReplaceGrid> {
           spacing: 5,
           children: [
             Expanded(
-                child: CmlItemListLayout(
-              cmlItemList: displayingItems,
-              scrollController: lScrollController,
-              selectedCmlFile: selectedCmlFile,
-            )),
-            Expanded(
                 child: CmlFileListLayout(
               cmlFileList: displayingCmlFiles,
               scrollController: rScrollController,
+              selectedCmlFile: selectedCmlFile,
+            )),
+            Expanded(
+                child: CmlItemListLayout(
+              cmlItemList: displayingItems,
+              scrollController: lScrollController,
               selectedCmlFile: selectedCmlFile,
             )),
           ],

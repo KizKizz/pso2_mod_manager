@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/cml/cml_class.dart';
+import 'package:pso2_mod_manager/cml/cml_replace_working_popup.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_functions.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
@@ -125,7 +126,7 @@ class _CmlItemListLayoutState extends State<CmlItemListLayout> {
                                 ),
                                 Visibility(
                                     visible: displayingCml[index].isReplaced,
-                                    child: Text(appText.dText(appText.injectedAQMFile, displayingCml[index].replacedCmlFileName), style: Theme.of(context).textTheme.labelMedium))
+                                    child: Text(appText.dText(appText.replacedCMLFile, displayingCml[index].replacedCmlFileName), style: Theme.of(context).textTheme.labelMedium))
                               ],
                             ),
                           ],
@@ -137,6 +138,7 @@ class _CmlItemListLayoutState extends State<CmlItemListLayout> {
                             OutlinedButton(
                               onPressed: widget.selectedCmlFile.watch(context) != null && widget.selectedCmlFile.watch(context)!.existsSync()
                                   ? () async {
+                                      await cmlReplaceWorkingPopup(context, false, displayingCml[index], widget.selectedCmlFile.value!);
                                       setState(() {});
                                     }
                                   : null,
