@@ -1,7 +1,10 @@
 {
-  "replacedCMLFile": "Replaced CML: %p%",
-  "loadingCmlItems": "Loading CML Items",
-  "cmlReplace": "CML Replace",
+  "cmlHelp": "CMLヘルプ",
+  "downloadSalonTool": "Salon Toolをダウンロード",
+  "cmlInfo": "Model Toolプログラムを使用して、保存されたキャラクターファイルをCMLファイルに変換できます\n「ファイル追加」ボタンを使用してCMLファイルを追加してください\n左側のパネルでCMLファイルを選択します\n右側のパネルのアイテムにある「置き換え」ボタンを押すと、選択したCMLファイルで置き換えることができます",
+  "replacedCMLFile": "置き換えたCML: %p%",
+  "loadingCmlItems": "CMLアイテムを読み込み中",
+  "cmlReplace": "CML置き換え",
   "swapIdleMotionsToEmotes": "アイドルモーションをエモーションに切り替える",
   "swapToMotions": "スワップからモーションへ",
   "holdToDeleteSelected": "選択項目を長押しで削除",
