@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/cml/cml_class.dart';
@@ -13,24 +12,25 @@ import 'package:signals/signals_flutter.dart';
 import 'package:path/path.dart' as p;
 
 Future<void> cmlReplaceWorkingPopup(context, bool isRestoring, Cml cmlItem, File? cmlReplacementFile) async {
-  Signal<bool> finished = Signal(false);
+  // Signal<bool> finished = Signal(false);
+  final Future future = isRestoring ? cmFileRestore(cmlItem) : cmlFileReplacement(cmlItem,  cmlReplacementFile! );
   await showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          if (finished.watch(context)) {
-            finished.value = false;
-            Navigator.of(context).pop();
-          }
-        });
+        // SchedulerBinding.instance.addPostFrameCallback((_) {
+        //   if (finished.watch(context)) {
+        //     finished.value = false;
+        //     Navigator.of(context).pop();
+        //   }
+        // });
         return StatefulBuilder(builder: (dialogContext, setState) {
           return AlertDialog(
               backgroundColor: Colors.transparent,
               insetPadding: const EdgeInsets.all(5),
               contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               content: FutureBuilder(
-                future: isRestoring ? cmFileRestore(cmlItem) : cmlFileReplacement(cmlItem, cmlReplacementFile!),
+                future: future,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return Center(
@@ -89,7 +89,8 @@ Future<void> cmlReplaceWorkingPopup(context, bool isRestoring, Cml cmlItem, File
                       cmlItem.replacedCmlFileName = '';
                       saveMasterCmlItemListToJson();
                     }
-                    finished.value = true;
+                    // finished.value = true;
+                    Navigator.of(context).pop();
                     return const SizedBox();
                   }
                 },

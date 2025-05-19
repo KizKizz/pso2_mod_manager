@@ -7,6 +7,7 @@ import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/mod_apply/item_icon_mark.dart';
+import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_functions/original_ice_download.dart';
 
@@ -38,6 +39,9 @@ Future<List<Cml>> cmlItemsLoad() async {
     await Process.run('$zamboniExePath -outdir "$modCMLReplaceTempDirPath${p.separator}original"', [downloadedMakerIce.path]);
   }
 
+  // Check and Reapply if update restored
+  await cmlStartupCheck(cmlList);
+
   return cmlList;
 }
 
@@ -49,11 +53,11 @@ void saveMasterCmlItemListToJson() {
 }
 
 Future<bool> cmlFileReplacement(Cml cmlItem, File cmlReplacementFile) async {
-  if (await Directory('$modCMLReplaceTempDirPath${p.separator}replace').exists()) Directory('$modCMLReplaceTempDirPath${p.separator}replace').deleteSync(recursive: true);
+  if (await Directory('$modCMLReplaceTempDirPath${p.separator}replace').exists()) await Directory('$modCMLReplaceTempDirPath${p.separator}replace').delete(recursive: true);
   await Directory('$modCMLReplaceTempDirPath${p.separator}replace').create(recursive: true);
   if (await makerIceFile.exists()) {
     await Process.run('$zamboniExePath -outdir "$modCMLReplaceTempDirPath${p.separator}replace"', [makerIceFile.path]);
-    await Future.delayed(Duration(milliseconds: 10));
+    await Future.delayed(Duration(milliseconds: 100));
     final extractedIcePath = '$modCMLReplaceTempDirPath${p.separator}replace${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}_ext${p.separator}group1';
     if (await Directory(extractedIcePath).exists()) {
       File cmlFile = File('$extractedIcePath${p.separator}pl_cp_${cmlItem.aId}.cml');
@@ -64,7 +68,7 @@ Future<bool> cmlFileReplacement(Cml cmlItem, File cmlReplacementFile) async {
         // pack
         await Process.run('$zamboniExePath -c -pack -outdir "$modCMLReplaceTempDirPath${p.separator}replace"',
             ['$modCMLReplaceTempDirPath${p.separator}replace${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}_ext']);
-        await Future.delayed(Duration(milliseconds: 10));
+        await Future.delayed(Duration(milliseconds: 100));
         File packedIceFile = File('$modCMLReplaceTempDirPath${p.separator}replace${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}_ext.ice');
         if (await packedIceFile.exists()) {
           File renamedIceFile = await packedIceFile.rename('$modCMLReplaceTempDirPath${p.separator}replace${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}');
@@ -87,11 +91,11 @@ Future<bool> cmFileRestore(Cml cmlItem) async {
   if (await extractedOriginDir.exists()) {
     File originalCmlFile = File('${extractedOriginDir.path}${p.separator}pl_cp_${cmlItem.aId}.cml');
     if (await originalCmlFile.exists()) {
-      if (await Directory('$modCMLReplaceTempDirPath${p.separator}replace').exists()) Directory('$modCMLReplaceTempDirPath${p.separator}replace').deleteSync(recursive: true);
+      if (await Directory('$modCMLReplaceTempDirPath${p.separator}replace').exists()) await Directory('$modCMLReplaceTempDirPath${p.separator}replace').delete(recursive: true);
       await Directory('$modCMLReplaceTempDirPath${p.separator}replace').create(recursive: true);
       if (await makerIceFile.exists()) {
         await Process.run('$zamboniExePath -outdir "$modCMLReplaceTempDirPath${p.separator}replace"', [makerIceFile.path]);
-        await Future.delayed(Duration(milliseconds: 10));
+        await Future.delayed(Duration(milliseconds: 100));
         final extractedIcePath = '$modCMLReplaceTempDirPath${p.separator}replace${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}_ext${p.separator}group1';
         if (await Directory(extractedIcePath).exists()) {
           File cmlFile = File('$extractedIcePath${p.separator}pl_cp_${cmlItem.aId}.cml');
@@ -101,7 +105,7 @@ Future<bool> cmFileRestore(Cml cmlItem) async {
             // pack
             await Process.run('$zamboniExePath -c -pack -outdir "$modCMLReplaceTempDirPath${p.separator}replace"',
                 ['$modCMLReplaceTempDirPath${p.separator}replace${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}_ext']);
-            await Future.delayed(Duration(milliseconds: 10));
+            await Future.delayed(Duration(milliseconds: 100));
             File packedIceFile = File('$modCMLReplaceTempDirPath${p.separator}replace${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}_ext.ice');
             if (await packedIceFile.exists()) {
               File renamedIceFile = await packedIceFile.rename('$modCMLReplaceTempDirPath${p.separator}replace${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}');
@@ -120,4 +124,39 @@ Future<bool> cmFileRestore(Cml cmlItem) async {
   }
 
   return false;
+}
+
+Future<void> cmlStartupCheck(List<Cml> cmlList) async {
+  if (await Directory('$modCMLReplaceTempDirPath${p.separator}replace').exists()) await Directory('$modCMLReplaceTempDirPath${p.separator}replace').delete(recursive: true);
+  await Directory('$modCMLReplaceTempDirPath${p.separator}replace').create(recursive: true);
+  if (await makerIceFile.exists()) {
+    await Process.run('$zamboniExePath -outdir "$modCMLReplaceTempDirPath${p.separator}replace"', [makerIceFile.path]);
+    await Future.delayed(Duration(milliseconds: 100));
+    final extractedIcePath = '$modCMLReplaceTempDirPath${p.separator}replace${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}_ext${p.separator}group1';
+    if (await Directory(extractedIcePath).exists()) {
+      for (var cmlItem in cmlList) {
+        File cmlReplacementFile = File(modCustomCmlsDirPath + p.separator + cmlItem.replacedCmlFileName);
+        if (cmlReplacementFile.existsSync() && await cmlReplacementFile.getMd5Hash() != await File('$extractedIcePath${p.separator}pl_cp_${cmlItem.aId}.cml').getMd5Hash()) {
+          File cmlFile = File('$extractedIcePath${p.separator}pl_cp_${cmlItem.aId}.cml');
+          if (await cmlFile.exists()) await cmlFile.delete();
+          File copiedFile = await cmlReplacementFile.copy(p.dirname(cmlFile.path) + p.separator + p.basename(cmlReplacementFile.path));
+          File renamedFile = await copiedFile.rename(cmlFile.path);
+          if (await renamedFile.exists()) {
+            // pack
+            await Process.run('$zamboniExePath -c -pack -outdir "$modCMLReplaceTempDirPath${p.separator}replace"',
+                ['$modCMLReplaceTempDirPath${p.separator}replace${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}_ext']);
+            await Future.delayed(Duration(milliseconds: 100));
+            File packedIceFile = File('$modCMLReplaceTempDirPath${p.separator}replace${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}_ext.ice');
+            if (await packedIceFile.exists()) {
+              File renamedIceFile = await packedIceFile.rename('$modCMLReplaceTempDirPath${p.separator}replace${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}');
+              renamedIceFile.copy(makerIceFile.path);
+              if (cmlItem.itemIconReplaced) {
+                cmlItem.itemIconReplaced = await markedAqmItemIconApply(cmlItem.itemIconWebPath);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
