@@ -1,4 +1,7 @@
 {
+  "cmlHelp": "CML Help",
+  "downloadSalonTool": "Download Salon Tool",
+  "cmlInfo": "You can convert your saved character files to cml files using the Model Tool program\nAdd the cml files using the \"Add Files\" button\nSelect a cml file in the left panel\nPress the \"Replace\" button on the items in the right panel to replace them with the selected cml file",
   "replacedCMLFile": "Replaced CML: %p%",
   "loadingCmlItems": "Loading CML Items",
   "cmlReplace": "CML Replace",

@@ -365,7 +365,9 @@ class AppText {
       holdToDeleteAll = 'Hold To Delete All',
       holdToDeleteSelected = 'Hold To Delete Selected',
       mainItems = 'Main items',
-      itemsToBeReplacedByMainItems = 'Items to be replaced by main items';
+      itemsToBeReplacedByMainItems = 'Items to be replaced by main items',
+      cmlHelp = 'CML Help',
+      downloadSalonTool = 'Download Salon Tool';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',
@@ -400,7 +402,9 @@ class AppText {
       jpGameStartInfo = 'If the game is not starting, try to run the Mod Manager as admin and try again',
       filterRemoveInfo = 'Click and hold on the filters to remove',
       firstTimeInfo = 'If this is your first time using PSO2NGS Mod Manager and your game currently contains mods, please remove them first',
-      emptyModViewInfo = 'Select an item to display its mods here';
+      emptyModViewInfo = 'Select an item to display its mods here',
+      cmlInfo =
+          'You can convert your saved character files to cml files using the Model Tool program\nAdd the cml files using the "Add Files" button\nSelect a cml file in the left panel\nPress the "Replace" button on the items in the right panel to replace them with the selected cml file';
 
   // Help menu
   String applyRestoreMods = 'Apply - restore mods',

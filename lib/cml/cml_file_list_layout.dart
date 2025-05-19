@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/cml/cml_functions.dart';
+import 'package:pso2_mod_manager/cml/cml_info_popup.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_functions.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
@@ -203,7 +204,13 @@ class _CmlItemListLayoutState extends State<CmlFileListLayout> {
                     setState(() {});
                   },
                   child: Text(appText.addFiles)),
-            )
+            ),
+            ElevatedButton.icon(
+                onPressed: () => cmlInfoPopup(context),
+                label: Row(
+                  spacing: 5,
+                  children: [Icon(Icons.help_outline), Text(appText.help)],
+                ))
           ],
         )
       ],

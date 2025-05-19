@@ -369,6 +369,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..mainItems = json['mainItems'] as String
   ..itemsToBeReplacedByMainItems =
       json['itemsToBeReplacedByMainItems'] as String
+  ..cmlHelp = json['cmlHelp'] as String
+  ..downloadSalonTool = json['downloadSalonTool'] as String
   ..failedToFetchRemoteLocaleData =
       json['failedToFetchRemoteLocaleData'] as String
   ..unableToUpdateFile = json['unableToUpdateFile'] as String
@@ -405,6 +407,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..filterRemoveInfo = json['filterRemoveInfo'] as String
   ..firstTimeInfo = json['firstTimeInfo'] as String
   ..emptyModViewInfo = json['emptyModViewInfo'] as String
+  ..cmlInfo = json['cmlInfo'] as String
   ..applyRestoreMods = json['applyRestoreMods'] as String
   ..addModsToModSets = json['addModsToModSets'] as String
   ..swapItemToAnotherItem = json['swapItemToAnotherItem'] as String
@@ -828,6 +831,8 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'holdToDeleteSelected': instance.holdToDeleteSelected,
       'mainItems': instance.mainItems,
       'itemsToBeReplacedByMainItems': instance.itemsToBeReplacedByMainItems,
+      'cmlHelp': instance.cmlHelp,
+      'downloadSalonTool': instance.downloadSalonTool,
       'failedToFetchRemoteLocaleData': instance.failedToFetchRemoteLocaleData,
       'unableToUpdateFile': instance.unableToUpdateFile,
       'unableToGetAppVersionDataFromGitHub':
@@ -862,6 +867,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'filterRemoveInfo': instance.filterRemoveInfo,
       'firstTimeInfo': instance.firstTimeInfo,
       'emptyModViewInfo': instance.emptyModViewInfo,
+      'cmlInfo': instance.cmlInfo,
       'applyRestoreMods': instance.applyRestoreMods,
       'addModsToModSets': instance.addModsToModSets,
       'swapItemToAnotherItem': instance.swapItemToAnotherItem,
