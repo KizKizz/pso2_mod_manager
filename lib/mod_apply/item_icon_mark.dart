@@ -182,7 +182,7 @@ Future<bool> markedAqmItemIconApply(String iconIceWebPath) async {
   if (cachedIconIceFile.existsSync()) {
     modApplyStatus.value = appText.dText(appText.copyingIconFileToGameData, p.basenameWithoutExtension(cachedIconIceFile.path));
     Future.delayed(const Duration(microseconds: 10));
-    File copiedFile = await cachedIconIceFile.copy(cachedIconIceFile.path.replaceFirst(markedItemIconsDirPath, pso2binDirPath).replaceAll('/', p.separator));
+    File copiedFile = await cachedIconIceFile.copy(pso2binDirPath + p.separator + iconIceWebPath.replaceAll('/', p.separator));
     if (await copiedFile.getMd5Hash() == await cachedIconIceFile.getMd5Hash()) {
       return true;
     }

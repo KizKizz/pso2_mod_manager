@@ -260,6 +260,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..hideQueue = json['hideQueue'] as String
   ..addToQueue = json['addToQueue'] as String
   ..latestBackup = json['latestBackup'] as String
+  ..cmlReplace = json['cmlReplace'] as String
+  ..replacedCMLFile = json['replacedCMLFile'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -322,6 +324,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..matchingFilesFound = json['matchingFilesFound'] as String
   ..noMatchingFilesFound = json['noMatchingFilesFound'] as String
   ..loadingAqmInjectedItems = json['loadingAqmInjectedItems'] as String
+  ..loadingCmlItems = json['loadingCmlItems'] as String
   ..addCustomAqmFiles = json['addCustomAqmFiles'] as String
   ..currentAqmFile = json['currentAqmFile'] as String
   ..fetchingFiles = json['fetchingFiles'] as String
@@ -722,6 +725,8 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'hideQueue': instance.hideQueue,
       'addToQueue': instance.addToQueue,
       'latestBackup': instance.latestBackup,
+      'cmlReplace': instance.cmlReplace,
+      'replacedCMLFile': instance.replacedCMLFile,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,
@@ -782,6 +787,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'matchingFilesFound': instance.matchingFilesFound,
       'noMatchingFilesFound': instance.noMatchingFilesFound,
       'loadingAqmInjectedItems': instance.loadingAqmInjectedItems,
+      'loadingCmlItems': instance.loadingCmlItems,
       'addCustomAqmFiles': instance.addCustomAqmFiles,
       'currentAqmFile': instance.currentAqmFile,
       'fetchingFiles': instance.fetchingFiles,

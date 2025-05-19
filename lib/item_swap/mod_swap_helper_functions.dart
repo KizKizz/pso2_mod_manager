@@ -149,8 +149,9 @@ Future<List<File>> emoteSwapRename(List<File> lItemFiles, List<File> rItemFiles,
       if (p.extension(fileF.path) == '.aqm') {
         final fileFNameParts = p.basenameWithoutExtension(fileF.path).split('_');
         if (fileFNameParts.isNotEmpty && fileFNameParts[0] == 'pl' && fileFNameParts[1] == 'std' && fileFNameParts.last == 'lp') {
-          matchingFileT =
-              rItemFiles.firstWhere((e) => p.extension(e.path) == '.aqm' && p.basenameWithoutExtension(e.path).split('_')[0] == 'pl' && p.basenameWithoutExtension(e.path).split('_')[1] == 'hum', orElse: () => File(''));
+          matchingFileT = rItemFiles.firstWhere(
+              (e) => p.extension(e.path) == '.aqm' && p.basenameWithoutExtension(e.path).split('_')[0] == 'pl' && p.basenameWithoutExtension(e.path).split('_')[1] == 'hum',
+              orElse: () => File(''));
         }
       }
     } else if (p.extension(fileF.path) == '.bti') {
@@ -267,7 +268,7 @@ Future<void> modSwapTempDirsRemove() async {
 
 Future<File?> modSwapOriginalFileDownload(String networkFilePath, String server, String saveLocation) async {
   if (networkFilePath.isNotEmpty) {
-    final serverURLs = [segaMasterServerURL, segaPatchServerURL, segaMasterServerBackupURL, segaPatchServerBackupURL];
+    final serverURLs = [segaPatchServerURL, segaMasterServerURL, segaPatchServerBackupURL, segaMasterServerBackupURL];
     for (var url in serverURLs) {
       final task = DownloadTask(
           url: '$url$networkFilePath',

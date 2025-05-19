@@ -263,7 +263,9 @@ class AppText {
       viewQueue = 'View Queue',
       hideQueue = 'Hide Queue',
       addToQueue = 'Add To Queue',
-      latestBackup = 'Latest Backup: %p%';
+      latestBackup = 'Latest Backup: %p%',
+      cmlReplace = 'CML Replace',
+      replacedCMLFile = 'Replaced CML: %p%';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -324,6 +326,7 @@ class AppText {
       matchingFilesFound = 'Matching files found',
       noMatchingFilesFound = 'No matching files found',
       loadingAqmInjectedItems = 'Loading AQM Injected Items',
+      loadingCmlItems = 'Loading CML Items',
       addCustomAqmFiles = 'Add Custom AQM Files',
       currentAqmFile = 'Current AQM File',
       fetchingFiles = 'Fetching Files',
