@@ -51,6 +51,7 @@ class _SubmodGridLayoutState extends State<SubmodGridLayout> {
                       modSetName: widget.modSetName,
                       isInPopup: widget.isPopup,
                       isInEditingMode: widget.isInEditingMode,
+                      showPreview: true,
                     ))
                 .toList()
             : widget.submods
@@ -63,13 +64,15 @@ class _SubmodGridLayoutState extends State<SubmodGridLayout> {
                       modSetName: widget.modSetName,
                       isInPopup: widget.isPopup,
                       isInEditingMode: widget.isInEditingMode,
+                      showPreview: true,
                     ))
                 .toList());
   }
 }
 
 class SubmodCardLayout extends StatefulWidget {
-  const SubmodCardLayout({super.key, required this.item, required this.mod, required this.submod, required this.modSetName, required this.isInPopup, required this.isInEditingMode});
+  const SubmodCardLayout(
+      {super.key, required this.item, required this.mod, required this.submod, required this.modSetName, required this.isInPopup, required this.isInEditingMode, required this.showPreview});
 
   final Item item;
   final Mod mod;
@@ -77,6 +80,7 @@ class SubmodCardLayout extends StatefulWidget {
   final String modSetName;
   final bool isInPopup;
   final bool isInEditingMode;
+  final bool showPreview;
 
   @override
   State<SubmodCardLayout> createState() => _SubmodCardLayoutState();
@@ -100,7 +104,9 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
               Stack(
                 alignment: AlignmentDirectional.bottomStart,
                 children: [
-                  SubmodPreviewBox(imageFilePaths: widget.submod.previewImages, videoFilePaths: widget.submod.previewVideos, isNew: widget.submod.isNew),
+                  SizedBox(
+                      height: widget.showPreview ? 200: 27,
+                      child: SubmodPreviewBox(imageFilePaths: widget.submod.previewImages, videoFilePaths: widget.submod.previewVideos, isNew: widget.submod.isNew)),
                   Visibility(
                       visible: widget.submod.hasCmx! || widget.submod.customAQMInjected! || widget.submod.boundingRemoved! || widget.submod.applyHQFilesOnly!,
                       child: Padding(
@@ -119,7 +125,8 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                       )),
                 ],
               ),
-              Expanded(child: Text(widget.submod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium)),
+              // Expanded(child: Text(widget.submod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium)),
+              Text(widget.submod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
               Row(spacing: 5, children: [
                 Expanded(
                     child: OutlinedButton(

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
@@ -13,32 +12,33 @@ import 'package:signals/signals_flutter.dart';
 
 Future<bool> aqmInjectPopup(
     context, String customAQMFilePath, String hqIcePath, String lqIcePath, String itemName, bool restoreAqm, bool restoreBounding, bool restoreAll, bool aqmInjected, bool fromSubmod) async {
-  Signal<bool> finished = Signal(false);
+  // Signal<bool> finished = Signal(false);
   bool result = false;
+  Future future = restoreAqm
+      ? itemCustomAqmRestoreAqm(hqIcePath, lqIcePath, fromSubmod)
+      : restoreBounding
+          ? itemCustomAqmRestoreBounding(context, File(customAQMFilePath).existsSync() ? customAQMFilePath : selectedCustomAQMFilePath.value, hqIcePath, lqIcePath, aqmInjected)
+          : restoreAll
+              ? itemCustomAqmRestoreAll(hqIcePath, lqIcePath)
+              : itemCustomAqmInject(context, File(customAQMFilePath).existsSync() ? customAQMFilePath : selectedCustomAQMFilePath.value, hqIcePath, lqIcePath, fromSubmod);
   if (Directory(modAqmInjectTempDirPath).existsSync()) Directory(modAqmInjectTempDirPath).deleteSync(recursive: true);
   return await showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          if (finished.watch(context)) {
-            finished.value = false;
-            Navigator.of(context).pop(result);
-          }
-        });
+        // SchedulerBinding.instance.addPostFrameCallback((_) {
+        //   if (finished.watch(context)) {
+        //     finished.value = false;
+        //     Navigator.of(context).pop(result);
+        //   }
+        // });
         return StatefulBuilder(builder: (dialogContext, setState) {
           return AlertDialog(
               backgroundColor: Colors.transparent,
               insetPadding: const EdgeInsets.all(5),
               contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               content: FutureBuilder(
-                future: restoreAqm
-                    ? itemCustomAqmRestoreAqm(hqIcePath, lqIcePath, fromSubmod)
-                    : restoreBounding
-                        ? itemCustomAqmRestoreBounding(context, File(customAQMFilePath).existsSync() ? customAQMFilePath : selectedCustomAQMFilePath.value, hqIcePath, lqIcePath, aqmInjected)
-                        : restoreAll
-                            ? itemCustomAqmRestoreAll(hqIcePath, lqIcePath)
-                            : itemCustomAqmInject(context, File(customAQMFilePath).existsSync() ? customAQMFilePath : selectedCustomAQMFilePath.value, hqIcePath, lqIcePath, fromSubmod),
+                future: future,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return Center(
@@ -80,11 +80,15 @@ Future<bool> aqmInjectPopup(
                       ],
                     ));
                   } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                    return FutureBuilderError(loadingText: appText.dText(appText.editingMod, itemName), snapshotError: snapshot.error.toString(), isPopup: true,);
+                    return FutureBuilderError(
+                      loadingText: appText.dText(appText.editingMod, itemName),
+                      snapshotError: snapshot.error.toString(),
+                      isPopup: true,
+                    );
                   } else {
                     result = snapshot.data;
-                    finished.value = true;
-
+                    // finished.value = true;
+                    Navigator.of(context).pop(result);
                     return const SizedBox();
                   }
                 },
