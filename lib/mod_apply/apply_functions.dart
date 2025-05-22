@@ -46,17 +46,19 @@ Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod
   await checksumToGameData();
 
   // Checking for duplicates in Aqm Inject
-  AqmInjectedItem? dupAqmItem = duplicateAqmInjectedFilesCheck(submod, modFiles);
+  if (aqmInjectCategoryDirs.contains(submod.category)) {
+    AqmInjectedItem? dupAqmItem = duplicateAqmInjectedFilesCheck(submod, modFiles);
 
-  if (dupAqmItem != null) {
-    performApply = await duplicateAqmInjectedFilesPopup(context, dupAqmItem);
-    if (performApply) {
-      bool result =
-          await aqmInjectPopup(context, dupAqmItem.injectedAQMFilePath!, dupAqmItem.hqIcePath, dupAqmItem.lqIcePath, dupAqmItem.getName(), false, false, true, dupAqmItem.isAqmReplaced!, false);
-      if (result) masterAqmInjectedItemList.remove(dupAqmItem);
-      saveMasterAqmInjectListToJson();
-    } else {
-      return;
+    if (dupAqmItem != null) {
+      performApply = await duplicateAqmInjectedFilesPopup(context, dupAqmItem);
+      if (performApply) {
+        bool result =
+            await aqmInjectPopup(context, dupAqmItem.injectedAQMFilePath!, dupAqmItem.hqIcePath, dupAqmItem.lqIcePath, dupAqmItem.getName(), false, false, true, dupAqmItem.isAqmReplaced!, false);
+        if (result) masterAqmInjectedItemList.remove(dupAqmItem);
+        saveMasterAqmInjectListToJson();
+      } else {
+        return;
+      }
     }
   }
 
@@ -92,7 +94,7 @@ Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod
   // Apply mod files to game
   if (performApply) {
     // Inject aqm
-    if (autoInjectCustomAqm && submod.customAQMInjected! && submod.customAQMFileName!.isNotEmpty && File(submod.customAQMFileName!).existsSync()) {
+    if (aqmInjectCategoryDirs.contains(submod.category) && autoInjectCustomAqm && submod.customAQMInjected! && submod.customAQMFileName!.isNotEmpty && File(modCustomAqmsDirPath + p.separator + submod.customAQMFileName!).existsSync()) {
       String hqIcePath = '';
       String lqIcePath = '';
       for (var modFile in submod.modFiles) {
@@ -121,7 +123,7 @@ Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod
         submod.lqIcePath = lqIcePath;
         saveMasterModListToJson();
       }
-    } else if (autoInjectCustomAqm && selectedCustomAQMFilePath.value.isNotEmpty && File(selectedCustomAQMFilePath.value).existsSync() && !submod.customAQMInjected!) {
+    } else if (aqmInjectCategoryDirs.contains(submod.category) && autoInjectCustomAqm && selectedCustomAQMFilePath.value.isNotEmpty && File(selectedCustomAQMFilePath.value).existsSync() && !submod.customAQMInjected!) {
       await submodAqmInject(context, submod);
     }
 

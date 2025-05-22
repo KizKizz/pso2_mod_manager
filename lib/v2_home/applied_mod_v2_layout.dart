@@ -48,6 +48,7 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
             modSetName: '',
             isInPopup: false,
             isInEditingMode: false,
+            showPreview: submod.previewImages.isNotEmpty || submod.previewVideos.isNotEmpty,
           ));
         }
       }
@@ -63,6 +64,7 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
             modSetName: '',
             isInPopup: false,
             isInEditingMode: false,
+            showPreview: submod.previewImages.isNotEmpty || submod.previewVideos.isNotEmpty,
           ));
         }
       }
@@ -232,7 +234,7 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                   padding: const EdgeInsets.symmetric(vertical: 2.5),
                   sliver: SuperSliverList.separated(
                     itemCount: displayingSubmodCards.length,
-                    itemBuilder: (context, index) => SizedBox(height: 275, child: displayingSubmodCards[index]),
+                    itemBuilder: (context, index) => SizedBox(height: displayingSubmodCards[index].submod.previewImages.isNotEmpty || displayingSubmodCards[index].submod.previewVideos.isNotEmpty ? 276 : 103, child: displayingSubmodCards[index]),
                     separatorBuilder: (BuildContext context, int index) => const SizedBox(
                       height: 2.5,
                     ),

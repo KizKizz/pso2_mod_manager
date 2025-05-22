@@ -229,6 +229,7 @@ Future<bool> submodCustomAqmRemove(context, SubMod submod) async {
     submod.customAQMInjected = false;
     submod.customAQMFileName = '';
     saveMasterModListToJson();
+    mainGridStatus.value = '${submod.modName} ${submod.submodName} custom AQM removed';
     return true;
   } else {
     return false;

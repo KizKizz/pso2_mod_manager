@@ -134,7 +134,7 @@ class _SubmodMoreFunctionsMenuState extends State<SubmodMoreFunctionsMenu> {
                 child: MenuIconItem(icon: Icons.auto_fix_high, text: appText.injectCustomAQM, enabled: true)),
           if (widget.submod.customAQMInjected!)
             PopupMenuItem(
-                enabled: aqmInjectCategoryDirs.contains(widget.submod.category) && !widget.submod.applyStatus && widget.submod.customAQMInjected!,
+                enabled: aqmInjectCategoryDirs.contains(widget.submod.category) && widget.submod.customAQMInjected!,
                 onTap: () async {
                   await submodCustomAqmRemove(context, widget.submod);
                   setState(() {});

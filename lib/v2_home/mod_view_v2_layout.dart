@@ -46,6 +46,7 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
                   modSetName: '',
                   isInPopup: false,
                   isInEditingMode: widget.isInEditingMode,
+                  showPreview: e.previewImages.isNotEmpty || e.previewVideos.isNotEmpty,
                 ))
             .toList()
         : widget.mod.submods
@@ -58,7 +59,9 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
                   mod: widget.mod,
                   submod: e,
                   modSetName: '',
-                  isInPopup: false, isInEditingMode: widget.isInEditingMode,
+                  isInPopup: false,
+                  isInEditingMode: widget.isInEditingMode,
+                  showPreview: e.previewImages.isNotEmpty || e.previewVideos.isNotEmpty,
                 ))
             .toList();
 
@@ -120,7 +123,12 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
                                       if (selectedItemV2.value == widget.item && widget.item.mods.isEmpty) selectedItemV2.value = null;
                                     },
                                   ),
-                                if (widget.isInEditingMode) ModBulkDeleteCheckbox(item: widget.item, mod: widget.mod, enabled: !widget.mod.applyStatus,),
+                                if (widget.isInEditingMode)
+                                  ModBulkDeleteCheckbox(
+                                    item: widget.item,
+                                    mod: widget.mod,
+                                    enabled: !widget.mod.applyStatus,
+                                  ),
                                 Icon(expanded || widget.expandAll ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down)
                               ],
                             )
@@ -132,7 +140,9 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
                   padding: const EdgeInsets.symmetric(vertical: 2.5),
                   sliver: SuperSliverList.separated(
                     itemCount: displayingSubmodCards.length,
-                    itemBuilder: (context, index) => SizedBox(height: 275, child: displayingSubmodCards[index]),
+                    itemBuilder: (context, index) => SizedBox(
+                        height: displayingSubmodCards[index].submod.previewImages.isNotEmpty || displayingSubmodCards[index].submod.previewVideos.isNotEmpty ? 276 : 103,
+                        child: displayingSubmodCards[index]),
                     separatorBuilder: (BuildContext context, int index) => const SizedBox(
                       height: 2.5,
                     ),

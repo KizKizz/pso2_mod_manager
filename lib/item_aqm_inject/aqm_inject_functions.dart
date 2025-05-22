@@ -122,10 +122,10 @@ Future<bool> itemCustomAqmInject(context, String customAQMFilePath, String hqIce
         //get id from aqp file
         modAqmInjectingStatus.value = appText.dText(appText.editingMod, p.basename(file.path));
         await Future.delayed(const Duration(milliseconds: 10));
-        if (file.existsSync()) file.deleteSync();
+
         File aqpFile = Directory(extractedGroup2Path).listSync().whereType<File>().firstWhere((e) => p.extension(e.path) == '.aqp', orElse: () => File(''));
         int id = -1;
-        if (aqpFile.existsSync()) {
+        if (aqpFile.path.isNotEmpty && aqpFile.existsSync()) {
           final aqpFileNameParts = p.basenameWithoutExtension(aqpFile.path).split('_');
           for (var part in aqpFileNameParts) {
             if (int.tryParse(part) != null) {
@@ -142,6 +142,7 @@ Future<bool> itemCustomAqmInject(context, String customAQMFilePath, String hqIce
           modAqmInjectingStatus.value = appText.dText(appText.repackingFile, p.basename(file.path));
           await Future.delayed(const Duration(milliseconds: 10));
           //pack
+          if (file.existsSync()) file.deleteSync();
           while (!File(Uri.file('${p.dirname(copiedFile.parent.path)}.ice').toFilePath()).existsSync()) {
             await Process.run('$zamboniExePath -c -pack -outdir "${p.dirname(copiedFile.parent.path)}"', [Uri.file(p.dirname(copiedFile.parent.path)).toFilePath()]);
             packRetries++;
@@ -166,14 +167,17 @@ Future<bool> itemCustomAqmInject(context, String customAQMFilePath, String hqIce
             aqmInjectedFiles.add('${p.basename(copiedFile.path)} -> ${p.basenameWithoutExtension(file.path)}');
           } catch (e) {
             modAqmInjectingStatus.value = e.toString();
+            return false;
           }
         } else {
           modAqmInjectingStatus.value = appText.noMatchingFilesFound;
           await Future.delayed(const Duration(milliseconds: 10));
+          return false;
         }
       } else {
         modAqmInjectingStatus.value = appText.noMatchingFilesFound;
         await Future.delayed(const Duration(milliseconds: 10));
+        return false;
       }
     }
 
@@ -268,7 +272,7 @@ Future<bool> itemCustomAqmRestoreAqm(String hqIcePath, String lqIcePath, bool fr
         await Future.delayed(const Duration(milliseconds: 10));
         File aqpFile = Directory(extractedGroup2Path).listSync().whereType<File>().firstWhere((e) => p.extension(e.path) == '.aqp', orElse: () => File(''));
         int id = -1;
-        if (aqpFile.existsSync()) {
+        if (aqpFile.path.isNotEmpty && aqpFile.existsSync()) {
           final aqpFileNameParts = p.basenameWithoutExtension(aqpFile.path).split('_');
           for (var part in aqpFileNameParts) {
             if (int.tryParse(part) != null) {
@@ -282,7 +286,9 @@ Future<bool> itemCustomAqmRestoreAqm(String hqIcePath, String lqIcePath, bool fr
         if (customAqmFile.existsSync()) {
           await customAqmFile.delete();
           File oriAQMFile = File(Uri.file('$extractedGroup2Path/pl_rbd_${id}_bw_sa_ori.aqm').toFilePath());
-          if (await oriAQMFile.exists()) await oriAQMFile.rename(Uri.file('$extractedGroup2Path/pl_rbd_${id}_bw_sa.aqm').toFilePath());
+          if (await oriAQMFile.exists()) {
+            await oriAQMFile.rename(Uri.file('$extractedGroup2Path/pl_rbd_${id}_bw_sa.aqm').toFilePath());
+          }
           modAqmInjectingStatus.value = appText.dText(appText.repackingFile, p.basename(file.path));
           await Future.delayed(const Duration(milliseconds: 10));
           //pack
@@ -308,6 +314,7 @@ Future<bool> itemCustomAqmRestoreAqm(String hqIcePath, String lqIcePath, bool fr
             }
           } catch (e) {
             modAqmInjectingStatus.value = e.toString();
+            return false;
           }
         } else {
           modAqmInjectingStatus.value = appText.noMatchingFilesFound;
@@ -316,6 +323,7 @@ Future<bool> itemCustomAqmRestoreAqm(String hqIcePath, String lqIcePath, bool fr
       } else {
         modAqmInjectingStatus.value = appText.noMatchingFilesFound;
         await Future.delayed(const Duration(milliseconds: 10));
+        return false;
       }
       // String extractedGroup1Path = Uri.file('$modAqmInjectTempDirPath/${modFile.modFileName}_ext/group1').toFilePath();
       // if (Directory(extractedGroup1Path).existsSync()) {}
