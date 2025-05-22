@@ -54,7 +54,9 @@ Future<void> modViewPopup(context, Item item) async {
                                   children: [
                                     PopupItemInfo(
                                         item: item,
+                                        mod: null,
                                         showModInfo: true,
+                                        isSingleModView: false,
                                         onEditing: (editingState) {
                                           setState(
                                             () {
@@ -81,11 +83,11 @@ Future<void> modViewPopup(context, Item item) async {
                                               },
                                               onDelete: () async {
                                                 await modDelete(context, item, mod, false);
-                                                modPopupStatus.value = '${mod.modName} deleted';
+                                                modPopupStatus.value = '[${DateTime.now()}] ${mod.modName} deleted';
                                                 item.isNew = item.getModsIsNewState();
                                                 selectedMod = null;
                                                 if (item.mods.isEmpty) {
-                                                  mainGridStatus.value = '"${mod.modName}" in "${item.getDisplayName()}" is empty and removed';
+                                                  mainGridStatus.value = '[${DateTime.now()}] "${mod.modName}" in "${item.getDisplayName()}" is empty and removed';
                                                   // ignore: use_build_context_synchronously
                                                   Navigator.of(context).pop();
                                                 }

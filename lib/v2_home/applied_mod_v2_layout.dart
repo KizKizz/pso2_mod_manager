@@ -218,7 +218,9 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                                       ),
                                       ItemMoreFunctionsMenu(
                                         item: widget.item,
+                                        mod: null,
                                         isInsidePopup: false,
+                                        isSingleModView: false,
                                       )
                                     ],
                                   ),

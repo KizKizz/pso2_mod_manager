@@ -51,7 +51,7 @@ Future<void> modsetModViewPopup(context, Item item, String setName) async {
                               child: Column(
                                 spacing: 5,
                                 children: [
-                                  PopupItemInfo(item: item, showModInfo: false, onEditing: (bool editingState) {  },),
+                                  PopupItemInfo(item: item, mod: null, showModInfo: false, isSingleModView: false, onEditing: (bool editingState) {  },),
                                   const HoriDivider(),
                                   Expanded(
                                       child: CustomScrollView(physics: const SuperRangeMaintainingScrollPhysics(), slivers: [

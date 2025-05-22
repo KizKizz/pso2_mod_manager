@@ -209,7 +209,9 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
                       ),
                       ItemMoreFunctionsMenu(
                         item: widget.item,
+                        mod: null,
                         isInsidePopup: false,
+                        isSingleModView: false,
                       )
                     ],
                   )
