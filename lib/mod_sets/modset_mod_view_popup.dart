@@ -13,7 +13,8 @@ import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 Future<void> modsetModViewPopup(context, Item item, String setName) async {
-  Mod? selectedMod = item.mods.first;
+  int firstModIndex = item.mods.indexWhere((e) => e.setNames.contains(setName));
+  Mod? selectedMod = firstModIndex != -1 ? item.mods[firstModIndex] : null;
   await showDialog(
       barrierDismissible: false,
       barrierColor: Colors.transparent,
@@ -51,7 +52,13 @@ Future<void> modsetModViewPopup(context, Item item, String setName) async {
                               child: Column(
                                 spacing: 5,
                                 children: [
-                                  PopupItemInfo(item: item, mod: null, showModInfo: false, isSingleModView: false, onEditing: (bool editingState) {  },),
+                                  PopupItemInfo(
+                                    item: item,
+                                    mod: selectedMod,
+                                    showModInfo: false,
+                                    isSingleModView: true,
+                                    onEditing: (bool editingState) {},
+                                  ),
                                   const HoriDivider(),
                                   Expanded(
                                       child: CustomScrollView(physics: const SuperRangeMaintainingScrollPhysics(), slivers: [
@@ -71,15 +78,16 @@ Future<void> modsetModViewPopup(context, Item item, String setName) async {
                                             },
                                             onDelete: () async {
                                               await modDelete(context, item, mod, false);
-                                              modPopupStatus.value = '${mod.modName} deleted';
+                                              modPopupStatus.value = '[${DateTime.now()}] ${mod.modName} deleted';
                                               item.isNew = item.getModsIsNewState();
                                               selectedMod = null;
                                               if (item.mods.isEmpty) {
-                                                mainGridStatus.value = '"${mod.modName}" in "${item.getDisplayName()}" is empty and removed';
+                                                mainGridStatus.value = '[${DateTime.now()}] "${mod.modName}" in "${item.getDisplayName()}" is empty and removed';
                                                 // ignore: use_build_context_synchronously
                                                 Navigator.of(context).pop();
                                               }
-                                            }, isInEditingMode: false,
+                                            },
+                                            isInEditingMode: false,
                                           );
                                         })
                                   ]))
@@ -103,8 +111,9 @@ Future<void> modsetModViewPopup(context, Item item, String setName) async {
                                           item: item,
                                           mod: selectedMod!,
                                           submods: selectedMod!.submods.where((e) => e.isSet && e.setNames.contains(setName)).toList(),
-                                          searchString: searchTextController.value.text,
-                                          modSetName: setName, isPopup: true,
+                                          searchString: '',
+                                          modSetName: setName,
+                                          isPopup: true,
                                           isInEditingMode: false,
                                         )
                                       ],

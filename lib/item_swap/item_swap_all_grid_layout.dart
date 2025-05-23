@@ -223,7 +223,23 @@ class _ItemSwapAllSelectedGridLayout extends State<ItemSwapAllSelectedGridLayout
               },
               onSearchTextChanged: (p0) {
                 setState(() {});
-                return [];
+                return displayingItemData
+                    .map(
+                      (e) => SearchFieldListItem(
+                        e.getName(),
+                        item: e,
+                        child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            child: Row(
+                              spacing: 5,
+                              children: [
+                                GenericItemIconBox(iconImagePaths: [e.iconImagePath], boxSize: const Size(70, 70), isNetwork: true),
+                                Text(e.getName())
+                              ],
+                            )),
+                      ),
+                    )
+                    .toList();
               },
             ),
             Visibility(
@@ -349,7 +365,12 @@ class _ItemSwapAllSubmodGridLayout extends State<ItemSwapAllSubmodGridLayout> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           spacing: 5,
                           children: [
-                            AspectRatio(aspectRatio: 1, child: ItemIconBox(item: widget.item, showSubCategory: false,)),
+                            AspectRatio(
+                                aspectRatio: 1,
+                                child: ItemIconBox(
+                                  item: widget.item,
+                                  showSubCategory: false,
+                                )),
                             Expanded(
                               child: Column(
                                 spacing: 5,

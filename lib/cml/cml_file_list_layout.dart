@@ -83,7 +83,20 @@ class _CmlItemListLayoutState extends State<CmlFileListLayout> {
               },
               onSearchTextChanged: (p0) {
                 setState(() {});
-                return [];
+                return displayingCmlFiles
+                    .map(
+                      (e) => SearchFieldListItem(
+                        p.basename(e.path),
+                        item: e,
+                        child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            child: Row(
+                              spacing: 5,
+                              children: [Text(p.basename(e.path))],
+                            )),
+                      ),
+                    )
+                    .toList();
               },
             ),
             Visibility(

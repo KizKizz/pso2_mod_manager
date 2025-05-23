@@ -81,7 +81,23 @@ class _QuickSwapItemGridLayoutState extends State<QuickSwapItemGridLayout> {
               },
               onSearchTextChanged: (p0) {
                 setState(() {});
-                return [];
+                return displayingItemData
+                    .map(
+                      (e) => SearchFieldListItem(
+                        e.getName(),
+                        item: e,
+                        child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            child: Row(
+                              spacing: 5,
+                              children: [
+                                GenericItemIconBox(iconImagePaths: [e.iconImagePath], boxSize: const Size(70, 70), isNetwork: true),
+                                Text(e.getName())
+                              ],
+                            )),
+                      ),
+                    )
+                    .toList();
               },
             ),
             Visibility(

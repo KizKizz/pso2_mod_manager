@@ -190,7 +190,7 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
                                             onTap: () async {
                                               await modSetDelete(context, widget.modSet);
                                               setState(() {
-                                                modSetRefreshSignal.value = 'deleted ${widget.modSet.setName}';
+                                                modSetRefreshSignal.value = '[${DateTime.now()}] deleted ${widget.modSet.setName}';
                                               });
                                             },
                                             child: MenuIconItem(
@@ -322,10 +322,10 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
                           ? () async {
                               if (!widget.activeSubmod.applyStatus) {
                                 await modToGameData(context, true, widget.item, widget.activeMod, widget.activeSubmod);
-                                modSetRefreshSignal.value = '${widget.activeSubmod.submodName} in ${widget.item.getDisplayName()} in ${widget.setName} Set was applied';
+                                modSetRefreshSignal.value = '[${DateTime.now()}] ${widget.activeSubmod.submodName} in ${widget.item.getDisplayName()} in ${widget.setName} Set was applied';
                               } else {
                                 await modToGameData(context, false, widget.item, widget.activeMod, widget.activeSubmod);
-                                modSetRefreshSignal.value = '${widget.activeSubmod.submodName} in ${widget.item.getDisplayName()} in ${widget.setName} Set was restored';
+                                modSetRefreshSignal.value = '[${DateTime.now()}] ${widget.activeSubmod.submodName} in ${widget.item.getDisplayName()} in ${widget.setName} Set was restored';
                               }
                               setState(() {});
                             }
@@ -343,7 +343,7 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
                 isInPopup: true,
                 refresh: () {
                   setState(() {});
-                  modSetRefreshSignal.value = '${widget.item.itemName} > ${widget.activeMod.modName} > ${widget.activeSubmod.submodName} modified in set "${widget.setName}"';
+                  modSetRefreshSignal.value = '[${DateTime.now()}] ${widget.item.itemName} > ${widget.activeMod.modName} > ${widget.activeSubmod.submodName} modified in set "${widget.setName}"';
                 },
               ),
               // IconButton.outlined(
