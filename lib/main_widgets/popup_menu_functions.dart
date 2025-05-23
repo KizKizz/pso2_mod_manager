@@ -188,14 +188,14 @@ Future<bool> submodAqmInject(context, SubMod submod) async {
   String lqIcePath = '';
   for (var modFile in submod.modFiles) {
     if (hqIcePath.isEmpty) {
-      int hqIndex = pItemData.indexWhere((e) => e.category == submod.category && e.getHQIceName().contains(modFile.modFileName));
+      int hqIndex = pItemData.indexWhere((e) => (e.category == submod.category || submod.category.contains(e.subCategory)) && e.getHQIceName().contains(modFile.modFileName));
       if (hqIndex != -1) {
         hqIcePath = modFile.location;
         if (lqIcePath.isNotEmpty) break;
       }
     }
     if (lqIcePath.isEmpty) {
-      int lqIndex = pItemData.indexWhere((e) => e.category == submod.category && e.getLQIceName().contains(modFile.modFileName));
+      int lqIndex = pItemData.indexWhere((e) => (e.category == submod.category || submod.category.contains(e.subCategory)) && e.getLQIceName().contains(modFile.modFileName));
       if (lqIndex != -1) {
         lqIcePath = modFile.location;
         if (hqIcePath.isNotEmpty) break;
