@@ -5,16 +5,19 @@ import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/main_widgets/item_more_functions_menu.dart';
 import 'package:pso2_mod_manager/main_widgets/mod_bulk_delete_button.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
+import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class PopupItemInfo extends StatefulWidget {
-  const PopupItemInfo({super.key, required this.item, required this.showModInfo, required this.onEditing});
+  const PopupItemInfo({super.key, required this.item, required this.mod, required this.showModInfo, required this.isSingleModView, required this.onEditing});
 
   final Item item;
+  final Mod? mod;
   final bool showModInfo;
+  final bool isSingleModView;
   final Function(bool editingState) onEditing;
 
   @override
@@ -86,7 +89,9 @@ class _PopupItemInfoState extends State<PopupItemInfo> {
             ),
             ItemMoreFunctionsMenu(
               item: widget.item,
+              mod: widget.mod,
               isInsidePopup: true,
+              isSingleModView: widget.isSingleModView,
             )
           ],
         ),
