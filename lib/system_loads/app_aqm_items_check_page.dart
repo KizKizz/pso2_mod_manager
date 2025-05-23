@@ -108,7 +108,7 @@ class _AppAqmItemsCheckPageState extends State<AppAqmItemsCheckPage> {
                               bool result = await aqmInjectPopup(context, item.injectedAQMFilePath!, item.hqIcePath, item.lqIcePath, item.getName(), false, false, true, item.isAqmReplaced!, false);
                               if (result) {
                                 if (item.isIconReplaced) {
-                                  await markedAqmItemIconRestore(item.iconIcePath);
+                                  await markedAqmItemIconRestore(pso2binDirPath + p.separator + item.iconIcePath);
                                 }
                                 masterAqmInjectedItemList.remove(item);
                               }

@@ -86,7 +86,23 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
               },
               onSearchTextChanged: (p0) {
                 setState(() {});
-                return null;
+                return displayingAqmInjectedItem
+                    .map(
+                      (e) => SearchFieldListItem(
+                        e.getName(),
+                        item: e,
+                        child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            child: Row(
+                              spacing: 5,
+                              children: [
+                                GenericItemIconBox(iconImagePaths: [e.iconImagePath], boxSize: const Size(70, 70), isNetwork: true),
+                                Text(e.getName())
+                              ],
+                            )),
+                      ),
+                    )
+                    .toList();
               },
             ),
             Visibility(
@@ -176,7 +192,7 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                                   false);
                                               if (result && !displayingAqmInjectedItem[index].isBoundingRemoved!) {
                                                 if (displayingAqmInjectedItem[index].isIconReplaced) {
-                                                  await markedAqmItemIconRestore(displayingAqmInjectedItem[index].iconIcePath);
+                                                  await markedAqmItemIconRestore(pso2binDirPath + p.separator + displayingAqmInjectedItem[index].iconIcePath);
                                                 }
                                                 modAqmInjectingRefresh.value = 'Removed AQM and restored ${displayingAqmInjectedItem[index].getName()}';
                                                 masterAqmInjectedItemList.removeAt(index);
@@ -209,7 +225,7 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                                   false);
                                               if (result && !displayingAqmInjectedItem[index].isAqmReplaced!) {
                                                 if (displayingAqmInjectedItem[index].isIconReplaced) {
-                                                  await markedAqmItemIconRestore(displayingAqmInjectedItem[index].iconIcePath);
+                                                  await markedAqmItemIconRestore(pso2binDirPath + p.separator + displayingAqmInjectedItem[index].iconIcePath);
                                                 }
                                                 modAqmInjectingRefresh.value = 'Restored bounding ${displayingAqmInjectedItem[index].getName()}';
                                                 masterAqmInjectedItemList.removeAt(index);
@@ -242,7 +258,7 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                                   false);
                                               if (result) {
                                                 if (displayingAqmInjectedItem[index].isIconReplaced) {
-                                                  await markedAqmItemIconRestore(displayingAqmInjectedItem[index].iconIcePath);
+                                                  await markedAqmItemIconRestore(pso2binDirPath + p.separator + displayingAqmInjectedItem[index].iconIcePath);
                                                 }
                                                 modAqmInjectingRefresh.value = 'Restored ${displayingAqmInjectedItem[index].getName()}';
                                                 masterAqmInjectedItemList.removeAt(index);

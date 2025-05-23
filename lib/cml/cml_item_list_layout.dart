@@ -79,7 +79,23 @@ class _CmlItemListLayoutState extends State<CmlItemListLayout> {
               },
               onSearchTextChanged: (p0) {
                 setState(() {});
-                return null;
+                return displayingCml
+                    .map(
+                      (e) => SearchFieldListItem(
+                        e.getName(),
+                        item: e,
+                        child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            child: Row(
+                              spacing: 5,
+                              children: [
+                                GenericItemIconBox(iconImagePaths: [e.cloudItemIconPath], boxSize: const Size(70, 70), isNetwork: true),
+                                Text(e.getName())
+                              ],
+                            )),
+                      ),
+                    )
+                    .toList();
               },
             ),
             Visibility(

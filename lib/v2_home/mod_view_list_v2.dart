@@ -259,7 +259,51 @@ class _ModViewListV2State extends State<ModViewListV2> {
                                   },
                                   onSearchTextChanged: (p0) {
                                     setState(() {});
-                                    return null;
+                                    return filteredMods
+                                        .map(
+                                          (e) => SearchFieldListItem<Mod>(
+                                            e.modName,
+                                            item: e,
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 5),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.min,
+                                                spacing: 5,
+                                                children: [
+                                                  SizedBox(
+                                                    width: 75,
+                                                    height: 75,
+                                                    child: SubmodPreviewBox(imageFilePaths: e.previewImages, videoFilePaths: e.previewVideos, isNew: false),
+                                                  ),
+                                                  Column(
+                                                    spacing: 5,
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      Text(e.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                                                      Row(
+                                                        spacing: 5,
+                                                        children: [
+                                                          InfoBox(
+                                                            info: appText.dText(e.submods.length > 1 ? appText.numVariants : appText.numVariant, e.submods.length.toString()),
+                                                            borderHighlight: false,
+                                                          ),
+                                                          InfoBox(
+                                                            info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedSubmods().toString()),
+                                                            borderHighlight: e.applyStatus,
+                                                          ),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                        .toList();
                                   },
                                 ),
                                 Visibility(
@@ -280,7 +324,14 @@ class _ModViewListV2State extends State<ModViewListV2> {
                               ]),
                             ),
                           ),
-                        if (itemEditingMode) SizedBox(width: double.infinity, height: 31, child: ModBulkDeleteButton(enabled: bulkDeleteMods.isNotEmpty || bulkDeleteSubmods.isNotEmpty, isPopup: false,))
+                        if (itemEditingMode)
+                          SizedBox(
+                              width: double.infinity,
+                              height: 31,
+                              child: ModBulkDeleteButton(
+                                enabled: bulkDeleteMods.isNotEmpty || bulkDeleteSubmods.isNotEmpty,
+                                isPopup: false,
+                              ))
                       ],
                     ))),
           ),

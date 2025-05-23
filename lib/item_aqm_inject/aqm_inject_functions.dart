@@ -71,7 +71,7 @@ Future<List<AqmInjectedItem>> aqmInjectedItemsFetch() async {
 }
 
 Future<bool> itemCustomAqmInject(context, String customAQMFilePath, String hqIcePath, String lqIcePath, bool fromSubmod) async {
-  Directory(modAqmInjectTempDirPath).createSync(recursive: true);
+  await Directory(modAqmInjectTempDirPath).create(recursive: true);
   List<String> aqmInjectedFiles = [];
   int packRetries = 0;
 
@@ -222,7 +222,7 @@ Future<bool> itemCustomAqmRestoreAll(String hqIcePath, String lqIcePath) async {
 }
 
 Future<bool> itemCustomAqmRestoreAqm(String hqIcePath, String lqIcePath, bool fromSubmod) async {
-  Directory(modAqmInjectTempDirPath).createSync(recursive: true);
+  await Directory(modAqmInjectTempDirPath).create(recursive: true);
   int packRetries = 0;
   List<File> filesToRemove = [];
   modAqmInjectingStatus.value = appText.fetchingFiles;

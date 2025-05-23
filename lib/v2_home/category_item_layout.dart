@@ -40,7 +40,7 @@ class _CategoryItemLayoutState extends State<CategoryItemLayout> {
                 ))
             .toList()
         : widget.category.items
-            .where((e) => e.getDistinctNames().where((e) => e.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty)
+            .where((e) => e.itemName.toLowerCase().contains(widget.searchString.toLowerCase()))
             .map((e) => ItemCardLayout(
                   item: e,
                   onSelected: () => setState(() {

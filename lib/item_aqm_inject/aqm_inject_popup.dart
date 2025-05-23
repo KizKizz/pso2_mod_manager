@@ -22,6 +22,7 @@ Future<bool> aqmInjectPopup(
               ? itemCustomAqmRestoreAll(hqIcePath, lqIcePath)
               : itemCustomAqmInject(context, File(customAQMFilePath).existsSync() ? customAQMFilePath : selectedCustomAQMFilePath.value, hqIcePath, lqIcePath, fromSubmod);
   if (Directory(modAqmInjectTempDirPath).existsSync()) Directory(modAqmInjectTempDirPath).deleteSync(recursive: true);
+  await Directory(modAqmInjectTempDirPath).create(recursive: true);
   return await showDialog(
       barrierDismissible: false,
       context: context,

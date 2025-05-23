@@ -172,7 +172,13 @@ class _ItemListV2State extends State<ItemListV2> {
                                         mainAxisSize: MainAxisSize.min,
                                         spacing: 5,
                                         children: [
-                                          SizedBox(width: 75, height: 75, child: ItemIconBox(item: e, showSubCategory: true,)),
+                                          SizedBox(
+                                              width: 75,
+                                              height: 75,
+                                              child: ItemIconBox(
+                                                item: e,
+                                                showSubCategory: true,
+                                              )),
                                           Column(
                                             spacing: 5,
                                             mainAxisAlignment: MainAxisAlignment.center,
@@ -208,7 +214,52 @@ class _ItemListV2State extends State<ItemListV2> {
                             },
                             onSearchTextChanged: (p0) {
                               setState(() {});
-                              return null;
+                              return filteredItems
+                                  .map(
+                                    (e) => SearchFieldListItem<Item>(
+                                      e.itemName,
+                                      item: e,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          spacing: 5,
+                                          children: [
+                                            SizedBox(
+                                                width: 75,
+                                                height: 75,
+                                                child: ItemIconBox(
+                                                  item: e,
+                                                  showSubCategory: true,
+                                                )),
+                                            Column(
+                                              spacing: 5,
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(e.itemName.replaceFirst('_', '/').trim(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                                                Row(
+                                                  spacing: 5,
+                                                  children: [
+                                                    InfoBox(
+                                                      info: appText.dText(e.mods.length > 1 ? appText.numMods : appText.numMod, e.mods.length.toString()),
+                                                      borderHighlight: false,
+                                                    ),
+                                                    InfoBox(
+                                                      info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedMods().toString()),
+                                                      borderHighlight: e.applyStatus,
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                  .toList();
                             },
                           ),
                           Visibility(
