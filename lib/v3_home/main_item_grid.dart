@@ -170,7 +170,7 @@ class _MainItemGridState extends State<MainItemGrid> {
                       },
                       onSearchTextChanged: (p0) {
                         setState(() {});
-                        return null;
+                        return [];
                       },
                     ),
                     Visibility(

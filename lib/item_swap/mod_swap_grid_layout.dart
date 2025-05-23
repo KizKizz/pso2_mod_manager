@@ -78,7 +78,7 @@ class _ModSwapGridLayoutState extends State<ModSwapGridLayout> {
               },
               onSearchTextChanged: (p0) {
                 setState(() {});
-                return null;
+                return [];
               },
             ),
             Visibility(

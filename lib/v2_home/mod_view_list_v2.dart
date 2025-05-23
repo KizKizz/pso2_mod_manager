@@ -259,7 +259,7 @@ class _ModViewListV2State extends State<ModViewListV2> {
                                   },
                                   onSearchTextChanged: (p0) {
                                     setState(() {});
-                                    return null;
+                                    return [];
                                   },
                                 ),
                                 Visibility(
@@ -280,7 +280,14 @@ class _ModViewListV2State extends State<ModViewListV2> {
                               ]),
                             ),
                           ),
-                        if (itemEditingMode) SizedBox(width: double.infinity, height: 31, child: ModBulkDeleteButton(enabled: bulkDeleteMods.isNotEmpty || bulkDeleteSubmods.isNotEmpty, isPopup: false,))
+                        if (itemEditingMode)
+                          SizedBox(
+                              width: double.infinity,
+                              height: 31,
+                              child: ModBulkDeleteButton(
+                                enabled: bulkDeleteMods.isNotEmpty || bulkDeleteSubmods.isNotEmpty,
+                                isPopup: false,
+                              ))
                       ],
                     ))),
           ),

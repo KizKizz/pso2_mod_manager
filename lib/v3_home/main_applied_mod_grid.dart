@@ -174,7 +174,7 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                       },
                       onSearchTextChanged: (p0) {
                         setState(() {});
-                        return null;
+                        return [];
                       },
                     ),
                     Visibility(

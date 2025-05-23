@@ -107,7 +107,7 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
               },
               onSearchTextChanged: (p0) {
                 setState(() {});
-                return null;
+                return [];
               },
             ),
             Visibility(

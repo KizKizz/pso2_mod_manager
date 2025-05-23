@@ -81,7 +81,7 @@ class _QuickSwapItemGridLayoutState extends State<QuickSwapItemGridLayout> {
               },
               onSearchTextChanged: (p0) {
                 setState(() {});
-                return null;
+                return [];
               },
             ),
             Visibility(

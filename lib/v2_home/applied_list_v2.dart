@@ -270,7 +270,7 @@ class _AppliedListV2State extends State<AppliedListV2> {
                             },
                             onSearchTextChanged: (p0) {
                               setState(() {});
-                              return null;
+                              return [];
                             },
                           ),
                           Visibility(

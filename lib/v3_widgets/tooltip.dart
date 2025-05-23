@@ -12,7 +12,7 @@ class ModManTooltip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Tooltip(
         message: message,
-        height: 25,
+        constraints: BoxConstraints(minHeight: 25),
         textStyle: const TextStyle(fontSize: 14),
         decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),

@@ -223,7 +223,7 @@ class _ItemSwapAllSelectedGridLayout extends State<ItemSwapAllSelectedGridLayout
               },
               onSearchTextChanged: (p0) {
                 setState(() {});
-                return null;
+                return [];
               },
             ),
             Visibility(

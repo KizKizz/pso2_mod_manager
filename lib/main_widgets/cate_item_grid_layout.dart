@@ -36,7 +36,7 @@ class _CateItemGridLayoutState extends State<CateItemGridLayout> {
     // prep data
     List<ItemCardLayout> displayingItemCards = widget.searchString.isEmpty
         ? widget.itemCate.items.map((e) => ItemCardLayout(item: e)).toList()
-        : widget.itemCate.items.where((e) => e.getDistinctNames().where((e) => e.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty).map((e) => ItemCardLayout(item: e)).toList();
+        : widget.itemCate.items.where((e) => e.itemName.toLowerCase().contains(widget.searchString.toLowerCase())).map((e) => ItemCardLayout(item: e)).toList();
 
     return SliverPadding(
       padding: const EdgeInsets.only(bottom: 2.5),
@@ -122,7 +122,12 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
               mainAxisSize: MainAxisSize.min,
               spacing: 5,
               children: [
-                AspectRatio(aspectRatio: 1, child: ItemIconBox(item: widget.item, showSubCategory: true,)),
+                AspectRatio(
+                    aspectRatio: 1,
+                    child: ItemIconBox(
+                      item: widget.item,
+                      showSubCategory: true,
+                    )),
                 Expanded(child: Center(child: Text(widget.item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge))),
                 Column(
                   spacing: 2.5,

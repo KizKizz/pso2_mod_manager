@@ -83,7 +83,7 @@ class _CmlItemListLayoutState extends State<CmlFileListLayout> {
               },
               onSearchTextChanged: (p0) {
                 setState(() {});
-                return null;
+                return [];
               },
             ),
             Visibility(

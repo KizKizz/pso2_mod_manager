@@ -76,7 +76,7 @@ class _ItemSwapGridLayoutState extends State<ItemSwapGridLayout> {
               },
               onSearchTextChanged: (p0) {
                 setState(() {});
-                return null;
+                return [];
               },
             ),
             Visibility(
