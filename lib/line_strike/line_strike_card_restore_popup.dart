@@ -8,6 +8,17 @@ import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
 import 'package:signals/signals_flutter.dart';
 
 Future<bool> lineStrikeCardRestorePopup(context, LineStrikeCard card, List<LineStrikeCard> lineStrikeCardsList) async {
+  bool? taskFinished;
+  final Future future = customImageRemove(card, lineStrikeCardsList);
+
+  Future<void> popupDismiss(bool result) async {
+    await Future.delayed(Duration.zero);
+    if (taskFinished != null && taskFinished == true) {
+      taskFinished = false;
+      Navigator.of(context).pop(result);
+    }
+  }
+
   return await showDialog(
       barrierDismissible: false,
       context: context,
@@ -18,7 +29,7 @@ Future<bool> lineStrikeCardRestorePopup(context, LineStrikeCard card, List<LineS
               insetPadding: const EdgeInsets.all(5),
               contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               content: FutureBuilder(
-                future: customImageRemove(card, lineStrikeCardsList),
+                future: future,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return Center(
@@ -60,10 +71,15 @@ Future<bool> lineStrikeCardRestorePopup(context, LineStrikeCard card, List<LineS
                       ],
                     ));
                   } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                    return FutureBuilderError(loadingText: appText.dText(appText.restoringFile, card.cardZeroDdsName), snapshotError: snapshot.error.toString(), isPopup: true,);
+                    return FutureBuilderError(
+                      loadingText: appText.dText(appText.restoringFile, card.cardZeroDdsName),
+                      snapshotError: snapshot.error.toString(),
+                      isPopup: true,
+                    );
                   } else {
                     bool result = snapshot.data;
-                    Navigator.of(context).pop(result);
+                    taskFinished ??= true;
+                    popupDismiss(result);
                     return const SizedBox();
                   }
                 },

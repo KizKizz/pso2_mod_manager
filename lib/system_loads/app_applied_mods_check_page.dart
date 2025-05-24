@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/material_app_service.dart';
 import 'package:pso2_mod_manager/mod_apply/applying_popup.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
@@ -73,7 +74,7 @@ class _AppAppliedModsLoadPageState extends State<AppAppliedModsLoadPage> {
                                 for (var submod in mod.submods.where((e) => e.getModFilesAppliedState())) {
                                   List<ModFile> unappliedModFiles = submod.modFiles.where((e) => e.applyStatus && e.ogMd5s.isNotEmpty && e.ogMd5s.first != e.md5).toList();
                                   if (unappliedModFiles.isNotEmpty) {
-                                    await applyingPopup(context, true, item, mod, submod, unappliedModFiles);
+                                    await applyingPopup(MaterialAppService.navigatorKey.currentContext, true, item, mod, submod, unappliedModFiles);
                                   }
                                 }
                               }
@@ -90,7 +91,7 @@ class _AppAppliedModsLoadPageState extends State<AppAppliedModsLoadPage> {
                               for (var mod in item.mods.where((e) => e.getSubmodsAppliedState())) {
                                 for (var submod in mod.submods.where((e) => e.getModFilesAppliedState())) {
                                   if (submod.modFiles.indexWhere((e) => e.applyStatus && e.ogMd5s.isNotEmpty && e.ogMd5s.first != e.md5) != -1) {
-                                    await applyingPopup(context, false, item, mod, submod, []);
+                                    await applyingPopup(MaterialAppService.navigatorKey.currentContext, false, item, mod, submod, []);
                                   }
                                 }
                               }

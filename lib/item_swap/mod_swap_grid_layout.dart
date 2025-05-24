@@ -51,7 +51,8 @@ class _ModSwapGridLayoutState extends State<ModSwapGridLayout> {
                   contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                   cursorHeight: 15,
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
-                  cursorColor: Theme.of(context).colorScheme.primary),
+                  cursorColor: Theme.of(context).colorScheme.primary,
+                  hintText: appText.search),
               suggestions: displayingItemData
                   .map(
                     (e) => SearchFieldListItem(
@@ -69,7 +70,6 @@ class _ModSwapGridLayoutState extends State<ModSwapGridLayout> {
                     ),
                   )
                   .toList(),
-              hint: appText.search,
               controller: itemSwapSearchTextController,
               onSuggestionTap: (p0) {
                 itemSwapSearchTextController.text = p0.searchKey;

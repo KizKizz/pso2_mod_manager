@@ -4,6 +4,7 @@ import 'package:background_downloader/background_downloader.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/material_app_service.dart';
 import 'package:pso2_mod_manager/mod_apply/applying_popup.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
@@ -15,7 +16,7 @@ import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/mod_apply/item_icon_mark.dart';
 
 Future<void> modUnapplySequence(context, bool applying, Item item, Mod mod, SubMod submod, List<ModFile> modFilesToRestore) async {
-  await applyingPopup(context, applying, item, mod, submod, modFilesToRestore);
+  await applyingPopup(MaterialAppService.navigatorKey.currentContext, applying, item, mod, submod, modFilesToRestore);
 }
 
 Future<void> modUnapplyRestore(Item item, Mod mod, SubMod submod, List<ModFile> modFilesToRestore) async {

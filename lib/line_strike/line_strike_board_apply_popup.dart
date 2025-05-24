@@ -9,6 +9,17 @@ import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
 import 'package:signals/signals_flutter.dart';
 
 Future<bool> lineStrikeBoardApplyPopup(context, String customImagePath, LineStrikeBoard board) async {
+  bool? taskFinished;
+  final Future future = customBoardImageApply(customImagePath, board);
+
+  Future<void> popupDismiss(bool result) async {
+    await Future.delayed(Duration.zero);
+    if (taskFinished != null && taskFinished == true) {
+      taskFinished = false;
+      Navigator.of(context).pop(result);
+    }
+  }
+
   return await showDialog(
       barrierDismissible: false,
       context: context,
@@ -19,7 +30,7 @@ Future<bool> lineStrikeBoardApplyPopup(context, String customImagePath, LineStri
               insetPadding: const EdgeInsets.all(5),
               contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               content: FutureBuilder(
-                future: customBoardImageApply(customImagePath, board),
+                future: future,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return Center(
@@ -61,10 +72,15 @@ Future<bool> lineStrikeBoardApplyPopup(context, String customImagePath, LineStri
                       ],
                     ));
                   } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                    return FutureBuilderError(loadingText: appText.dText(appText.editingMod, board.iceDdsName), snapshotError: snapshot.error.toString(), isPopup: true,);
+                    return FutureBuilderError(
+                      loadingText: appText.dText(appText.editingMod, board.iceDdsName),
+                      snapshotError: snapshot.error.toString(),
+                      isPopup: true,
+                    );
                   } else {
                     bool result = snapshot.data;
-                    Navigator.of(context).pop(result);
+                    taskFinished ??= true;
+                    popupDismiss(result);
                     return const SizedBox();
                   }
                 },

@@ -12,9 +12,9 @@ import 'package:signals/signals_flutter.dart';
 
 Future<bool> aqmInjectPopup(
     context, String customAQMFilePath, String hqIcePath, String lqIcePath, String itemName, bool restoreAqm, bool restoreBounding, bool restoreAll, bool aqmInjected, bool fromSubmod) async {
-  // Signal<bool> finished = Signal(false);
+  bool? taskFinished;
   bool result = false;
-  Future future = restoreAqm
+  final Future future = restoreAqm
       ? itemCustomAqmRestoreAqm(hqIcePath, lqIcePath, fromSubmod)
       : restoreBounding
           ? itemCustomAqmRestoreBounding(context, File(customAQMFilePath).existsSync() ? customAQMFilePath : selectedCustomAQMFilePath.value, hqIcePath, lqIcePath, aqmInjected)
@@ -23,16 +23,19 @@ Future<bool> aqmInjectPopup(
               : itemCustomAqmInject(context, File(customAQMFilePath).existsSync() ? customAQMFilePath : selectedCustomAQMFilePath.value, hqIcePath, lqIcePath, fromSubmod);
   if (Directory(modAqmInjectTempDirPath).existsSync()) Directory(modAqmInjectTempDirPath).deleteSync(recursive: true);
   await Directory(modAqmInjectTempDirPath).create(recursive: true);
+
+  Future<void> popupDismiss() async {
+    await Future.delayed(Duration.zero);
+    if (taskFinished != null && taskFinished == true) {
+      taskFinished = false;
+      Navigator.of(context).pop(result);
+    }
+  }
+
   return await showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        // SchedulerBinding.instance.addPostFrameCallback((_) {
-        //   if (finished.watch(context)) {
-        //     finished.value = false;
-        //     Navigator.of(context).pop(result);
-        //   }
-        // });
         return StatefulBuilder(builder: (dialogContext, setState) {
           return AlertDialog(
               backgroundColor: Colors.transparent,
@@ -88,8 +91,8 @@ Future<bool> aqmInjectPopup(
                     );
                   } else {
                     result = snapshot.data;
-                    // finished.value = true;
-                    Navigator.of(context).pop(result);
+                    taskFinished ??= true;
+                    popupDismiss();
                     return const SizedBox();
                   }
                 },

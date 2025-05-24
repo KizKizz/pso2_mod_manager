@@ -13,8 +13,17 @@ import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
 import 'package:signals/signals_flutter.dart';
 
 Future<void> applyingPopup(context, bool applying, Item item, Mod mod, SubMod submod, List<ModFile> extraModFiles) async {
-  late final Future applyMods = modBackupApply(item, mod, submod, extraModFiles);
-  late final Future restoreMods = modUnapplyRestore(item, mod, submod, extraModFiles);
+  bool? taskFinished;
+  final Future future = applying ? modBackupApply(item, mod, submod, extraModFiles) : modUnapplyRestore(item, mod, submod, extraModFiles);
+
+  Future<void> popupDismiss() async {
+    await Future.delayed(Duration.zero);
+    if (taskFinished != null && taskFinished == true) {
+      taskFinished = false;
+      Navigator.of(context).pop();
+    }
+  }
+
   await showDialog(
       barrierDismissible: false,
       context: context,
@@ -25,7 +34,7 @@ Future<void> applyingPopup(context, bool applying, Item item, Mod mod, SubMod su
               insetPadding: const EdgeInsets.all(5),
               contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               content: FutureBuilder(
-                future: applying ? applyMods : restoreMods,
+                future: future,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return Center(
@@ -67,9 +76,14 @@ Future<void> applyingPopup(context, bool applying, Item item, Mod mod, SubMod su
                       ],
                     ));
                   } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                    return FutureBuilderError(loadingText: applying ? appText.dText(appText.applyingMod, submod.submodName) : appText.dText(appText.restoringModBackups, submod.submodName), snapshotError: snapshot.error.toString(), isPopup: true,);
+                    return FutureBuilderError(
+                      loadingText: applying ? appText.dText(appText.applyingMod, submod.submodName) : appText.dText(appText.restoringModBackups, submod.submodName),
+                      snapshotError: snapshot.error.toString(),
+                      isPopup: true,
+                    );
                   } else {
-                    Navigator.of(context).pop();
+                    taskFinished ??= true;
+                    popupDismiss();
                     return const SizedBox();
                   }
                 },

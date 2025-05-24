@@ -939,12 +939,11 @@ packages:
   searchfield:
     dependency: "direct main"
     description:
-      path: "."
-      ref: f7a1103
-      resolved-ref: f7a1103e5fea0d10d4d328dad9d3cc733e4f30f4
-      url: "https://github.com/fighttech-vn/searchfield"
-    source: git
-    version: "1.3.1"
+      name: searchfield
+      sha256: "14388e9a4b640f7f24b1291e83e1a625b2ba144103e1b73b993f3035814af818"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.2"
   shared_preferences:
     dependency: "direct main"
     description:

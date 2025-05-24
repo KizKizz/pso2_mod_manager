@@ -9,6 +9,17 @@ import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
 import 'package:signals/signals_flutter.dart';
 
 Future<bool> lineStrikeSleeveRestorePopup(context, LineStrikeSleeve sleeve, List<LineStrikeSleeve> lineStrikeSleeveList) async {
+  bool? taskFinished;
+  final Future future = customSleeveImageRemove(sleeve, lineStrikeSleeveList);
+
+  Future<void> popupDismiss(bool result) async {
+    await Future.delayed(Duration.zero);
+    if (taskFinished != null && taskFinished == true) {
+      taskFinished = false;
+      Navigator.of(context).pop(result);
+    }
+  }
+
   return await showDialog(
       barrierDismissible: false,
       context: context,
@@ -19,7 +30,7 @@ Future<bool> lineStrikeSleeveRestorePopup(context, LineStrikeSleeve sleeve, List
               insetPadding: const EdgeInsets.all(5),
               contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               content: FutureBuilder(
-                future: customSleeveImageRemove(sleeve, lineStrikeSleeveList),
+                future: future,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return Center(
@@ -61,10 +72,15 @@ Future<bool> lineStrikeSleeveRestorePopup(context, LineStrikeSleeve sleeve, List
                       ],
                     ));
                   } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                    return FutureBuilderError(loadingText: appText.dText(appText.restoringFile, sleeve.iceDdsName), snapshotError: snapshot.error.toString(), isPopup: true,);
+                    return FutureBuilderError(
+                      loadingText: appText.dText(appText.restoringFile, sleeve.iceDdsName),
+                      snapshotError: snapshot.error.toString(),
+                      isPopup: true,
+                    );
                   } else {
                     bool result = snapshot.data;
-                    Navigator.of(context).pop(result);
+                    taskFinished ??= true;
+                    popupDismiss(result);
                     return const SizedBox();
                   }
                 },

@@ -13,6 +13,7 @@ import 'package:signals/signals_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 Future<File?> lineStrikeCardExportPopup(context, LineStrikeCard card) async {
+  final Future future = cardExport(card);
   File? exportedFile;
   return await showDialog(
       barrierDismissible: false,
@@ -24,7 +25,7 @@ Future<File?> lineStrikeCardExportPopup(context, LineStrikeCard card) async {
             insetPadding: const EdgeInsets.all(5),
             contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
             content: FutureBuilder(
-              future: cardExport(card),
+              future: future,
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.connectionState != ConnectionState.done) {
                   return Center(
@@ -66,7 +67,11 @@ Future<File?> lineStrikeCardExportPopup(context, LineStrikeCard card) async {
                     ],
                   ));
                 } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                  return FutureBuilderError(loadingText: appText.dText(appText.exportingFile, card.cardZeroDdsName), snapshotError: snapshot.error.toString(), isPopup: true,);
+                  return FutureBuilderError(
+                    loadingText: appText.dText(appText.exportingFile, card.cardZeroDdsName),
+                    snapshotError: snapshot.error.toString(),
+                    isPopup: true,
+                  );
                 } else {
                   exportedFile = snapshot.data;
                   return ConstrainedBox(
@@ -77,11 +82,11 @@ Future<File?> lineStrikeCardExportPopup(context, LineStrikeCard card) async {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                  lineStrikeStatus.watch(context),
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                                const HoriDivider(),
+                                lineStrikeStatus.watch(context),
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                              const HoriDivider(),
                               Row(
                                 spacing: 5,
                                 mainAxisSize: MainAxisSize.min,

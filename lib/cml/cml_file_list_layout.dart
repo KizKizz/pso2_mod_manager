@@ -59,7 +59,8 @@ class _CmlItemListLayoutState extends State<CmlFileListLayout> {
                   contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                   cursorHeight: 15,
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
-                  cursorColor: Theme.of(context).colorScheme.primary),
+                  cursorColor: Theme.of(context).colorScheme.primary,
+                  hintText: appText.search),
               suggestions: displayingCmlFiles
                   .map(
                     (e) => SearchFieldListItem(
@@ -74,7 +75,6 @@ class _CmlItemListLayoutState extends State<CmlFileListLayout> {
                     ),
                   )
                   .toList(),
-              hint: appText.search,
               controller: injectedItemSearchTextController,
               onSuggestionTap: (p0) {
                 injectedItemSearchTextController.text = p0.searchKey;
