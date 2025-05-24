@@ -215,7 +215,8 @@ class _AppliedListV2State extends State<AppliedListV2> {
                                 contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                                 cursorHeight: 15,
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
-                                cursorColor: Theme.of(context).colorScheme.inverseSurface),
+                                cursorColor: Theme.of(context).colorScheme.inverseSurface,
+                                hintText: appText.search),
                             suggestions: filteredItems
                                 .map(
                                   (e) => SearchFieldListItem<Item>(
@@ -262,7 +263,6 @@ class _AppliedListV2State extends State<AppliedListV2> {
                                   ),
                                 )
                                 .toList(),
-                            hint: appText.search,
                             controller: appliedListSearchTextController,
                             onSuggestionTap: (p0) {
                               appliedListSearchTextController.text = p0.searchKey;

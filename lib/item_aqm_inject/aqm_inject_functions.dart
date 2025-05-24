@@ -314,7 +314,6 @@ Future<bool> itemCustomAqmRestoreAqm(String hqIcePath, String lqIcePath, bool fr
             }
           } catch (e) {
             modAqmInjectingStatus.value = e.toString();
-            return false;
           }
         } else {
           modAqmInjectingStatus.value = appText.noMatchingFilesFound;
@@ -329,11 +328,11 @@ Future<bool> itemCustomAqmRestoreAqm(String hqIcePath, String lqIcePath, bool fr
       // if (Directory(extractedGroup1Path).existsSync()) {}
     }
     modAqmInjectingStatus.value = appText.successful;
-    await Future.delayed(const Duration(milliseconds: 10));
+    await Future.delayed(const Duration(milliseconds: 100));
     return true;
   } else {
     modAqmInjectingStatus.value = appText.noMatchingFilesFound;
-    await Future.delayed(const Duration(milliseconds: 10));
+    await Future.delayed(const Duration(milliseconds: 100));
     return false;
   }
 }

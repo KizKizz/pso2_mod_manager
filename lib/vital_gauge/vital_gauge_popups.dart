@@ -10,6 +10,17 @@ import 'package:pso2_mod_manager/vital_gauge/vital_gauge_functions.dart';
 import 'package:signals/signals_flutter.dart';
 
 Future<bool> vitalGaugeApplyPopup(context, String customImagePath, VitalGaugeBackground vgDataFile) async {
+  bool? taskFinished;
+  final Future future = customVgBackgroundApply(context, customImagePath, vgDataFile);
+
+  Future<void> popupDismiss(bool result) async {
+    await Future.delayed(Duration.zero);
+    if (taskFinished != null && taskFinished == true) {
+      taskFinished = false;
+      Navigator.of(context).pop(result);
+    }
+  }
+
   return await showDialog(
       barrierDismissible: false,
       context: context,
@@ -20,7 +31,7 @@ Future<bool> vitalGaugeApplyPopup(context, String customImagePath, VitalGaugeBac
               insetPadding: const EdgeInsets.all(5),
               contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               content: FutureBuilder(
-                future: customVgBackgroundApply(context, customImagePath, vgDataFile),
+                future: future,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return Center(
@@ -62,10 +73,15 @@ Future<bool> vitalGaugeApplyPopup(context, String customImagePath, VitalGaugeBac
                       ],
                     ));
                   } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                    return FutureBuilderError(loadingText: appText.dText(appText.editingMod, vgDataFile.iceName), snapshotError: snapshot.error.toString(), isPopup: true,);
+                    return FutureBuilderError(
+                      loadingText: appText.dText(appText.editingMod, vgDataFile.iceName),
+                      snapshotError: snapshot.error.toString(),
+                      isPopup: true,
+                    );
                   } else {
                     bool result = snapshot.data;
-                    Navigator.of(context).pop(result);
+                    taskFinished ??= true;
+                    popupDismiss(result);
                     return const SizedBox();
                   }
                 },
@@ -75,6 +91,17 @@ Future<bool> vitalGaugeApplyPopup(context, String customImagePath, VitalGaugeBac
 }
 
 Future<bool> vitalGaugeRestorePopup(context, VitalGaugeBackground vgDataFile) async {
+  bool? taskFinished;
+  final Future future = vitalGaugeOriginalFileDownload(vgDataFile.icePath);
+
+  Future<void> popupDismiss(bool result) async {
+    await Future.delayed(Duration.zero);
+    if (taskFinished != null && taskFinished == true) {
+      taskFinished = false;
+      Navigator.of(context).pop(result);
+    }
+  }
+
   return await showDialog(
       barrierDismissible: false,
       context: context,
@@ -85,7 +112,7 @@ Future<bool> vitalGaugeRestorePopup(context, VitalGaugeBackground vgDataFile) as
               insetPadding: const EdgeInsets.all(5),
               contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               content: FutureBuilder(
-                future: vitalGaugeOriginalFileDownload(vgDataFile.icePath),
+                future: future,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return Center(
@@ -127,14 +154,19 @@ Future<bool> vitalGaugeRestorePopup(context, VitalGaugeBackground vgDataFile) as
                       ],
                     ));
                   } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                    return FutureBuilderError(loadingText: appText.dText(appText.editingMod, vgDataFile.iceName), snapshotError: snapshot.error.toString(), isPopup: true,);
+                    return FutureBuilderError(
+                      loadingText: appText.dText(appText.editingMod, vgDataFile.iceName),
+                      snapshotError: snapshot.error.toString(),
+                      isPopup: true,
+                    );
                   } else {
                     File downloadedFile = snapshot.data.$1;
                     String downloadedFileMd5 = snapshot.data.$2;
+                    taskFinished ??= true;
                     if (downloadedFile.existsSync() && downloadedFileMd5 != vgDataFile.replacedMd5) {
-                      Navigator.of(context).pop(true);
+                      popupDismiss(true);
                     } else {
-                      Navigator.of(context).pop(false);
+                      popupDismiss(false);
                     }
                     return const SizedBox();
                   }

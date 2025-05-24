@@ -6,8 +6,17 @@ import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
 
 Future<void> saveRestorePopup(context, bool isSave) async {
-  late final Future saveRestoreMods = saveRestoreAllAppliedMods();
-  late final Future reApplyMods = reApplySavedMods();
+  bool? taskFinished;
+  final Future future = isSave ? saveRestoreAllAppliedMods() : reApplySavedMods();
+
+  Future<void> popupDismiss() async {
+    await Future.delayed(Duration.zero);
+    if (taskFinished != null && taskFinished == true) {
+      taskFinished = false;
+      Navigator.of(context).pop();
+    }
+  }
+
   await showDialog(
       barrierDismissible: false,
       context: context,
@@ -18,7 +27,7 @@ Future<void> saveRestorePopup(context, bool isSave) async {
               insetPadding: const EdgeInsets.all(5),
               contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               content: FutureBuilder(
-                future: isSave ? saveRestoreMods : reApplyMods,
+                future: future,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return Center(
@@ -66,7 +75,8 @@ Future<void> saveRestorePopup(context, bool isSave) async {
                       isPopup: true,
                     );
                   } else {
-                    Navigator.of(context).pop();
+                    taskFinished ??= true;
+                    popupDismiss();
                     return const SizedBox();
                   }
                 },

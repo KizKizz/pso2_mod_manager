@@ -119,7 +119,8 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                           contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                           cursorHeight: 15,
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
-                          cursorColor: Theme.of(context).colorScheme.inverseSurface),
+                          cursorColor: Theme.of(context).colorScheme.inverseSurface,
+                          hintText: appText.search),
                       suggestions: filteredMods
                           .map(
                             (e) => SearchFieldListItem<Mod>(
@@ -166,7 +167,6 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                             ),
                           )
                           .toList(),
-                      hint: appText.search,
                       controller: searchTextController,
                       onSuggestionTap: (p0) {
                         searchTextController.text = p0.searchKey;

@@ -14,6 +14,11 @@ import 'package:signals/signals_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 Future<void> modExportPopup(context, ExportType exportType, String exportFileName, Item item, Mod? mod, SubMod? submod) async {
+  final Future future = exportType == ExportType.submods
+      ? submodExportFunction(exportFileName, mod, submod)
+      : exportType == ExportType.mods
+          ? modExportFunction(exportFileName, mod)
+          : itemExportFunction(exportFileName, item);
   await showDialog(
       barrierDismissible: false,
       context: context,
@@ -24,11 +29,7 @@ Future<void> modExportPopup(context, ExportType exportType, String exportFileNam
               insetPadding: const EdgeInsets.all(5),
               contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               content: FutureBuilder(
-                future: exportType == ExportType.submods
-                    ? submodExportFunction(exportFileName, mod, submod)
-                    : exportType == ExportType.mods
-                        ? modExportFunction(exportFileName, mod)
-                        : itemExportFunction(exportFileName, item),
+                future: future,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return Center(
@@ -70,9 +71,13 @@ Future<void> modExportPopup(context, ExportType exportType, String exportFileNam
                       ],
                     ));
                   } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                    return FutureBuilderError(loadingText: appText.exportingMods, snapshotError: snapshot.error.toString(), isPopup: true,);
+                    return FutureBuilderError(
+                      loadingText: appText.exportingMods,
+                      snapshotError: snapshot.error.toString(),
+                      isPopup: true,
+                    );
                   } else {
-                    File ? exportedFile = snapshot.data;
+                    File? exportedFile = snapshot.data;
                     return CardOverlay(
                         paddingValue: 10,
                         child: Column(

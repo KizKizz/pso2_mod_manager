@@ -11,6 +11,7 @@ import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_popup.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_item_class.dart';
 import 'package:pso2_mod_manager/item_bounding_radius/bounding_radius_popup.dart';
 import 'package:pso2_mod_manager/main_widgets/popup_menu_functions.dart';
+import 'package:pso2_mod_manager/material_app_service.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_apply/applying_popup.dart';
 import 'package:pso2_mod_manager/mod_apply/duplicate_popups.dart';
@@ -28,7 +29,7 @@ import 'package:pso2_mod_manager/v3_functions/modified_ice_file_save.dart';
 import 'package:pso2_mod_manager/v3_widgets/notifications.dart';
 
 Future<void> modToGameData(context, bool applying, Item item, Mod mod, SubMod submod) async {
-  applying ? modPopupStatus.value = 'Applying files from "${submod.submodName}" to the game' : modPopupStatus.value = 'Removing files from "${submod.submodName}" to the game';
+  applying ? modPopupStatus.value = '[${DateTime.now}] Applying files from "${submod.submodName}" to the game' : modPopupStatus.value = '[${DateTime.now}] Removing files from "${submod.submodName}" to the game';
   if (applying) {
     await modApplySequence(context, applying, item, mod, submod, []);
     submod.applyStatus ? applySuccessNotification(submod.submodName) : applyFailedNotification(submod.submodName);
@@ -36,7 +37,7 @@ Future<void> modToGameData(context, bool applying, Item item, Mod mod, SubMod su
     await modUnapplySequence(context, applying, item, mod, submod, []);
     !submod.applyStatus ? restoreSuccessNotification(submod.submodName) : restoreFailedNotification(submod.submodName);
   }
-  modPopupStatus.value = 'Done!';
+  modPopupStatus.value = '[${DateTime.now}] Done!';
 }
 
 Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod submod, List<ModFile> modFiles) async {
@@ -99,14 +100,14 @@ Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod
       String lqIcePath = '';
       for (var modFile in submod.modFiles) {
         if (hqIcePath.isEmpty) {
-          int hqIndex = pItemData.indexWhere((e) => e.category == submod.category && e.getHQIceName().contains(modFile.modFileName));
+          int hqIndex = pItemData.indexWhere((e) => (e.category == submod.category || submod.category.contains(e.subCategory)) && e.getHQIceName().contains(modFile.modFileName));
           if (hqIndex != -1) {
             hqIcePath = modFile.location;
             if (lqIcePath.isNotEmpty) break;
           }
         }
         if (lqIcePath.isEmpty) {
-          int lqIndex = pItemData.indexWhere((e) => e.category == submod.category && e.getLQIceName().contains(modFile.modFileName));
+          int lqIndex = pItemData.indexWhere((e) => (e.category == submod.category || submod.category.contains(e.subCategory))&& e.getLQIceName().contains(modFile.modFileName));
           if (lqIndex != -1) {
             lqIcePath = modFile.location;
             if (hqIcePath.isNotEmpty) break;
@@ -134,13 +135,13 @@ Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod
     }
 
     if (modFiles.isNotEmpty) {
-      await applyingPopup(context, applying, item, mod, submod, modFiles);
+      await applyingPopup(MaterialAppService.navigatorKey.currentContext, applying, item, mod, submod, modFiles);
     } else if (submod.applyHQFilesOnly! && selectedModsApplyHQFilesOnly || modAlwaysApplyHQFiles && applyHQFilesCategoryDirs.contains(submod.category)) {
       List<ItemData> matchingItemData = pItemData.where((e) => e.category == submod.category && submod.getModFileNames().contains(e.getHQIceName())).toList();
       List<ModFile> hqIces = submod.modFiles.where((e) => matchingItemData.indexWhere((data) => data.getHQIceName() == e.modFileName) != -1).toList();
-      hqIces.isNotEmpty ? await applyingPopup(context, applying, item, mod, submod, hqIces) : await applyingPopup(context, applying, item, mod, submod, []);
+      hqIces.isNotEmpty ? await applyingPopup(MaterialAppService.navigatorKey.currentContext, applying, item, mod, submod, hqIces) : await applyingPopup(MaterialAppService.navigatorKey.currentContext, applying, item, mod, submod, []);
     } else {
-      await applyingPopup(context, applying, item, mod, submod, []);
+      await applyingPopup(MaterialAppService.navigatorKey.currentContext, applying, item, mod, submod, []);
     }
   }
 }

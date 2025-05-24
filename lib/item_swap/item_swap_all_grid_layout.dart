@@ -54,7 +54,8 @@ class _ItemSwapAllGridLayoutState extends State<ItemSwapAllGridLayout> {
                   contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                   cursorHeight: 15,
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
-                  cursorColor: Theme.of(context).colorScheme.primary),
+                  cursorColor: Theme.of(context).colorScheme.primary,
+                  hintText: appText.search),
               suggestions: displayingItemData
                   .map(
                     (e) => SearchFieldListItem(
@@ -72,7 +73,6 @@ class _ItemSwapAllGridLayoutState extends State<ItemSwapAllGridLayout> {
                     ),
                   )
                   .toList(),
-              hint: appText.search,
               controller: itemSwapAllSearchTextController,
               onSuggestionTap: (p0) {
                 itemSwapAllSearchTextController.text = p0.searchKey;
@@ -196,7 +196,8 @@ class _ItemSwapAllSelectedGridLayout extends State<ItemSwapAllSelectedGridLayout
                   contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                   cursorHeight: 15,
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
-                  cursorColor: Theme.of(context).colorScheme.primary),
+                  cursorColor: Theme.of(context).colorScheme.primary,
+                  hintText: appText.search),
               suggestions: displayingItemData
                   .map(
                     (e) => SearchFieldListItem(
@@ -214,7 +215,6 @@ class _ItemSwapAllSelectedGridLayout extends State<ItemSwapAllSelectedGridLayout
                     ),
                   )
                   .toList(),
-              hint: appText.search,
               controller: itemSwapAllSearchTextController,
               onSuggestionTap: (p0) {
                 itemSwapAllSearchTextController.text = p0.searchKey;
@@ -418,7 +418,8 @@ class _ItemSwapAllSubmodGridLayout extends State<ItemSwapAllSubmodGridLayout> {
                   contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                   cursorHeight: 15,
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
-                  cursorColor: Theme.of(context).colorScheme.primary),
+                  cursorColor: Theme.of(context).colorScheme.primary,
+                  hintText: appText.search),
               suggestions: displayingSubmods
                   .map(
                     (e) => SearchFieldListItem(
@@ -440,7 +441,6 @@ class _ItemSwapAllSubmodGridLayout extends State<ItemSwapAllSubmodGridLayout> {
                     ),
                   )
                   .toList(),
-              hint: appText.search,
               controller: itemSwapAllSubmodSearchTextController,
               onSuggestionTap: (p0) {
                 itemSwapAllSubmodSearchTextController.text = p0.searchKey;

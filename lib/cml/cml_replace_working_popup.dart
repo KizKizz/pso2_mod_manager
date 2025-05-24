@@ -12,18 +12,21 @@ import 'package:signals/signals_flutter.dart';
 import 'package:path/path.dart' as p;
 
 Future<void> cmlReplaceWorkingPopup(context, bool isRestoring, Cml cmlItem, File? cmlReplacementFile) async {
-  // Signal<bool> finished = Signal(false);
-  final Future future = isRestoring ? cmFileRestore(cmlItem) : cmlFileReplacement(cmlItem,  cmlReplacementFile! );
+  bool? taskFinished;
+  final Future future = isRestoring ? cmFileRestore(cmlItem) : cmlFileReplacement(cmlItem, cmlReplacementFile!);
+  
+  Future<void> popupDismiss() async {
+    await Future.delayed(Duration.zero);
+    if (taskFinished != null && taskFinished == true) {
+      taskFinished = false;
+      Navigator.of(context).pop();
+    }
+  }
+
   await showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        // SchedulerBinding.instance.addPostFrameCallback((_) {
-        //   if (finished.watch(context)) {
-        //     finished.value = false;
-        //     Navigator.of(context).pop();
-        //   }
-        // });
         return StatefulBuilder(builder: (dialogContext, setState) {
           return AlertDialog(
               backgroundColor: Colors.transparent,
@@ -89,8 +92,8 @@ Future<void> cmlReplaceWorkingPopup(context, bool isRestoring, Cml cmlItem, File
                       cmlItem.replacedCmlFileName = '';
                       saveMasterCmlItemListToJson();
                     }
-                    // finished.value = true;
-                    Navigator.of(context).pop();
+                    taskFinished ??= true;
+                    popupDismiss();
                     return const SizedBox();
                   }
                 },

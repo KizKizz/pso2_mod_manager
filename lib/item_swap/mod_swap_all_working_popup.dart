@@ -55,7 +55,7 @@ Future<void> modSwapAllWorkingPopup(context, bool isVanillaSwap, ItemData lItemD
                 await modAddToMasterList(false, []);
               }
 
-              mainGridStatus.value = '"${submod.modName}" is swapped';
+              mainGridStatus.value = '[${DateTime.now}] "${submod.modName}" is swapped';
               taskWorking = false;
               Navigator.of(context).pop();
             });

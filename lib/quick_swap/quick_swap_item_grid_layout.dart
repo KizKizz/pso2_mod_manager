@@ -54,7 +54,8 @@ class _QuickSwapItemGridLayoutState extends State<QuickSwapItemGridLayout> {
                   contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                   cursorHeight: 15,
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
-                  cursorColor: Theme.of(context).colorScheme.primary),
+                  cursorColor: Theme.of(context).colorScheme.primary,
+                  hintText: appText.search),
               suggestions: displayingItemData
                   .map(
                     (e) => SearchFieldListItem(
@@ -72,7 +73,6 @@ class _QuickSwapItemGridLayoutState extends State<QuickSwapItemGridLayout> {
                     ),
                   )
                   .toList(),
-              hint: appText.search,
               controller: quickSwapItemSearchTextController,
               onSuggestionTap: (p0) {
                 quickSwapItemSearchTextController.text = p0.searchKey;
