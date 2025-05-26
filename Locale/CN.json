@@ -1,5 +1,4 @@
 {
-  "loadPreviewVideoThumbnails": "Load Preview Video Thumbnails",
   "cmlHelp": "CML帮助",
   "downloadSalonTool": "下载美容院工具",
   "cmlInfo": "使用模型工具程序将保存的角色文件转换为 cml 文件\n使用\"添加文件\"按钮添加 cml 文件\n在左侧面板中选择一个 cml 文件\n在右侧面板中按\"替换\"按钮，将其替换为所选的 cml 文件",

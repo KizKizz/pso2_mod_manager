@@ -1,15 +1,12 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/main_widgets/mod_image_preview_gallery_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
-import 'package:rotated_corner_decoration/rotated_corner_decoration.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:path/path.dart' as p;
 
@@ -76,55 +73,44 @@ class _SubmodPreviewBoxState extends State<SubmodPreviewBox> {
       );
     }
     if (showPlayButton && !overrideShow) {
-      final Future future = getVideoThumbnail(widget.videoFilePaths.first);
       return Stack(
         alignment: AlignmentDirectional.bottomEnd,
         children: [
-          Container(
-              foregroundDecoration: widget.isNew
-                  ? RotatedCornerDecoration.withColor(
-                      color: Colors.redAccent.withAlpha(220),
-                      badgeSize: const Size(40, 55),
-                      textSpan: TextSpan(
-                        text: appText.xnew,
-                        style: Theme.of(context).textTheme.labelLarge,
-                      ))
-                  : null,
+          SizedBox(
               width: double.infinity,
               height: 200,
-              child: Card(
-                  shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(0))),
-                  color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-                  margin: EdgeInsets.zero,
-                  elevation: 5,
-                  child: InkWell(
-                    onTap: () {
-                      showVideoBox = true;
-                      overrideShow = false;
-                      setState(() {});
-                    },
-                    child: FutureBuilder(
-                      future: future,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState != ConnectionState.done) {
-                          return Center(
-                            child: LoadingAnimationWidget.staggeredDotsWave(
-                              color: Theme.of(context).colorScheme.primary,
-                              size: 100,
-                            ),
-                          );
-                        } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                          return const Icon(Icons.play_arrow, size: 50);
-                        } else {
-                          final thumbnail = snapshot.data;
-                          return Stack(
+              child: Stack(
+                alignment: AlignmentDirectional.topEnd,
+                children: [
+                  Card(
+                      shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(0))),
+                      color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                      margin: EdgeInsets.zero,
+                      elevation: 5,
+                      child: InkWell(
+                          onTap: () {
+                            showVideoBox = true;
+                            overrideShow = false;
+                            setState(() {});
+                          },
+                          child: Stack(
                             alignment: AlignmentDirectional.center,
-                            children: [if (thumbnail != null) Image.memory(thumbnail), const Icon(Icons.play_arrow, size: 50)],
-                          );
-                        }
-                      },
+                            children: [
+                              if (File('${p.withoutExtension(widget.videoFilePaths.first)}.png').existsSync()) Image.file(File('${p.withoutExtension(widget.videoFilePaths.first)}.png')),
+                              Icon(Icons.play_arrow, size: 56, color: Colors.black),
+                              const Icon(Icons.play_arrow, size: 50)
+                            ],
+                          ))),
+                  if (widget.isNew)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 1.5, right: 2),
+                      child: Text(
+                        appText.xnew,
+                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, backgroundColor: Colors.redAccent),
+                      ),
                     ),
-                  ))),
+                ],
+              )),
           Visibility(
             visible: widget.imageFilePaths.isNotEmpty,
             child: Padding(
@@ -222,25 +208,28 @@ class _SubmodVideoBoxState extends State<SubmodVideoBox> {
       }
     });
 
-    return Container(
-      foregroundDecoration: widget.isNew
-          ? RotatedCornerDecoration.withColor(
-              color: Colors.redAccent.withAlpha(220),
-              badgeSize: const Size(40, 55),
-              textSpan: TextSpan(
-                text: appText.xnew,
-                style: Theme.of(context).textTheme.labelLarge,
-              ))
-          : null,
-      height: 200,
-      child: Card(
-        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(0))),
-        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-        margin: EdgeInsets.zero,
-        elevation: 5,
-        child: Video(controller: VideoController(videoPlayer)),
-      ),
-    );
+    return SizedBox(
+        height: 200,
+        child: Stack(
+          alignment: AlignmentDirectional.topEnd,
+          children: [
+            Card(
+              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(0))),
+              color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+              margin: EdgeInsets.zero,
+              elevation: 5,
+              child: Video(controller: VideoController(videoPlayer)),
+            ),
+            if (widget.isNew)
+              Padding(
+                padding: const EdgeInsets.only(top: 1.5, right: 2),
+                child: Text(
+                  appText.xnew,
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, backgroundColor: Colors.redAccent),
+                ),
+              ),
+          ],
+        ));
   }
 }
 
@@ -266,74 +255,66 @@ class _SubmodImageBoxState extends State<SubmodImageBox> {
       if (imagePaths.indexWhere((e) => p.basename(e) == p.basename(path)) == -1) imagePaths.add(path);
     }
 
-    return Container(
-      foregroundDecoration: widget.isNew
-          ? RotatedCornerDecoration.withColor(
-              color: Colors.redAccent.withAlpha(220),
-              badgeSize: const Size(40, 55),
-              textSpan: TextSpan(
-                text: appText.xnew,
-                style: Theme.of(context).textTheme.labelLarge,
-              ))
-          : null,
-      height: 200,
-      child: Card(
-          shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(0))),
-          color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-          margin: EdgeInsets.zero,
-          elevation: 5,
-          child: Stack(
-            alignment: AlignmentDirectional.bottomEnd,
-            children: [
-              FlutterCarousel(
-                options: FlutterCarouselOptions(
-                    autoPlay: imagePaths.length > 1 ? true : false,
-                    autoPlayInterval: const Duration(seconds: 2),
-                    disableCenter: true,
-                    viewportFraction: 1.0,
-                    height: double.infinity,
-                    floatingIndicator: true,
-                    enableInfiniteScroll: imagePaths.length > 1 ? true : false,
-                    indicatorMargin: 2,
-                    slideIndicator: CircularWaveSlideIndicator(
-                        slideIndicatorOptions: SlideIndicatorOptions(
-                            itemSpacing: 10, indicatorRadius: 4, currentIndicatorColor: Theme.of(context).colorScheme.primary, indicatorBackgroundColor: Theme.of(context).hintColor.withAlpha(200)))),
-                items: imagePaths
-                    .where((e) => File(e).existsSync())
-                    .map((e) => Image.file(
-                          File(e),
-                          filterQuality: FilterQuality.none,
-                        ))
-                    .toList(),
+    return SizedBox(
+        height: 200,
+        child: Stack(
+          alignment: AlignmentDirectional.topEnd,
+          children: [
+            Card(
+                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(0))),
+                color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                margin: EdgeInsets.zero,
+                elevation: 5,
+                child: Stack(
+                  alignment: AlignmentDirectional.bottomEnd,
+                  children: [
+                    FlutterCarousel(
+                      options: FlutterCarouselOptions(
+                          autoPlay: imagePaths.length > 1 ? true : false,
+                          autoPlayInterval: const Duration(seconds: 2),
+                          disableCenter: true,
+                          viewportFraction: 1.0,
+                          height: double.infinity,
+                          floatingIndicator: true,
+                          enableInfiniteScroll: imagePaths.length > 1 ? true : false,
+                          indicatorMargin: 2,
+                          slideIndicator: CircularWaveSlideIndicator(
+                              slideIndicatorOptions: SlideIndicatorOptions(
+                                  itemSpacing: 10,
+                                  indicatorRadius: 4,
+                                  currentIndicatorColor: Theme.of(context).colorScheme.primary,
+                                  indicatorBackgroundColor: Theme.of(context).hintColor.withAlpha(200)))),
+                      items: imagePaths
+                          .where((e) => File(e).existsSync())
+                          .map((e) => Image.file(
+                                File(e),
+                                filterQuality: FilterQuality.none,
+                              ))
+                          .toList(),
+                    ),
+                    Visibility(
+                        visible: imagePaths.isNotEmpty,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 3, right: 3),
+                          child: IconButton.outlined(
+                              visualDensity: VisualDensity.adaptivePlatformDensity,
+                              style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(150))),
+                              onPressed: () {
+                                modImagePreviewGalleryPopup(context, imagePaths);
+                              },
+                              icon: const Icon(Icons.zoom_in)),
+                        )),
+                  ],
+                )),
+            if (widget.isNew)
+              Padding(
+                padding: const EdgeInsets.only(top: 1.5, right: 2),
+                child: Text(
+                  appText.xnew,
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, backgroundColor: Colors.redAccent),
+                ),
               ),
-              Visibility(
-                  visible: imagePaths.isNotEmpty,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 3, right: 3),
-                    child: IconButton.outlined(
-                        visualDensity: VisualDensity.adaptivePlatformDensity,
-                        style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(150))),
-                        onPressed: () {
-                          modImagePreviewGalleryPopup(context, imagePaths);
-                        },
-                        icon: const Icon(Icons.zoom_in)),
-                  )),
-            ],
-          )),
-    );
+          ],
+        ));
   }
-}
-
-Future<Uint8List?> getVideoThumbnail(String videoPath) async {
-  if (!loadPreviewVideoThumbnails) return null;
-  Player tempPlayer = Player();
-  final controller = VideoController(tempPlayer);
-  await controller.player.open(Media(videoPath), play: false);
-  await controller.player.setVolume(0);
-  await controller.player.seek(Duration(seconds: 4));
-  await controller.player.pause();
-  final videoThumbnail = await controller.player.screenshot();
-  tempPlayer.dispose();
-
-  return videoThumbnail;
 }

@@ -186,18 +186,6 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             prefs.setBool('sideMenuAlwaysExpanded', sideMenuAlwaysExpanded);
                           },
                         ),
-                        // Load preview video thumbnails
-                        SettingsHeader(icon: Icons.video_label, text: appText.loadPreviewVideoThumbnails),
-                        AnimatedHorizontalToggleLayout(
-                          taps: [appText.on, appText.off],
-                          initialIndex: loadPreviewVideoThumbnails ? 0 : 1,
-                          width: constraints.maxWidth,
-                          onChange: (currentIndex, targetIndex) async {
-                            final prefs = await SharedPreferences.getInstance();
-                            targetIndex == 0 ? loadPreviewVideoThumbnails = true : loadPreviewVideoThumbnails = false;
-                            prefs.setBool('loadPreviewVideoThumbnails', loadPreviewVideoThumbnails);
-                          },
-                        ),
                         // Item icon slides
                         SettingsHeader(icon: Icons.slow_motion_video, text: appText.itemIconSlides),
                         AnimatedHorizontalToggleLayout(

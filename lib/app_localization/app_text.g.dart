@@ -475,8 +475,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..tapToReturn = json['tapToReturn'] as String
   ..homepageStyle = json['homepageStyle'] as String
   ..legacy = json['legacy'] as String
-  ..hideAppliedList = json['hideAppliedList'] as String
-  ..loadPreviewVideoThumbnails = json['loadPreviewVideoThumbnails'] as String;
+  ..hideAppliedList = json['hideAppliedList'] as String;
 
 Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'dfCastParts': instance.dfCastParts,
@@ -936,5 +935,4 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'homepageStyle': instance.homepageStyle,
       'legacy': instance.legacy,
       'hideAppliedList': instance.hideAppliedList,
-      'loadPreviewVideoThumbnails': instance.loadPreviewVideoThumbnails,
     };
