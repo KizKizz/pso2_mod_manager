@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
@@ -120,7 +121,7 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
-              spacing: 5,
+              spacing: 0,
               children: [
                 AspectRatio(
                     aspectRatio: 1,
@@ -128,7 +129,7 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
                       item: widget.item,
                       showSubCategory: true,
                     )),
-                Expanded(child: Center(child: Text(widget.item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge))),
+                Expanded(child: Center(child: AutoSizeText(widget.item.getDisplayName(), maxLines: 2, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge))),
                 Column(
                   spacing: 2.5,
                   mainAxisSize: MainAxisSize.min,

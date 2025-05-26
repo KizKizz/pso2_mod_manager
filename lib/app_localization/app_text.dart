@@ -476,7 +476,8 @@ class AppText {
       tapToReturn = 'Tap To Return',
       homepageStyle = 'Homepage Style',
       legacy = 'Legacy',
-      hideAppliedList = 'Hide Applied List';
+      hideAppliedList = 'Hide Applied List',
+      loadPreviewVideoThumbnails = 'Load Preview Video Thumbnails';
 
   factory AppText.fromJson(Map<String, dynamic> json) => _$AppTextFromJson(json);
   Map<String, dynamic> toJson() => _$AppTextToJson(this);

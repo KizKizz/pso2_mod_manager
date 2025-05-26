@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
@@ -27,6 +29,7 @@ class _SubmodPreviewBoxState extends State<SubmodPreviewBox> {
   bool showVideoBox = false;
   bool overrideShow = false;
   bool videoRefreshed = false;
+
   @override
   Widget build(BuildContext context) {
     if (!showPreviewBox.watch(context)) return const SizedBox();
@@ -73,6 +76,7 @@ class _SubmodPreviewBoxState extends State<SubmodPreviewBox> {
       );
     }
     if (showPlayButton && !overrideShow) {
+      final Future future = getVideoThumbnail(widget.videoFilePaths.first);
       return Stack(
         alignment: AlignmentDirectional.bottomEnd,
         children: [
@@ -99,22 +103,43 @@ class _SubmodPreviewBoxState extends State<SubmodPreviewBox> {
                       overrideShow = false;
                       setState(() {});
                     },
-                    child: const Icon(Icons.play_arrow, size: 50),
+                    child: FutureBuilder(
+                      future: future,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState != ConnectionState.done) {
+                          return Center(
+                            child: LoadingAnimationWidget.staggeredDotsWave(
+                              color: Theme.of(context).colorScheme.primary,
+                              size: 100,
+                            ),
+                          );
+                        } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
+                          return const Icon(Icons.play_arrow, size: 50);
+                        } else {
+                          final thumbnail = snapshot.data;
+                          return Stack(
+                            alignment: AlignmentDirectional.center,
+                            children: [if (thumbnail != null) Image.memory(thumbnail), const Icon(Icons.play_arrow, size: 50)],
+                          );
+                        }
+                      },
+                    ),
                   ))),
           Visibility(
             visible: widget.imageFilePaths.isNotEmpty,
             child: Padding(
               padding: const EdgeInsets.all(3),
               child: IconButton.outlined(
-                  style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(150))),
-                  visualDensity: VisualDensity.adaptivePlatformDensity,
-                  onPressed: () {
-                    showVideoBox = false;
-                    showPlayButton = false;
-                    overrideShow = true;
-                    setState(() {});
-                  },
-                  icon: const Icon(Icons.image)),
+                style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(150))),
+                visualDensity: VisualDensity.adaptivePlatformDensity,
+                onPressed: () {
+                  showVideoBox = false;
+                  showPlayButton = false;
+                  overrideShow = true;
+                  setState(() {});
+                },
+                icon: const Icon(Icons.image),
+              ),
             ),
           )
         ],
@@ -297,4 +322,18 @@ class _SubmodImageBoxState extends State<SubmodImageBox> {
           )),
     );
   }
+}
+
+Future<Uint8List?> getVideoThumbnail(String videoPath) async {
+  if (!loadPreviewVideoThumbnails) return null;
+  Player tempPlayer = Player();
+  final controller = VideoController(tempPlayer);
+  await controller.player.open(Media(videoPath), play: false);
+  await controller.player.setVolume(0);
+  await controller.player.seek(Duration(seconds: 4));
+  await controller.player.pause();
+  final videoThumbnail = await controller.player.screenshot();
+  tempPlayer.dispose();
+
+  return videoThumbnail;
 }

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
@@ -90,104 +91,108 @@ class SubmodCardLayout extends StatefulWidget {
 class _SubmodCardLayoutState extends State<SubmodCardLayout> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-      color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-      margin: EdgeInsets.zero,
-      elevation: 5,
-      child: Padding(
-          padding: const EdgeInsets.all(5),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            spacing: 5,
-            children: [
-              Stack(
-                alignment: AlignmentDirectional.bottomStart,
-                children: [
-                  SizedBox(
-                      height: widget.showPreview ? 200: 27,
-                      child: SubmodPreviewBox(imageFilePaths: widget.submod.previewImages, videoFilePaths: widget.submod.previewVideos, isNew: widget.submod.isNew)),
-                  Visibility(
-                      visible: widget.submod.hasCmx! || widget.submod.customAQMInjected! || widget.submod.boundingRemoved! || widget.submod.applyHQFilesOnly!,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 5, bottom: 5),
-                        child: Row(
-                          spacing: 1,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Visibility(
-                                visible: widget.submod.applyHQFilesOnly!, child: Icon(Icons.high_quality_outlined, color: selectedModsApplyHQFilesOnly ? Theme.of(context).colorScheme.primary : null)),
-                            Visibility(visible: widget.submod.hasCmx!, child: InfoTag(info: appText.cmx, borderHighlight: widget.submod.cmxApplied!)),
-                            Visibility(visible: widget.submod.customAQMInjected!, child: InfoTag(info: appText.aqm, borderHighlight: widget.submod.customAQMInjected!)),
-                            Visibility(visible: widget.submod.boundingRemoved!, child: InfoTag(info: appText.bounding, borderHighlight: widget.submod.boundingRemoved!)),
-                          ],
-                        ),
-                      )),
-                ],
-              ),
-              // Expanded(child: Text(widget.submod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium)),
-              Text(widget.submod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
-              Row(spacing: 5, children: [
-                Expanded(
-                    child: OutlinedButton(
-                        onPressed: !saveRestoreAppliedModsActive.watch(context)
-                            ? () async {
-                                if (!widget.submod.applyStatus) {
-                                  await modToGameData(context, true, widget.item, widget.mod, widget.submod);
-                                } else {
-                                  await modToGameData(context, false, widget.item, widget.mod, widget.submod);
-                                }
-                              }
-                            : null,
-                        child: Text(widget.submod.applyStatus ? appText.restore : appText.apply))),
-                Visibility(
-                    visible: widget.modSetName.isNotEmpty,
-                    child: ModManTooltip(
-                      message: widget.submod.activeInSets!.contains(widget.modSetName)
-                          ? appText.dTexts(appText.submodIsCurrentlyActiveInSet, [widget.submod.submodName, widget.modSetName])
-                          : appText.dTexts(appText.setSubmodToBeActiveInSet, [widget.submod.submodName, widget.modSetName]),
-                      child: IconButton.outlined(
-                          visualDensity: VisualDensity.adaptivePlatformDensity,
-                          onPressed: !widget.submod.activeInSets!.contains(widget.modSetName)
-                              ? () {
-                                  for (var mod in widget.item.mods) {
-                                    for (var submod in mod.submods) {
-                                      submod.activeInSets!.removeWhere((e) => e == widget.modSetName);
-                                    }
+    return SizedBox(
+      height: 270,
+      child: Card(
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
+        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+        margin: EdgeInsets.zero,
+        elevation: 5,
+        child: Padding(
+            padding: const EdgeInsets.all(5),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              spacing: 0,
+              children: [
+                Stack(
+                  alignment: AlignmentDirectional.bottomStart,
+                  children: [
+                    SizedBox(
+                        height: widget.showPreview ? 200: 27,
+                        child: SubmodPreviewBox(imageFilePaths: widget.submod.previewImages, videoFilePaths: widget.submod.previewVideos, isNew: widget.submod.isNew)),
+                    Visibility(
+                        visible: widget.submod.hasCmx! || widget.submod.customAQMInjected! || widget.submod.boundingRemoved! || widget.submod.applyHQFilesOnly!,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 5, bottom: 5),
+                          child: Row(
+                            spacing: 1,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Visibility(
+                                  visible: widget.submod.applyHQFilesOnly!, child: Icon(Icons.high_quality_outlined, color: selectedModsApplyHQFilesOnly ? Theme.of(context).colorScheme.primary : null)),
+                              Visibility(visible: widget.submod.hasCmx!, child: InfoTag(info: appText.cmx, borderHighlight: widget.submod.cmxApplied!)),
+                              Visibility(visible: widget.submod.customAQMInjected!, child: InfoTag(info: appText.aqm, borderHighlight: widget.submod.customAQMInjected!)),
+                              Visibility(visible: widget.submod.boundingRemoved!, child: InfoTag(info: appText.bounding, borderHighlight: widget.submod.boundingRemoved!)),
+                            ],
+                          ),
+                        )),
+                  ],
+                ),
+                // Expanded(child: Text(widget.submod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium)),
+                // Text(widget.submod.submodName, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.titleMedium),
+                Expanded(child: Center(child: AutoSizeText(widget.submod.submodName, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 1, style: Theme.of(context).textTheme.titleMedium))),
+                Row(spacing: 5, children: [
+                  Expanded(
+                      child: OutlinedButton(
+                          onPressed: !saveRestoreAppliedModsActive.watch(context)
+                              ? () async {
+                                  if (!widget.submod.applyStatus) {
+                                    await modToGameData(context, true, widget.item, widget.mod, widget.submod);
+                                  } else {
+                                    await modToGameData(context, false, widget.item, widget.mod, widget.submod);
                                   }
-                                  if (!widget.submod.activeInSets!.contains(widget.modSetName)) widget.submod.activeInSets!.add(widget.modSetName);
-                                  modPopupStatus.value = '[${DateTime.now()}] "${widget.modSetName}" active submod changed to "${widget.submod.submodName}" in "${widget.item.getDisplayName()}"';
-                                  modSetRefreshSignal.value = modPopupStatus.value = '[${DateTime.now()}] "${widget.modSetName}" active submod changed to "${widget.submod.submodName}" in "${widget.item.getDisplayName()}"';
-                                  saveMasterModListToJson();
-                                  saveMasterModSetListToJson();
                                 }
                               : null,
-                          icon: Icon(widget.submod.activeInSets!.contains(widget.modSetName) ? Icons.check_box_outlined : Icons.check_box_outline_blank_rounded,
-                              color: widget.submod.activeInSets!.contains(widget.modSetName) ? Theme.of(context).colorScheme.primary : null)),
-                    )),
-                // Ice file list button
-                IconButton.outlined(
-                    visualDensity: VisualDensity.adaptivePlatformDensity, onPressed: () => modFileListPopup(context, widget.item, widget.mod, widget.submod), icon: const Icon(Icons.list)),
-
-                // Quick swap Menu
-                QuickSwapMenu(item: widget.item, mod: widget.mod, submod: widget.submod),
-
-                // Function menu
-                if (!widget.isInEditingMode)
-                  SubmodMoreFunctionsMenu(
-                    item: widget.item,
-                    mod: widget.mod,
-                    submod: widget.submod,
-                    isInPopup: widget.isInPopup,
-                    refresh: () {
-                      setState(() {});
-                    },
-                  ),
-                if (widget.isInEditingMode) SubmodBulkDeleteCheckbox(item: widget.item, mod: widget.mod, submod: widget.submod, enabled: !widget.submod.applyStatus)
-              ]),
-            ],
-          )),
+                          child: Text(widget.submod.applyStatus ? appText.restore : appText.apply))),
+                  Visibility(
+                      visible: widget.modSetName.isNotEmpty,
+                      child: ModManTooltip(
+                        message: widget.submod.activeInSets!.contains(widget.modSetName)
+                            ? appText.dTexts(appText.submodIsCurrentlyActiveInSet, [widget.submod.submodName, widget.modSetName])
+                            : appText.dTexts(appText.setSubmodToBeActiveInSet, [widget.submod.submodName, widget.modSetName]),
+                        child: IconButton.outlined(
+                            visualDensity: VisualDensity.adaptivePlatformDensity,
+                            onPressed: !widget.submod.activeInSets!.contains(widget.modSetName)
+                                ? () {
+                                    for (var mod in widget.item.mods) {
+                                      for (var submod in mod.submods) {
+                                        submod.activeInSets!.removeWhere((e) => e == widget.modSetName);
+                                      }
+                                    }
+                                    if (!widget.submod.activeInSets!.contains(widget.modSetName)) widget.submod.activeInSets!.add(widget.modSetName);
+                                    modPopupStatus.value = '[${DateTime.now()}] "${widget.modSetName}" active submod changed to "${widget.submod.submodName}" in "${widget.item.getDisplayName()}"';
+                                    modSetRefreshSignal.value = modPopupStatus.value = '[${DateTime.now()}] "${widget.modSetName}" active submod changed to "${widget.submod.submodName}" in "${widget.item.getDisplayName()}"';
+                                    saveMasterModListToJson();
+                                    saveMasterModSetListToJson();
+                                  }
+                                : null,
+                            icon: Icon(widget.submod.activeInSets!.contains(widget.modSetName) ? Icons.check_box_outlined : Icons.check_box_outline_blank_rounded,
+                                color: widget.submod.activeInSets!.contains(widget.modSetName) ? Theme.of(context).colorScheme.primary : null)),
+                      )),
+                  // Ice file list button
+                  IconButton.outlined(
+                      visualDensity: VisualDensity.adaptivePlatformDensity, onPressed: () => modFileListPopup(context, widget.item, widget.mod, widget.submod), icon: const Icon(Icons.list)),
+      
+                  // Quick swap Menu
+                  QuickSwapMenu(item: widget.item, mod: widget.mod, submod: widget.submod),
+      
+                  // Function menu
+                  if (!widget.isInEditingMode)
+                    SubmodMoreFunctionsMenu(
+                      item: widget.item,
+                      mod: widget.mod,
+                      submod: widget.submod,
+                      isInPopup: widget.isInPopup,
+                      refresh: () {
+                        setState(() {});
+                      },
+                    ),
+                  if (widget.isInEditingMode) SubmodBulkDeleteCheckbox(item: widget.item, mod: widget.mod, submod: widget.submod, enabled: !widget.submod.applyStatus)
+                ]),
+              ],
+            )),
+      ),
     );
   }
 }

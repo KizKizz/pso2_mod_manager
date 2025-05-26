@@ -46,6 +46,7 @@ double splitViewFlexValue1 = 1;
 double splitViewFlexValue2 = 1;
 Signal<bool> showAppliedListV2 = Signal(true);
 int popupAfterDismissWaitDelayMilli = 10;
+bool loadPreviewVideoThumbnails = false;
 
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
@@ -192,4 +193,7 @@ Future<void> prefsLoad() async {
 
   // popup After delay after dismissed
   popupAfterDismissWaitDelayMilli = prefs.getInt('popupAfterDismissWaitDelayMilli') ?? 50;
+
+  // Preview video thumbnail
+  loadPreviewVideoThumbnails = prefs.getBool('loadPreviewVideoThumbnails') ?? false;
 }
