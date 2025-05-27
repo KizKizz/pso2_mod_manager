@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'dart:io';
 
 import 'package:archive/archive_io.dart';
@@ -15,11 +17,13 @@ import 'package:pso2_mod_manager/mod_add/mod_add_grid.dart';
 import 'package:pso2_mod_manager/mod_add/new_mod_name_popup.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
+import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_functions/video_thumbnail_fetch.dart';
 import 'package:pso2_mod_manager/v3_home/mod_add.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -550,6 +554,12 @@ Future<List<SubMod>> newSubModFetcher(String modPath, String cateName, String it
     final videosInModDir = Directory(modPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4');
     for (var element in videosInModDir) {
       modPreviewVideos.add(Uri.file(element.path).toFilePath());
+      if (!await File('${p.withoutExtension(element.path)}.jpg').exists()) {
+        final previewThumbnailData = await getVideoThumbnail(element.path);
+        if (previewThumbnailData != null) {
+          await File('${p.withoutExtension(element.path)}.jpg').writeAsBytes(previewThumbnailData);
+        }
+      }
     }
 
     //get cmx file

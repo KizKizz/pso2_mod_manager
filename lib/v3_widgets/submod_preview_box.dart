@@ -82,25 +82,29 @@ class _SubmodPreviewBoxState extends State<SubmodPreviewBox> {
               child: Stack(
                 alignment: AlignmentDirectional.topEnd,
                 children: [
-                  Card(
-                      shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(0))),
-                      color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-                      margin: EdgeInsets.zero,
-                      elevation: 5,
-                      child: InkWell(
-                          onTap: () {
-                            showVideoBox = true;
-                            overrideShow = false;
-                            setState(() {});
-                          },
-                          child: Stack(
-                            alignment: AlignmentDirectional.center,
-                            children: [
-                              if (File('${p.withoutExtension(widget.videoFilePaths.first)}.png').existsSync()) Image.file(File('${p.withoutExtension(widget.videoFilePaths.first)}.png')),
-                              Icon(Icons.play_arrow, size: 56, color: Colors.black),
-                              const Icon(Icons.play_arrow, size: 50)
-                            ],
-                          ))),
+                  SizedBox(
+                    width: double.infinity,
+                    height: double.infinity,
+                    child: Card(
+                        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(0))),
+                        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                        margin: EdgeInsets.zero,
+                        elevation: 5,
+                        child: InkWell(
+                            onTap: () {
+                              showVideoBox = true;
+                              overrideShow = false;
+                              setState(() {});
+                            },
+                            child: Stack(
+                              alignment: AlignmentDirectional.center,
+                              children: [
+                                if (File('${p.withoutExtension(widget.videoFilePaths.first)}.jpg').existsSync()) Image.file(File('${p.withoutExtension(widget.videoFilePaths.first)}.jpg')),
+                                Icon(Icons.play_arrow, size: 56, color: Colors.black),
+                                const Icon(Icons.play_arrow, size: 50)
+                              ],
+                            ))),
+                  ),
                   if (widget.isNew)
                     Padding(
                       padding: const EdgeInsets.only(top: 1.5, right: 2),

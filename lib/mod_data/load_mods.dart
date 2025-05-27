@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -14,6 +16,7 @@ import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/system_loads/app_mod_load_page.dart';
+import 'package:pso2_mod_manager/v3_functions/video_thumbnail_fetch.dart';
 
 List<Item> modSetItemsFromMasterList = [];
 
@@ -430,6 +433,12 @@ Future<List<Mod>> modsFetcher(String itemPath, String cateName) async {
     final videosInModDir = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4');
     for (var element in videosInModDir) {
       modPreviewVideos.add(Uri.file(element.path).toFilePath());
+      if (!await File('${p.withoutExtension(element.path)}.jpg').exists()) {
+        final previewThumbnailData = await getVideoThumbnail(element.path);
+        if (previewThumbnailData != null) {
+          await File('${p.withoutExtension(element.path)}.jpg').writeAsBytes(previewThumbnailData);
+        }
+      }
     }
 
     List<SubMod> newMod = await subModFetcher(dir.path, cateName, p.basename(itemPath));
@@ -493,12 +502,12 @@ Future<List<SubMod>> subModFetcher(String modPath, String cateName, String itemN
     final videosInModDir = Directory(modPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4');
     for (var element in videosInModDir) {
       modPreviewVideos.add(Uri.file(element.path).toFilePath());
-      if (!await File('${p.withoutExtension(element.path)}.png').exists()) {
-        final previewThumbnailData = await getVideoThumbnail(element.path);
-        if (previewThumbnailData != null) {
-          await File('${p.withoutExtension(element.path)}.png').writeAsBytes(previewThumbnailData);
-        }
-      }
+      // if (!await File('${p.withoutExtension(element.path)}.jpg').exists()) {
+      // final previewThumbnailData = await getVideoThumbnail(element.path);
+      // if (previewThumbnailData != null) {
+      //   await File('${p.withoutExtension(element.path)}.jpg').writeAsBytes(previewThumbnailData);
+      // }
+      // }
     }
 
     //get cmx file
@@ -534,12 +543,12 @@ Future<List<SubMod>> subModFetcher(String modPath, String cateName, String itemN
     final videosInModDir = Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4');
     for (var element in videosInModDir) {
       modPreviewVideos.add(Uri.file(element.path).toFilePath());
-      if (!await File('${p.withoutExtension(element.path)}.png').exists()) {
-        final previewThumbnailData = await getVideoThumbnail(element.path);
-        if (previewThumbnailData != null) {
-          await File('${p.withoutExtension(element.path)}.png').writeAsBytes(previewThumbnailData);
-        }
-      }
+      // if (!await File('${p.withoutExtension(element.path)}.jpg').exists()) {
+      // final previewThumbnailData = await getVideoThumbnail(element.path);
+      // if (previewThumbnailData != null) {
+      //   await File('${p.withoutExtension(element.path)}.jpg').writeAsBytes(previewThumbnailData);
+      // }
+      // }
     }
 
     //get cmx file
@@ -614,17 +623,4 @@ void saveMasterModListToJson() {
   masterModList.map((cateType) => cateType.toJson()).toList();
   const JsonEncoder encoder = JsonEncoder.withIndent('  ');
   File(mainModListJsonPath).writeAsStringSync(encoder.convert(masterModList));
-}
-
-Future<Uint8List?> getVideoThumbnail(String videoPath) async {
-  Player tempPlayer = Player();
-  final controller = VideoController(tempPlayer);
-  await controller.player.open(Media(videoPath), play: false);
-  await controller.player.setVolume(0);
-  await controller.player.seek(Duration(seconds: 4));
-  await controller.player.pause();
-  final videoThumbnail = await controller.player.screenshot(format: 'image/png');
-  tempPlayer.dispose();
-
-  return videoThumbnail;
 }
