@@ -47,10 +47,26 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
     List<ModCardLayout> modCardList = [];
     if (widget.searchString.isEmpty) {
       for (var item in widget.itemCate.items) {
+        // Sort
+        if (selectedDisplaySort.value == modSortingSelections[0]) {
+          item.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
+        } else if (selectedDisplaySort.value == modSortingSelections[1]) {
+          item.mods.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
+        } else if (selectedDisplaySort.value == modSortingSelections[2]) {
+          item.mods.sort((a, b) => b.applyDate.compareTo(a.applyDate));
+        }
         modCardList.addAll(item.mods.map((m) => ModCardLayout(item: item, mod: m)));
       }
     } else {
       for (var item in widget.itemCate.items) {
+        // Sort
+        if (selectedDisplaySort.value == modSortingSelections[0]) {
+          item.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
+        } else if (selectedDisplaySort.value == modSortingSelections[1]) {
+          item.mods.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
+        } else if (selectedDisplaySort.value == modSortingSelections[2]) {
+          item.mods.sort((a, b) => b.applyDate.compareTo(a.applyDate));
+        }
         for (var mod in item.mods) {
           if (mod.itemName.replaceFirst('_', '/').trim().toLowerCase().contains(widget.searchString.toLowerCase()) ||
               mod.modName.toLowerCase().contains(widget.searchString.toLowerCase()) ||

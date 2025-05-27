@@ -13,6 +13,7 @@ import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/rename_popup.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:path/path.dart' as p;
@@ -49,7 +50,7 @@ class _ModAddGridState extends State<ModAddGrid> {
             child: ResponsiveGridList(minItemWidth: 315, verticalGridMargin: 0, horizontalGridSpacing: 5, verticalGridSpacing: 5, children: [
               for (int i = 0; i < modAddingList.length; i++)
                 CardOverlay(
-                  paddingValue: 10,
+                  paddingValue: 5,
                   child: Column(
                     spacing: 5,
                     mainAxisSize: MainAxisSize.min,
@@ -61,15 +62,21 @@ class _ModAddGridState extends State<ModAddGrid> {
                         spacing: 5,
                         children: [
                           Expanded(
-                            child: InfoBox(
-                              info: appText.dText(modAddingList[i].associatedItems.length > 1 ? appText.numMatchedItems : appText.numMatchedItem, modAddingList[i].associatedItems.length.toString()),
-                              borderHighlight: false,
+                            child: ModManTooltip(
+                              message: modAddingList[i].associatedItems.map((e) => e.getName()).toList().join('\n'),
+                              child: InfoBox(
+                                info: appText.dText(modAddingList[i].associatedItems.length > 1 ? appText.numMatchedItems : appText.numMatchedItem, modAddingList[i].associatedItems.length.toString()),
+                                borderHighlight: false,
+                              ),
                             ),
                           ),
                           Expanded(
-                              child: InfoBox(
-                            info: appText.dText(modAddingList[i].submods.length > 1 ? appText.numVariants : appText.numVariant, modAddingList[i].submods.length.toString()),
-                            borderHighlight: false,
+                              child: ModManTooltip(
+                            message: modAddingList[i].submods.map((e) => p.basenameWithoutExtension(e.path)).toList().join('\n'),
+                            child: InfoBox(
+                              info: appText.dText(modAddingList[i].submods.length > 1 ? appText.numVariants : appText.numVariant, modAddingList[i].submods.length.toString()),
+                              borderHighlight: false,
+                            ),
                           ))
                         ],
                       ),

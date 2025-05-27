@@ -159,6 +159,15 @@ Future<List<AddingMod>> modAddSort() async {
       }
     }
 
+    for (var element in previewVideos) {
+      if (!await File('${p.withoutExtension(element.path)}.jpg').exists()) {
+        final previewThumbnailData = await getVideoThumbnail(element.path);
+        if (previewThumbnailData != null) {
+          await File('${p.withoutExtension(element.path)}.jpg').writeAsBytes(previewThumbnailData);
+        }
+      }
+    }
+
     AddingMod newAddingModItem = AddingMod(modDir, true, submods, submodNames, List.generate(submods.length, (int i) => true), associatedItems, List.generate(associatedItems.length, (int i) => true),
         sameItemIceNames, previewImages, previewVideos);
 
@@ -342,7 +351,7 @@ Future<List<ItemData>> matchItemData(List<ItemData> matchedItemData, List<MapEnt
   List<ItemData> associatedItems = [];
 
   for (var filePath in filePaths.where((e) => p.extension(e) == '')) {
-    modAddProcessingStatus.value = p.basename(filePath).toString();
+    modAddProcessingStatus.value = p.basename(filePath);
     await Future.delayed(const Duration(microseconds: 10));
 
     if (matchedItemData.indexWhere((e) => e.containsIce(p.basename(filePath))) != -1 ||
@@ -554,12 +563,12 @@ Future<List<SubMod>> newSubModFetcher(String modPath, String cateName, String it
     final videosInModDir = Directory(modPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4');
     for (var element in videosInModDir) {
       modPreviewVideos.add(Uri.file(element.path).toFilePath());
-      if (!await File('${p.withoutExtension(element.path)}.jpg').exists()) {
-        final previewThumbnailData = await getVideoThumbnail(element.path);
-        if (previewThumbnailData != null) {
-          await File('${p.withoutExtension(element.path)}.jpg').writeAsBytes(previewThumbnailData);
-        }
-      }
+      // if (!await File('${p.withoutExtension(element.path)}.jpg').exists()) {
+      //   final previewThumbnailData = await getVideoThumbnail(element.path);
+      //   if (previewThumbnailData != null) {
+      //     await File('${p.withoutExtension(element.path)}.jpg').writeAsBytes(previewThumbnailData);
+      //   }
+      // }
     }
 
     //get cmx file
