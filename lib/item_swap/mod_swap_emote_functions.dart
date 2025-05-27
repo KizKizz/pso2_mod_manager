@@ -204,18 +204,18 @@ Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, Su
     //if (selectedMotionType.isEmpty) {
     String rebootFigHashlItemIceName = lItemAvailableIces
         .firstWhere(
-          (element) => element.split(': ').first == 'Reboot Fig Hash Ice',
+          (element) => element.split(': ').first == 'Reboot Fig Hash Ice' || element.split(': ').first == 'Reboot Fig Hash',
           orElse: () => '',
         )
         .split(': ')
-        .last;
+        .last.split('\\').last;
     String rebootHumanHashlItemIceName = lItemAvailableIces
         .firstWhere(
-          (element) => element.split(': ').first == 'Reboot Human Hash Ice',
+          (element) => element.split(': ').first == 'Reboot Human Hash Ice' || element.split(': ').first == 'Reboot Human Hash',
           orElse: () => '',
         )
         .split(': ')
-        .last;
+        .last.split('\\').last;
 
     // if bti file in reboot human
     if (Directory(Uri.file('$tempSubmodPathF/${rebootHumanHashlItemIceName}_ext/group1').toFilePath()).existsSync() &&

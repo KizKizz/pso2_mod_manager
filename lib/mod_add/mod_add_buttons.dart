@@ -183,6 +183,7 @@ class _ModAddProcessedButtonsState extends State<ModAddProcessedButtons> {
                       modAddingList.isNotEmpty ? curModAddProcessedStatus.value = ModAddProcessedState.dataInList : curModAddProcessedStatus.value = ModAddProcessedState.waiting;
                       modSetsToAdd.clear();
                       modAddProcessingStatus.value = '';
+                      mainGridStatus.value = '[${DateTime.now()}] Mod(s) Added';
                     }
                   : null,
               child: Text(

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
@@ -46,10 +47,26 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
     List<ModCardLayout> modCardList = [];
     if (widget.searchString.isEmpty) {
       for (var item in widget.itemCate.items) {
+        // Sort
+        if (selectedDisplaySort.value == modSortingSelections[0]) {
+          item.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
+        } else if (selectedDisplaySort.value == modSortingSelections[1]) {
+          item.mods.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
+        } else if (selectedDisplaySort.value == modSortingSelections[2]) {
+          item.mods.sort((a, b) => b.applyDate.compareTo(a.applyDate));
+        }
         modCardList.addAll(item.mods.map((m) => ModCardLayout(item: item, mod: m)));
       }
     } else {
       for (var item in widget.itemCate.items) {
+        // Sort
+        if (selectedDisplaySort.value == modSortingSelections[0]) {
+          item.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
+        } else if (selectedDisplaySort.value == modSortingSelections[1]) {
+          item.mods.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
+        } else if (selectedDisplaySort.value == modSortingSelections[2]) {
+          item.mods.sort((a, b) => b.applyDate.compareTo(a.applyDate));
+        }
         for (var mod in item.mods) {
           if (mod.itemName.replaceFirst('_', '/').trim().toLowerCase().contains(widget.searchString.toLowerCase()) ||
               mod.modName.toLowerCase().contains(widget.searchString.toLowerCase()) ||
@@ -104,7 +121,7 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
               ? SliverPadding(
                   padding: const EdgeInsets.symmetric(vertical: 2.5),
                   sliver: SliverGrid.builder(
-                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 295, maxCrossAxisExtent: 450, mainAxisSpacing: 2.5, crossAxisSpacing: 2.5),
+                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 290.5, maxCrossAxisExtent: 450, mainAxisSpacing: 2.5, crossAxisSpacing: 2.5),
                       itemCount: modCardList.length,
                       itemBuilder: (context, index) => modCardList[index]),
                 )
@@ -154,7 +171,10 @@ class _ModCardLayoutState extends State<ModCardLayout> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          ItemIconBox(item: widget.item, showSubCategory: true,),
+                          ItemIconBox(
+                            item: widget.item,
+                            showSubCategory: true,
+                          ),
                           Flexible(child: Text(widget.item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge)),
                         ],
                       ),
@@ -165,7 +185,8 @@ class _ModCardLayoutState extends State<ModCardLayout> {
                     )
                   ],
                 ),
-                Expanded(child: Center(child: Text(widget.mod.modName, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge))),
+                Expanded(
+                    child: Center(child: AutoSizeText(widget.mod.modName, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 1, style: Theme.of(context).textTheme.labelLarge))),
                 Column(
                   spacing: 2.5,
                   children: [

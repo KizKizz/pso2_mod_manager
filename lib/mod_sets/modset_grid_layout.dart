@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
@@ -272,9 +273,9 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Flexible(child: Text(widget.activeMod.modName, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge)),
+                Flexible(child: AutoSizeText(widget.activeMod.modName, maxLines: 2, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge)),
                 const Icon(Icons.arrow_right),
-                Flexible(child: Text(widget.activeSubmod.submodName, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge)),
+                Flexible(child: AutoSizeText(widget.activeSubmod.submodName, maxLines: 2, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge)),
               ],
             ),
           ),

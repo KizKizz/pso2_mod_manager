@@ -1,6 +1,11 @@
+// ignore_for_file: unused_import
+
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:media_kit/media_kit.dart';
+import 'package:media_kit_video/media_kit_video.dart';
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
@@ -11,6 +16,7 @@ import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/system_loads/app_mod_load_page.dart';
+import 'package:pso2_mod_manager/v3_functions/video_thumbnail_fetch.dart';
 
 List<Item> modSetItemsFromMasterList = [];
 
@@ -337,7 +343,8 @@ Future<List<Item>> itemsFetcher(context, String catePath, bool reload) async {
       // }
     }
 
-    items.add(Item(p.basename(dir.path), '', nameVariants, itemIcons, '', '', '', false, p.basename(catePath), Uri.file(dir.path).toFilePath(), false, DateTime(0), 0, false, false, false, [], modList));
+    items.add(
+        Item(p.basename(dir.path), '', nameVariants, itemIcons, '', '', '', false, p.basename(catePath), Uri.file(dir.path).toFilePath(), false, DateTime(0), 0, false, false, false, [], modList));
   }
   // clearModAdderDirs();
 
@@ -426,6 +433,12 @@ Future<List<Mod>> modsFetcher(String itemPath, String cateName) async {
     final videosInModDir = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4');
     for (var element in videosInModDir) {
       modPreviewVideos.add(Uri.file(element.path).toFilePath());
+      if (!await File('${p.withoutExtension(element.path)}.jpg').exists()) {
+        final previewThumbnailData = await getVideoThumbnail(element.path);
+        if (previewThumbnailData != null) {
+          await File('${p.withoutExtension(element.path)}.jpg').writeAsBytes(previewThumbnailData);
+        }
+      }
     }
 
     List<SubMod> newMod = await subModFetcher(dir.path, cateName, p.basename(itemPath));
@@ -489,6 +502,12 @@ Future<List<SubMod>> subModFetcher(String modPath, String cateName, String itemN
     final videosInModDir = Directory(modPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4');
     for (var element in videosInModDir) {
       modPreviewVideos.add(Uri.file(element.path).toFilePath());
+      // if (!await File('${p.withoutExtension(element.path)}.jpg').exists()) {
+      // final previewThumbnailData = await getVideoThumbnail(element.path);
+      // if (previewThumbnailData != null) {
+      //   await File('${p.withoutExtension(element.path)}.jpg').writeAsBytes(previewThumbnailData);
+      // }
+      // }
     }
 
     //get cmx file
@@ -524,6 +543,12 @@ Future<List<SubMod>> subModFetcher(String modPath, String cateName, String itemN
     final videosInModDir = Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4');
     for (var element in videosInModDir) {
       modPreviewVideos.add(Uri.file(element.path).toFilePath());
+      // if (!await File('${p.withoutExtension(element.path)}.jpg').exists()) {
+      // final previewThumbnailData = await getVideoThumbnail(element.path);
+      // if (previewThumbnailData != null) {
+      //   await File('${p.withoutExtension(element.path)}.jpg').writeAsBytes(previewThumbnailData);
+      // }
+      // }
     }
 
     //get cmx file
@@ -592,55 +617,6 @@ Future<List<SubMod>> subModFetcher(String modPath, String cateName, String itemN
 
   return submods;
 }
-
-// void ogModFilesReset() {
-//   ogWin32FilePaths.clear();
-//   ogWin32NAFilePaths.clear();
-//   ogWin32RebootFilePaths.clear();
-//   ogWin32RebootNAFilePaths.clear();
-// }
-
-// void ogModFilesLoader() {
-//   //Get og file paths
-//   if (ogWin32FilePaths.isEmpty && Directory(Uri.file('$modManPso2binPath/data/win32').toFilePath()).existsSync()) {
-//     ogWin32FilePaths =
-//         Directory(Uri.file('$modManPso2binPath/data/win32').toFilePath()).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').map((e) => e.path).toList();
-//   }
-//   if (ogWin32NAFilePaths.isEmpty && Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync()) {
-//     ogWin32NAFilePaths = Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath())
-//         .listSync(recursive: false)
-//         .whereType<File>()
-//         .where((element) => p.extension(element.path) == '')
-//         .map((e) => e.path)
-//         .toList();
-//   }
-//   if (ogWin32RebootFilePaths.isEmpty && Directory(Uri.file('$modManPso2binPath/data/win32reboot').toFilePath()).existsSync()) {
-//     final mainDirs = Directory(Uri.file('$modManPso2binPath/data/win32reboot').toFilePath()).listSync().whereType<Directory>().where((element) => p.basename(element.path).length == 2);
-//     for (var dir in mainDirs) {
-//       ogWin32RebootFilePaths.addAll(dir.listSync().whereType<File>().where((element) => p.extension(element.path) == '').map((e) => e.path).toList());
-//     }
-
-//     // ogWin32RebootFilePaths = Directory(Uri.file('$modManPso2binPath/data/win32reboot').toFilePath())
-//     //     .listSync(recursive: true)
-//     //     .whereType<File>()
-//     //     .where((element) => p.extension(element.path) == '')
-//     //     .map((e) => e.path)
-//     //     .toList();
-//   }
-//   if (ogWin32RebootNAFilePaths.isEmpty && Directory(Uri.file('$modManPso2binPath/data/win32reboot_na').toFilePath()).existsSync()) {
-//     final mainDirs = Directory(Uri.file('$modManPso2binPath/data/win32reboot_na').toFilePath()).listSync().whereType<Directory>().where((element) => p.basename(element.path).length == 2);
-//     for (var dir in mainDirs) {
-//       ogWin32RebootNAFilePaths.addAll(dir.listSync().whereType<File>().where((element) => p.extension(element.path) == '').map((e) => e.path).toList());
-//     }
-
-//     // ogWin32RebootNAFilePaths = Directory(Uri.file('$modManPso2binPath/data/win32reboot_na').toFilePath())
-//     //     .listSync(recursive: true)
-//     //     .whereType<File>()
-//     //     .where((element) => p.extension(element.path) == '')
-//     //     .map((e) => e.path)
-//     //     .toList();
-//   }
-// }
 
 void saveMasterModListToJson() {
   //Save to json
