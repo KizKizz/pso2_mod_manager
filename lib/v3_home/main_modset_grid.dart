@@ -4,12 +4,13 @@ import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_functions.dart';
 import 'package:pso2_mod_manager/mod_sets/modset_grid_layout.dart';
-import 'package:pso2_mod_manager/mod_sets/modset_select_buttons.dart';
-import 'package:pso2_mod_manager/mod_sets/modset_sorting_buttons.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_widgets/choice_select_buttons.dart';
+import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 
-Signal<String> selectedDisplayModSet = Signal('All');
+Signal<List<String>> selectedDisplayModSets = Signal([]);
 Signal<String> modSetRefreshSignal = Signal('');
 
 class MainModSetGrid extends StatefulWidget {
@@ -35,17 +36,19 @@ class _MainModSetGridState extends State<MainModSetGrid> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (selectedDisplaySortModSet.watch(context) != selectedDisplaySortModSet.peek() || modSetRefreshSignal.watch(context) != modSetRefreshSignal.peek()) {
+    if (selectedDisplaySortModSet.watch(context) != selectedDisplaySortModSet.peek() ||
+        modSetRefreshSignal.watch(context) != modSetRefreshSignal.peek() ||
+        mainGridStatus.watch(context) != mainGridStatus.peek()) {
       setState(
         () {},
       );
     }
 
     List<ModSet> displayingModSets = [];
-    if (selectedDisplayModSet.watch(context) == 'All') {
+    if (selectedDisplayModSets.watch(context).isEmpty) {
       displayingModSets = masterModSetList;
     } else {
-      displayingModSets = masterModSetList.where((e) => e.setName == selectedDisplayModSet.watch(context)).toList();
+      displayingModSets = masterModSetList.where((e) => selectedDisplayModSets.watch(context).contains(e.setName)).toList();
     }
 
     // Sort
@@ -81,11 +84,34 @@ class _MainModSetGridState extends State<MainModSetGrid> {
                         },
                         child: Text(appText.addNewSet)),
                   )),
-              SizedBox(width: 250, child: ModSetSortingButton(scrollController: controller)),
-              SizedBox(
-                width: 200,
-                child: ModSetSelectButtons(setNames: masterModSetList.map((e) => e.setName).toList(), scrollController: controller),
-              ),
+              SingleChoiceSelectButton(
+                  width: 250,
+                  height: 30,
+                  label: appText.types,
+                  selectPopupLabel: appText.types,
+                  availableItemList: modSortingSelections,
+                  selectedItemsLabel: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                  selectedItem: selectedDisplaySortModSet,
+                  extraWidgets: [],
+                  savePref: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    prefs.setString('selectedDisplaySortModSet', selectedDisplaySortModSet.value);
+                    controller.jumpTo(0);
+                  }),
+              MultiChoiceSelectButton(
+                  width: 250,
+                  height: 30,
+                  label: appText.view,
+                  selectPopupLabel: appText.view,
+                  availableItemList: masterModSetList.map((e) => e.setName).toList(),
+                  selectedItemsLabel: masterModSetList.where((e) => selectedDisplayModSets.value.contains(e.setName)).map((e) => e.setName).toList(),
+                  selectedItems: selectedDisplayModSets,
+                  extraWidgets: masterModSetList
+                      .map((e) => InfoBox(info: appText.dText(e.setItems.length > 1 ? appText.numItems : appText.numItem, e.setItems.length.toString()), borderHighlight: false))
+                      .toList(),
+                  savePref: () async {
+                    controller.jumpTo(0);
+                  }),
               SizedBox(
                 height: 30,
                 child: IconButton.outlined(

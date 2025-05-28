@@ -5,13 +5,14 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
-import 'package:pso2_mod_manager/item_aqm_inject/custom_aqm_file_select_button.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/settings/mod_configs_restore_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_functions/json_backup.dart';
 import 'package:pso2_mod_manager/v3_functions/profanity_remove.dart';
 import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:pso2_mod_manager/v3_widgets/animated_hori_toggle_layout.dart';
+import 'package:pso2_mod_manager/v3_widgets/choice_select_buttons.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -136,10 +137,19 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
                           },
                           child: Text(appText.addCustomAqmFiles)),
                     ),
-                    SizedBox(
+                    SingleChoiceSelectButton(
                         width: double.infinity,
-                        child:
-                            CustomAqmSelectButtons(aqmFilePaths: Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').map((e) => e.path).toList())),
+                        height: 30,
+                        label: appText.currentAqmFile,
+                        selectPopupLabel: appText.customAQMFiles,
+                        availableItemList: Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').map((e) => e.path).toList(),
+                        selectedItemsLabel: Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').map((e) => e.path).toList(),
+                        selectedItem: selectedAqmInjectCategory,
+                        extraWidgets: [],
+                        savePref: () async {
+                          final prefs = await SharedPreferences.getInstance();
+                          prefs.setString('selectedCustomAQMFilePath', selectedCustomAQMFilePath.value);
+                        }),
                     // Mark modded items
                     SettingsHeader(icon: Icons.image_search_rounded, text: appText.markModdedItemInGame),
                     AnimatedHorizontalToggleLayout(

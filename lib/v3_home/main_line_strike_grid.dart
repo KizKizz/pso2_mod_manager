@@ -15,8 +15,8 @@ import 'package:pso2_mod_manager/line_strike/line_strike_image_crop_popup.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_sleeve_custom_image_grid_layout.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_sleeve_functions.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_sleeve_original_grid_layout.dart';
-import 'package:pso2_mod_manager/line_strike/line_strike_type_select_button.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_widgets/choice_select_buttons.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -45,11 +45,11 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
   }
 
   Future<void> customImageFetch() async {
-    if (selectedLineStrikeType.watch(context) == LineStrikeItemType.card) {
+    if (selectedLineStrikeType.watch(context) == LineStrikeItemType.cards.value) {
       customBackgroundImages = await customCardImagesFetch();
-    } else if (selectedLineStrikeType.watch(context) == LineStrikeItemType.board) {
+    } else if (selectedLineStrikeType.watch(context) == LineStrikeItemType.boards.value) {
       customBackgroundImages = await customBoardImageFetch();
-    } else if (selectedLineStrikeType.watch(context) == LineStrikeItemType.sleeve) {
+    } else if (selectedLineStrikeType.watch(context) == LineStrikeItemType.sleeves.value) {
       customBackgroundImages = await customSleeveImageFetch();
     }
     setState(() {});
@@ -98,9 +98,9 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
                         backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
                         side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
                     onPressed: () async {
-                      launchUrlString(selectedLineStrikeType.value == LineStrikeItemType.card
+                      launchUrlString(selectedLineStrikeType.value == LineStrikeItemType.cards.value
                           ? lineStrikeCardsDirPath
-                          : selectedLineStrikeType.value == LineStrikeItemType.board
+                          : selectedLineStrikeType.value == LineStrikeItemType.boards.value
                               ? lineStrikeBoardsDirPath
                               : lineStrikeSleevesDirPath);
                     },
@@ -114,11 +114,11 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
                         backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
                         side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
                     onPressed: () async {
-                      if (selectedLineStrikeType.value == LineStrikeItemType.card) {
+                      if (selectedLineStrikeType.value == LineStrikeItemType.cards.value) {
                         customBackgroundImages = await customCardImagesFetch();
-                      } else if (selectedLineStrikeType.value == LineStrikeItemType.board) {
+                      } else if (selectedLineStrikeType.value == LineStrikeItemType.boards.value) {
                         customBackgroundImages = await customBoardImageFetch();
-                      } else if (selectedLineStrikeType.value == LineStrikeItemType.sleeve) {
+                      } else if (selectedLineStrikeType.value == LineStrikeItemType.sleeves.value) {
                         customBackgroundImages = await customSleeveImageFetch();
                       }
                       setState(() {});
@@ -138,11 +138,23 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
                     },
                     child: Text(lineStrikeShowAppliedOnly ? appText.showAll : appText.showAppliedOnly)),
               )),
-              Expanded(child: LineStrikeTypeSelectButton(lScrollController: lScrollController, rScrollController: rScrollController))
+              Expanded(child: SingleChoiceSelectButton(
+                        width: double.infinity,
+                        height: 30,
+                        label: appText.view,
+                        selectPopupLabel: appText.view,
+                        availableItemList: lineStrikeItemTypes,
+                        selectedItemsLabel: lineStrikeItemTypes.map((e) => appText.lineStrikeItemTypeName(e)).toList(),
+                        selectedItem: selectedLineStrikeType,
+                        extraWidgets: [],
+                        savePref: () {
+                          lScrollController.jumpTo(0);
+                          rScrollController.jumpTo(0);
+                        }))
             ],
           ),
           Visibility(
-            visible: selectedLineStrikeType.value == LineStrikeItemType.card,
+            visible: selectedLineStrikeType.value == LineStrikeItemType.cards.value,
             child: Expanded(
                 child: Row(
               spacing: 5,
@@ -154,7 +166,7 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
             )),
           ),
           Visibility(
-            visible: selectedLineStrikeType.value == LineStrikeItemType.board,
+            visible: selectedLineStrikeType.value == LineStrikeItemType.boards.value,
             child: Expanded(
                 child: Row(
               spacing: 5,
@@ -166,7 +178,7 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
             )),
           ),
           Visibility(
-            visible: selectedLineStrikeType.value == LineStrikeItemType.sleeve,
+            visible: selectedLineStrikeType.value == LineStrikeItemType.sleeves.value,
             child: Expanded(
                 child: Row(
               spacing: 5,

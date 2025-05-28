@@ -3,8 +3,6 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_swap/emote_queue_swap_working_popup.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_grid_layout.dart';
-import 'package:pso2_mod_manager/item_swap/item_swap_motions_select_button.dart';
-import 'package:pso2_mod_manager/item_swap/item_swap_type_select_button.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_working_popup.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_grid_layout.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
@@ -14,6 +12,7 @@ import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_swap_grid.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
+import 'package:pso2_mod_manager/v3_widgets/choice_select_buttons.dart';
 import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
@@ -110,8 +109,37 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                       )),
                       Visibility(
                           visible: submod.category == defaultCategoryDirs[14],
-                          child: Expanded(child: ItemSwapMotionTypeSelectButtons(lScrollController: lScrollController, rScrollController: rScrollController))),
-                      Expanded(child: Padding(padding: const EdgeInsets.only(top: 1), child: ItemSwapTypeSelectButtons(lScrollController: lScrollController, rScrollController: rScrollController))),
+                          child: Expanded(
+                              child: SingleChoiceSelectButton(
+                                  width: double.infinity,
+                                  height: 30,
+                                  label: appText.motions,
+                                  selectPopupLabel: appText.motions,
+                                  availableItemList: defaultMotionTypes,
+                                  selectedItemsLabel: defaultMotionTypes.map((e) => appText.motionTypeName(e)).toList(),
+                                  selectedItem: selectedItemSwapMotionType,
+                                  extraWidgets: [],
+                                  savePref: () {
+                                    lScrollController.jumpTo(0);
+                                    rScrollController.jumpTo(0);
+                                  }))),
+                      Expanded(
+                          child: Padding(
+                        padding: const EdgeInsets.only(top: 1),
+                        child: SingleChoiceSelectButton(
+                            width: double.infinity,
+                            height: 30,
+                            label: appText.types,
+                            selectPopupLabel: appText.types,
+                            availableItemList: itemTypes,
+                            selectedItemsLabel: itemTypes.map((e) => appText.itemTypeName(e)).toList(),
+                            selectedItem: selectedItemSwapTypeCategory,
+                            extraWidgets: [],
+                            savePref: () {
+                              lScrollController.jumpTo(0);
+                              rScrollController.jumpTo(0);
+                            }),
+                      )),
                     ],
                   ),
                   Expanded(

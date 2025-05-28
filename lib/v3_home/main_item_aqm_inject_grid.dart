@@ -5,15 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
-import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_cate_select_button.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_grid_layout.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_grid_layout.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_item_class.dart';
-import 'package:pso2_mod_manager/item_aqm_inject/custom_aqm_file_select_button.dart';
-import 'package:pso2_mod_manager/item_swap/item_swap_motions_select_button.dart';
-import 'package:pso2_mod_manager/item_swap/item_swap_type_select_button.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_widgets/choice_select_buttons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:path/path.dart' as p;
 
@@ -84,11 +82,38 @@ class _MainItemAqmInjectGridState extends State<MainItemAqmInjectGrid> {
                     },
                     child: Text(showNoNameItems.watch(context) ? appText.hideNoNameItems : appText.showNoNameItems)),
               )),
-              Expanded(child: Padding(padding: const EdgeInsets.only(top: 1), child: ItemSwapTypeSelectButtons(lScrollController: lScrollController, rScrollController: rScrollController))),
+              Expanded(
+                  child: Padding(
+                      padding: const EdgeInsets.only(top: 1),
+                      child: SingleChoiceSelectButton(
+                          width: double.infinity,
+                          height: 30,
+                          label: appText.types,
+                          selectPopupLabel: appText.types,
+                          availableItemList: itemTypes,
+                          selectedItemsLabel: itemTypes.map((e) => appText.itemTypeName(e)).toList(),
+                          selectedItem: selectedItemSwapTypeCategory,
+                          extraWidgets: [],
+                          savePref: () {
+                            lScrollController.jumpTo(0);
+                            rScrollController.jumpTo(0);
+                          }))),
               Expanded(
                   child: Padding(
                 padding: const EdgeInsets.only(top: 1),
-                child: AqmInjectCateSelectButton(categoryNames: aqmInjectCategoryDirs, lSelectedItemData: lSelectedItemData, lScrollController: lScrollController),
+                child: SingleChoiceSelectButton(
+                    width: double.infinity,
+                    height: 30,
+                    label: appText.view,
+                    selectPopupLabel: appText.view,
+                    availableItemList: aqmInjectCategoryDirs,
+                    selectedItemsLabel: aqmInjectCategoryDirs.map((e) => appText.categoryName(e)).toList(),
+                    selectedItem: selectedAqmInjectCategory,
+                    extraWidgets: [],
+                    savePref: () {
+                      lSelectedItemData.value = null;
+                      lScrollController.jumpTo(0);
+                    }),
               )),
             ],
           ),
@@ -130,7 +155,19 @@ class _MainItemAqmInjectGridState extends State<MainItemAqmInjectGrid> {
                   },
                   child: Text(appText.addCustomAqmFiles)),
               Expanded(
-                  child: CustomAqmSelectButtons(aqmFilePaths: Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').map((e) => e.path).toList()))
+                  child: SingleChoiceSelectButton(
+                      width: double.infinity,
+                      height: 30,
+                      label: appText.currentAqmFile,
+                      selectPopupLabel: appText.customAQMFiles,
+                      availableItemList: Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').map((e) => e.path).toList(),
+                      selectedItemsLabel: Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').map((e) => e.path).toList(),
+                      selectedItem: selectedAqmInjectCategory,
+                      extraWidgets: [],
+                      savePref: () async {
+                        final prefs = await SharedPreferences.getInstance();
+                        prefs.setString('selectedCustomAQMFilePath', selectedCustomAQMFilePath.value);
+                      }))
             ],
           )
         ],

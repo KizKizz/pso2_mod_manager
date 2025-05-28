@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
-import 'package:pso2_mod_manager/item_swap/item_swap_cate_select_button.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_acc_functions.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_emote_functions.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_general_functions.dart';

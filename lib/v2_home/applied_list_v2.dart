@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
-import 'package:pso2_mod_manager/main_widgets/applied_mod_category_select_buttons.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
 import 'package:pso2_mod_manager/mod_apply/load_applied_mods.dart';
@@ -10,11 +9,12 @@ import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_functions.dart';
 import 'package:pso2_mod_manager/mod_sets/mods_to_set_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
-import 'package:pso2_mod_manager/v2_home/applied_list_sorting_button.dart';
 import 'package:pso2_mod_manager/v2_home/applied_mod_v2_layout.dart';
+import 'package:pso2_mod_manager/v3_widgets/choice_select_buttons.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/notifications.dart';
 import 'package:searchfield/searchfield.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 
 class AppliedListV2 extends StatefulWidget {
@@ -35,8 +35,7 @@ class _AppliedListV2State extends State<AppliedListV2> {
     if (modApplyStatus.watch(context) != modApplyStatus.peek() ||
         mainGridStatus.watch(context) != mainGridStatus.peek() ||
         modPopupStatus.watch(context) != modPopupStatus.peek() ||
-        selectedDisplaySortAppliedList.watch(context) != selectedDisplaySortAppliedList.peek() ||
-        selectedDisplayCategoryAppliedList.watch(context) != selectedDisplayCategoryAppliedList.peek()) {
+        selectedDisplaySortAppliedList.watch(context) != selectedDisplaySortAppliedList.peek()) {
       setState(
         () {},
       );
@@ -47,8 +46,8 @@ class _AppliedListV2State extends State<AppliedListV2> {
     List<Item> filteredItems = [];
     if (appliedListSearchTextController.text.isEmpty) {
       for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
-        for (var cate
-            in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == 'All'))) {
+        for (var cate in cateType.categories
+            .where((e) => e.getNumOfAppliedItems() > 0 && (selectedAppliedListDisplayCategories.value.contains(e.categoryName) || selectedAppliedListDisplayCategories.value.isEmpty))) {
           for (var item in cate.items.where((e) => e.applyStatus)) {
             filteredItems.add(item);
             numOfAppliedMods += item.getNumOfAppliedMods();
@@ -57,8 +56,8 @@ class _AppliedListV2State extends State<AppliedListV2> {
       }
     } else {
       for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
-        for (var cate
-            in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == 'All'))) {
+        for (var cate in cateType.categories
+            .where((e) => e.getNumOfAppliedItems() > 0 && (selectedAppliedListDisplayCategories.value.contains(e.categoryName) || selectedAppliedListDisplayCategories.value.isEmpty))) {
           for (var item in cate.items.where((e) => e.applyStatus)) {
             if (item.mods.indexWhere((e) => e.applyStatus && e.itemName.toLowerCase().contains(appliedListSearchTextController.text.toLowerCase())) != -1) filteredItems.add(item);
             numOfAppliedMods += item.getNumOfAppliedMods();
@@ -120,8 +119,40 @@ class _AppliedListV2State extends State<AppliedListV2> {
                       Row(
                         spacing: 2.5,
                         children: [
-                          Flexible(flex: 4, fit: FlexFit.tight, child: AppliedModCategorySelectButtons(categories: categories, scrollController: scrollController)),
-                          Flexible(flex: 5, fit: FlexFit.tight, child: AppliedListSortingButton(scrollController: scrollController)),
+                          Flexible(
+                            flex: 4,
+                            fit: FlexFit.tight,
+                            child: MultiChoiceSelectButton(
+                                width: double.infinity,
+                                height: 30,
+                                label: appText.view,
+                                selectPopupLabel: appText.view,
+                                availableItemList: categories.where((e) => e.getNumOfAppliedItems() > 0).map((e) => e.categoryName).toList(),
+                                selectedItemsLabel: categories.where((e) => e.getNumOfAppliedItems() > 0 && selectedAppliedListDisplayCategories.value.contains(e.categoryName)).map((e) => appText.categoryName(e.categoryName)).toList(),
+                                selectedItems: selectedAppliedListDisplayCategories,
+                                extraWidgets: [],
+                                savePref: () async {
+                                  final prefs = await SharedPreferences.getInstance();
+                                  prefs.setStringList('selectedAppliedListDisplayCategories', selectedAppliedListDisplayCategories.value);
+                                }),
+                          ),
+                          Flexible(
+                              flex: 5,
+                              fit: FlexFit.tight,
+                              child: SingleChoiceSelectButton(
+                                  width: double.infinity,
+                                  height: 30,
+                                  label: appText.sort,
+                                  selectPopupLabel: appText.sort,
+                                  availableItemList: modSortingSelections,
+                                  selectedItemsLabel: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                                  selectedItem: selectedDisplaySortAppliedList,
+                                  extraWidgets: [],
+                                  savePref: () async {
+                                    final prefs = await SharedPreferences.getInstance();
+                                    prefs.setString('selectedDisplaySortAppliedList', selectedDisplaySortAppliedList.value);
+                                    scrollController.jumpTo(0);
+                                  })),
                         ],
                       ),
                       // Restore + expanse

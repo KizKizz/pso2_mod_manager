@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
-import 'package:pso2_mod_manager/main_widgets/cate_mod_category_select_buttons.dart';
-import 'package:pso2_mod_manager/main_widgets/sorting_buttons.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/main_widgets/cate_mod_grid_layout.dart';
+import 'package:pso2_mod_manager/v3_widgets/choice_select_buttons.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:searchfield/searchfield.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 
 class MainModGrid extends StatefulWidget {
@@ -46,7 +46,7 @@ class _MainModGridState extends State<MainModGrid> {
     List<Mod> filteredMods = [];
     if (searchTextController.value.text.isEmpty) {
       for (var cateType in masterModList) {
-        for (var cate in cateType.categories.where((e) => e.categoryName == selectedModDisplayCategory.value || selectedModDisplayCategory.value == 'All')) {
+        for (var cate in cateType.categories.where((e) => selectedModDisplayCategories.watch(context).contains(e.categoryName) || selectedModDisplayCategories.watch(context).isEmpty)) {
           for (var item in cate.items) {
             filteredMods.addAll(item.mods);
           }
@@ -54,7 +54,7 @@ class _MainModGridState extends State<MainModGrid> {
       }
     } else {
       for (var cateType in masterModList) {
-        for (var cate in cateType.categories.where((e) => e.categoryName == selectedModDisplayCategory.value || selectedModDisplayCategory.value == 'All')) {
+        for (var cate in cateType.categories.where((e) => selectedModDisplayCategories.watch(context).contains(e.categoryName) || selectedModDisplayCategories.watch(context).isEmpty)) {
           for (var item in cate.items) {
             filteredMods.addAll(item.mods.where((e) => e.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
           }
@@ -80,10 +80,10 @@ class _MainModGridState extends State<MainModGrid> {
     }
 
     List<Category> displayingCategories = [];
-    if (selectedModDisplayCategory.watch(context) == 'All') {
+    if (selectedModDisplayCategories.value.isEmpty) {
       displayingCategories = categories;
     } else {
-      displayingCategories = categories.where((e) => e.categoryName == selectedModDisplayCategory.watch(context)).toList();
+      displayingCategories = categories.where((e) => selectedModDisplayCategories.watch(context).contains(e.categoryName)).toList();
     }
 
     // Sort
@@ -244,10 +244,44 @@ class _MainModGridState extends State<MainModGrid> {
                   ]),
                 ),
               ),
-              SizedBox(width: 250, child: SortingButtons(scrollController: controller)),
-              SizedBox(
+              SingleChoiceSelectButton(
+                  width: 250,
+                  height: 30,
+                  label: appText.sort,
+                  selectPopupLabel: appText.sort,
+                  availableItemList: modSortingSelections,
+                  selectedItemsLabel: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                  selectedItem: selectedDisplaySort,
+                  extraWidgets: [],
+                  savePref: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    prefs.setString('selectedDisplaySort', selectedDisplaySort.value);
+                    controller.jumpTo(0);
+                  }),
+              MultiChoiceSelectButton(
                 width: 200,
-                child: CateModCategorySelectButtons(categories: categories, scrollController: controller),
+                height: 30,
+                label: appText.view,
+                selectPopupLabel: appText.view,
+                availableItemList: categories.map((e) => e.categoryName).toList(),
+                selectedItemsLabel: selectedModDisplayCategories.value.map((e) => appText.categoryName(e)).toList(),
+                selectedItems: selectedModDisplayCategories,
+                extraWidgets: categories
+                    .map((e) => Row(
+                          spacing: 5,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            InfoBox(
+                                info: e.items.length > 1 ? appText.dText(appText.numItems, e.items.length.toString()) : appText.dText(appText.numItem, e.items.length.toString()),
+                                borderHighlight: false),
+                            InfoBox(info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedItems().toString()), borderHighlight: false)
+                          ],
+                        ))
+                    .toList(),
+                savePref: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  prefs.setStringList('selectedModDisplayCategories', selectedModDisplayCategories.value);
+                },
               ),
               SizedBox(
                 height: 30,
