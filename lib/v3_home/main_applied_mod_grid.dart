@@ -53,7 +53,7 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
     if (searchTextController.value.text.isEmpty) {
       for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
         for (var cate in cateType.categories
-            .where((e) => e.getNumOfAppliedItems() > 0 && (selectedAppliedListDisplayCategories.value.contains(e.categoryName) || selectedAppliedListDisplayCategories.value.isEmpty))) {
+            .where((e) => e.getNumOfAppliedItems() > 0 && (selectedAppliedListDisplayCategories.value.contains(e.categoryName) || selectedAppliedListDisplayCategories.value.contains('All')))) {
           for (var item in cate.items.where((e) => e.applyStatus)) {
             filteredMods.addAll(item.mods.where((e) => e.applyStatus));
             numOfAppliedMods += item.getNumOfAppliedMods();
@@ -63,7 +63,7 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
     } else {
       for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
         for (var cate in cateType.categories
-            .where((e) => e.getNumOfAppliedItems() > 0 && (selectedAppliedListDisplayCategories.value.contains(e.categoryName) || selectedAppliedListDisplayCategories.value.isEmpty))) {
+            .where((e) => e.getNumOfAppliedItems() > 0 && (selectedAppliedListDisplayCategories.value.contains(e.categoryName) || selectedAppliedListDisplayCategories.value.contains('All')))) {
           for (var item in cate.items.where((e) => e.applyStatus)) {
             filteredMods.addAll(item.mods.where((e) => e.applyStatus && e.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
             numOfAppliedMods += item.getNumOfAppliedMods();
@@ -90,7 +90,7 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
     }
 
     List<Category> displayingCategories = [];
-    if (selectedAppliedListDisplayCategories.value.isEmpty) {
+    if (selectedAppliedListDisplayCategories.value.contains('All')) {
       displayingCategories = categories.where((e) => e.getNumOfAppliedItems() > 0).toList();
     } else {
       displayingCategories = categories.where((e) => selectedAppliedListDisplayCategories.value.contains(e.categoryName)).toList();

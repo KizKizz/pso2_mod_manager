@@ -46,7 +46,7 @@ class _MainModGridState extends State<MainModGrid> {
     List<Mod> filteredMods = [];
     if (searchTextController.value.text.isEmpty) {
       for (var cateType in masterModList) {
-        for (var cate in cateType.categories.where((e) => selectedModDisplayCategories.watch(context).contains(e.categoryName) || selectedModDisplayCategories.watch(context).isEmpty)) {
+        for (var cate in cateType.categories.where((e) => selectedModDisplayCategories.watch(context).contains(e.categoryName) || selectedModDisplayCategories.watch(context).contains('All'))) {
           for (var item in cate.items) {
             filteredMods.addAll(item.mods);
           }
@@ -54,7 +54,7 @@ class _MainModGridState extends State<MainModGrid> {
       }
     } else {
       for (var cateType in masterModList) {
-        for (var cate in cateType.categories.where((e) => selectedModDisplayCategories.watch(context).contains(e.categoryName) || selectedModDisplayCategories.watch(context).isEmpty)) {
+        for (var cate in cateType.categories.where((e) => selectedModDisplayCategories.watch(context).contains(e.categoryName) || selectedModDisplayCategories.watch(context).contains('All'))) {
           for (var item in cate.items) {
             filteredMods.addAll(item.mods.where((e) => e.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
           }
@@ -80,7 +80,7 @@ class _MainModGridState extends State<MainModGrid> {
     }
 
     List<Category> displayingCategories = [];
-    if (selectedModDisplayCategories.value.isEmpty) {
+    if (selectedModDisplayCategories.value.contains('All')) {
       displayingCategories = categories;
     } else {
       displayingCategories = categories.where((e) => selectedModDisplayCategories.watch(context).contains(e.categoryName)).toList();

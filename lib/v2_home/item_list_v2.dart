@@ -39,13 +39,13 @@ class _ItemListV2State extends State<ItemListV2> {
     List<Item> filteredItems = [];
     if (searchTextController.value.text.isEmpty) {
       for (var cateType in masterModList) {
-        for (var cate in cateType.categories.where((e) => selectedDisplayCategories.value.contains(e.categoryName) || selectedDisplayCategories.value.isEmpty)) {
+        for (var cate in cateType.categories.where((e) => selectedDisplayCategories.value.contains(e.categoryName) || selectedDisplayCategories.value.contains('All'))) {
           filteredItems.addAll(cate.items);
         }
       }
     } else {
       for (var cateType in masterModList) {
-        for (var cate in cateType.categories.where((e) => selectedDisplayCategories.value.contains(e.categoryName) || selectedDisplayCategories.value.isEmpty)) {
+        for (var cate in cateType.categories.where((e) => selectedDisplayCategories.value.contains(e.categoryName) || selectedDisplayCategories.value.contains('All'))) {
           filteredItems.addAll(cate.items.where((e) => e.itemName.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
         }
       }
@@ -69,7 +69,7 @@ class _ItemListV2State extends State<ItemListV2> {
     }
 
     List<Category> displayingCategories = [];
-    if (selectedDisplayCategories.watch(context).isEmpty) {
+    if (selectedDisplayCategories.watch(context).contains('All')) {
       displayingCategories = categories;
     } else {
       displayingCategories = categories.where((e) => selectedDisplayCategories.watch(context).contains(e.categoryName)).toList();

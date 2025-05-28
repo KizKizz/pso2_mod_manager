@@ -45,7 +45,7 @@ class _MainModSetGridState extends State<MainModSetGrid> {
     }
 
     List<ModSet> displayingModSets = [];
-    if (selectedDisplayModSets.watch(context).isEmpty) {
+    if (selectedDisplayModSets.watch(context).contains('All')) {
       displayingModSets = masterModSetList;
     } else {
       displayingModSets = masterModSetList.where((e) => selectedDisplayModSets.watch(context).contains(e.setName)).toList();
@@ -107,7 +107,13 @@ class _MainModSetGridState extends State<MainModSetGrid> {
                   selectedItemsLabel: masterModSetList.where((e) => selectedDisplayModSets.value.contains(e.setName)).map((e) => e.setName).toList(),
                   selectedItems: selectedDisplayModSets,
                   extraWidgets: masterModSetList
-                      .map((e) => InfoBox(info: appText.dText(e.setItems.length > 1 ? appText.numItems : appText.numItem, e.setItems.length.toString()), borderHighlight: false))
+                      .map((e) => Row(
+                            spacing: 5,
+                            children: [
+                              InfoBox(info: appText.dText(e.setItems.length > 1 ? appText.numItems : appText.numItem, e.setItems.length.toString()), borderHighlight: false),
+                              InfoBox(info: appText.dText(appText.numCurrentlyApplied, e.setItems.where((e) => e.applyStatus).length.toString()), borderHighlight: false)
+                            ],
+                          ))
                       .toList(),
                   savePref: () async {
                     controller.jumpTo(0);

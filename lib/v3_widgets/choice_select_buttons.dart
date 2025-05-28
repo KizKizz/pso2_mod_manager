@@ -44,7 +44,7 @@ class _MultiChoiceSelectButtonState extends State<MultiChoiceSelectButton> {
               side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
               padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 10))),
           onPressed: () async {
-            await multiChoiceSelectPopup(context, widget.selectPopupLabel, widget.availableItemList, widget.selectedItems, widget.extraWidgets);
+            await _multiChoiceSelectPopup(context, widget.selectPopupLabel, widget.availableItemList, widget.selectedItems, widget.extraWidgets);
             setState(() {});
             widget.savePref();
           },
@@ -63,11 +63,13 @@ class _MultiChoiceSelectButtonState extends State<MultiChoiceSelectButton> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 4.5),
                 child: Text(
-                    widget.selectedItemsLabel.length > 1
-                        ? '${widget.selectedItemsLabel.first} +${widget.selectedItemsLabel.length - 1}'
-                        : widget.selectedItemsLabel.isEmpty
-                            ? appText.select
-                            : widget.selectedItemsLabel.first,
+                    widget.selectedItems.watch(context).length == widget.availableItemList.length || widget.selectedItems.value.contains('All')
+                        ? appText.all
+                        : widget.selectedItems.watch(context).length == 1
+                            ? widget.selectedItemsLabel.first
+                            : widget.selectedItems.watch(context).isEmpty
+                                ? appText.select
+                                : '${widget.selectedItemsLabel.first} +${widget.selectedItemsLabel.length - 1}',
                     style: Theme.of(context).textTheme.bodyLarge),
               )
             ],
@@ -76,7 +78,10 @@ class _MultiChoiceSelectButtonState extends State<MultiChoiceSelectButton> {
   }
 }
 
-Future<void> multiChoiceSelectPopup(context, String selectPopupLabel, List<String> availableItemList, Signal<List<String>> selectedItems, List<Widget> extraWidgets) async {
+Future<void> _multiChoiceSelectPopup(context, String selectPopupLabel, List<String> availableItemList, Signal<List<String>> selectedItems, List<Widget> extraWidgets) async {
+  if (selectedItems.value.contains('All')) {
+    selectedItems.value.addAll(availableItemList);
+  }
   return await showDialog(
       barrierDismissible: true,
       context: context,
@@ -114,6 +119,7 @@ Future<void> multiChoiceSelectPopup(context, String selectPopupLabel, List<Strin
                             selected: selectedItems.value.contains(e),
                             value: selectedItems.value.contains(e),
                             onChanged: (value) {
+                              selectedItems.value.removeWhere((e) => e == 'All');
                               selectedItems.value.contains(e) ? selectedItems.value.remove(e) : selectedItems.value.add(e);
                               setState(
                                 () {},
@@ -135,6 +141,7 @@ Future<void> multiChoiceSelectPopup(context, String selectPopupLabel, List<Strin
                     OutlinedButton(
                         onPressed: () {
                           selectedItems.value.clear();
+                          selectedItems.value.add('All');
                           setState(
                             () {},
                           );
@@ -144,6 +151,7 @@ Future<void> multiChoiceSelectPopup(context, String selectPopupLabel, List<Strin
                     OutlinedButton(
                         onPressed: () {
                           selectedItems.value.clear();
+                          selectedItems.value.add('All');
                           selectedItems.value.addAll(availableItemList);
                           setState(
                             () {},
@@ -197,7 +205,7 @@ class _SingleChoiceSelectButtonState extends State<SingleChoiceSelectButton> {
               side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
               padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 10))),
           onPressed: () async {
-            await singleChoiceSelectPopup(context, widget.selectPopupLabel, widget.availableItemList, widget.selectedItem, widget.extraWidgets);
+            await _singleChoiceSelectPopup(context, widget.selectPopupLabel, widget.availableItemList, widget.selectedItem, widget.extraWidgets);
             setState(() {});
             widget.savePref();
           },
@@ -224,7 +232,7 @@ class _SingleChoiceSelectButtonState extends State<SingleChoiceSelectButton> {
   }
 }
 
-Future<void> singleChoiceSelectPopup(context, String selectPopupLabel, List<String> availableItemList, Signal<String> selectedItem, List<Widget> extraWidgets) async {
+Future<void> _singleChoiceSelectPopup(context, String selectPopupLabel, List<String> availableItemList, Signal<String> selectedItem, List<Widget> extraWidgets) async {
   return await showDialog(
       barrierDismissible: true,
       context: context,

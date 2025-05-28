@@ -138,6 +138,7 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
                                 ),
                                 HeaderInfoBox(
                                     info: appText.dText(widget.modSet.setItems.length > 1 ? appText.numItems : appText.numItem, widget.modSet.setItems.length.toString()), borderHighlight: false),
+                                HeaderInfoBox(info: appText.dText(appText.numCurrentlyApplied, widget.modSet.setItems.where((e) => e.applyStatus).length.toString()), borderHighlight: false),
                                 SizedBox(
                                   width: 25,
                                   height: 25,

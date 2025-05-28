@@ -47,7 +47,7 @@ class _AppliedListV2State extends State<AppliedListV2> {
     if (appliedListSearchTextController.text.isEmpty) {
       for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
         for (var cate in cateType.categories
-            .where((e) => e.getNumOfAppliedItems() > 0 && (selectedAppliedListDisplayCategories.value.contains(e.categoryName) || selectedAppliedListDisplayCategories.value.isEmpty))) {
+            .where((e) => e.getNumOfAppliedItems() > 0 && (selectedAppliedListDisplayCategories.value.contains(e.categoryName) || selectedAppliedListDisplayCategories.value.contains('All')))) {
           for (var item in cate.items.where((e) => e.applyStatus)) {
             filteredItems.add(item);
             numOfAppliedMods += item.getNumOfAppliedMods();
@@ -57,7 +57,7 @@ class _AppliedListV2State extends State<AppliedListV2> {
     } else {
       for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
         for (var cate in cateType.categories
-            .where((e) => e.getNumOfAppliedItems() > 0 && (selectedAppliedListDisplayCategories.value.contains(e.categoryName) || selectedAppliedListDisplayCategories.value.isEmpty))) {
+            .where((e) => e.getNumOfAppliedItems() > 0 && (selectedAppliedListDisplayCategories.value.contains(e.categoryName) || selectedAppliedListDisplayCategories.value.contains('All')))) {
           for (var item in cate.items.where((e) => e.applyStatus)) {
             if (item.mods.indexWhere((e) => e.applyStatus && e.itemName.toLowerCase().contains(appliedListSearchTextController.text.toLowerCase())) != -1) filteredItems.add(item);
             numOfAppliedMods += item.getNumOfAppliedMods();
