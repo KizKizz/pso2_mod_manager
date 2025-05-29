@@ -595,6 +595,32 @@ class AppText {
     }
   }
 
+  String lineStrikeItemTypeName(String name) {
+    int index = lineStrikeItemTypes.indexOf(name);
+
+    switch (index) {
+      case 0:
+        return cards;
+      case 1:
+        return boards;
+      case 2:
+        return sleeves;
+      default:
+        return name;
+    }
+  }
+
+  String itemTypeName(String name) {
+    int index = itemTypes.indexOf(name);
+
+    switch (index) {
+      case 0:
+        return both;
+      default:
+        return name;
+    }
+  }
+
   String weaponTypeName(String name) {
     if (name == 'All') return all;
     int index = defaultWeaponTypes.indexOf(name);

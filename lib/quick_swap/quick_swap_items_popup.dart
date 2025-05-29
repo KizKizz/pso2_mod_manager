@@ -4,7 +4,7 @@ import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/quick_swap/quick_swap_functions.dart';
 import 'package:pso2_mod_manager/quick_swap/quick_swap_item_grid_layout.dart';
-import 'package:pso2_mod_manager/quick_swap/quick_swap_type_select_button.dart';
+import 'package:pso2_mod_manager/v3_widgets/choice_select_buttons.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -50,7 +50,20 @@ Future<void> quickSwapItemsPopup(context, String category) async {
                 child: Column(
                   spacing: 5,
                   children: [
-                    QuickSwapTypeSelectButtons(lScrollController: lScrollController, rScrollController: rScrollController),
+                    SingleChoiceSelectButton(
+                        width: double.infinity,
+                        height: 30,
+                        label: appText.types,
+                        selectPopupLabel: appText.types,
+                        availableItemList: itemTypes,
+                        availableItemLabels: itemTypes.map((e) => appText.itemTypeName(e)).toList(),
+                        selectedItemsLabel: itemTypes.map((e) => appText.itemTypeName(e)).toList(),
+                        selectedItem: selectedQuickSwapTypeCategory,
+                        extraWidgets: [],
+                        savePref: () {
+                          lScrollController.jumpTo(0);
+                          rScrollController.jumpTo(0);
+                        }),
                     Expanded(
                       child: Row(
                         spacing: 5,

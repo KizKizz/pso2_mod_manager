@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_paths/sega_file_paths.dart';
 import 'package:pso2_mod_manager/cml/cml_class.dart';
+import 'package:pso2_mod_manager/line_strike/line_strike_image_crop_popup.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_functions/pso2_version_check.dart';
@@ -108,6 +109,8 @@ final defaultWeaponTypes = [
   'Harmonizers'
 ];
 
+final lineStrikeItemTypes = [LineStrikeItemType.cards.value, LineStrikeItemType.boards.value, LineStrikeItemType.sleeves.value];
+final itemTypes = ['Both', 'PSO2', 'NGS'];
 final defaultMotionTypes = ['Glide Motion', 'Jump Motion', 'Landing Motion', 'Dash Motion', 'Run Motion', 'Standby Motion', 'Swim Motion'];
 final modSortingSelections = ['Name (Alphabetical)', 'Recently Added', 'Recently Applied'];
 final win32DirNames = ['win32', 'win32reboot', 'win32_na', 'win32reboot_na'];
@@ -151,3 +154,12 @@ Signal<bool> appLoadingFinished = Signal(false);
 Signal<int> uiDialogBackgroundColorAlpha = Signal(uiBackgroundColorAlpha.value + 50 <= 255 ? uiBackgroundColorAlpha.value + 50 : uiBackgroundColorAlpha.value);
 Signal<bool> showMessageOnInactiveOverlay = Signal(false);
 Signal<bool> saveRestoreAppliedModsActive = Signal(false);
+Signal<String> selectedAqmInjectCategory = Signal<String>(aqmInjectCategoryDirs[0]);
+Signal<String> selectedQuickSwapTypeCategory = Signal<String>('Both');
+Signal<String> selectedDisplayItemSwapCategory = Signal<String>('Accessories');
+Signal<String> selectedModSwapAllMotionType = Signal<String>('All');
+Signal<String> selectedItemSwapMotionType = Signal<String>('All');
+Signal<String> selectedModSwapAllTypeCategory = Signal<String>('Both');
+Signal<String> selectedItemSwapTypeCategory = Signal<String>('Both');
+Signal<String> selectedWeaponType = Signal<String>('All');
+Signal<String> selectedLineStrikeType = Signal<String>(LineStrikeItemType.cards.value);

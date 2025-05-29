@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
-import 'package:pso2_mod_manager/main_widgets/sorting_buttons.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/main_widgets/cate_item_grid_layout.dart';
-import 'package:pso2_mod_manager/main_widgets/category_select_buttons.dart';
+import 'package:pso2_mod_manager/v3_widgets/choice_select_buttons.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:searchfield/searchfield.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 
 class MainItemGrid extends StatefulWidget {
@@ -46,13 +46,13 @@ class _MainItemGridState extends State<MainItemGrid> {
     List<Item> filteredItems = [];
     if (searchTextController.value.text.isEmpty) {
       for (var cateType in masterModList) {
-        for (var cate in cateType.categories.where((e) => e.categoryName == selectedDisplayCategory.value || selectedDisplayCategory.value == 'All')) {
+        for (var cate in cateType.categories.where((e) => selectedDisplayCategories.value.contains(e.categoryName) || selectedDisplayCategories.value.contains('All'))) {
           filteredItems.addAll(cate.items);
         }
       }
     } else {
       for (var cateType in masterModList) {
-        for (var cate in cateType.categories.where((e) => e.categoryName == selectedDisplayCategory.value || selectedDisplayCategory.value == 'All')) {
+        for (var cate in cateType.categories.where((e) => selectedDisplayCategories.value.contains(e.categoryName) || selectedDisplayCategories.value.contains('All'))) {
           filteredItems.addAll(cate.items.where((e) => e.itemName.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
         }
       }
@@ -76,10 +76,10 @@ class _MainItemGridState extends State<MainItemGrid> {
     }
 
     List<Category> displayingCategories = [];
-    if (selectedDisplayCategory.watch(context) == 'All') {
+    if (selectedDisplayCategories.watch(context).contains('All')) {
       displayingCategories = categories;
     } else {
-      displayingCategories = categories.where((e) => e.categoryName == selectedDisplayCategory.watch(context)).toList();
+      displayingCategories = categories.where((e) => selectedDisplayCategories.watch(context).contains(e.categoryName)).toList();
     }
 
     // Sort
@@ -242,10 +242,46 @@ class _MainItemGridState extends State<MainItemGrid> {
                   ]),
                 ),
               ),
-              SizedBox(width: 250, child: SortingButtons(scrollController: controller)),
-              SizedBox(
+              SingleChoiceSelectButton(
+                  width: 250,
+                  height: 30,
+                  label: appText.sort,
+                  selectPopupLabel: appText.sort,
+                  availableItemList: modSortingSelections,
+                  availableItemLabels: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                  selectedItemsLabel: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                  selectedItem: selectedDisplaySort,
+                  extraWidgets: [],
+                  savePref: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    prefs.setString('selectedDisplaySort', selectedDisplaySort.value);
+                    controller.jumpTo(0);
+                  }),
+              MultiChoiceSelectButton(
                 width: 200,
-                child: CategorySelectButtons(categories: categories, scrollController: controller),
+                height: 30,
+                label: appText.view,
+                selectPopupLabel: appText.view,
+                availableItemList: categories.map((e) => e.categoryName).toList(),
+                availableItemLabels: categories.map((e) => appText.categoryName(e.categoryName)).toList(),
+                selectedItemsLabel: selectedDisplayCategories.value.map((e) => appText.categoryName(e)).toList(),
+                selectedItems: selectedDisplayCategories,
+                extraWidgets: categories
+                    .map((e) => Row(
+                          spacing: 5,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            InfoBox(
+                                info: e.items.length > 1 ? appText.dText(appText.numItems, e.items.length.toString()) : appText.dText(appText.numItem, e.items.length.toString()),
+                                borderHighlight: false),
+                            InfoBox(info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedItems().toString()), borderHighlight: false)
+                          ],
+                        ))
+                    .toList(),
+                savePref: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  prefs.setStringList('selectedDisplayCategories', selectedDisplayCategories.value);
+                },
               ),
               SizedBox(
                 height: 30,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
-import 'package:pso2_mod_manager/main_widgets/applied_mod_category_select_buttons.dart';
 import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
 import 'package:pso2_mod_manager/mod_apply/load_applied_mods.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
@@ -12,10 +11,12 @@ import 'package:pso2_mod_manager/mod_sets/mod_set_functions.dart';
 import 'package:pso2_mod_manager/mod_sets/mods_to_set_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/main_widgets/applied_mod_grid_layout.dart';
+import 'package:pso2_mod_manager/v3_widgets/choice_select_buttons.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/notifications.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:searchfield/searchfield.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 
 class MainAppliedModGrid extends StatefulWidget {
@@ -51,8 +52,8 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
     List<Mod> filteredMods = [];
     if (searchTextController.value.text.isEmpty) {
       for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
-        for (var cate
-            in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == 'All'))) {
+        for (var cate in cateType.categories
+            .where((e) => e.getNumOfAppliedItems() > 0 && (selectedAppliedListDisplayCategories.value.contains(e.categoryName) || selectedAppliedListDisplayCategories.value.contains('All')))) {
           for (var item in cate.items.where((e) => e.applyStatus)) {
             filteredMods.addAll(item.mods.where((e) => e.applyStatus));
             numOfAppliedMods += item.getNumOfAppliedMods();
@@ -61,8 +62,8 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
       }
     } else {
       for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
-        for (var cate
-            in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0 && (e.categoryName == selectedDisplayCategoryAppliedList.value || selectedDisplayCategoryAppliedList.value == 'All'))) {
+        for (var cate in cateType.categories
+            .where((e) => e.getNumOfAppliedItems() > 0 && (selectedAppliedListDisplayCategories.value.contains(e.categoryName) || selectedAppliedListDisplayCategories.value.contains('All')))) {
           for (var item in cate.items.where((e) => e.applyStatus)) {
             filteredMods.addAll(item.mods.where((e) => e.applyStatus && e.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
             numOfAppliedMods += item.getNumOfAppliedMods();
@@ -89,10 +90,10 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
     }
 
     List<Category> displayingCategories = [];
-    if (selectedDisplayCategoryAppliedList.watch(context) == 'All') {
+    if (selectedAppliedListDisplayCategories.value.contains('All')) {
       displayingCategories = categories.where((e) => e.getNumOfAppliedItems() > 0).toList();
     } else {
-      displayingCategories = categories.where((e) => e.categoryName == selectedDisplayCategoryAppliedList.watch(context)).toList();
+      displayingCategories = categories.where((e) => selectedAppliedListDisplayCategories.value.contains(e.categoryName)).toList();
     }
 
     return AnimatedOpacity(
@@ -267,10 +268,23 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                           textAlign: TextAlign.center,
                         )),
                   )),
-              SizedBox(
-                width: 200,
-                child: AppliedModCategorySelectButtons(categories: categories.where((e) => e.getNumOfAppliedItems() > 0).toList(), scrollController: controller),
-              ),
+              MultiChoiceSelectButton(
+                  width: 200,
+                  height: 30,
+                  label: appText.view,
+                  selectPopupLabel: appText.view,
+                  availableItemList: categories.where((e) => e.getNumOfAppliedItems() > 0).map((e) => e.categoryName).toList(),
+                  availableItemLabels: categories.where((e) => e.getNumOfAppliedItems() > 0).map((e) => appText.categoryName(e.categoryName)).toList(),
+                  selectedItemsLabel: categories.where((e) => e.getNumOfAppliedItems() > 0).map((e) => appText.categoryName(e.categoryName)).toList(),
+                  selectedItems: selectedAppliedListDisplayCategories,
+                  extraWidgets: categories
+                      .where((e) => e.getNumOfAppliedItems() > 0)
+                      .map((e) => InfoBox(info: appText.dText(e.getNumOfAppliedItems() > 1 ? appText.numItems : appText.numItem, e.getNumOfAppliedItems().toString()), borderHighlight: false))
+                      .toList(),
+                  savePref: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    prefs.setStringList('selectedAppliedListDisplayCategories', selectedAppliedListDisplayCategories.value);
+                  }),
               SizedBox(
                 height: 30,
                 child: IconButton.outlined(

@@ -7,11 +7,12 @@ import 'package:pso2_mod_manager/main_widgets/mod_bulk_delete_button.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
-import 'package:pso2_mod_manager/v2_home/mod_view_sorting_buttons.dart';
 import 'package:pso2_mod_manager/v2_home/mod_view_v2_layout.dart';
+import 'package:pso2_mod_manager/v3_widgets/choice_select_buttons.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:searchfield/searchfield.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 
 class ModViewListV2 extends StatefulWidget {
@@ -158,7 +159,22 @@ class _ModViewListV2State extends State<ModViewListV2> {
                                     Row(
                                       spacing: 2.5,
                                       children: [
-                                        Expanded(child: ModViewSortingButtons(scrollController: scrollController)),
+                                        Expanded(
+                                            child: SingleChoiceSelectButton(
+                                                width: double.infinity,
+                                                height: 30,
+                                                label: appText.sort,
+                                                selectPopupLabel: appText.sort,
+                                                availableItemList: modSortingSelections,
+                                                availableItemLabels: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                                                selectedItemsLabel: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                                                selectedItem: selectedDisplaySortModView,
+                                                extraWidgets: [],
+                                                savePref: () async {
+                                                  final prefs = await SharedPreferences.getInstance();
+                                                  prefs.setString('selectedDisplaySortModView', selectedDisplaySortModView.value);
+                                                  scrollController.jumpTo(0);
+                                                })),
                                         // edit
                                         ItemEditButton(
                                           onPressed: (isEditing) {

@@ -17,9 +17,9 @@ Color darkModeSeedColor = darkColorScheme.primary;
 Signal<bool> hideAppBackgroundSlides = Signal<bool>(false);
 Signal<int> backgroundImageSlideInterval = Signal<int>(10);
 Signal<bool> itemIconSlides = Signal<bool>(false);
-Signal<String> selectedDisplayCategory = Signal<String>('All');
-Signal<String> selectedModDisplayCategory = Signal<String>('All');
-Signal<String> selectedDisplayCategoryAppliedList = Signal<String>('All');
+Signal<List<String>> selectedDisplayCategories = Signal<List<String>> ([]);
+Signal<List<String>> selectedModDisplayCategories = Signal<List<String>> ([]);
+Signal<List<String>> selectedAppliedListDisplayCategories = Signal<List<String>>([]);
 Signal<String> selectedDisplaySort = Signal<String>('Name (Alphabetical)');
 Signal<String> selectedDisplaySortModView = Signal<String>('Name (Alphabetical)');
 Signal<String> selectedDisplaySortAppliedList = Signal<String>('Name (Alphabetical)');
@@ -99,13 +99,13 @@ Future<void> prefsLoad() async {
   itemIconSlides.value = prefs.getBool('itemIconSlides') ?? false;
 
   // Main list filter
-  selectedDisplayCategory.value = prefs.getString('selectedDisplayCategory') ?? 'All';
+  selectedDisplayCategories.value = prefs.getStringList('selectedDisplayCategories') ?? [];
 
   // Main Mod list filter
-  selectedModDisplayCategory.value = prefs.getString('selectedModDisplayCategory') ?? 'All';
+  selectedModDisplayCategories.value = prefs.getStringList('selectedModDisplayCategories') ?? [];
 
   // Main list applied list filter
-  selectedDisplayCategoryAppliedList.value = prefs.getString('selectedDisplayCategoryAppliedList') ?? 'All';
+  selectedAppliedListDisplayCategories.value = prefs.getStringList('selectedAppliedListDisplayCategories') ?? [];
 
   // Main list sort
   selectedDisplaySort.value = prefs.getString('selectedDisplaySort') ?? 'Name (Alphabetical)';

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
-import 'package:pso2_mod_manager/main_widgets/category_select_buttons.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
-import 'package:pso2_mod_manager/main_widgets/sorting_buttons.dart';
 import 'package:pso2_mod_manager/mod_data/category_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v2_home/category_item_layout.dart';
+import 'package:pso2_mod_manager/v3_widgets/choice_select_buttons.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:searchfield/searchfield.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 
 class ItemListV2 extends StatefulWidget {
@@ -39,13 +39,13 @@ class _ItemListV2State extends State<ItemListV2> {
     List<Item> filteredItems = [];
     if (searchTextController.value.text.isEmpty) {
       for (var cateType in masterModList) {
-        for (var cate in cateType.categories.where((e) => e.categoryName == selectedDisplayCategory.value || selectedDisplayCategory.value == 'All')) {
+        for (var cate in cateType.categories.where((e) => selectedDisplayCategories.value.contains(e.categoryName) || selectedDisplayCategories.value.contains('All'))) {
           filteredItems.addAll(cate.items);
         }
       }
     } else {
       for (var cateType in masterModList) {
-        for (var cate in cateType.categories.where((e) => e.categoryName == selectedDisplayCategory.value || selectedDisplayCategory.value == 'All')) {
+        for (var cate in cateType.categories.where((e) => selectedDisplayCategories.value.contains(e.categoryName) || selectedDisplayCategories.value.contains('All'))) {
           filteredItems.addAll(cate.items.where((e) => e.itemName.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
         }
       }
@@ -69,10 +69,10 @@ class _ItemListV2State extends State<ItemListV2> {
     }
 
     List<Category> displayingCategories = [];
-    if (selectedDisplayCategory.watch(context) == 'All') {
+    if (selectedDisplayCategories.watch(context).contains('All')) {
       displayingCategories = categories;
     } else {
-      displayingCategories = categories.where((e) => e.categoryName == selectedDisplayCategory.watch(context)).toList();
+      displayingCategories = categories.where((e) => selectedDisplayCategories.watch(context).contains(e.categoryName)).toList();
     }
 
     // Sort
@@ -112,12 +112,51 @@ class _ItemListV2State extends State<ItemListV2> {
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ),
-
-                      CategorySelectButtons(categories: categories, scrollController: scrollController),
+                      MultiChoiceSelectButton(
+                          width: double.infinity,
+                          height: 30,
+                          label: appText.view,
+                          selectPopupLabel: appText.view,
+                          availableItemList: categories.map((e) => e.categoryName).toList(),
+                          availableItemLabels: categories.map((e) => appText.categoryName(e.categoryName)).toList(),
+                          selectedItemsLabel: selectedDisplayCategories.value.map((e) => appText.categoryName(e)).toList(),
+                          selectedItems: selectedDisplayCategories,
+                          extraWidgets: categories
+                              .map((e) => Row(
+                                    spacing: 5,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      InfoBox(
+                                          info: e.items.length > 1 ? appText.dText(appText.numItems, e.items.length.toString()) : appText.dText(appText.numItem, e.items.length.toString()),
+                                          borderHighlight: false),
+                                      InfoBox(info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedItems().toString()), borderHighlight: false)
+                                    ],
+                                  ))
+                              .toList(),
+                          savePref: () async {
+                            final prefs = await SharedPreferences.getInstance();
+                            prefs.setStringList('selectedDisplayCategories', selectedDisplayCategories.value);
+                          }),
                       Row(
                         spacing: 2.5,
                         children: [
-                          Expanded(child: SortingButtons(scrollController: scrollController)),
+                          Expanded(
+                            child: SingleChoiceSelectButton(
+                                width: double.infinity,
+                                height: 30,
+                                label: appText.sort,
+                                selectPopupLabel: appText.sort,
+                                availableItemList: modSortingSelections,
+                                availableItemLabels: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                                selectedItemsLabel: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                                selectedItem: selectedDisplaySort,
+                                extraWidgets: [],
+                                savePref: () async {
+                                  final prefs = await SharedPreferences.getInstance();
+                                  prefs.setString('selectedDisplaySort', selectedDisplaySort.value);
+                                  scrollController.jumpTo(0);
+                                }),
+                          ),
                           // col-ex
                           SizedBox(
                             height: 30,
