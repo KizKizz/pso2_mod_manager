@@ -5,7 +5,6 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
-import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/settings/mod_configs_restore_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_functions/json_backup.dart';
@@ -143,8 +142,9 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
                         label: appText.currentAqmFile,
                         selectPopupLabel: appText.customAQMFiles,
                         availableItemList: Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').map((e) => e.path).toList(),
+                        availableItemLabels: [],
                         selectedItemsLabel: Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').map((e) => e.path).toList(),
-                        selectedItem: selectedAqmInjectCategory,
+                        selectedItem: selectedCustomAQMFilePath,
                         extraWidgets: [],
                         savePref: () async {
                           final prefs = await SharedPreferences.getInstance();

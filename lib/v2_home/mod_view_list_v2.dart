@@ -166,6 +166,7 @@ class _ModViewListV2State extends State<ModViewListV2> {
                                                 label: appText.sort,
                                                 selectPopupLabel: appText.sort,
                                                 availableItemList: modSortingSelections,
+                                                availableItemLabels: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
                                                 selectedItemsLabel: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
                                                 selectedItem: selectedDisplaySortModView,
                                                 extraWidgets: [],

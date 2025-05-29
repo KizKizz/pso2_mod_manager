@@ -144,6 +144,7 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
                         label: appText.view,
                         selectPopupLabel: appText.view,
                         availableItemList: lineStrikeItemTypes,
+                        availableItemLabels: lineStrikeItemTypes.map((e) => appText.lineStrikeItemTypeName(e)).toList(),
                         selectedItemsLabel: lineStrikeItemTypes.map((e) => appText.lineStrikeItemTypeName(e)).toList(),
                         selectedItem: selectedLineStrikeType,
                         extraWidgets: [],

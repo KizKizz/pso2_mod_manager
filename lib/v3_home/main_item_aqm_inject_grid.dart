@@ -91,6 +91,7 @@ class _MainItemAqmInjectGridState extends State<MainItemAqmInjectGrid> {
                           label: appText.types,
                           selectPopupLabel: appText.types,
                           availableItemList: itemTypes,
+                          availableItemLabels: itemTypes.map((e) => appText.itemTypeName(e)).toList(),
                           selectedItemsLabel: itemTypes.map((e) => appText.itemTypeName(e)).toList(),
                           selectedItem: selectedItemSwapTypeCategory,
                           extraWidgets: [],
@@ -107,6 +108,7 @@ class _MainItemAqmInjectGridState extends State<MainItemAqmInjectGrid> {
                     label: appText.view,
                     selectPopupLabel: appText.view,
                     availableItemList: aqmInjectCategoryDirs,
+                    availableItemLabels: aqmInjectCategoryDirs.map((e) => appText.categoryName(e)).toList(),
                     selectedItemsLabel: aqmInjectCategoryDirs.map((e) => appText.categoryName(e)).toList(),
                     selectedItem: selectedAqmInjectCategory,
                     extraWidgets: [],
@@ -161,8 +163,9 @@ class _MainItemAqmInjectGridState extends State<MainItemAqmInjectGrid> {
                       label: appText.currentAqmFile,
                       selectPopupLabel: appText.customAQMFiles,
                       availableItemList: Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').map((e) => e.path).toList(),
+                      availableItemLabels: [],
                       selectedItemsLabel: Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').map((e) => e.path).toList(),
-                      selectedItem: selectedAqmInjectCategory,
+                      selectedItem: selectedCustomAQMFilePath,
                       extraWidgets: [],
                       savePref: () async {
                         final prefs = await SharedPreferences.getInstance();

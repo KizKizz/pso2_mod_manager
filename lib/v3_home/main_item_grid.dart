@@ -248,6 +248,7 @@ class _MainItemGridState extends State<MainItemGrid> {
                   label: appText.sort,
                   selectPopupLabel: appText.sort,
                   availableItemList: modSortingSelections,
+                  availableItemLabels: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
                   selectedItemsLabel: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
                   selectedItem: selectedDisplaySort,
                   extraWidgets: [],
@@ -262,6 +263,7 @@ class _MainItemGridState extends State<MainItemGrid> {
                 label: appText.view,
                 selectPopupLabel: appText.view,
                 availableItemList: categories.map((e) => e.categoryName).toList(),
+                availableItemLabels: categories.map((e) => appText.categoryName(e.categoryName)).toList(),
                 selectedItemsLabel: selectedDisplayCategories.value.map((e) => appText.categoryName(e)).toList(),
                 selectedItems: selectedDisplayCategories,
                 extraWidgets: categories

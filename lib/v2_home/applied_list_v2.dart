@@ -128,9 +128,17 @@ class _AppliedListV2State extends State<AppliedListV2> {
                                 label: appText.view,
                                 selectPopupLabel: appText.view,
                                 availableItemList: categories.where((e) => e.getNumOfAppliedItems() > 0).map((e) => e.categoryName).toList(),
-                                selectedItemsLabel: categories.where((e) => e.getNumOfAppliedItems() > 0 && selectedAppliedListDisplayCategories.value.contains(e.categoryName)).map((e) => appText.categoryName(e.categoryName)).toList(),
+                                availableItemLabels: categories.where((e) => e.getNumOfAppliedItems() > 0).map((e) => appText.categoryName(e.categoryName)).toList(),
+                                selectedItemsLabel: categories
+                                    .where((e) => e.getNumOfAppliedItems() > 0 && selectedAppliedListDisplayCategories.value.contains(e.categoryName))
+                                    .map((e) => appText.categoryName(e.categoryName))
+                                    .toList(),
                                 selectedItems: selectedAppliedListDisplayCategories,
-                                extraWidgets: [],
+                                extraWidgets: categories
+                                    .where((e) => e.getNumOfAppliedItems() > 0)
+                                    .map((e) =>
+                                        InfoBox(info: appText.dText(e.getNumOfAppliedItems() > 1 ? appText.numItems : appText.numItem, e.getNumOfAppliedItems().toString()), borderHighlight: false))
+                                    .toList(),
                                 savePref: () async {
                                   final prefs = await SharedPreferences.getInstance();
                                   prefs.setStringList('selectedAppliedListDisplayCategories', selectedAppliedListDisplayCategories.value);
@@ -145,6 +153,7 @@ class _AppliedListV2State extends State<AppliedListV2> {
                                   label: appText.sort,
                                   selectPopupLabel: appText.sort,
                                   availableItemList: modSortingSelections,
+                                  availableItemLabels: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
                                   selectedItemsLabel: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
                                   selectedItem: selectedDisplaySortAppliedList,
                                   extraWidgets: [],

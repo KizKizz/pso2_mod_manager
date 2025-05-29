@@ -10,7 +10,7 @@ import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 
-Signal<List<String>> selectedDisplayModSets = Signal([]);
+Signal<List<String>> selectedDisplayModSets = Signal(['All']);
 Signal<String> modSetRefreshSignal = Signal('');
 
 class MainModSetGrid extends StatefulWidget {
@@ -90,6 +90,7 @@ class _MainModSetGridState extends State<MainModSetGrid> {
                   label: appText.types,
                   selectPopupLabel: appText.types,
                   availableItemList: modSortingSelections,
+                  availableItemLabels: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
                   selectedItemsLabel: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
                   selectedItem: selectedDisplaySortModSet,
                   extraWidgets: [],
@@ -104,6 +105,7 @@ class _MainModSetGridState extends State<MainModSetGrid> {
                   label: appText.view,
                   selectPopupLabel: appText.view,
                   availableItemList: masterModSetList.map((e) => e.setName).toList(),
+                  availableItemLabels: [],
                   selectedItemsLabel: masterModSetList.where((e) => selectedDisplayModSets.value.contains(e.setName)).map((e) => e.setName).toList(),
                   selectedItems: selectedDisplayModSets,
                   extraWidgets: masterModSetList

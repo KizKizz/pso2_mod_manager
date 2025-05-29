@@ -274,9 +274,13 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                   label: appText.view,
                   selectPopupLabel: appText.view,
                   availableItemList: categories.where((e) => e.getNumOfAppliedItems() > 0).map((e) => e.categoryName).toList(),
+                  availableItemLabels: categories.where((e) => e.getNumOfAppliedItems() > 0).map((e) => appText.categoryName(e.categoryName)).toList(),
                   selectedItemsLabel: categories.where((e) => e.getNumOfAppliedItems() > 0).map((e) => appText.categoryName(e.categoryName)).toList(),
                   selectedItems: selectedAppliedListDisplayCategories,
-                  extraWidgets: [],
+                  extraWidgets: categories
+                      .where((e) => e.getNumOfAppliedItems() > 0)
+                      .map((e) => InfoBox(info: appText.dText(e.getNumOfAppliedItems() > 1 ? appText.numItems : appText.numItem, e.getNumOfAppliedItems().toString()), borderHighlight: false))
+                      .toList(),
                   savePref: () async {
                     final prefs = await SharedPreferences.getInstance();
                     prefs.setStringList('selectedAppliedListDisplayCategories', selectedAppliedListDisplayCategories.value);

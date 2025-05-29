@@ -56,6 +56,7 @@ Future<void> quickSwapItemsPopup(context, String category) async {
                         label: appText.types,
                         selectPopupLabel: appText.types,
                         availableItemList: itemTypes,
+                        availableItemLabels: itemTypes.map((e) => appText.itemTypeName(e)).toList(),
                         selectedItemsLabel: itemTypes.map((e) => appText.itemTypeName(e)).toList(),
                         selectedItem: selectedQuickSwapTypeCategory,
                         extraWidgets: [],
