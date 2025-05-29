@@ -87,6 +87,7 @@ class _MultiChoiceSelectButtonState extends State<MultiChoiceSelectButton> {
 Future<void> _multiChoiceSelectPopup(
     context, String selectPopupLabel, List<String> availableItemList, List<String> availableItemLabels, Signal<List<String>> selectedItems, List<Widget> extraWidgets) async {
   if (selectedItems.value.contains('All')) {
+    selectedItems.value.retainWhere((e) => e == 'All');
     selectedItems.value.addAll(availableItemList);
   }
   return await showDialog(
@@ -248,7 +249,8 @@ class _SingleChoiceSelectButtonState extends State<SingleChoiceSelectButton> {
   }
 }
 
-Future<void> _singleChoiceSelectPopup(context, String selectPopupLabel, List<String> availableItemList, List<String> availableItemLabels, Signal<String> selectedItem, List<Widget> extraWidgets) async {
+Future<void> _singleChoiceSelectPopup(
+    context, String selectPopupLabel, List<String> availableItemList, List<String> availableItemLabels, Signal<String> selectedItem, List<Widget> extraWidgets) async {
   return await showDialog(
       barrierDismissible: true,
       context: context,
