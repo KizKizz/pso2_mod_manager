@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
+import 'package:path/path.dart' as p;
 
 class AddingMod {
-  AddingMod(this.modDir, this.modAddingState, this.submods, this.submodNames, this.submodAddingStates, this.associatedItems, this.aItemAddingStates, this.sameItemIceNames, this.previewImages, this.previewVideos);
+  AddingMod(this.modDir, this.modAddingState, this.submods, this.submodNames, this.submodAddingStates, this.associatedItems, this.aItemAddingStates, this.sameItemIceNames, this.previewImages,
+      this.previewVideos);
 
   Directory modDir;
   bool modAddingState;
@@ -39,12 +41,16 @@ enum ModAddProcessedState {
 
 extension RenameDuplicate on String {
   String renameDuplicate() {
-    var affix = split('_').last;
-    if (affix.isNotEmpty && int.tryParse(affix) != null) {
-      int i = int.parse(affix) + 1;
-      return '${split('_').first}_$i';
+    String curPath = this;
+    String curName = p.basename(curPath);
+    List<String> affixes = curName.split('_');
+    if (affixes.isNotEmpty && int.tryParse(affixes.last) != null) {
+      int i = int.parse(affixes.last) + 1;
+      affixes.last = i.toString();
+      String newName = affixes.join('_');
+      return p.dirname(curPath) + p.separator + newName;
     } else {
-      return '${this}_1';
+      return '${curPath}_1';
     }
   }
 }
