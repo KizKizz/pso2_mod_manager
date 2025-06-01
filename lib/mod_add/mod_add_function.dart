@@ -187,29 +187,40 @@ Future<List<AddingMod>> modAddSort() async {
 
       // Rename duplicates
       String newItemDirDestPath = mainModDirPath + p.separator + aItem.category + p.separator + aItem.getName().replaceAll(RegExp(charToReplace), '_');
-      while (Directory(newItemDirDestPath + p.separator + p.basename(newModDir.path)).existsSync()) {
-        if (newAddingModItem.submods.indexWhere((e) => e.path == newModDir.path) == -1) {
-          bool renamed = false;
-          for (var submod in newAddingModItem.submods.reversed) {
-            if (Directory(submod.path.replaceFirst(p.dirname(newModDir.path), newItemDirDestPath)).existsSync()) {
-              await io.copyPath(submod.path, submod.path.renameDuplicate());
-              await submod.delete(recursive: true);
-              renamed = true;
-            }
-          }
-          if (renamed) {
-            newAddingModItem = await modAddRenameRefresh(newModDir, newAddingModItem);
-            newModDir = newAddingModItem.modDir;
-          }
-        } else {
-          if (Directory(newModDir.path.replaceFirst(p.dirname(newModDir.path), newItemDirDestPath)).existsSync()) {
-            String newModDirPath = newModDir.path.renameDuplicate();
-            await io.copyPath(newModDir.path, newModDirPath);
-            if (newModDir.existsSync()) await newModDir.delete(recursive: true);
-            newAddingModItem = await modAddRenameRefresh(Directory(newModDirPath), newAddingModItem);
-            newModDir = newAddingModItem.modDir;
-          }
+      String existingModDirPath = newItemDirDestPath + p.separator + p.basename(newModDir.path);
+      while (Directory(existingModDirPath).existsSync()) {
+        // if (newAddingModItem.submods.indexWhere((e) => e.path == newModDir.path) == -1) {
+        //   bool renamed = false;
+        //   for (var submod in newAddingModItem.submods.reversed) {
+        //     final existingSubmodDirPath = submod.path.replaceFirst(p.dirname(newModDir.path), newItemDirDestPath);
+        //     if (Directory(existingSubmodDirPath).existsSync()) {
+        //       await io.copyPath(submod.path, submod.path.renameDuplicate());
+        //       await submod.delete(recursive: true);
+        //       renamed = true;
+        //     }
+        //   }
+        //   if (renamed) {
+        //     newAddingModItem = await modAddRenameRefresh(newModDir, newAddingModItem);
+        //     newModDir = newAddingModItem.modDir;
+        //   }
+        //   if (Directory(existingModDirPath).existsSync()) {
+        //     String newModDirPath = newModDir.path.renameDuplicate();
+        //     existingModDirPath = newModDirPath.replaceFirst(modAddTempSortedDirPath, mainModDirPath + p.separator + aItem.category);
+        //     await io.copyPath(newModDir.path, newModDirPath);
+        //     if (newModDir.existsSync()) await newModDir.delete(recursive: true);
+        //     newAddingModItem = await modAddRenameRefresh(Directory(newModDirPath), newAddingModItem);
+        //     newModDir = newAddingModItem.modDir;
+        //   }
+        // } else {
+        if (Directory(newModDir.path.replaceFirst(p.dirname(newModDir.path), newItemDirDestPath)).existsSync()) {
+          String newModDirPath = newModDir.path.renameDuplicate();
+          existingModDirPath = newModDirPath.replaceFirst(modAddTempSortedDirPath, mainModDirPath + p.separator + aItem.category);
+          await io.copyPath(newModDir.path, newModDirPath);
+          if (newModDir.existsSync()) await newModDir.delete(recursive: true);
+          newAddingModItem = await modAddRenameRefresh(Directory(newModDirPath), newAddingModItem);
+          newModDir = newAddingModItem.modDir;
         }
+        // }
       }
 
       addingModList.add(newAddingModItem);
