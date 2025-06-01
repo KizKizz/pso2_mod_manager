@@ -10,6 +10,7 @@ import 'package:pso2_mod_manager/mod_add/variants_edit_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/mod_add.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
+import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/rename_popup.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
@@ -32,8 +33,18 @@ class _ModAddGridState extends State<ModAddGrid> {
   @override
   Widget build(BuildContext context) {
     if (enableModAddFilters) {
-      for (var mod in modAddingList) {
-        if (modAddFilterList.contains(p.basenameWithoutExtension(mod.modDir.path))) mod.modAddingState = false;
+      for (var filterWord in modAddFilterList) {
+        for (var mod in modAddingList) {
+          if (p.basename(mod.modDir.path).split(' ').contains(filterWord)) {
+            mod.modAddingState = false;
+          }
+          for (var submodName in mod.submodNames) {
+            if (submodName.split(' ').contains(filterWord)) {
+              int submodIndex = mod.submodNames.indexOf(submodName);
+              mod.submodAddingStates[submodIndex] = false;
+            }
+          }
+        }
       }
     } else {
       for (var mod in modAddingList) {
@@ -47,7 +58,7 @@ class _ModAddGridState extends State<ModAddGrid> {
       children: [
         Visibility(
             visible: curModAddProcessedStatus.watch(context) != ModAddProcessedState.waiting && curModAddProcessedStatus.watch(context) != ModAddProcessedState.addingToMasterList,
-            child: ResponsiveGridList(minItemWidth: 315, verticalGridMargin: 0, horizontalGridSpacing: 5, verticalGridSpacing: 5, children: [
+            child: ResponsiveGridList(minItemWidth: 375, verticalGridMargin: 0, horizontalGridSpacing: 5, verticalGridSpacing: 5, children: [
               for (int i = 0; i < modAddingList.length; i++)
                 CardOverlay(
                   paddingValue: 5,
@@ -55,26 +66,53 @@ class _ModAddGridState extends State<ModAddGrid> {
                     spacing: 5,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      SubmodPreviewBox(
-                          imageFilePaths: modAddingList[i].previewImages.map((f) => f.path).toList(), videoFilePaths: modAddingList[i].previewVideos.map((f) => f.path).toList(), isNew: false),
-                      Text(p.basename(modAddingList[i].modDir.path), textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
                       Row(
-                        spacing: 5,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: 2.5,
                         children: [
                           Expanded(
-                            child: ModManTooltip(
-                              message: modAddingList[i].associatedItems.map((e) => e.getName()).toList().join('\n'),
-                              child: InfoBox(
-                                info: appText.dText(modAddingList[i].associatedItems.length > 1 ? appText.numMatchedItems : appText.numMatchedItem, modAddingList[i].associatedItems.length.toString()),
-                                borderHighlight: false,
-                              ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                GenericItemIconBox(iconImagePaths: [modAddingList[i].associatedItems[0].iconImagePath], boxSize: const Size(140, 140), isNetwork: true),
+                                Text(modAddingList[i].associatedItems[0].getName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
+                              ],
                             ),
                           ),
                           Expanded(
+                            flex: 3,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SubmodPreviewBox(
+                                    imageFilePaths: modAddingList[i].previewImages.map((f) => f.path).toList(),
+                                    videoFilePaths: modAddingList[i].previewVideos.map((f) => f.path).toList(),
+                                    isNew: false),
+                                Text(p.basename(modAddingList[i].modDir.path), textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                      Row(
+                        spacing: 2.5,
+                        children: [
+                          Expanded(
                               child: ModManTooltip(
-                            message: modAddingList[i].submods.map((e) => p.basenameWithoutExtension(e.path)).toList().join('\n'),
+                            message: modAddingList[i].submodNames.join('\n'),
                             child: InfoBox(
-                              info: appText.dText(modAddingList[i].submods.length > 1 ? appText.numVariants : appText.numVariant, modAddingList[i].submods.length.toString()),
+                              info:
+                                  appText.dText(modAddingList[i].submods.length > 1 ? appText.numVariants : appText.numVariant, modAddingList[i].submods.length.toString()),
+                              borderHighlight: false,
+                            ),
+                          )),
+                          Expanded(
+                              child: ModManTooltip(
+                            message: modAddingList[i].submodNames.where((e) => modAddingList[i].submodAddingStates[modAddingList[i].submodNames.indexOf(e)] == true).join('\n'),
+                            child: InfoBox(
+                              info:
+                                  appText.dText(appText.numItemSelected, modAddingList[i].submodAddingStates.where((e) => e == true).length.toString()),
                               borderHighlight: false,
                             ),
                           ))
@@ -89,13 +127,12 @@ class _ModAddGridState extends State<ModAddGrid> {
                                   onPressed: () async {
                                     final editedAddingItem = await variantsEditPopup(context, modAddingList[i], i);
                                     if (editedAddingItem != null) {
-                                      setState(() {
-                                        modAddingList[i] = editedAddingItem;
-                                      });
+                                      modAddingList[i] = editedAddingItem;
                                     }
+                                    setState(() {});
                                   },
                                   child: Text(
-                                    appText.editItemsAndVariants,
+                                    appText.editVariants,
                                     textAlign: TextAlign.center,
                                   ))),
                           IconButton(
@@ -112,21 +149,29 @@ class _ModAddGridState extends State<ModAddGrid> {
                               icon: const Icon(Icons.edit),
                               visualDensity: VisualDensity.adaptivePlatformDensity),
                           IconButton(
-                              onPressed: () => setState(() {
-                                    modAddingList[i].modAddingState ? modAddingList[i].modAddingState = false : modAddingList[i].modAddingState = true;
-                                    if (modAddingList.indexWhere((e) => e.modAddingState) == -1) {
-                                      curModAddProcessedStatus.value = ModAddProcessedState.noSelectedData;
-                                    } else {
-                                      curModAddProcessedStatus.value = ModAddProcessedState.dataInList;
-                                    }
-                                  }),
-                              icon:
-                                  Icon(modAddingList[i].modAddingState ? Icons.check_box_outlined : Icons.check_box_outline_blank, color: modAddingList[i].modAddingState ? Colors.green : Colors.red),
+                              onPressed: () {
+                                if (modAddingList[i].aItemAddingStates[0]) {
+                                  modAddingList[i].aItemAddingStates[0] = false;
+                                } else {
+                                  modAddingList[i].aItemAddingStates[0] = true;
+                                }
+                                if (modAddingList.indexWhere((e) => e.modAddingState) == -1) {
+                                  curModAddProcessedStatus.value = ModAddProcessedState.noSelectedData;
+                                } else {
+                                  curModAddProcessedStatus.value = ModAddProcessedState.dataInList;
+                                }
+                                setState(() {});
+                              },
+                              icon: Icon(modAddingList[i].aItemAddingStates[0] ? Icons.check_box_outlined : Icons.check_box_outline_blank,
+                                  color: modAddingList[i].aItemAddingStates[0] ? Colors.green : Colors.red),
                               visualDensity: VisualDensity.adaptivePlatformDensity),
                           IconButton(
                               onPressed: () async {
                                 if (modAddingList[i].modDir.existsSync()) {
                                   await modAddingList[i].modDir.delete(recursive: true);
+                                }
+                                if (Directory(modAddingList[i].modDir.parent.path).existsSync() && Directory(modAddingList[i].modDir.parent.path).listSync().isEmpty) {
+                                  Directory(modAddingList[i].modDir.parent.path).deleteSync();
                                 }
                                 setState(() {
                                   modAddingList.removeAt(i);

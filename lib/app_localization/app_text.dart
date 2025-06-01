@@ -265,7 +265,8 @@ class AppText {
       addToQueue = 'Add To Queue',
       latestBackup = 'Latest Backup: %p%',
       cmlReplace = 'CML Replace',
-      replacedCMLFile = 'Replaced CML: %p%';
+      replacedCMLFile = 'Replaced CML: %p%',
+      numItemSelected = '%p% Selected';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -367,7 +368,9 @@ class AppText {
       mainItems = 'Main items',
       itemsToBeReplacedByMainItems = 'Items to be replaced by main items',
       cmlHelp = 'CML Help',
-      downloadSalonTool = 'Download Salon Tool';
+      downloadSalonTool = 'Download Salon Tool',
+      editVariants = 'Edit Variants',
+      matchedItem = 'Matched Item';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',
@@ -404,7 +407,8 @@ class AppText {
       firstTimeInfo = 'If this is your first time using PSO2NGS Mod Manager and your game currently contains mods, please remove them first',
       emptyModViewInfo = 'Select an item to display its mods here',
       cmlInfo =
-          'You can convert your saved character files to cml files using the Model Tool program\nAdd the cml files using the "Add Files" button\nSelect a cml file in the left panel\nPress the "Replace" button on the items in the right panel to replace them with the selected cml file';
+          'You can convert your saved character files to cml files using the Model Tool program\nAdd the cml files using the "Add Files" button\nSelect a cml file in the left panel\nPress the "Replace" button on the items in the right panel to replace them with the selected cml file',
+      boundingRadiusInfo = 'High negative values might cause character to be invisible in game on some outfits\nPlease be caution';
 
   // Help menu
   String applyRestoreMods = 'Apply - restore mods',

@@ -150,6 +150,7 @@ Future<void> modAddFilterPopup(context) async {
                               if (nameFormKey.currentState!.validate()) {
                                 modAddFilterList.add(newName.text);
                                 await File(modAddFilterListFilePath).writeAsString(modAddFilterList.join(', '));
+                                newName.clear();
                                 setState(
                                   () {},
                                 );

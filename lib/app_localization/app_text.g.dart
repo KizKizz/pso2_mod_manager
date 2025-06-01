@@ -262,6 +262,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..latestBackup = json['latestBackup'] as String
   ..cmlReplace = json['cmlReplace'] as String
   ..replacedCMLFile = json['replacedCMLFile'] as String
+  ..numItemSelected = json['numItemSelected'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -371,6 +372,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
       json['itemsToBeReplacedByMainItems'] as String
   ..cmlHelp = json['cmlHelp'] as String
   ..downloadSalonTool = json['downloadSalonTool'] as String
+  ..editVariants = json['editVariants'] as String
+  ..matchedItem = json['matchedItem'] as String
   ..failedToFetchRemoteLocaleData =
       json['failedToFetchRemoteLocaleData'] as String
   ..unableToUpdateFile = json['unableToUpdateFile'] as String
@@ -408,6 +411,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..firstTimeInfo = json['firstTimeInfo'] as String
   ..emptyModViewInfo = json['emptyModViewInfo'] as String
   ..cmlInfo = json['cmlInfo'] as String
+  ..boundingRadiusInfo = json['boundingRadiusInfo'] as String
   ..applyRestoreMods = json['applyRestoreMods'] as String
   ..addModsToModSets = json['addModsToModSets'] as String
   ..swapItemToAnotherItem = json['swapItemToAnotherItem'] as String
@@ -730,6 +734,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'latestBackup': instance.latestBackup,
       'cmlReplace': instance.cmlReplace,
       'replacedCMLFile': instance.replacedCMLFile,
+      'numItemSelected': instance.numItemSelected,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,
@@ -833,6 +838,8 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'itemsToBeReplacedByMainItems': instance.itemsToBeReplacedByMainItems,
       'cmlHelp': instance.cmlHelp,
       'downloadSalonTool': instance.downloadSalonTool,
+      'editVariants': instance.editVariants,
+      'matchedItem': instance.matchedItem,
       'failedToFetchRemoteLocaleData': instance.failedToFetchRemoteLocaleData,
       'unableToUpdateFile': instance.unableToUpdateFile,
       'unableToGetAppVersionDataFromGitHub':
@@ -868,6 +875,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'firstTimeInfo': instance.firstTimeInfo,
       'emptyModViewInfo': instance.emptyModViewInfo,
       'cmlInfo': instance.cmlInfo,
+      'boundingRadiusInfo': instance.boundingRadiusInfo,
       'applyRestoreMods': instance.applyRestoreMods,
       'addModsToModSets': instance.addModsToModSets,
       'swapItemToAnotherItem': instance.swapItemToAnotherItem,
