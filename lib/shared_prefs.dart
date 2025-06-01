@@ -33,7 +33,7 @@ bool sideMenuAlwaysExpanded = false;
 bool enableModAddFilters = false;
 int defaultHomepageIndex = 0;
 bool hideEmptyCategories = true;
-bool modAddCategorizeModsByItems = true;
+// bool modAddCategorizeModsByItems = true;
 Signal<bool> showPreviewBox = Signal(true);
 bool modAlwaysApplyHQFiles = false;
 bool selectedModsApplyHQFilesOnly = false;
@@ -163,7 +163,7 @@ Future<void> prefsLoad() async {
   hideEmptyCategories = prefs.getBool('hideEmptyCategories') ?? true;
 
   // categorize by items
-  modAddCategorizeModsByItems = prefs.getBool('modAddCategorizeModsByItems') ?? true;
+  // modAddCategorizeModsByItems = prefs.getBool('modAddCategorizeModsByItems') ?? true;
 
   // show previwe box
   showPreviewBox.value = prefs.getBool('showPreviewBox') ?? true;

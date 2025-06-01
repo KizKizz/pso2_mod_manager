@@ -13,7 +13,6 @@ import 'package:pso2_mod_manager/mod_add/mod_add_to_set_popup.dart';
 import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/mod_add.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 
 class ModAddDragDropButtons extends StatefulWidget {
@@ -78,7 +77,7 @@ class _ModAddDragDropButtonsState extends State<ModAddDragDropButtons> {
           ElevatedButton.icon(
               onPressed: () async {
                 await modAddFilterPopup(context);
-                setState(() {});
+                if (mounted) setState(() {});
               },
               icon: enableModAddFilters ? const Icon(Icons.check) : null,
               iconAlignment: IconAlignment.end,
@@ -92,16 +91,16 @@ class _ModAddDragDropButtonsState extends State<ModAddDragDropButtons> {
       Row(
         spacing: 5,
         children: [
-          ElevatedButton.icon(
-              onPressed: () async {
-                final prefs = await SharedPreferences.getInstance();
-                modAddCategorizeModsByItems ? modAddCategorizeModsByItems = false : modAddCategorizeModsByItems = true;
-                prefs.setBool('modAddCategorizeModsByItems', modAddCategorizeModsByItems);
-                setState(() {});
-              },
-              icon: modAddCategorizeModsByItems ? const Icon(Icons.check) : null,
-              iconAlignment: IconAlignment.end,
-              label: Text(appText.categorizeModsByItems)),
+          // ElevatedButton.icon(
+          //     onPressed: () async {
+          //       final prefs = await SharedPreferences.getInstance();
+          //       modAddCategorizeModsByItems ? modAddCategorizeModsByItems = false : modAddCategorizeModsByItems = true;
+          //       prefs.setBool('modAddCategorizeModsByItems', modAddCategorizeModsByItems);
+          //       setState(() {});
+          //     },
+          //     icon: modAddCategorizeModsByItems ? const Icon(Icons.check) : null,
+          //     iconAlignment: IconAlignment.end,
+          //     label: Text(appText.categorizeModsByItems)),
           Expanded(
             child: ElevatedButton(
                 style: ButtonStyle(

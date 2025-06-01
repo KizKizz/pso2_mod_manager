@@ -1,4 +1,8 @@
 {
+  "boundingRadiusInfo": "部の衣装では、大きな負の値を設定するとキャラクターがゲーム内で見えなくなる可能性があります\nご注意ください",
+  "numItemSelected": "%p% 件選択中",
+  "editVariants": "バリアント編集",
+  "matchedItem": "一致したアイテム",
   "cmlHelp": "CMLヘルプ",
   "downloadSalonTool": "Salon Toolをダウンロード",
   "cmlInfo": "Model Toolプログラムを使用して、保存されたキャラクターファイルをCMLファイルに変換できます\n「ファイル追加」ボタンを使用してCMLファイルを追加してください\n左側のパネルでCMLファイルを選択します\n右側のパネルのアイテムにある「置き換え」ボタンを押すと、選択したCMLファイルで置き換えることができます",

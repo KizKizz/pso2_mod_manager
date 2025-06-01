@@ -41,8 +41,8 @@ extension RenameDuplicate on String {
   String renameDuplicate() {
     var affix = split('_').last;
     if (affix.isNotEmpty && int.tryParse(affix) != null) {
-      int i = int.parse(affix);
-      return '${this}_${i++}';
+      int i = int.parse(affix) + 1;
+      return '${split('_').first}_$i';
     } else {
       return '${this}_1';
     }

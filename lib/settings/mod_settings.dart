@@ -86,7 +86,15 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
                       },
                     ),
                     // Bounding radius value
-                    SettingsHeader(icon: Icons.radio_button_checked_rounded, text: appText.boundingRadiusRemovalValue),
+                    Row(
+                      spacing: 5,
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SettingsHeader(icon: Icons.radio_button_checked_rounded, text: appText.boundingRadiusRemovalValue),
+                        ModManTooltip(message: appText.boundingRadiusInfo, child: Icon(Icons.info_outline))
+                      ],
+                    ),
                     SizedBox(
                       width: double.infinity,
                       child: SliderTheme(
