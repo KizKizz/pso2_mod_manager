@@ -111,6 +111,7 @@ Future<List<AddingMod>> modAddSort() async {
 
   List<AddingMod> addingModList = [];
   List<Directory> modDirs = Directory(modAddTempSortedDirPath).listSync().whereType<Directory>().toList();
+  List<File> fileToRemove = [];
 
   // Get files tree
   for (var modDir in modDirs) {
@@ -178,54 +179,53 @@ Future<List<AddingMod>> modAddSort() async {
     // Sort by items
     for (var aItem in associatedItems) {
       Directory newModDir = Directory(modAddTempSortedDirPath + p.separator + aItem.getName().replaceAll(RegExp(charToReplace), '_') + p.separator + p.basename(modDir.path));
+      fileToRemove.addAll(modDir.listSync(recursive: true).whereType<File>().toList());
+      if (p.basename(modDir.path).toLowerCase() == p.basename(p.dirname(newModDir.path).toLowerCase())) {
+        String renamedModPath = modDir.path.renameDuplicate();
+        await io.copyPath(modDir.path, renamedModPath);
+        if (Directory(renamedModPath).existsSync()) {
+          modDir = Directory(renamedModPath);
+        }
+      }
       await io.copyPath(modDir.path, newModDir.path);
-
       final newItemSubmodDirs = submods.where((e) => e.listSync().whereType<File>().isNotEmpty).map((e) => Directory(e.path.replaceFirst(modDir.path, newModDir.path))).toList();
 
       AddingMod newAddingModItem = AddingMod(newModDir, true, newItemSubmodDirs, submodNames, List.generate(newItemSubmodDirs.length, (int i) => true), [aItem], [true], sameItemIceNames,
           previewImages.map((e) => File(e.path.replaceFirst(modDir.path, newModDir.path))).toList(), previewVideos.map((e) => File(e.path.replaceFirst(modDir.path, newModDir.path))).toList());
 
       // Rename duplicates
-      String newItemDirDestPath = mainModDirPath + p.separator + aItem.category + p.separator + aItem.getName().replaceAll(RegExp(charToReplace), '_');
+      String newItemDirDestPath = aItem.category == defaultCategoryDirs[1] && aItem.getName().split(' ').last == '[Se]'
+          ? mainModDirPath + p.separator + defaultCategoryDirs[16] + p.separator + aItem.getName().replaceAll(RegExp(charToReplace), '_')
+          : mainModDirPath + p.separator + aItem.category + p.separator + aItem.getName().replaceAll(RegExp(charToReplace), '_');
       String existingModDirPath = newItemDirDestPath + p.separator + p.basename(newModDir.path);
       while (Directory(existingModDirPath).existsSync()) {
-        // if (newAddingModItem.submods.indexWhere((e) => e.path == newModDir.path) == -1) {
-        //   bool renamed = false;
-        //   for (var submod in newAddingModItem.submods.reversed) {
-        //     final existingSubmodDirPath = submod.path.replaceFirst(p.dirname(newModDir.path), newItemDirDestPath);
-        //     if (Directory(existingSubmodDirPath).existsSync()) {
-        //       await io.copyPath(submod.path, submod.path.renameDuplicate());
-        //       await submod.delete(recursive: true);
-        //       renamed = true;
-        //     }
-        //   }
-        //   if (renamed) {
-        //     newAddingModItem = await modAddRenameRefresh(newModDir, newAddingModItem);
-        //     newModDir = newAddingModItem.modDir;
-        //   }
-        //   if (Directory(existingModDirPath).existsSync()) {
-        //     String newModDirPath = newModDir.path.renameDuplicate();
-        //     existingModDirPath = newModDirPath.replaceFirst(modAddTempSortedDirPath, mainModDirPath + p.separator + aItem.category);
-        //     await io.copyPath(newModDir.path, newModDirPath);
-        //     if (newModDir.existsSync()) await newModDir.delete(recursive: true);
-        //     newAddingModItem = await modAddRenameRefresh(Directory(newModDirPath), newAddingModItem);
-        //     newModDir = newAddingModItem.modDir;
-        //   }
-        // } else {
         if (Directory(newModDir.path.replaceFirst(p.dirname(newModDir.path), newItemDirDestPath)).existsSync()) {
           String newModDirPath = newModDir.path.renameDuplicate();
-          existingModDirPath = newModDirPath.replaceFirst(modAddTempSortedDirPath, mainModDirPath + p.separator + aItem.category);
+          existingModDirPath = newModDirPath.replaceFirst(
+              modAddTempSortedDirPath,
+              aItem.category == defaultCategoryDirs[1] && aItem.getName().split(' ').last == '[Se]'
+                  ? mainModDirPath + p.separator + defaultCategoryDirs[16]
+                  : mainModDirPath + p.separator + aItem.category);
           await io.copyPath(newModDir.path, newModDirPath);
           if (newModDir.existsSync()) await newModDir.delete(recursive: true);
           newAddingModItem = await modAddRenameRefresh(Directory(newModDirPath), newAddingModItem);
           newModDir = newAddingModItem.modDir;
         }
-        // }
       }
 
       addingModList.add(newAddingModItem);
     }
-    modDir.deleteSync(recursive: true);
+    // modDir.deleteSync(recursive: true);
+    fileToRemove.addAll(modDir.listSync(recursive: true).whereType<File>().toList());
+  }
+
+  if (fileToRemove.isNotEmpty) {
+    for (var file in fileToRemove.toSet()) {
+      if (file.existsSync()) await file.delete(recursive: true);
+    }
+    for (var dir in Directory(modAddTempSortedDirPath).listSync(recursive: true).whereType<Directory>()) {
+      if (dir.existsSync() && dir.listSync(recursive: true).whereType<File>().isEmpty) await dir.delete(recursive: true);
+    }
   }
 
   return addingModList;
@@ -237,9 +237,8 @@ Future<List<Item>> modAddToMasterList(bool addingToSet, List<ModSet> modSets) as
     for (int i = 0; i < modAddingItem.associatedItems.length; i++) {
       if (modAddingItem.aItemAddingStates[i]) {
         final item = modAddingItem.associatedItems[i];
-
-        String category = item.category;
         String itemName = item.getName().replaceAll(RegExp(charToReplace), '_');
+        String category = item.category == defaultCategoryDirs[1] && itemName.split(' ').last == '[Se]' ? defaultCategoryDirs[16] : item.category;
         String newItemDirDestPath = mainModDirPath + p.separator + category + p.separator + itemName;
 
         for (int j = 0; j < modAddingItem.submods.length; j++) {

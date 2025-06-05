@@ -1,5 +1,5 @@
 name: pso2_mod_manager
-description: A PSO2-NGS Management App.
+description: A PSO2NGS Mod Management App.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 3.2.8
+version: 3.2.9
 
 environment:
   sdk: ">=3.0.0"
