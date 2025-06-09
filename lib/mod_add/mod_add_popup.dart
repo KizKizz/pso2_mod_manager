@@ -9,6 +9,7 @@ import 'package:signals/signals_flutter.dart';
 
 Future<void> modAddPopup(context, List<String> pathsToAdd) async {
   if (Directory(modAddTempDirPath).existsSync()) Directory(modAddTempDirPath).deleteSync(recursive: true);
+  modAddingList.clear();
   modAddDragDropPaths = pathsToAdd;
   if (modAddDragDropPaths.isNotEmpty) curModAddDragDropStatus.value = ModAddDragDropState.fileInList;
   await showDialog(

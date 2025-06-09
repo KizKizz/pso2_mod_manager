@@ -51,8 +51,12 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
         if (selectedDisplaySort.value == modSortingSelections[0]) {
           item.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
         } else if (selectedDisplaySort.value == modSortingSelections[1]) {
-          item.mods.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
+          item.mods.sort((a, b) => a.hasPreviewsSort().compareTo(b.hasPreviewsSort()));
         } else if (selectedDisplaySort.value == modSortingSelections[2]) {
+          item.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
+        } else if (selectedDisplaySort.value == modSortingSelections[3]) {
+          item.mods.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
+        } else if (selectedDisplaySort.value == modSortingSelections[4]) {
           item.mods.sort((a, b) => b.applyDate.compareTo(a.applyDate));
         }
         modCardList.addAll(item.mods.map((m) => ModCardLayout(item: item, mod: m)));

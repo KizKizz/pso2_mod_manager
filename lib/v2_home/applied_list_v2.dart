@@ -85,10 +85,14 @@ class _AppliedListV2State extends State<AppliedListV2> {
 
     // Sort
     if (selectedDisplaySortAppliedList.value == modSortingSelections[0]) {
-      filteredItems.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
+      filteredItems.sort((a, b) => a.isFavorite.toString().compareTo(b.isFavorite.toString()));
     } else if (selectedDisplaySortAppliedList.value == modSortingSelections[1]) {
-      filteredItems.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
+      filteredItems.sort((a, b) => a.hasPreviewsSort().compareTo(b.hasPreviewsSort()));
     } else if (selectedDisplaySortAppliedList.value == modSortingSelections[2]) {
+      filteredItems.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
+    } else if (selectedDisplaySortAppliedList.value == modSortingSelections[3]) {
+      filteredItems.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
+    } else if (selectedDisplaySortAppliedList.value == modSortingSelections[4]) {
       filteredItems.sort((a, b) => b.applyDate.compareTo(a.applyDate));
     }
 

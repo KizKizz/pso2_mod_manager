@@ -86,6 +86,10 @@ class Mod with ChangeNotifier {
     return submods.where((e) => e.applyStatus).length;
   }
 
+  String hasPreviewsSort() {
+    return previewImages.isEmpty && previewVideos.isEmpty ? '1$itemName'.toLowerCase() : '0$itemName'.toLowerCase();
+  }
+
   factory Mod.fromJson(Map<String, dynamic> json) => _$ModFromJson(json);
   Map<String, dynamic> toJson() => _$ModToJson(this);
 }
