@@ -153,6 +153,13 @@ class Item with ChangeNotifier {
     return foundIndex == -1 ? '1$itemName'.toLowerCase() : '0$itemName'.toLowerCase();
   }
 
+  void setFavorite(bool state) {
+    isFavorite = state;
+    for (var mod in mods) {
+      mod.setFavorite(state);
+    }
+  }
+
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
   Map<String, dynamic> toJson() => _$ItemToJson(this);
 }

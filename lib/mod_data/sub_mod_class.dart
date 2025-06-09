@@ -105,6 +105,10 @@ class SubMod with ChangeNotifier {
     }
   }
 
+  void setFavorite(bool state) {
+    isFavorite = state;
+  }
+
   factory SubMod.fromJson(Map<String, dynamic> json) => _$SubModFromJson(json);
   Map<String, dynamic> toJson() => _$SubModToJson(this);
 }

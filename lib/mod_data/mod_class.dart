@@ -90,6 +90,17 @@ class Mod with ChangeNotifier {
     return previewImages.isEmpty && previewVideos.isEmpty ? '1$itemName'.toLowerCase() : '0$itemName'.toLowerCase();
   }
 
+  void setFavorite(bool state) {
+    isFavorite = state;
+    for (var submod in submods) {
+      submod.setFavorite(state);
+    }
+  }
+
+  String favoriteSort() {
+    return isFavorite ? '0$itemName'.toLowerCase() : '1$itemName'.toLowerCase();
+  }
+
   factory Mod.fromJson(Map<String, dynamic> json) => _$ModFromJson(json);
   Map<String, dynamic> toJson() => _$ModToJson(this);
 }
