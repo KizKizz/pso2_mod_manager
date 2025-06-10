@@ -136,6 +136,16 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
                                               : null,
                                           child: Text(appText.restoreThisSet))),
                                 ),
+                                // Favorite button
+                                IconButton.outlined(
+                                    padding: EdgeInsets.zero,
+                                    visualDensity: VisualDensity.adaptivePlatformDensity,
+                                    onPressed: () {
+                                      widget.modSet.setFavorite(widget.modSet.isFavorite! ? false : true);
+                                      saveMasterModSetListToJson();
+                                      mainGridStatus.value = '[${DateTime.now()}] ${widget.modSet.setName} - favorite has been set to ${widget.modSet.isFavorite.toString()}';
+                                    },
+                                    icon: Icon(widget.modSet.isFavorite! ? Icons.favorite : Icons.favorite_border)),
                                 HeaderInfoBox(
                                     info: appText.dText(widget.modSet.setItems.length > 1 ? appText.numItems : appText.numItem, widget.modSet.setItems.length.toString()), borderHighlight: false),
                                 HeaderInfoBox(info: appText.dText(appText.numCurrentlyApplied, widget.modSet.setItems.where((e) => e.applyStatus).length.toString()), borderHighlight: false),

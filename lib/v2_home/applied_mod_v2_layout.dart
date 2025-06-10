@@ -80,6 +80,19 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
       }
     }
 
+    // Sort
+    if (selectedDisplaySortModView.value == modSortingSelections[0]) {
+      displayingSubmodCards.sort((a, b) => a.submod.favoriteSort().compareTo(b.submod.favoriteSort()));
+    } else if (selectedDisplaySortModView.value == modSortingSelections[1]) {
+      displayingSubmodCards.sort((a, b) => a.submod.hasPreviewsSort().compareTo(b.submod.hasPreviewsSort()));
+    } else if (selectedDisplaySortModView.value == modSortingSelections[2]) {
+      displayingSubmodCards.sort((a, b) => a.submod.submodName.toLowerCase().compareTo(b.submod.submodName.toLowerCase()));
+    } else if (selectedDisplaySortModView.value == modSortingSelections[3]) {
+      displayingSubmodCards.sort((a, b) => b.submod.creationDate!.compareTo(a.submod.creationDate!));
+    } else if (selectedDisplaySortModView.value == modSortingSelections[4]) {
+      displayingSubmodCards.sort((a, b) => b.submod.applyDate.compareTo(a.submod.applyDate));
+    }
+
     return SliverPadding(
       padding: const EdgeInsets.only(bottom: 2.5),
       sliver: SliverStickyHeader.builder(
@@ -141,7 +154,7 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                                         ),
                                       ),
                                       Row(
-                                        spacing: 5,
+                                        spacing: 2.5,
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           InfoBox(
@@ -155,7 +168,7 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                                         ],
                                       ),
                                       Row(
-                                        spacing: 5,
+                                        spacing: 2.5,
                                         children: [
                                           SizedBox(
                                             height: 25,
@@ -236,7 +249,9 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                   padding: const EdgeInsets.symmetric(vertical: 2.5),
                   sliver: SuperSliverList.separated(
                     itemCount: displayingSubmodCards.length,
-                    itemBuilder: (context, index) => SizedBox(height: displayingSubmodCards[index].submod.previewImages.isNotEmpty || displayingSubmodCards[index].submod.previewVideos.isNotEmpty ? 276 : 103, child: displayingSubmodCards[index]),
+                    itemBuilder: (context, index) => SizedBox(
+                        height: displayingSubmodCards[index].submod.previewImages.isNotEmpty || displayingSubmodCards[index].submod.previewVideos.isNotEmpty ? 276 : 103,
+                        child: displayingSubmodCards[index]),
                     separatorBuilder: (BuildContext context, int index) => const SizedBox(
                       height: 2.5,
                     ),

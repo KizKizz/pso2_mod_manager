@@ -238,7 +238,7 @@ Future<List<Item>> modAddToMasterList(bool addingToSet, List<ModSet> modSets) as
       if (modAddingItem.aItemAddingStates[i]) {
         final item = modAddingItem.associatedItems[i];
         String itemName = item.getName().replaceAll(RegExp(charToReplace), '_');
-        String category = item.category == defaultCategoryDirs[1] && itemName.split(' ').last == '[Se]' ? defaultCategoryDirs[16] : item.category;
+        String category = item.category == defaultCategoryDirs[1] && item.subCategory == 'Setwear' ? defaultCategoryDirs[16] : item.category;
         String newItemDirDestPath = mainModDirPath + p.separator + category + p.separator + itemName;
 
         for (int j = 0; j < modAddingItem.submods.length; j++) {

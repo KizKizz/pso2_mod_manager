@@ -283,6 +283,9 @@ Future<void> submodDelete(context, Item item, Mod mod, SubMod submod, bool isBul
       if (mod.submods.isEmpty) {
         if (Directory(mod.location).existsSync()) await Directory(mod.location).delete(recursive: true);
         item.mods.remove(mod);
+      } else {
+        mod.isNew = mod.getSubmodsIsNewState();
+        mod.isFavorite = mod.submods.indexWhere((e) => e.isFavorite) != -1 ? true : false;
       }
       if (item.mods.isEmpty) {
         if (Directory(item.location).existsSync()) await Directory(item.location).delete(recursive: true);
@@ -290,6 +293,9 @@ Future<void> submodDelete(context, Item item, Mod mod, SubMod submod, bool isBul
         if (tIndex != -1) {
           masterModList[tIndex].categories.firstWhere((e) => e.categoryName == item.category).items.remove(item);
         }
+      } else {
+        item.isNew = item.getModsIsNewState();
+        item.isFavorite = item.mods.indexWhere((e) => e.isFavorite) != -1 ? true : false;
       }
       saveMasterModSetListToJson();
       saveMasterModListToJson();
@@ -318,6 +324,9 @@ Future<void> modDelete(context, Item item, Mod mod, bool isBulkDelete) async {
         if (tIndex != -1) {
           masterModList[tIndex].categories.firstWhere((e) => e.categoryName == item.category).items.remove(item);
         }
+      } else {
+        item.isNew = item.getModsIsNewState();
+        item.isFavorite = item.mods.indexWhere((e) => e.isFavorite) != -1 ? true : false;
       }
       saveMasterModSetListToJson();
       saveMasterModListToJson();

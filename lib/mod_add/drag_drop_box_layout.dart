@@ -27,9 +27,9 @@ class _DragDropBoxLayoutState extends State<DragDropBoxLayout> {
     return DropTarget(
         enable: curModAddDragDropStatus.watch(context) != ModAddDragDropState.unpackingFiles,
         onDragDone: (detail) {
-          setState(() {
+          setState(() async {
             for (var file in detail.files) {
-              if (p.extension(file.path) == '' || widget.dragDropFileTypes.contains(p.extension(file.path))) {
+              if (p.extension(file.path) == '' || widget.dragDropFileTypes.contains(p.extension(file.path)) || await FileSystemEntity.isDirectory(file.path)) {
                 if (!modAddDragDropPaths.contains(file.path)) {
                   modAddDragDropPaths.add(file.path);
                   if (curModAddDragDropStatus.value != ModAddDragDropState.unpackingFiles) curModAddDragDropStatus.value = ModAddDragDropState.fileInList;

@@ -192,7 +192,16 @@ class _ModAddProcessedButtonsState extends State<ModAddProcessedButtons> {
         ),
         if (widget.showReturnButton)
           OutlinedButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () async {
+                if (Directory(modAddTempDirPath).existsSync()) {
+                  await Directory(modAddTempDirPath).delete(recursive: true);
+                }
+                modAddingList.clear();
+                modSetsToAdd.clear();
+                curModAddProcessedStatus.value = ModAddProcessedState.waiting;
+                // ignore: use_build_context_synchronously
+                Navigator.of(context).pop();
+              },
               child: Text(
                 appText.returns,
                 textAlign: TextAlign.center,

@@ -124,6 +124,8 @@
   "filters": "Filters",
   "details": "Details",
   "help": "Help",
+  "favorites": "Favorites",
+  "hasPreviews": "Has Previews",
   "patchNotes": "Patch Notes",
   "appUpdate": "App Update",
   "tryAgain": "Try Again",

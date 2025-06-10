@@ -109,7 +109,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                   alignment: AlignmentDirectional.bottomStart,
                   children: [
                     SizedBox(
-                        height: widget.showPreview ? 200: 27,
+                        height: widget.showPreview ? 200 : 27,
                         child: SubmodPreviewBox(imageFilePaths: widget.submod.previewImages, videoFilePaths: widget.submod.previewVideos, isNew: widget.submod.isNew)),
                     Visibility(
                         visible: widget.submod.hasCmx! || widget.submod.customAQMInjected! || widget.submod.boundingRemoved! || widget.submod.applyHQFilesOnly!,
@@ -120,7 +120,8 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Visibility(
-                                  visible: widget.submod.applyHQFilesOnly!, child: Icon(Icons.high_quality_outlined, color: selectedModsApplyHQFilesOnly ? Theme.of(context).colorScheme.primary : null)),
+                                  visible: widget.submod.applyHQFilesOnly!,
+                                  child: Icon(Icons.high_quality_outlined, color: selectedModsApplyHQFilesOnly ? Theme.of(context).colorScheme.primary : null)),
                               Visibility(visible: widget.submod.hasCmx!, child: InfoTag(info: appText.cmx, borderHighlight: widget.submod.cmxApplied!)),
                               Visibility(visible: widget.submod.customAQMInjected!, child: InfoTag(info: appText.aqm, borderHighlight: widget.submod.customAQMInjected!)),
                               Visibility(visible: widget.submod.boundingRemoved!, child: InfoTag(info: appText.bounding, borderHighlight: widget.submod.boundingRemoved!)),
@@ -131,7 +132,9 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                 ),
                 // Expanded(child: Text(widget.submod.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium)),
                 // Text(widget.submod.submodName, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.titleMedium),
-                Expanded(child: Center(child: AutoSizeText(widget.submod.submodName, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 1, style: Theme.of(context).textTheme.titleMedium))),
+                Expanded(
+                    child: Center(
+                        child: AutoSizeText(widget.submod.submodName, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 1, style: Theme.of(context).textTheme.titleMedium))),
                 Row(spacing: 5, children: [
                   Expanded(
                       child: OutlinedButton(
@@ -162,7 +165,8 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                                     }
                                     if (!widget.submod.activeInSets!.contains(widget.modSetName)) widget.submod.activeInSets!.add(widget.modSetName);
                                     modPopupStatus.value = '[${DateTime.now()}] "${widget.modSetName}" active submod changed to "${widget.submod.submodName}" in "${widget.item.getDisplayName()}"';
-                                    modSetRefreshSignal.value = modPopupStatus.value = '[${DateTime.now()}] "${widget.modSetName}" active submod changed to "${widget.submod.submodName}" in "${widget.item.getDisplayName()}"';
+                                    modSetRefreshSignal.value =
+                                        modPopupStatus.value = '[${DateTime.now()}] "${widget.modSetName}" active submod changed to "${widget.submod.submodName}" in "${widget.item.getDisplayName()}"';
                                     saveMasterModListToJson();
                                     saveMasterModSetListToJson();
                                   }
@@ -170,13 +174,28 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                             icon: Icon(widget.submod.activeInSets!.contains(widget.modSetName) ? Icons.check_box_outlined : Icons.check_box_outline_blank_rounded,
                                 color: widget.submod.activeInSets!.contains(widget.modSetName) ? Theme.of(context).colorScheme.primary : null)),
                       )),
+
                   // Ice file list button
                   IconButton.outlined(
                       visualDensity: VisualDensity.adaptivePlatformDensity, onPressed: () => modFileListPopup(context, widget.item, widget.mod, widget.submod), icon: const Icon(Icons.list)),
-      
+
+                  // Favorite button
+                  IconButton.outlined(
+                      padding: EdgeInsets.zero,
+                      visualDensity: VisualDensity.adaptivePlatformDensity,
+                      onPressed: () {
+                        widget.submod.setFavorite(widget.submod.isFavorite ? false : true);
+                        widget.mod.setFavorite(widget.mod.submods.indexWhere((e) => e.isFavorite) != -1 ? true : false);
+                        widget.item.setFavorite(widget.item.mods.indexWhere((e) => e.isFavorite) != -1 ? true : false);
+                        saveMasterModListToJson();
+                        mainGridStatus.value = '[${DateTime.now()}] ${widget.item.itemName} - favorite has been set to ${widget.item.isFavorite.toString()}';
+                        modPopupStatus.value = '[${DateTime.now()}] ${widget.mod.modName} - ${widget.submod.submodName} - favorite has been set to ${widget.item.isFavorite.toString()}';
+                      },
+                      icon: Icon(widget.submod.isFavorite ? Icons.favorite : Icons.favorite_border)),
+
                   // Quick swap Menu
                   QuickSwapMenu(item: widget.item, mod: widget.mod, submod: widget.submod),
-      
+
                   // Function menu
                   if (!widget.isInEditingMode)
                     SubmodMoreFunctionsMenu(

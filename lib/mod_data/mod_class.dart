@@ -86,6 +86,21 @@ class Mod with ChangeNotifier {
     return submods.where((e) => e.applyStatus).length;
   }
 
+  String hasPreviewsSort() {
+    return previewImages.isEmpty && previewVideos.isEmpty ? '1$modName'.toLowerCase() : '0$modName'.toLowerCase();
+  }
+
+  void setFavorite(bool state) {
+    isFavorite = state;
+    // for (var submod in submods) {
+    //   submod.setFavorite(state);
+    // }
+  }
+
+  String favoriteSort() {
+    return isFavorite ? '0$modName'.toLowerCase() : '1$modName'.toLowerCase();
+  }
+
   factory Mod.fromJson(Map<String, dynamic> json) => _$ModFromJson(json);
   Map<String, dynamic> toJson() => _$ModToJson(this);
 }

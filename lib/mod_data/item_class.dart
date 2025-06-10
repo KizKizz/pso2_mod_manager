@@ -13,8 +13,8 @@ part 'item_class.g.dart';
 
 @JsonSerializable()
 class Item with ChangeNotifier {
-  Item(this.itemName, this.subCategory, this.variantNames, this.icons, this.iconPath, this.overlayedIconPath, this.backupIconPath, this.isOverlayedIconApplied, this.category, this.location, this.applyStatus,
-      this.applyDate, this.position, this.isFavorite, this.isSet, this.isNew, this.setNames, this.mods);
+  Item(this.itemName, this.subCategory, this.variantNames, this.icons, this.iconPath, this.overlayedIconPath, this.backupIconPath, this.isOverlayedIconApplied, this.category, this.location,
+      this.applyStatus, this.applyDate, this.position, this.isFavorite, this.isSet, this.isNew, this.setNames, this.mods);
   String itemName;
   String? subCategory = '';
   List<String> variantNames;
@@ -146,6 +146,24 @@ class Item with ChangeNotifier {
     saveMasterModListToJson();
     saveMasterModSetListToJson();
     return (mod, submod);
+  }
+
+  bool hasPreviewsOnSet() {
+    int foundIndex = mods.indexWhere((e) => e.isSet && (e.previewImages.isNotEmpty || e.previewVideos.isNotEmpty));
+    return foundIndex == -1 ? false : true;
+  }
+
+  String hasPreviewsSort() {
+    int foundIndex = mods.indexWhere((e) => e.previewImages.isNotEmpty || e.previewVideos.isNotEmpty);
+    return foundIndex == -1 ? '1$itemName'.toLowerCase() : '0$itemName'.toLowerCase();
+  }
+
+  void setFavorite(bool state) {
+    isFavorite = state;
+  }
+
+  String favoriteSort() {
+    return isFavorite ? '0$itemName'.toLowerCase() : '1$itemName'.toLowerCase();
   }
 
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);

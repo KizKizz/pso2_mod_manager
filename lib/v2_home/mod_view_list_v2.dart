@@ -61,10 +61,14 @@ class _ModViewListV2State extends State<ModViewListV2> {
 
     // Sort
     if (selectedDisplaySortModView.value == modSortingSelections[0]) {
-      filteredMods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
+      filteredMods.sort((a, b) => a.favoriteSort().compareTo(b.favoriteSort()));
     } else if (selectedDisplaySortModView.value == modSortingSelections[1]) {
-      filteredMods.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
+      filteredMods.sort((a, b) => a.hasPreviewsSort().compareTo(b.hasPreviewsSort()));
     } else if (selectedDisplaySortModView.value == modSortingSelections[2]) {
+      filteredMods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
+    } else if (selectedDisplaySortModView.value == modSortingSelections[3]) {
+      filteredMods.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
+    } else if (selectedDisplaySortModView.value == modSortingSelections[4]) {
       filteredMods.sort((a, b) => b.applyDate.compareTo(a.applyDate));
     }
 

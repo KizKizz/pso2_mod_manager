@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
@@ -67,38 +68,50 @@ class _ItemIconBoxState extends State<ItemIconBox> {
                           filterQuality: FilterQuality.medium,
                           fit: BoxFit.cover,
                         ),
-                  Visibility(
-                    visible: widget.showSubCategory && !aqmInjectCategoryDirs.contains(widget.item.category) && widget.item.subCategory!.isNotEmpty,
-                    child: Container(
-                      color: Theme.of(context).scaffoldBackgroundColor.withAlpha(200),
-                      // height: 25,
-                      // width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.all(5),
-                        child: Center(
-                          child: Text(
-                            widget.item.category == defaultCategoryDirs[14]
-                                ? appText.motionTypeName(widget.item.subCategory!)
-                                : widget.item.category == defaultCategoryDirs[17]
-                                    ? appText.weaponTypeName(widget.item.subCategory!.split('* ').last)
-                                    : widget.item.subCategory!,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.labelLarge,
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Visibility(
+                        visible: widget.showSubCategory && !aqmInjectCategoryDirs.contains(widget.item.category) && widget.item.subCategory!.isNotEmpty,
+                        child: Container(
+                          color: Theme.of(context).scaffoldBackgroundColor.withAlpha(200),
+                          height: 25,
+                          width: double.infinity,
+                          child: Padding(
+                            padding: const EdgeInsets.all(2),
+                            child: AutoSizeText(
+                              widget.item.category == defaultCategoryDirs[14]
+                                  ? appText.motionTypeName(widget.item.subCategory!)
+                                  : widget.item.category == defaultCategoryDirs[17]
+                                      ? appText.weaponTypeName(widget.item.subCategory!.split('* ').last)
+                                      : widget.item.subCategory!,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.labelLarge,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
+                    ],
+                  )
                 ],
               )),
-          if (widget.item.isNew)
-            Padding(
-              padding: const EdgeInsets.only(top: 1.5, right: 2),
-              child: Text(
-                appText.xnew,
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, backgroundColor: Colors.redAccent),
-              ),
-            ),
+          Row(
+            spacing: 0.5,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              if (widget.item.isFavorite) Icon(Icons.favorite, color: Colors.redAccent),
+              Spacer(),
+              if (widget.item.isNew)
+                Padding(
+                  padding: const EdgeInsets.only(top: 1.5, right: 2),
+                  child: Text(
+                    appText.xnew,
+                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, backgroundColor: Colors.redAccent),
+                  ),
+                ),
+            ],
+          )
         ],
       ),
     );

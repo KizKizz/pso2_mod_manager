@@ -1,4 +1,6 @@
 {
+  "favorites": "お気に入り",
+  "hasPreviews": "プレビューあり",
   "boundingRadiusInfo": "部の衣装では、大きな負の値を設定するとキャラクターがゲーム内で見えなくなる可能性があります\nご注意ください",
   "numItemSelected": "%p% 件選択中",
   "editVariants": "バリアント編集",

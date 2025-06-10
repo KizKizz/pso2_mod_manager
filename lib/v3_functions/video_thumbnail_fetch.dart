@@ -9,9 +9,12 @@ Future<Uint8List?> getVideoThumbnail(String videoPath) async {
   final controller = VideoController(tempPlayer);
   await controller.player.open(media);
   await controller.player.setVolume(0);
-  while (controller.player.state.bufferingPercentage < 100) {
+  int totalWaitTime = 0;
+  while (controller.player.state.bufferingPercentage < 100 && totalWaitTime < 30000) {
     await Future.delayed(Duration(milliseconds: 10));
+    totalWaitTime += 10;
   }
+  if (totalWaitTime >= 30000) return null;
   await controller.player.seek(Duration(seconds: 3));
   await controller.player.pause();
   final videoThumbnail = await controller.player.screenshot();

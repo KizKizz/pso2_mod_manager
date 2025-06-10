@@ -137,7 +137,9 @@ class AppText {
       imported = 'Imported',
       filters = 'Filters',
       details = 'Details',
-      help = 'Help';
+      help = 'Help',
+      favorites = 'Favorites',
+      hasPreviews = 'Has Previews';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -589,10 +591,14 @@ class AppText {
 
     switch (index) {
       case 0:
-        return nameAlphabetical;
+        return favorites;
       case 1:
-        return recentlyAdded;
+        return hasPreviews;
       case 2:
+        return nameAlphabetical;
+      case 3:
+        return recentlyAdded;
+      case 4:
         return recentlyApplied;
       default:
         return name;

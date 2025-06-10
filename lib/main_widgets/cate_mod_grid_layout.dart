@@ -10,6 +10,7 @@ import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_widgets/fav_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_view_popup.dart';
@@ -43,42 +44,37 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
       modAppliedNum += item.mods.where((e) => e.applyStatus).length;
     }
 
-    // List<ModCardLayout> modCardFetch() {
+    List<(Item, Mod)> allMods = [];
     List<ModCardLayout> modCardList = [];
     if (widget.searchString.isEmpty) {
       for (var item in widget.itemCate.items) {
-        // Sort
-        if (selectedDisplaySort.value == modSortingSelections[0]) {
-          item.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
-        } else if (selectedDisplaySort.value == modSortingSelections[1]) {
-          item.mods.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
-        } else if (selectedDisplaySort.value == modSortingSelections[2]) {
-          item.mods.sort((a, b) => b.applyDate.compareTo(a.applyDate));
-        }
-        modCardList.addAll(item.mods.map((m) => ModCardLayout(item: item, mod: m)));
+        allMods.addAll(item.mods.map((e) => (item, e)));
       }
     } else {
       for (var item in widget.itemCate.items) {
-        // Sort
-        if (selectedDisplaySort.value == modSortingSelections[0]) {
-          item.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
-        } else if (selectedDisplaySort.value == modSortingSelections[1]) {
-          item.mods.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
-        } else if (selectedDisplaySort.value == modSortingSelections[2]) {
-          item.mods.sort((a, b) => b.applyDate.compareTo(a.applyDate));
-        }
         for (var mod in item.mods) {
           if (mod.itemName.replaceFirst('_', '/').trim().toLowerCase().contains(widget.searchString.toLowerCase()) ||
               mod.modName.toLowerCase().contains(widget.searchString.toLowerCase()) ||
               mod.getDistinctNames().where((e) => e.toLowerCase().contains(widget.searchString.toLowerCase())).isNotEmpty) {
-            modCardList.add(ModCardLayout(item: item, mod: mod));
+            allMods.add((item, mod));
           }
         }
       }
     }
 
-    //   return modCardList;
-    // }
+    // Sort
+    if (selectedDisplaySort.value == modSortingSelections[0]) {
+      allMods.sort((a, b) => a.$2.favoriteSort().compareTo(b.$2.favoriteSort()));
+    } else if (selectedDisplaySort.value == modSortingSelections[1]) {
+      allMods.sort((a, b) => a.$2.hasPreviewsSort().compareTo(b.$2.hasPreviewsSort()));
+    } else if (selectedDisplaySort.value == modSortingSelections[2]) {
+      allMods.sort((a, b) => a.$2.modName.toLowerCase().compareTo(b.$2.modName.toLowerCase()));
+    } else if (selectedDisplaySort.value == modSortingSelections[3]) {
+      allMods.sort((a, b) => b.$2.creationDate!.compareTo(a.$2.creationDate!));
+    } else if (selectedDisplaySort.value == modSortingSelections[4]) {
+      allMods.sort((a, b) => b.$2.applyDate.compareTo(a.$2.applyDate));
+    }
+    modCardList.addAll(allMods.map((e) => ModCardLayout(item: e.$1, mod: e.$2)));
 
     return SliverPadding(
       padding: const EdgeInsets.only(bottom: 2.5),
@@ -87,7 +83,9 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
           builder: (context, status) => InkWell(
                 onTap: () {
                   widget.itemCate.visible ? widget.itemCate.visible = false : widget.itemCate.visible = true;
-                  widget.itemCate.visible ? mainGridStatus.value = '${widget.itemCate.categoryName} is collapsed' : mainGridStatus.value = '${widget.itemCate.categoryName} is expanded';
+                  widget.itemCate.visible
+                      ? mainGridStatus.value = '[${DateTime.now()}] ${widget.itemCate.categoryName} is collapsed'
+                      : mainGridStatus.value = '${widget.itemCate.categoryName} is expanded';
                   saveMasterModListToJson();
                   setState(() {});
                 },
@@ -190,14 +188,24 @@ class _ModCardLayoutState extends State<ModCardLayout> {
                 Column(
                   spacing: 2.5,
                   children: [
-                    InfoBox(
-                      info: appText.dText(widget.mod.submods.length > 1 ? appText.numVariants : appText.numVariant, widget.mod.submods.length.toString()),
-                      borderHighlight: false,
+                    Row(
+                      spacing: 2.5,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Expanded(
+                          child: InfoBox(
+                            info: appText.dText(widget.mod.submods.length > 1 ? appText.numVariants : appText.numVariant, widget.mod.submods.length.toString()),
+                            borderHighlight: false,
+                          ),
+                        ),
+                        if (widget.mod.isFavorite) FavoriteBox()
+                      ],
                     ),
                     InfoBox(
                       info: appText.dText(appText.numCurrentlyApplied, widget.mod.getNumOfAppliedSubmods().toString()),
                       borderHighlight: widget.mod.applyStatus,
                     ),
+
                     // SizedBox(
                     //   width: double.infinity,
                     //   child: OutlinedButton(

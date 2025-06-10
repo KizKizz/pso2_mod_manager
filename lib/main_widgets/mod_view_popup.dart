@@ -84,7 +84,7 @@ Future<void> modViewPopup(context, Item item) async {
                                               onDelete: () async {
                                                 await modDelete(context, item, mod, false);
                                                 modPopupStatus.value = '[${DateTime.now()}] ${mod.modName} deleted';
-                                                item.isNew = item.getModsIsNewState();
+                                                // item.isNew = item.getModsIsNewState();
                                                 selectedMod = null;
                                                 if (item.mods.isEmpty) {
                                                   mainGridStatus.value = '[${DateTime.now()}] "${mod.modName}" in "${item.getDisplayName()}" is empty and removed';

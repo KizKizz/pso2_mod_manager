@@ -52,7 +52,7 @@ Future<bool> itemBoundingRadiusRemove(context, SubMod submod) async {
           await Future.delayed(const Duration(milliseconds: 10));
           if (File(aqpFile.path).existsSync()) {
             Uint8List aqpBytes = await File(aqpFile.path).readAsBytes();
-            File('${Directory.current.path}${p.separator}${p.basenameWithoutExtension(modFile.modFileName)} - ${p.basenameWithoutExtension(aqpFile.path)}.txt').writeAsStringSync(aqpBytes.join(' '));
+            // File('${Directory.current.path}${p.separator}${p.basenameWithoutExtension(modFile.modFileName)} - ${p.basenameWithoutExtension(aqpFile.path)}.txt').writeAsStringSync(aqpBytes.join(' '));
 
             if (aqpBytes[233] == 0 && aqpBytes[234] == 0 && aqpBytes[235] == 0) {
               modRemovingBoundingStatus.value = appText.dText(appText.boundingValueFoundReplacingWithNewValue, boundingRadiusRemovalValue.toString());

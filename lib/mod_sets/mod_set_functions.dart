@@ -21,6 +21,7 @@ Future<List<ModSet>> modSetLoader() async {
     var jsonData = jsonDecode(dataFromFile);
     for (var set in jsonData) {
       newModSets.add(ModSet.fromJson(set));
+      if (newModSets.isNotEmpty) newModSets.last.isFavorite ??= false;
       // modsetLoadingStatus.value = newModSets.last.setName;
       await Future.delayed(const Duration(microseconds: 100));
     }
@@ -85,7 +86,7 @@ void saveMasterModSetListToJson() {
 Future<void> newModSetCreate(context) async {
   String? setName = await newModSetNamePopup(context);
   if (setName != null) {
-    masterModSetList.add(ModSet(setName, 0, true, false, DateTime.now(), DateTime(0), []));
+    masterModSetList.add(ModSet(setName, 0, true, false, false, DateTime.now(), DateTime(0), []));
     saveMasterModSetListToJson();
   }
 }

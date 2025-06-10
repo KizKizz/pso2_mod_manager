@@ -155,7 +155,7 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
                       children: [
                         Expanded(child: Text(widget.item.getDisplayName(), overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge)),
                         Row(
-                          spacing: 5,
+                          spacing: 2.5,
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
