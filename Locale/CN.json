@@ -243,7 +243,7 @@
   "matchedItems": "匹配的物品",
   "changeTextTo": "将 \"%p%\" 更改为",
   "itemSwap": "物品幻化",
-  "openInFileExplorer": "在文件资源管理器中打开",
+  "openInFileExplorer": "在文件夹中打开",
   "downloadingFileName": "正在下载 %p%",
   "addToModManager": "添加到MOD管理器",
   "creatingBackupForModFile": "为 %p% 创建备份",
