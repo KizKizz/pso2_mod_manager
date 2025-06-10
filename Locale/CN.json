@@ -1,7 +1,7 @@
 {
   "favorites": "收藏",
   "hasPreviews": "有预览",
-  "boundingRadiusInfo": "负值过高可能会导致角色在游戏中穿着某些服装时不可见\n请小心",
+  "boundingRadiusInfo": "请注意\n负值过高可能会导致角色在游戏中穿着某些服装时隐形",
   "numItemSelected": "已选择 %p%",
   "editVariants": "编辑变体",
   "matchedItem": "匹配的物品",
