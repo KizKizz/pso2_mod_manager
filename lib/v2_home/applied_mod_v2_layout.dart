@@ -80,6 +80,19 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
       }
     }
 
+    // Sort
+    if (selectedDisplaySortModView.value == modSortingSelections[0]) {
+      displayingSubmodCards.sort((a, b) => a.submod.favoriteSort().compareTo(b.submod.favoriteSort()));
+    } else if (selectedDisplaySortModView.value == modSortingSelections[1]) {
+      displayingSubmodCards.sort((a, b) => a.submod.hasPreviewsSort().compareTo(b.submod.hasPreviewsSort()));
+    } else if (selectedDisplaySortModView.value == modSortingSelections[2]) {
+      displayingSubmodCards.sort((a, b) => a.submod.submodName.toLowerCase().compareTo(b.submod.submodName.toLowerCase()));
+    } else if (selectedDisplaySortModView.value == modSortingSelections[3]) {
+      displayingSubmodCards.sort((a, b) => b.submod.creationDate!.compareTo(a.submod.creationDate!));
+    } else if (selectedDisplaySortModView.value == modSortingSelections[4]) {
+      displayingSubmodCards.sort((a, b) => b.submod.applyDate.compareTo(a.submod.applyDate));
+    }
+
     return SliverPadding(
       padding: const EdgeInsets.only(bottom: 2.5),
       sliver: SliverStickyHeader.builder(
