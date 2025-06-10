@@ -148,6 +148,11 @@ class Item with ChangeNotifier {
     return (mod, submod);
   }
 
+  bool hasPreviewsOnSet() {
+    int foundIndex = mods.indexWhere((e) => e.isSet && (e.previewImages.isNotEmpty || e.previewVideos.isNotEmpty));
+    return foundIndex == -1 ? false : true;
+  }
+
   String hasPreviewsSort() {
     int foundIndex = mods.indexWhere((e) => e.previewImages.isNotEmpty || e.previewVideos.isNotEmpty);
     return foundIndex == -1 ? '1$itemName'.toLowerCase() : '0$itemName'.toLowerCase();

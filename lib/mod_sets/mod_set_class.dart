@@ -38,6 +38,11 @@ class ModSet with ChangeNotifier {
     return isFavorite! ? '0$setName'.toLowerCase() : '1$setName'.toLowerCase();
   }
 
+  String hasPreviewsSort() {
+    int foundIndex = setItems.indexWhere((e) => e.hasPreviewsOnSet());
+    return foundIndex == -1 ? '1$setName'.toLowerCase() : '0$setName'.toLowerCase();
+  }
+
   factory ModSet.fromJson(Map<String, dynamic> json) => _$ModSetFromJson(json);
   Map<String, dynamic> toJson() => _$ModSetToJson(this);
 }

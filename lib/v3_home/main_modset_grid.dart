@@ -55,7 +55,7 @@ class _MainModSetGridState extends State<MainModSetGrid> {
     if (selectedDisplaySortModSet.value == modSortingSelections[0]) {
       displayingModSets.sort((a, b) => a.favoriteSort().compareTo(b.favoriteSort()));
     } else if (selectedDisplaySortModSet.value == modSortingSelections[1]) {
-      displayingModSets.sort((a, b) => a.setName.toLowerCase().compareTo(b.setName.toLowerCase()));
+      displayingModSets.sort((a, b) => a.hasPreviewsSort().compareTo(b.hasPreviewsSort()));
     } else if (selectedDisplaySortModSet.value == modSortingSelections[2]) {
       displayingModSets.sort((a, b) => a.setName.toLowerCase().compareTo(b.setName.toLowerCase()));
     } else if (selectedDisplaySortModSet.value == modSortingSelections[3]) {
