@@ -109,6 +109,14 @@ class SubMod with ChangeNotifier {
     isFavorite = state;
   }
 
+  String hasPreviewsSort() {
+    return previewImages.isEmpty && previewVideos.isEmpty ? '1$submodName'.toLowerCase() : '0$submodName'.toLowerCase();
+  }
+
+  String favoriteSort() {
+    return isFavorite ? '0$submodName'.toLowerCase() : '1$submodName'.toLowerCase();
+  }
+
   factory SubMod.fromJson(Map<String, dynamic> json) => _$SubModFromJson(json);
   Map<String, dynamic> toJson() => _$SubModToJson(this);
 }

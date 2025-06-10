@@ -1,4 +1,6 @@
 {
+  "favorites": "Favorites",
+  "hasPreviews": "Has Previews",
   "boundingRadiusInfo": "High negative values might cause character to be invisible in game on some outfits\nPlease be caution",
   "numItemSelected": "%p% Selected",
   "editVariants": "Edit Variants",

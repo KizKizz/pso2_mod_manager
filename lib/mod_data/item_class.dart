@@ -155,9 +155,10 @@ class Item with ChangeNotifier {
 
   void setFavorite(bool state) {
     isFavorite = state;
-    for (var mod in mods) {
-      mod.setFavorite(state);
-    }
+  }
+
+  String favoriteSort() {
+    return isFavorite ? '0$itemName'.toLowerCase() : '1$itemName'.toLowerCase();
   }
 
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);

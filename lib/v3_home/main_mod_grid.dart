@@ -86,29 +86,6 @@ class _MainModGridState extends State<MainModGrid> {
       displayingCategories = categories.where((e) => selectedModDisplayCategories.watch(context).contains(e.categoryName)).toList();
     }
 
-    // Sort
-    // if (selectedDisplaySort.value == modSortingSelections[0]) {
-    //   for (var category in displayingCategories) {
-    //     category.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
-    //   }
-    // } else if (selectedDisplaySort.value == modSortingSelections[1]) {
-    //   for (var category in displayingCategories) {
-    //     category.items.sort((a, b) => a.hasPreviewsSort().compareTo(b.hasPreviewsSort()));
-    //   }
-    // } else if (selectedDisplaySort.value == modSortingSelections[2]) {
-    //   for (var category in displayingCategories) {
-    //     category.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
-    //   }
-    // } else if (selectedDisplaySort.value == modSortingSelections[3]) {
-    //   for (var category in displayingCategories) {
-    //     category.items.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
-    //   }
-    // } else if (selectedDisplaySort.value == modSortingSelections[4]) {
-    //   for (var category in displayingCategories) {
-    //     category.items.sort((a, b) => b.applyDate.compareTo(a.applyDate));
-    //   }
-    // }
-
     return AnimatedOpacity(
       opacity: fadeInOpacity,
       duration: const Duration(milliseconds: 100),

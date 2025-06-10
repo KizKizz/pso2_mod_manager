@@ -85,7 +85,7 @@ class _AppliedListV2State extends State<AppliedListV2> {
 
     // Sort
     if (selectedDisplaySortAppliedList.value == modSortingSelections[0]) {
-      filteredItems.sort((a, b) => a.isFavorite.toString().compareTo(b.isFavorite.toString()));
+      filteredItems.sort((a, b) => a.favoriteSort().compareTo(b.favoriteSort()));
     } else if (selectedDisplaySortAppliedList.value == modSortingSelections[1]) {
       filteredItems.sort((a, b) => a.hasPreviewsSort().compareTo(b.hasPreviewsSort()));
     } else if (selectedDisplaySortAppliedList.value == modSortingSelections[2]) {

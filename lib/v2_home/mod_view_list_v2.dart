@@ -61,7 +61,7 @@ class _ModViewListV2State extends State<ModViewListV2> {
 
     // Sort
     if (selectedDisplaySortModView.value == modSortingSelections[0]) {
-      filteredMods.sort((a, b) => a.isFavorite.toString().compareTo(b.isFavorite.toString()));
+      filteredMods.sort((a, b) => a.favoriteSort().compareTo(b.favoriteSort()));
     } else if (selectedDisplaySortModView.value == modSortingSelections[1]) {
       filteredMods.sort((a, b) => a.hasPreviewsSort().compareTo(b.hasPreviewsSort()));
     } else if (selectedDisplaySortModView.value == modSortingSelections[2]) {

@@ -235,11 +235,11 @@ Future<void> modApply(Item item, Mod mod, SubMod submod, ModFile modFile, Offici
 
       mod.applyStatus = true;
       mod.applyDate = appliedDate;
-      mod.isNew = false;
+      mod.isNew = mod.submods.indexWhere((e) => e.isNew) != -1 ? true : false;
 
       item.applyStatus = true;
       item.applyDate = appliedDate;
-      item.isNew = false;
+      item.isNew = item.mods.indexWhere((e) => e.isNew) != -1 ? true : false;
     }
   }
 }

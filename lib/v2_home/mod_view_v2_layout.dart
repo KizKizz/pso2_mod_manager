@@ -10,6 +10,7 @@ import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v2_home/homepage_v2.dart';
+import 'package:pso2_mod_manager/v3_widgets/fav_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
@@ -65,6 +66,19 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
                 ))
             .toList();
 
+    // Sort
+    if (selectedDisplaySortModView.value == modSortingSelections[0]) {
+      displayingSubmodCards.sort((a, b) => a.submod.favoriteSort().compareTo(b.submod.favoriteSort()));
+    } else if (selectedDisplaySortModView.value == modSortingSelections[1]) {
+      displayingSubmodCards.sort((a, b) => a.submod.hasPreviewsSort().compareTo(b.submod.hasPreviewsSort()));
+    } else if (selectedDisplaySortModView.value == modSortingSelections[2]) {
+      displayingSubmodCards.sort((a, b) => a.submod.submodName.toLowerCase().compareTo(b.submod.submodName.toLowerCase()));
+    } else if (selectedDisplaySortModView.value == modSortingSelections[3]) {
+      displayingSubmodCards.sort((a, b) => b.submod.creationDate!.compareTo(a.submod.creationDate!));
+    } else if (selectedDisplaySortModView.value == modSortingSelections[4]) {
+      displayingSubmodCards.sort((a, b) => b.submod.applyDate.compareTo(a.submod.applyDate));
+    }
+
     return SliverPadding(
       padding: const EdgeInsets.only(bottom: 2.5),
       sliver: SliverStickyHeader.builder(
@@ -94,7 +108,7 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
                                 children: [
                                   Text(widget.mod.modName, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.titleMedium),
                                   Row(
-                                    spacing: 5,
+                                    spacing: 2.5,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       InfoBox(
@@ -103,6 +117,7 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
                                         info: appText.dText(appText.numCurrentlyApplied, widget.mod.getNumOfAppliedSubmods().toString()),
                                         borderHighlight: widget.mod.applyStatus,
                                       ),
+                                      if (widget.mod.isFavorite) FavoriteBox()
                                     ],
                                   )
                                 ],

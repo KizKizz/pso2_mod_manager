@@ -87,18 +87,18 @@ class Mod with ChangeNotifier {
   }
 
   String hasPreviewsSort() {
-    return previewImages.isEmpty && previewVideos.isEmpty ? '1$itemName'.toLowerCase() : '0$itemName'.toLowerCase();
+    return previewImages.isEmpty && previewVideos.isEmpty ? '1$modName'.toLowerCase() : '0$modName'.toLowerCase();
   }
 
   void setFavorite(bool state) {
     isFavorite = state;
-    for (var submod in submods) {
-      submod.setFavorite(state);
-    }
+    // for (var submod in submods) {
+    //   submod.setFavorite(state);
+    // }
   }
 
   String favoriteSort() {
-    return isFavorite ? '0$itemName'.toLowerCase() : '1$itemName'.toLowerCase();
+    return isFavorite ? '0$modName'.toLowerCase() : '1$modName'.toLowerCase();
   }
 
   factory Mod.fromJson(Map<String, dynamic> json) => _$ModFromJson(json);

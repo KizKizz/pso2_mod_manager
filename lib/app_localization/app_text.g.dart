@@ -132,6 +132,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..filters = json['filters'] as String
   ..details = json['details'] as String
   ..help = json['help'] as String
+  ..favorites = json['favorites'] as String
+  ..hasPreviews = json['hasPreviews'] as String
   ..patchNotes = json['patchNotes'] as String
   ..appUpdate = json['appUpdate'] as String
   ..tryAgain = json['tryAgain'] as String
@@ -607,6 +609,8 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'filters': instance.filters,
       'details': instance.details,
       'help': instance.help,
+      'favorites': instance.favorites,
+      'hasPreviews': instance.hasPreviews,
       'patchNotes': instance.patchNotes,
       'appUpdate': instance.appUpdate,
       'tryAgain': instance.tryAgain,

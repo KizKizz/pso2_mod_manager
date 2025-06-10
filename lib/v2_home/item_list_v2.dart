@@ -78,7 +78,7 @@ class _ItemListV2State extends State<ItemListV2> {
     // Sort
     if (selectedDisplaySort.value == modSortingSelections[0]) {
       for (var category in displayingCategories) {
-        category.items.sort((a, b) => b.isFavorite.toString().compareTo(a.isFavorite.toString()));
+        category.items.sort((a, b) => a.favoriteSort().compareTo(b.favoriteSort()));
       }
     } else if (selectedDisplaySort.value == modSortingSelections[1]) {
       for (var category in displayingCategories) {

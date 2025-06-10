@@ -141,7 +141,7 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                                         ),
                                       ),
                                       Row(
-                                        spacing: 5,
+                                        spacing: 2.5,
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           InfoBox(
@@ -155,7 +155,7 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                                         ],
                                       ),
                                       Row(
-                                        spacing: 5,
+                                        spacing: 2.5,
                                         children: [
                                           SizedBox(
                                             height: 25,
@@ -236,7 +236,9 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                   padding: const EdgeInsets.symmetric(vertical: 2.5),
                   sliver: SuperSliverList.separated(
                     itemCount: displayingSubmodCards.length,
-                    itemBuilder: (context, index) => SizedBox(height: displayingSubmodCards[index].submod.previewImages.isNotEmpty || displayingSubmodCards[index].submod.previewVideos.isNotEmpty ? 276 : 103, child: displayingSubmodCards[index]),
+                    itemBuilder: (context, index) => SizedBox(
+                        height: displayingSubmodCards[index].submod.previewImages.isNotEmpty || displayingSubmodCards[index].submod.previewVideos.isNotEmpty ? 276 : 103,
+                        child: displayingSubmodCards[index]),
                     separatorBuilder: (BuildContext context, int index) => const SizedBox(
                       height: 2.5,
                     ),

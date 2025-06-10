@@ -10,6 +10,7 @@ import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_widgets/fav_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_view_popup.dart';
@@ -187,14 +188,24 @@ class _ModCardLayoutState extends State<ModCardLayout> {
                 Column(
                   spacing: 2.5,
                   children: [
-                    InfoBox(
-                      info: appText.dText(widget.mod.submods.length > 1 ? appText.numVariants : appText.numVariant, widget.mod.submods.length.toString()),
-                      borderHighlight: false,
+                    Row(
+                      spacing: 2.5,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Expanded(
+                          child: InfoBox(
+                            info: appText.dText(widget.mod.submods.length > 1 ? appText.numVariants : appText.numVariant, widget.mod.submods.length.toString()),
+                            borderHighlight: false,
+                          ),
+                        ),
+                        if (widget.mod.isFavorite) FavoriteBox()
+                      ],
                     ),
                     InfoBox(
                       info: appText.dText(appText.numCurrentlyApplied, widget.mod.getNumOfAppliedSubmods().toString()),
                       borderHighlight: widget.mod.applyStatus,
                     ),
+
                     // SizedBox(
                     //   width: double.infinity,
                     //   child: OutlinedButton(
