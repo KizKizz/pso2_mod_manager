@@ -26,7 +26,7 @@ class ModViewListV2 extends StatefulWidget {
 
 class _ModViewListV2State extends State<ModViewListV2> {
   ScrollController scrollController = ScrollController();
-  TextEditingController searchTextController = TextEditingController();
+
   bool expanded = false;
   bool expandAll = false;
   bool itemEditingMode = false;
@@ -46,18 +46,21 @@ class _ModViewListV2State extends State<ModViewListV2> {
     // Suggestions
     List<Mod> filteredMods = [];
     if (widget.item != null) {
-      if (searchTextController.value.text.isEmpty) {
+      if (modViewListV2SearchTextController.value.text.isEmpty) {
         filteredMods = widget.item!.mods;
       } else {
         filteredMods = widget.item!.mods
             .where((mod) =>
-                mod.itemName.replaceFirst('_', '/').trim().toLowerCase().contains(searchTextController.text.toLowerCase()) ||
-                mod.modName.toLowerCase().contains(searchTextController.text.toLowerCase()) ||
-                mod.getDistinctNames().where((e) => e.toLowerCase().contains(searchTextController.text.toLowerCase())).isNotEmpty)
+                mod.itemName.replaceFirst('_', '/').trim().toLowerCase().contains(modViewListV2SearchTextController.text.toLowerCase()) ||
+                mod.modName.toLowerCase().contains(modViewListV2SearchTextController.text.toLowerCase()) ||
+                mod.getDistinctNames().where((e) => e.toLowerCase().contains(modViewListV2SearchTextController.text.toLowerCase())).isNotEmpty)
             .toList();
       }
     }
-    filteredMods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
+
+    if (itemListSearchIncludesMods && widget.item != null && filteredMods.isEmpty) {
+      filteredMods = widget.item!.mods;
+    }
 
     // Sort
     if (selectedDisplaySortModView.value == modSortingSelections[0]) {
@@ -217,6 +220,7 @@ class _ModViewListV2State extends State<ModViewListV2> {
                               height: 30,
                               child: Stack(alignment: AlignmentDirectional.centerEnd, children: [
                                 SearchField<Mod>(
+                                  enabled: !itemListSearchIncludesMods || searchTextController.value.text.isEmpty,
                                   itemHeight: 90,
                                   searchInputDecoration: SearchInputDecoration(
                                       filled: true,
@@ -272,9 +276,9 @@ class _ModViewListV2State extends State<ModViewListV2> {
                                         ),
                                       )
                                       .toList(),
-                                  controller: searchTextController,
+                                  controller: modViewListV2SearchTextController,
                                   onSuggestionTap: (p0) {
-                                    searchTextController.text = p0.searchKey;
+                                    modViewListV2SearchTextController.text = p0.searchKey;
                                     setState(() {});
                                   },
                                   onSearchTextChanged: (p0) {
@@ -327,14 +331,14 @@ class _ModViewListV2State extends State<ModViewListV2> {
                                   },
                                 ),
                                 Visibility(
-                                  visible: searchTextController.value.text.isNotEmpty,
+                                  visible: modViewListV2SearchTextController.value.text.isNotEmpty,
                                   child: Padding(
                                     padding: const EdgeInsets.only(right: 2),
                                     child: IconButton(
                                         visualDensity: VisualDensity.adaptivePlatformDensity,
-                                        onPressed: searchTextController.value.text.isNotEmpty
+                                        onPressed: modViewListV2SearchTextController.value.text.isNotEmpty && (!itemListSearchIncludesMods || searchTextController.value.text.isEmpty)
                                             ? () {
-                                                searchTextController.clear();
+                                                modViewListV2SearchTextController.clear();
                                                 setState(() {});
                                               }
                                             : null,
@@ -365,7 +369,7 @@ class _ModViewListV2State extends State<ModViewListV2> {
                   .map((e) => ModViewV2Layout(
                         item: widget.item!,
                         mod: e,
-                        searchString: searchTextController.text,
+                        searchString: modViewListV2SearchTextController.text,
                         expandAll: expandAll,
                         isInEditingMode: itemEditingMode,
                         scrollController: scrollController,

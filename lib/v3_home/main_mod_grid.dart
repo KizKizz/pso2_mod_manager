@@ -258,9 +258,8 @@ class _MainModGridState extends State<MainModGrid> {
                           spacing: 5,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            InfoBox(
-                                info: e.items.length > 1 ? appText.dText(appText.numItems, e.items.length.toString()) : appText.dText(appText.numItem, e.items.length.toString()),
-                                borderHighlight: false),
+                            InfoBox(info: appText.dText(e.getNumOfMods() > 1 ? appText.numMods : appText.numMod, e.getNumOfMods().toString()), borderHighlight: false),
+                            InfoBox(info: appText.dText(e.getNumOfModVariants() > 1 ? appText.numVariants : appText.numVariant, e.getNumOfModVariants().toString()), borderHighlight: false),
                             InfoBox(info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedItems().toString()), borderHighlight: false)
                           ],
                         ))

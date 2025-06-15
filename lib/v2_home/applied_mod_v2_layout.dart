@@ -70,6 +70,22 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
       }
     }
 
+    if (displayingSubmodCards.isEmpty) {
+      for (var mod in widget.item.mods.where((e) => e.applyStatus)) {
+        for (var submod in mod.submods.where((e) => e.applyStatus)) {
+          displayingSubmodCards.add(SubmodCardLayout(
+            item: widget.item,
+            mod: mod,
+            submod: submod,
+            modSetName: '',
+            isInPopup: false,
+            isInEditingMode: false,
+            showPreview: submod.previewImages.isNotEmpty || submod.previewVideos.isNotEmpty,
+          ));
+        }
+      }
+    }
+
     String firstAppliedModName = '';
     int modIndex = widget.item.mods.indexWhere((e) => e.applyStatus);
     if (modIndex != -1) {

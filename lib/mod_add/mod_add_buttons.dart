@@ -14,6 +14,7 @@ import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/mod_add.dart';
 import 'package:signals/signals_flutter.dart';
+import 'package:path/path.dart' as p;
 
 class ModAddDragDropButtons extends StatefulWidget {
   const ModAddDragDropButtons({super.key, required this.dragDropFileTypes});
@@ -112,6 +113,26 @@ class _ModAddDragDropButtonsState extends State<ModAddDragDropButtons> {
                         await modAddUnpack(context, modAddDragDropPaths.toList());
                         modAddDragDropPaths.clear();
                         modAddingList = await modAddSort();
+                        // filter
+                        if (enableModAddFilters) {
+                          for (var filterWord in modAddFilterList) {
+                            for (var mod in modAddingList) {
+                              if (p.basename(mod.modDir.path).split(' ').contains(filterWord)) {
+                                mod.modAddingState = false;
+                              }
+                              for (var submodName in mod.submodNames) {
+                                if (submodName.split(' ').contains(filterWord)) {
+                                  int submodIndex = mod.submodNames.indexOf(submodName);
+                                  mod.submodAddingStates[submodIndex] = false;
+                                }
+                              }
+                            }
+                          }
+                        } else {
+                          for (var mod in modAddingList) {
+                            mod.modAddingState = true;
+                          }
+                        }
                         curModAddDragDropStatus.value = ModAddDragDropState.waitingForFiles;
                         if (modAddingList.isNotEmpty) curModAddProcessedStatus.value = ModAddProcessedState.dataInList;
                         modAddDropBoxShow.value = false;
