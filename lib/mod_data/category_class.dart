@@ -48,6 +48,22 @@ class Category with ChangeNotifier {
     return items.where((e) => e.applyStatus).length;
   }
 
+  int getNumOfMods() {
+    int numOfMods = 0;
+    for (var item in items) {
+      numOfMods += item.mods.length;
+    }
+    return numOfMods;
+  }
+
+  int getNumOfModVariants() {
+    int numOfVariants = 0;
+    for (var item in items) {
+      numOfVariants += item.getSubmods().length;
+    }
+    return numOfVariants;
+  }
+
   factory Category.fromJson(Map<String, dynamic> json) => _$CategoryFromJson(json);
   Map<String, dynamic> toJson() => _$CategoryToJson(this);
 }

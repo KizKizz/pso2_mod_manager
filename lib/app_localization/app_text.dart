@@ -268,7 +268,9 @@ class AppText {
       latestBackup = 'Latest Backup: %p%',
       cmlReplace = 'CML Replace',
       replacedCMLFile = 'Replaced CML: %p%',
-      numItemSelected = '%p% Selected';
+      numItemSelected = '%p% Selected',
+      functionOn = '%p%: ON',
+      functionOff = '%p%: OFF';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -372,7 +374,8 @@ class AppText {
       cmlHelp = 'CML Help',
       downloadSalonTool = 'Download Salon Tool',
       editVariants = 'Edit Variants',
-      matchedItem = 'Matched Item';
+      matchedItem = 'Matched Item',
+      includeModsInItemSearch = 'Include Mod names and their Variants in this search';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',

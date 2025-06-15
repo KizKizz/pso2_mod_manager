@@ -26,21 +26,20 @@ class _DragDropBoxLayoutState extends State<DragDropBoxLayout> {
   Widget build(BuildContext context) {
     return DropTarget(
         enable: curModAddDragDropStatus.watch(context) != ModAddDragDropState.unpackingFiles,
-        onDragDone: (detail) {
-          setState(() async {
-            for (var file in detail.files) {
-              if (p.extension(file.path) == '' || widget.dragDropFileTypes.contains(p.extension(file.path)) || await FileSystemEntity.isDirectory(file.path)) {
-                if (!modAddDragDropPaths.contains(file.path)) {
-                  modAddDragDropPaths.add(file.path);
-                  if (curModAddDragDropStatus.value != ModAddDragDropState.unpackingFiles) curModAddDragDropStatus.value = ModAddDragDropState.fileInList;
-                } else {
-                  errorNotification(appText.dText(appText.fileAlreadyOnTheList, file.name));
-                }
+        onDragDone: (detail) async {
+          for (var file in detail.files) {
+            if (p.extension(file.path) == '' || widget.dragDropFileTypes.contains(p.extension(file.path)) || await FileSystemEntity.isDirectory(file.path)) {
+              if (!modAddDragDropPaths.contains(file.path)) {
+                modAddDragDropPaths.add(file.path);
+                if (curModAddDragDropStatus.value != ModAddDragDropState.unpackingFiles) curModAddDragDropStatus.value = ModAddDragDropState.fileInList;
               } else {
-                errorNotification(appText.dText(appText.fileIsNotSupported, file.name));
+                errorNotification(appText.dText(appText.fileAlreadyOnTheList, file.name));
               }
+            } else {
+              errorNotification(appText.dText(appText.fileIsNotSupported, file.name));
             }
-          });
+          }
+          setState(() {});
         },
         child: CardOverlay(
             paddingValue: 5,
@@ -96,10 +95,11 @@ class _DragDropBoxLayoutState extends State<DragDropBoxLayout> {
                         width: double.infinity,
                         child: OutlinedButton(
                             onPressed: modAddDragDropPaths.isNotEmpty
-                                ? () => setState(() {
-                                      modAddDragDropPaths.clear();
-                                      if (curModAddDragDropStatus.value != ModAddDragDropState.unpackingFiles) curModAddDragDropStatus.value = ModAddDragDropState.waitingForFiles;
-                                    })
+                                ? () {
+                                    modAddDragDropPaths.clear();
+                                    setState(() {});
+                                    if (curModAddDragDropStatus.value != ModAddDragDropState.unpackingFiles) curModAddDragDropStatus.value = ModAddDragDropState.waitingForFiles;
+                                  }
                                 : null,
                             child: Text(appText.clear))))
               ],

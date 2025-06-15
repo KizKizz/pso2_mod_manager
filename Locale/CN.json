@@ -1,4 +1,7 @@
 {
+  "functionOn": "%p%: ON",
+  "functionOff": "%p%: OFF",
+  "includeModsInItemSearch": "Include Mod names and their Variants in this search",
   "favorites": "已收藏的",
   "hasPreviews": "有预览的",
   "boundingRadiusInfo": "请注意\n负值过高可能会导致角色在游戏中穿着某些服装时隐形",

@@ -36,16 +36,28 @@ class _CategoryItemLayoutState extends State<CategoryItemLayout> {
                   onSelected: () => setState(() {
                     modViewExpandState.value = false;
                     selectedItemV2.value = e;
+                    if (itemListSearchIncludesMods && searchTextController.value.text.isNotEmpty) {
+                      modViewListV2SearchTextController.text = searchTextController.value.text;
+                    } else if (itemListSearchIncludesMods && searchTextController.value.text.isEmpty) {
+                      modViewListV2SearchTextController.clear();
+                    }
                   }),
                 ))
             .toList()
         : widget.category.items
-            .where((e) => e.itemName.toLowerCase().contains(widget.searchString.toLowerCase()))
+            .where((e) => itemListSearchIncludesMods
+                ? e.getDistinctNames().indexWhere((n) => n.toLowerCase().contains(widget.searchString.toLowerCase())) != -1
+                : e.itemName.toLowerCase().contains(widget.searchString.toLowerCase()))
             .map((e) => ItemCardLayout(
                   item: e,
                   onSelected: () => setState(() {
                     modViewExpandState.value = false;
                     selectedItemV2.value = e;
+                    if (itemListSearchIncludesMods && searchTextController.value.text.isNotEmpty) {
+                      modViewListV2SearchTextController.text = searchTextController.value.text;
+                    } else if (itemListSearchIncludesMods && searchTextController.value.text.isEmpty) {
+                      modViewListV2SearchTextController.clear();
+                    }
                   }),
                 ))
             .toList();

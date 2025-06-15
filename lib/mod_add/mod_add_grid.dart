@@ -3,11 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
-import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_add/adding_mod_class.dart';
 import 'package:pso2_mod_manager/mod_add/mod_add_function.dart';
 import 'package:pso2_mod_manager/mod_add/variants_edit_popup.dart';
-import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/mod_add.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
@@ -32,26 +30,6 @@ class ModAddGrid extends StatefulWidget {
 class _ModAddGridState extends State<ModAddGrid> {
   @override
   Widget build(BuildContext context) {
-    if (enableModAddFilters) {
-      for (var filterWord in modAddFilterList) {
-        for (var mod in modAddingList) {
-          if (p.basename(mod.modDir.path).split(' ').contains(filterWord)) {
-            mod.modAddingState = false;
-          }
-          for (var submodName in mod.submodNames) {
-            if (submodName.split(' ').contains(filterWord)) {
-              int submodIndex = mod.submodNames.indexOf(submodName);
-              mod.submodAddingStates[submodIndex] = false;
-            }
-          }
-        }
-      }
-    } else {
-      for (var mod in modAddingList) {
-        mod.modAddingState = true;
-      }
-    }
-
     if (curModAddProcessedStatus.value == ModAddProcessedState.waiting) modAddDropBoxShow.value = true;
     return Stack(
       alignment: AlignmentDirectional.center,

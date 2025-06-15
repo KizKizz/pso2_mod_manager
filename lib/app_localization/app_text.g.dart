@@ -265,6 +265,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..cmlReplace = json['cmlReplace'] as String
   ..replacedCMLFile = json['replacedCMLFile'] as String
   ..numItemSelected = json['numItemSelected'] as String
+  ..functionOn = json['functionOn'] as String
+  ..functionOff = json['functionOff'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -376,6 +378,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..downloadSalonTool = json['downloadSalonTool'] as String
   ..editVariants = json['editVariants'] as String
   ..matchedItem = json['matchedItem'] as String
+  ..includeModsInItemSearch = json['includeModsInItemSearch'] as String
   ..failedToFetchRemoteLocaleData =
       json['failedToFetchRemoteLocaleData'] as String
   ..unableToUpdateFile = json['unableToUpdateFile'] as String
@@ -739,6 +742,8 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'cmlReplace': instance.cmlReplace,
       'replacedCMLFile': instance.replacedCMLFile,
       'numItemSelected': instance.numItemSelected,
+      'functionOn': instance.functionOn,
+      'functionOff': instance.functionOff,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,
@@ -844,6 +849,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'downloadSalonTool': instance.downloadSalonTool,
       'editVariants': instance.editVariants,
       'matchedItem': instance.matchedItem,
+      'includeModsInItemSearch': instance.includeModsInItemSearch,
       'failedToFetchRemoteLocaleData': instance.failedToFetchRemoteLocaleData,
       'unableToUpdateFile': instance.unableToUpdateFile,
       'unableToGetAppVersionDataFromGitHub':

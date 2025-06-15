@@ -242,7 +242,7 @@ Future<List<Item>> modAddToMasterList(bool addingToSet, List<ModSet> modSets) as
         String newItemDirDestPath = mainModDirPath + p.separator + category + p.separator + itemName;
 
         for (int j = 0; j < modAddingItem.submods.length; j++) {
-          if (!modAddingItem.submodAddingStates[j]) {
+          if (!modAddingItem.submodAddingStates[j] && modAddingItem.submods[j].existsSync()) {
             await modAddingItem.submods[j].delete(recursive: true);
           }
         }

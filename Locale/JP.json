@@ -1,4 +1,7 @@
 {
+  "functionOn": "%p%：オン",
+  "functionOff": "%p%：オフ",
+  "includeModsInItemSearch": "検索にMOD名とそのバリアントを含める",
   "favorites": "お気に入り",
   "hasPreviews": "プレビューあり",
   "boundingRadiusInfo": "部の衣装では、大きな負の値を設定するとキャラクターがゲーム内で見えなくなる可能性があります\nご注意ください",
