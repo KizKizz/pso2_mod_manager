@@ -619,12 +619,12 @@ Future<File?> cardExport(LineStrikeCard card) async {
 
 Future<bool> customImageRemove(LineStrikeCard card, List<LineStrikeCard> lineStrikeCardList) async {
   File? downloadedCardZeroIceFile =
-      await originalIceDownload('${card.cardZeroIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(card.cardZeroIcePath), lineStrikeStatus);
+      await originalIceDownload(card.cardZeroIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), ''), p.dirname(card.cardZeroIcePath), lineStrikeStatus);
   File? downloadedCardZeroIconIceFile =
-      await originalIceDownload('${card.cardZeroIconIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(card.cardZeroIconIcePath), lineStrikeStatus);
-  File? downloadedCardOneIceFile = await originalIceDownload('${card.cardOneIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(card.cardOneIcePath), lineStrikeStatus);
+      await originalIceDownload(card.cardZeroIconIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), ''), p.dirname(card.cardZeroIconIcePath), lineStrikeStatus);
+  File? downloadedCardOneIceFile = await originalIceDownload(card.cardOneIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), ''), p.dirname(card.cardOneIcePath), lineStrikeStatus);
   File? downloadedCardOneIconIceFile =
-      await originalIceDownload('${card.cardOneIconIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(card.cardOneIconIcePath), lineStrikeStatus);
+      await originalIceDownload(card.cardOneIconIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), ''), p.dirname(card.cardOneIconIcePath), lineStrikeStatus);
   //remove settings
   if (downloadedCardZeroIceFile != null) card.cardZeroReplacedIceMd5 = '';
   if (downloadedCardZeroIconIceFile != null) card.cardZeroReplacedIconIceMd5 = '';

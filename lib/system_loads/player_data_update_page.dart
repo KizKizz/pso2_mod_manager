@@ -101,7 +101,7 @@ class _DataUpdatePageState extends State<DataUpdatePage> {
             return FutureBuilderError(
               loadingText: appText.checkingItemDataVersion,
               snapshotError: snapshot.error.toString(),
-              isPopup: false,
+              isPopup: false, showContButton: true,
             );
           } else {
             String remoteVersion = snapshot.data.$1;

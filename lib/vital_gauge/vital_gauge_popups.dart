@@ -76,7 +76,7 @@ Future<bool> vitalGaugeApplyPopup(context, String customImagePath, VitalGaugeBac
                     return FutureBuilderError(
                       loadingText: appText.dText(appText.editingMod, vgDataFile.iceName),
                       snapshotError: snapshot.error.toString(),
-                      isPopup: true,
+                      isPopup: true, showContButton: false,
                     );
                   } else {
                     bool result = snapshot.data;
@@ -157,7 +157,7 @@ Future<bool> vitalGaugeRestorePopup(context, VitalGaugeBackground vgDataFile) as
                     return FutureBuilderError(
                       loadingText: appText.dText(appText.editingMod, vgDataFile.iceName),
                       snapshotError: snapshot.error.toString(),
-                      isPopup: true,
+                      isPopup: true, showContButton: false,
                     );
                   } else {
                     File downloadedFile = snapshot.data.$1;

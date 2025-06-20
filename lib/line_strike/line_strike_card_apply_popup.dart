@@ -74,7 +74,7 @@ Future<bool> lineStrikeCardApplyPopup(context, String customImagePath, LineStrik
                     return FutureBuilderError(
                       loadingText: appText.dText(appText.editingMod, card.cardZeroDdsName),
                       snapshotError: snapshot.error.toString(),
-                      isPopup: true,
+                      isPopup: true, showContButton: false,
                     );
                   } else {
                     bool result = snapshot.data;

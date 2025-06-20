@@ -74,7 +74,7 @@ Future<bool> customBoardImageApply(String imgPath, LineStrikeBoard boardDataFile
 
   //download and replace
   //icon
-  File? downloadedIconIceFile = await originalIceDownload('${boardDataFile.iconIcePath.replaceFirst(pso2binDirPath + p.separator, '')}.pat', lineStrikeBoardTempDirPath, lineStrikeStatus);
+  File? downloadedIconIceFile = await originalIceDownload(boardDataFile.iconIcePath.replaceFirst(pso2binDirPath + p.separator, ''), lineStrikeBoardTempDirPath, lineStrikeStatus);
   if (downloadedIconIceFile == null) return false;
   if (Platform.isLinux) {
     await Process.run('wine $zamboniExePath -outdir "$lineStrikeBoardTempDirPath"', [downloadedIconIceFile.path]);
@@ -225,8 +225,8 @@ Future<bool> customBoardImageApply(String imgPath, LineStrikeBoard boardDataFile
 }
 
 Future<bool> customBoardImageRemove(LineStrikeBoard board, List<LineStrikeBoard> lineStrikeBoardList) async {
-  File? downloadedIceFile = await originalIceDownload('${board.icePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(board.icePath), lineStrikeStatus);
-  File? downloadedIconIceFile = await originalIceDownload('${board.iconIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(board.iconIcePath), lineStrikeStatus);
+  File? downloadedIceFile = await originalIceDownload(board.icePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), ''), p.dirname(board.icePath), lineStrikeStatus);
+  File? downloadedIconIceFile = await originalIceDownload(board.iconIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), ''), p.dirname(board.iconIcePath), lineStrikeStatus);
 
   if (downloadedIceFile != null) board.replacedIceMd5 = '';
   if (downloadedIconIceFile != null) board.replacedIconIceMd5 = '';

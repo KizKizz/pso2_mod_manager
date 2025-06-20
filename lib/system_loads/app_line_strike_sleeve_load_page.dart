@@ -45,7 +45,7 @@ class _AppLineStrikeSleeveLoadPageState extends State<AppLineStrikeSleeveLoadPag
             ),
           );
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-          return FutureBuilderError(loadingText: appText.loadingLineStrikeSleeves, snapshotError: snapshot.error.toString(), isPopup: false,);
+          return FutureBuilderError(loadingText: appText.loadingLineStrikeSleeves, snapshotError: snapshot.error.toString(), isPopup: false, showContButton: true,);
         } else {
           masterLineStrikeSleeveList = snapshot.data;
           pageIndex++;

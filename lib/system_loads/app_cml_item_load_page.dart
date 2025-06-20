@@ -48,7 +48,7 @@ class _AppAqmItemLoadPageState extends State<AppCmlItemLoadPage> {
           return FutureBuilderError(
             loadingText: appText.loadingCmlItems,
             snapshotError: snapshot.error.toString(),
-            isPopup: false,
+            isPopup: false, showContButton: true,
           );
         } else {
           masterCMLItemList = snapshot.data;

@@ -9,7 +9,7 @@ import 'package:path/path.dart' as p;
 
 Future<void> jsonAutoBackup() async {
   DateTime now = DateTime.now();
-  String formattedDate = DateFormat('MM-dd-yyyy').format(now);
+  String formattedDate = DateFormat('MM-dd-yyyy_kk-mm-ss').format(now);
   Directory autoSaveDir = Directory(jsonBackupDirPath);
   autoSaveDir.createSync(recursive: true);
 
@@ -34,7 +34,7 @@ Future<void> jsonAutoBackup() async {
 
 Future<void> jsonManualBackup() async {
   DateTime now = DateTime.now();
-  String formattedDate = DateFormat('MM-dd-yyyy-kk-mm-ss').format(now);
+  String formattedDate = DateFormat('MM-dd-yyyy_kk-mm-ss').format(now);
   Directory manualSaveDir = Directory(jsonBackupDirPath);
   manualSaveDir.createSync(recursive: true);
 

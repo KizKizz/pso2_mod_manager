@@ -1,12 +1,10 @@
 import 'dart:io';
 
-import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/app_paths/sega_file_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
-import 'package:pso2_mod_manager/item_swap/item_swap_working_popup.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
@@ -266,34 +264,34 @@ Future<void> modSwapTempDirsRemove() async {
   }
 }
 
-Future<File?> modSwapOriginalFileDownload(String networkFilePath, String server, String saveLocation) async {
-  if (networkFilePath.isNotEmpty) {
-    final serverURLs = [segaPatchServerURL, segaMasterServerURL, segaPatchServerBackupURL, segaMasterServerBackupURL];
-    for (var url in serverURLs) {
-      final task = DownloadTask(
-          url: '$url$networkFilePath',
-          filename: p.basenameWithoutExtension(networkFilePath),
-          headers: {"User-Agent": "AQUA_HTTP"},
-          baseDirectory: BaseDirectory.root,
-          directory: saveLocation,
-          updates: Updates.statusAndProgress,
-          allowPause: false);
+// Future<File?> modSwapOriginalFileDownload_(String networkFilePath, String server, String saveLocation) async {
+//   if (networkFilePath.isNotEmpty) {
+//     final serverURLs = [segaPatchServerURL, segaMasterServerURL, segaPatchServerBackupURL, segaMasterServerBackupURL];
+//     for (var url in serverURLs) {
+//       final task = DownloadTask(
+//           url: '$url$networkFilePath',
+//           filename: p.basenameWithoutExtension(networkFilePath),
+//           headers: {"User-Agent": "AQUA_HTTP"},
+//           baseDirectory: BaseDirectory.root,
+//           directory: saveLocation,
+//           updates: Updates.statusAndProgress,
+//           allowPause: false);
 
-      final result = await FileDownloader().download(task,
-          onProgress: (progress) => itemSwapWorkingStatus.value = '${appText.dText(appText.downloadingFileName, p.basenameWithoutExtension(networkFilePath))} [ ${(progress * 100).round()}% ]');
+//       final result = await FileDownloader().download(task,
+//           onProgress: (progress) => itemSwapWorkingStatus.value = '${appText.dText(appText.downloadingFileName, p.basenameWithoutExtension(networkFilePath))} [ ${(progress * 100).round()}% ]');
 
-      switch (result.status) {
-        case TaskStatus.complete:
-          itemSwapWorkingStatus.value = appText.fileDownloadSuccessful;
-          return File(saveLocation + p.separator + p.basenameWithoutExtension(networkFilePath));
-        default:
-          itemSwapWorkingStatus.value = appText.fileDownloadFailed;
-      }
-    }
-  }
+//       switch (result.status) {
+//         case TaskStatus.complete:
+//           itemSwapWorkingStatus.value = appText.fileDownloadSuccessful;
+//           return File(saveLocation + p.separator + p.basenameWithoutExtension(networkFilePath));
+//         default:
+//           itemSwapWorkingStatus.value = appText.fileDownloadFailed;
+//       }
+//     }
+//   }
 
-  return null;
-}
+//   return null;
+// }
 
 SubMod lItemSubmodGet(ItemData lItemData) {
   List<ModFile> modFileList = [];

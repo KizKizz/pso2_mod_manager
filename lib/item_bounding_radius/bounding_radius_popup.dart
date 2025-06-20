@@ -78,6 +78,7 @@ Future<void> boundingRadiusPopup(context, SubMod submod) async {
                       loadingText: appText.dText(appText.editingMod, submod.submodName),
                       snapshotError: snapshot.error.toString(),
                       isPopup: true,
+                      showContButton: false,
                     );
                   } else {
                     submod.boundingRemoved = snapshot.data;

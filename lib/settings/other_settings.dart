@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
+import 'package:pso2_mod_manager/file_check/file_check_popup.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/settings/color_picker.dart';
@@ -162,7 +163,22 @@ class _OtherSettingsLayoutState extends State<OtherSettingsLayout> {
                         LocationButton(label: appText.modConfigsBackupFolder, folderPath: jsonBackupDirPath),
                         LocationButton(label: appText.backgroundImageFolder, folderPath: backgroundDirPath),
                       ],
-                    )
+                    ),
+                    SettingsHeader(icon: Icons.checklist_rtl, text: appText.extras),
+                    Column(
+                      spacing: 5,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton(
+                              onPressed: () async {
+                                await checkGameFilesPopup(context);
+                              },
+                              child: Text(appText.checkGameFileIntegrity)),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),

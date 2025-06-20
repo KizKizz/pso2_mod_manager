@@ -139,7 +139,8 @@ class AppText {
       details = 'Details',
       help = 'Help',
       favorites = 'Favorites',
-      hasPreviews = 'Has Previews';
+      hasPreviews = 'Has Previews',
+      start = 'Start';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -270,7 +271,9 @@ class AppText {
       replacedCMLFile = 'Replaced CML: %p%',
       numItemSelected = '%p% Selected',
       functionOn = '%p%: ON',
-      functionOff = '%p%: OFF';
+      functionOff = '%p%: OFF',
+      passedFiles = 'Passed Files',
+      unmatchedMissingFiles = 'Unmatched - Missing Files';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -485,7 +488,9 @@ class AppText {
       tapToReturn = 'Tap To Return',
       homepageStyle = 'Homepage Style',
       legacy = 'Legacy',
-      hideAppliedList = 'Hide Applied List';
+      hideAppliedList = 'Hide Applied List',
+      extras = 'Extras',
+      checkGameFileIntegrity = 'Check Game File Integrity';
 
   factory AppText.fromJson(Map<String, dynamic> json) => _$AppTextFromJson(json);
   Map<String, dynamic> toJson() => _$AppTextToJson(this);

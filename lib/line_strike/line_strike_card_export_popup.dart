@@ -70,7 +70,7 @@ Future<File?> lineStrikeCardExportPopup(context, LineStrikeCard card) async {
                   return FutureBuilderError(
                     loadingText: appText.dText(appText.exportingFile, card.cardZeroDdsName),
                     snapshotError: snapshot.error.toString(),
-                    isPopup: true,
+                    isPopup: true, showContButton: false,
                   );
                 } else {
                   exportedFile = snapshot.data;

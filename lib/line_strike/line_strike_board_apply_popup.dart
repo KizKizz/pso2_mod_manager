@@ -75,7 +75,7 @@ Future<bool> lineStrikeBoardApplyPopup(context, String customImagePath, LineStri
                     return FutureBuilderError(
                       loadingText: appText.dText(appText.editingMod, board.iceDdsName),
                       snapshotError: snapshot.error.toString(),
-                      isPopup: true,
+                      isPopup: true, showContButton: false,
                     );
                   } else {
                     bool result = snapshot.data;

@@ -72,7 +72,7 @@ Future<void> saveRestorePopup(context, bool isSave) async {
                     return FutureBuilderError(
                       loadingText: isSave ? appText.savingModFilesAndRestoringOriginalFiles : appText.reApplyingSavedModFiles,
                       snapshotError: snapshot.error.toString(),
-                      isPopup: true,
+                      isPopup: true, showContButton: false,
                     );
                   } else {
                     taskFinished ??= true;

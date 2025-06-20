@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/app_pages_index.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -38,11 +39,12 @@ class FutureBuilderLoading extends StatelessWidget {
 }
 
 class FutureBuilderError extends StatelessWidget {
-  const FutureBuilderError({super.key, required this.loadingText, required this.snapshotError, required this.isPopup});
+  const FutureBuilderError({super.key, required this.loadingText, required this.snapshotError, required this.isPopup, required this.showContButton});
 
   final String loadingText;
   final String snapshotError;
   final bool isPopup;
+  final bool showContButton;
 
   @override
   Widget build(BuildContext context) {
@@ -71,9 +73,21 @@ class FutureBuilderError extends StatelessWidget {
               child: Text(snapshotError, style: Theme.of(context).textTheme.bodyMedium),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: OutlinedButton(onPressed: () => isPopup ? Navigator.of(context).pop() : windowManager.close(), child: Text(isPopup ? appText.returns : appText.exit)),
-            )
+                padding: const EdgeInsets.only(top: 10),
+                child: Row(
+                  spacing: 5,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (showContButton)
+                      OutlinedButton(
+                          onPressed: () {
+                            pageIndex++;
+                            curPage.value = appPages[pageIndex];
+                          },
+                          child: Text(appText.continues)),
+                    OutlinedButton(onPressed: () => isPopup ? Navigator.of(context).pop() : windowManager.close(), child: Text(isPopup ? appText.returns : appText.exit)),
+                  ],
+                ))
           ],
         ),
       ),

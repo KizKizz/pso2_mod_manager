@@ -60,7 +60,7 @@ class _AppLineStrikeAppliedCheckPage extends State<AppLineStrikeAppliedCheckPage
             ],
           ));
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-          return FutureBuilderError(loadingText: appText.checkingAppliedLineStrikeItems, snapshotError: snapshot.error.toString(), isPopup: false,);
+          return FutureBuilderError(loadingText: appText.checkingAppliedLineStrikeItems, snapshotError: snapshot.error.toString(), isPopup: false, showContButton: true,);
         } else {
           pageIndex++;
           curPage.value = appPages[pageIndex];

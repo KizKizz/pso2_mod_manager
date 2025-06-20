@@ -153,7 +153,7 @@ Future<bool> markedItemIconApply(Item item) async {
 }
 
 Future<bool> markedItemIconRestore(Item item) async {
-  String iconWebPath = ('${p.withoutExtension(item.iconPath!).replaceFirst(pso2binDirPath + p.separator, '')}.pat').replaceAll(p.separator, '/');
+  String iconWebPath = (p.withoutExtension(item.iconPath!).replaceFirst(pso2binDirPath + p.separator, '')).replaceAll(p.separator, '/');
   File? downloadedFile = await originalIceDownload(iconWebPath, p.dirname(item.iconPath!), modApplyStatus);
   if (downloadedFile != null) {
     if (await downloadedFile.getMd5Hash() != await File(item.overlayedIconPath!).getMd5Hash()) {
@@ -187,7 +187,7 @@ Future<bool> markedAqmItemIconApply(String iconIceWebPath) async {
       return true;
     }
   } else {
-    File? downloadedIconIce = await originalIceDownload('$iconIceWebPath.pat', modItemIconTempDirPath, modApplyStatus);
+    File? downloadedIconIce = await originalIceDownload(iconIceWebPath, modItemIconTempDirPath, modApplyStatus);
     modApplyStatus.value = appText.dText(appText.editingMod, p.basename(iconIceWebPath));
     Future.delayed(const Duration(microseconds: 10));
     if (downloadedIconIce != null) {
@@ -250,7 +250,7 @@ Future<bool> markedAqmItemIconApply(String iconIceWebPath) async {
 }
 
 Future<bool> markedAqmItemIconRestore(String gameDataIconIcePath) async {
-  String iconWebPath = ('${p.withoutExtension(gameDataIconIcePath).replaceFirst(pso2binDirPath + p.separator, '')}.pat').replaceAll(p.separator, '/');
+  String iconWebPath = (p.withoutExtension(gameDataIconIcePath).replaceFirst(pso2binDirPath + p.separator, '')).replaceAll(p.separator, '/');
   File? downloadedFile = await originalIceDownload(iconWebPath, p.dirname(gameDataIconIcePath), modApplyStatus);
   if (downloadedFile != null) {
     modAqmInjectingStatus.value = appText.dText(appText.copyingIconFileToGameData, p.basenameWithoutExtension(downloadedFile.path));

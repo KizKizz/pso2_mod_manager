@@ -41,7 +41,7 @@ class _AppUpdatePageState extends State<AppUpdatePage> {
           if (snapshot.connectionState != ConnectionState.done) {
             return FutureBuilderLoading(loadingText: appText.checkingAppVersion);
           } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-            return FutureBuilderError(loadingText: appText.checkingAppVersion, snapshotError: snapshot.error.toString(), isPopup: false,);
+            return FutureBuilderError(loadingText: appText.checkingAppVersion, snapshotError: snapshot.error.toString(), isPopup: false, showContButton: true,);
           } else {
             String remoteVersion = snapshot.data.$1;
             String remotePatchNotes = snapshot.data.$2;
