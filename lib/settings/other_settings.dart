@@ -175,7 +175,7 @@ class _OtherSettingsLayoutState extends State<OtherSettingsLayout> {
                               onPressed: () async {
                                 await checkGameFilesPopup(context);
                               },
-                              child: Text(appText.checkGameFileIntegrity)),
+                              child: Text(appText.gameDataIntegrityCheck)),
                         ),
                       ],
                     ),

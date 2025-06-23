@@ -19,7 +19,7 @@ Future<File?> originalIceDownload(String iceFilePath, String saveDirLocation, Si
           filename: p.basenameWithoutExtension(iceFilePath),
           headers: {"User-Agent": "AQUA_HTTP"},
           baseDirectory: BaseDirectory.root,
-          directory: saveDirLocation,
+          directory: saveDirLocation.replaceAll('/', p.separator),
           updates: Updates.statusAndProgress,
           allowPause: false,
         );

@@ -6,6 +6,7 @@ import 'package:pso2_mod_manager/app_paths/sega_file_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_functions/original_ice_download.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:signals/signals_flutter.dart';
@@ -17,10 +18,12 @@ Future<void> checkGameFilesPopup(context) async {
   bool progPaused = false;
   List<OfficialIceFile> checkedFiles = [];
   List<OfficialIceFile> missingFiles = [];
+  List<int> downloadedIndex = [];
   ScrollController leftScrollController = ScrollController();
   ScrollController rightScrollController = ScrollController();
-  int curDownloadingIndex = -1;
   int totalChecked = 0;
+  int totalFilesToCheck = 0;
+  Signal<String> gameDataCheckStatus = Signal('');
 
   await showDialog(
       barrierDismissible: false,
@@ -33,7 +36,7 @@ Future<void> checkGameFilesPopup(context) async {
             backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
             insetPadding: EdgeInsets.zero,
             titlePadding: EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
-            title: Text(appText.checkGameFileIntegrity),
+            title: Text(appText.gameDataIntegrityCheck),
             contentPadding: const EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 10),
             content: SizedBox(
               width: MediaQuery.of(context).size.width,
@@ -48,7 +51,7 @@ Future<void> checkGameFilesPopup(context) async {
                           child: Column(
                             spacing: 10,
                             children: [
-                              Text(appText.passedFiles, style: Theme.of(context).textTheme.headlineSmall),
+                              Text(appText.checkedFiles, style: Theme.of(context).textTheme.headlineSmall),
                               Expanded(
                                   child: CustomScrollView(physics: const SuperRangeMaintainingScrollPhysics(), controller: leftScrollController, slivers: [
                                 SuperSliverList.separated(
@@ -56,26 +59,15 @@ Future<void> checkGameFilesPopup(context) async {
                                   itemBuilder: (context, index) {
                                     return CardOverlay(
                                         paddingValue: 0,
-                                        child: CheckboxListTile(
-                                          title: Text(
-                                            p.withoutExtension(checkedFiles[index].path),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          subtitle: Text(
-                                            checkedFiles[index].md5,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          secondary: curDownloadingIndex == index
-                                              ? SizedBox(
-                                                  width: 200,
-                                                  height: 25,
-                                                  child: LinearProgressIndicator(),
-                                                )
-                                              : null,
-                                          controlAffinity: ListTileControlAffinity.leading,
-                                          value: checkedFiles.contains(oItemData[index]),
-                                          onChanged: (bool? value) {},
-                                        ));
+                                        child: ListTile(
+                                            title: Text(
+                                              p.withoutExtension(checkedFiles[index].path),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            subtitle: Text(
+                                              checkedFiles[index].md5,
+                                              overflow: TextOverflow.ellipsis,
+                                            )));
                                   },
                                   separatorBuilder: (BuildContext context, int index) {
                                     return SizedBox(height: 2.5);
@@ -85,7 +77,7 @@ Future<void> checkGameFilesPopup(context) async {
                             ],
                           ),
                         ),
-                        Icon(Icons.arrow_forward_ios_rounded),
+                        VerticalDivider(),
                         Expanded(
                           child: Column(
                             spacing: 10,
@@ -110,15 +102,8 @@ Future<void> checkGameFilesPopup(context) async {
                                             missingFiles[index].md5,
                                             overflow: TextOverflow.ellipsis,
                                           ),
-                                          secondary: curDownloadingIndex == index
-                                              ? SizedBox(
-                                                  width: 200,
-                                                  height: 25,
-                                                  child: LinearProgressIndicator(),
-                                                )
-                                              : null,
                                           controlAffinity: ListTileControlAffinity.leading,
-                                          value: false,
+                                          value: downloadedIndex.contains(index),
                                           onChanged: (bool? value) {},
                                         ));
                                   },
@@ -144,12 +129,14 @@ Future<void> checkGameFilesPopup(context) async {
                             CardOverlay(
                               paddingValue: 0,
                               child: LinearProgressIndicator(
+                                backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                                color: Theme.of(context).colorScheme.onPrimary,
                                 minHeight: 40,
-                                value: totalChecked / oItemData.length,
-                                borderRadius: BorderRadius.circular(5),
+                                value: totalFilesToCheck > 0 ? totalChecked / totalFilesToCheck : 0.0,
+                                borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            Text('$totalChecked / ${appText.dText(appText.numFiles, oItemData.length.toString())}')
+                            Text('$totalChecked / ${appText.dText(appText.numFiles, totalFilesToCheck.toString())}')
                           ],
                         )),
                   ),
@@ -167,33 +154,44 @@ Future<void> checkGameFilesPopup(context) async {
                         () {},
                       );
                     }
+
+                    final filesToScan = oItemData.where((e) => e.path.contains('data/')).toList();
+                    totalFilesToCheck = filesToScan.length;
                     if (!progStarted && !progPaused || progStarted && !progPaused) {
                       progStarted = true;
-                      for (var data in oItemData.getRange(totalChecked, oItemData.length)) {
+                      for (var data in filesToScan.getRange(totalChecked, filesToScan.length)) {
                         totalChecked++;
                         final gameFilePath = File(pso2binDirPath + p.separator + p.withoutExtension(data.path));
                         if (gameFilePath.existsSync()) {
                           final fileHash = await gameFilePath.getMd5Hash();
-                          if (fileHash == data.md5.toLowerCase()) {
-                            checkedFiles.insert(0, data);
-                          } else {
-                            missingFiles.insert(0, data);
-                          }
+                          checkedFiles.insert(0, data);
+                          if (fileHash != data.md5.toLowerCase()) missingFiles.insert(0, data);
                         } else {
                           missingFiles.insert(0, data);
                         }
-                        if (!progStarted || progPaused) {
+                        if (!progStarted || progPaused || totalChecked == 10000) {
                           break;
                         }
                         setState(
                           () {},
                         );
                       }
-                      if (totalChecked == oItemData.length) {
+                      if (totalChecked == filesToScan.length) {
                         progStarted = false;
                         setState(
                           () {},
                         );
+                      }
+                      // Download
+                      if (missingFiles.isNotEmpty) {
+                        for (var data in missingFiles) {
+                          int index = missingFiles.indexOf(data);
+                          File? downloadedFile = await originalIceDownload(data.path, pso2binDirPath + p.separator + p.dirname(data.path), gameDataCheckStatus);
+                          if (downloadedFile != null && !downloadedIndex.contains(index)) downloadedIndex.add(index);
+                          setState(
+                            () {},
+                          );
+                        }
                       }
                     }
                   },

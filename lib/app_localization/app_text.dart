@@ -272,7 +272,7 @@ class AppText {
       numItemSelected = '%p% Selected',
       functionOn = '%p%: ON',
       functionOff = '%p%: OFF',
-      passedFiles = 'Passed Files',
+      checkedFiles = 'Checked Files',
       unmatchedMissingFiles = 'Unmatched - Missing Files';
 
   // Text Strings
@@ -490,7 +490,7 @@ class AppText {
       legacy = 'Legacy',
       hideAppliedList = 'Hide Applied List',
       extras = 'Extras',
-      checkGameFileIntegrity = 'Check Game File Integrity';
+      gameDataIntegrityCheck = 'Game Data Integrity Check';
 
   factory AppText.fromJson(Map<String, dynamic> json) => _$AppTextFromJson(json);
   Map<String, dynamic> toJson() => _$AppTextToJson(this);
