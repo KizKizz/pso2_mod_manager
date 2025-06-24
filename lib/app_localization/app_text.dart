@@ -273,7 +273,9 @@ class AppText {
       functionOn = '%p%: ON',
       functionOff = '%p%: OFF',
       checkedFiles = 'Checked Files',
-      unmatchedMissingFiles = 'Unmatched - Missing Files';
+      unmatchedMissingFiles = 'Unmatched - Missing Files',
+      appliedFilesOnly = 'Applied Files',
+      selectAScanType = 'Select A Scan Type';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
