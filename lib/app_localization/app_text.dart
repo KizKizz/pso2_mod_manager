@@ -380,7 +380,8 @@ class AppText {
       downloadSalonTool = 'Download Salon Tool',
       editVariants = 'Edit Variants',
       matchedItem = 'Matched Item',
-      includeModsInItemSearch = 'Include Mod names and their Variants in this search';
+      includeModsInItemSearch = 'Include Mod names and their Variants in this search',
+      refreshModManager = 'Refresh Mod Manager';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',

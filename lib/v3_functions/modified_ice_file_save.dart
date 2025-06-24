@@ -9,7 +9,7 @@ Future<void> modifiedIceFetch() async {
 }
 
 void modifiedIceAdd(String iceName) {
-  if (!modifiedIceList.contains(iceName)) {
+  if (!modifiedIceList.contains(iceName) && iceName.isNotEmpty) {
     modifiedIceList.add(iceName);
     File(modifiedIceListFilePath).writeAsStringSync(modifiedIceList.join('\n'));
   }

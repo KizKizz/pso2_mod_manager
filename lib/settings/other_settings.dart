@@ -173,7 +173,7 @@ class _OtherSettingsLayoutState extends State<OtherSettingsLayout> {
                           width: double.infinity,
                           child: OutlinedButton(
                               onPressed: () async {
-                                await checkGameFilesPopup(context);
+                                await checkGameFilesPopup(context, false);
                               },
                               child: Text(appText.gameDataIntegrityCheck)),
                         ),

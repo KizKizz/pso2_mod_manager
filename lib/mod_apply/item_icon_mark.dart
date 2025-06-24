@@ -11,6 +11,7 @@ import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/load_mods.dart';
 import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_functions/modified_ice_file_save.dart';
 import 'package:pso2_mod_manager/v3_functions/original_ice_download.dart';
 
 Future<File?> itemIconOverlay(String iconImagePath) async {
@@ -60,6 +61,7 @@ Future<bool> markedItemIconApply(Item item) async {
       item.iconPath = copiedFile.path;
       item.isOverlayedIconApplied = true;
       saveMasterModListToJson();
+      modifiedIceAdd(p.basenameWithoutExtension(copiedFile.path));
       return true;
     }
   } else {
@@ -80,6 +82,7 @@ Future<bool> markedItemIconApply(Item item) async {
         item.isOverlayedIconApplied = true;
         item.overlayedIconPath = cachedIconIceFile.path;
         saveMasterModListToJson();
+        modifiedIceAdd(p.basenameWithoutExtension(copiedFile.path));
         return true;
       }
     } else if (itemIconIceName.isNotEmpty && !cachedIconIceFile.existsSync()) {
@@ -139,6 +142,7 @@ Future<bool> markedItemIconApply(Item item) async {
                     item.overlayedIconPath = renamedIconFile.path;
                     item.isOverlayedIconApplied = true;
                     saveMasterModListToJson();
+                    modifiedIceAdd(p.basenameWithoutExtension(copiedFile.path));
                     return true;
                   }
                 }
