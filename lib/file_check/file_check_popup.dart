@@ -123,9 +123,9 @@ Future<void> checkGameFilesPopup(context, bool checkAll) async {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Visibility(
-                                            visible: missingFiles.isNotEmpty,
+                                            visible: missingFiles.length - downloadedIndex.length > 0,
                                             child: Text(
-                                              missingFiles.length.toString(),
+                                              (missingFiles.length - downloadedIndex.length).toString(),
                                               style: Theme.of(context).textTheme.headlineSmall,
                                             )),
                                         Text(
@@ -184,7 +184,23 @@ Future<void> checkGameFilesPopup(context, bool checkAll) async {
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                   ),
-                                  Visibility(visible: gameDataCheckStatus.watch(context).isEmpty, child: Text('$totalChecked / ${appText.dText(appText.numFiles, totalFilesToCheck.toString())}')),
+                                  Visibility(
+                                      visible: gameDataCheckStatus.watch(context).isEmpty,
+                                      child: Row(
+                                        spacing: 5,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(fileScanType == FileScanType.win32reboot
+                                              ? 'win32reboot'
+                                              : fileScanType == FileScanType.modifiedOnly
+                                                  ? appText.appliedFilesOnly
+                                                  : fileScanType == FileScanType.win32
+                                                      ? 'win32'
+                                                      : appText.all),
+                                          Text(' - '),
+                                          Text('$totalChecked / ${appText.dText(appText.numFiles, totalFilesToCheck.toString())}')
+                                        ],
+                                      )),
                                   Visibility(visible: gameDataCheckStatus.watch(context).isNotEmpty, child: Text(gameDataCheckStatus.watch(context)))
                                 ],
                               )),

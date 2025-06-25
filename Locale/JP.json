@@ -1,4 +1,12 @@
 {
+  "checkedFiles": "チェック済みファイル",
+  "unmatchedMissingFiles": "不一致 - 欠落ファイル",
+  "appliedFilesOnly": "適用済みファイル",
+  "selectAScanType": "スキャンタイプを選択",
+  "refreshModManager": "MODマネージャーを更新",
+  "extras": "エクストラ",
+  "gameDataIntegrityCheck": "ゲームデータの整合性チェック",
+  "start": "スタート",
   "functionOn": "%p%：オン",
   "functionOff": "%p%：オフ",
   "includeModsInItemSearch": "検索にMOD名とそのバリアントを含める",
