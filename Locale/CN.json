@@ -1,4 +1,12 @@
 {
+  "checkedFiles": "Checked Files",
+  "unmatchedMissingFiles": "Unmatched - Missing Files",
+  "appliedFilesOnly": "Applied Files",
+  "selectAScanType": "Select A Scan Type",
+  "refreshModManager": "Refresh Mod Manager",
+  "extras": "Extras",
+  "gameDataIntegrityCheck": "Game Data Integrity Check",
+  "start": "Start",
   "functionOn": "%p%: ON",
   "functionOff": "%p%: OFF",
   "includeModsInItemSearch": "Include Mod names and their Variants in this search",

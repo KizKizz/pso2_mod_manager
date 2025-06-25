@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
+import 'package:pso2_mod_manager/file_check/file_check_popup.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_apply/save_restore_function.dart';
 import 'package:pso2_mod_manager/mod_apply/save_restore_popup.dart';
@@ -107,6 +108,7 @@ class _AppTitleBarState extends State<AppTitleBar> {
                       ),
                     ),
                   )),
+
               Visibility(
                 visible: appLoadingFinished.watch(context),
                 child: SizedBox(
@@ -127,6 +129,26 @@ class _AppTitleBarState extends State<AppTitleBar> {
                   ),
                 ),
               ),
+
+              Visibility(
+                  visible: appLoadingFinished.watch(context),
+                  child: SizedBox(
+                    height: 20,
+                    child: ModManTooltip(
+                      message: appText.gameDataIntegrityCheck,
+                      child: OutlinedButton(
+                        style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+                        onPressed: () async {
+                          await checkGameFilesPopup(context, false);
+                        },
+                        child: const Icon(
+                          Icons.checklist_rounded,
+                          size: 18,
+                        ),
+                      ),
+                    ),
+                  )),
+
               Visibility(visible: appLoadingFinished.watch(context), child: const ChecksumIndicator())
             ],
           )

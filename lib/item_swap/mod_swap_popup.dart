@@ -78,7 +78,16 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
           }
 
           // Data from mod
-          lDisplayingItems = pItemData.where((e) => e.category == submod.category && submod.getModFileNames().indexWhere((f) => e.getIceDetailsWithoutKeys().contains(f)) != -1).toList();
+          lDisplayingItems = qualityFilterCategoryDirs.contains(submod.category)
+              ? pItemData
+                  .where((e) =>
+                      (e.category == submod.category || submod.category.contains(e.subCategory)) &&
+                      submod.getModFileNames().indexWhere((f) => e.getHQIceName().contains(f) || e.getLQIceName().contains(f)) != -1)
+                  .toList()
+              : pItemData
+                  .where(
+                      (e) => (e.category == submod.category || submod.category.contains(e.subCategory)) && submod.getModFileNames().indexWhere((f) => e.getIceDetailsWithoutKeys().contains(f)) != -1)
+                  .toList();
 
           return AlertDialog(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),

@@ -45,7 +45,7 @@ class _PlayerDataLoadPageState extends State<PlayerDataLoadPage> {
               ),
             );
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-          return FutureBuilderError(loadingText: appText.loadingItemData, snapshotError: snapshot.error.toString(), isPopup: false,);
+          return FutureBuilderError(loadingText: appText.loadingItemData, snapshotError: snapshot.error.toString(), isPopup: false, showContButton: true,);
         } else {
           pItemData = snapshot.data;
           pageIndex++;

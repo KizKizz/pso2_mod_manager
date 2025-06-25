@@ -54,6 +54,21 @@ List<String> applyHQFilesCategoryDirs = [
   'Outerwears', //15
   'Setwears', //16
 ];
+List<String> qualityFilterCategoryDirs = [
+  'Accessories', //0
+  'Basewears', //1
+  'Body Paints', //2
+  'Cast Arm Parts', //3
+  'Cast Body Parts', //4
+  'Cast Leg Parts', //5
+  'Costumes', //6
+  'Eyes', //8
+  'Face Paints', //9
+  'Hairs', //10
+  'Innerwears', //11
+  'Outerwears', //15
+  'Setwears', //16
+];
 List<String> boundingRadiusCategoryDirs = [
   'Basewears', //1
   'Body Paints', //2

@@ -74,7 +74,7 @@ Future<bool> lineStrikeCardRestorePopup(context, LineStrikeCard card, List<LineS
                     return FutureBuilderError(
                       loadingText: appText.dText(appText.restoringFile, card.cardZeroDdsName),
                       snapshotError: snapshot.error.toString(),
-                      isPopup: true,
+                      isPopup: true, showContButton: false,
                     );
                   } else {
                     bool result = snapshot.data;

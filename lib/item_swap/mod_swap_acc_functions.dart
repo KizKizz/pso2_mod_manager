@@ -10,6 +10,7 @@ import 'package:pso2_mod_manager/item_swap/item_swap_working_popup.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_helper_functions.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
+import 'package:pso2_mod_manager/v3_functions/original_ice_download.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_swap_grid.dart';
 
 Future<Directory> modSwapAccessories(
@@ -59,11 +60,12 @@ Future<Directory> modSwapAccessories(
     File? lItemIceFileInTemp;
     if (isVanillaItemSwap) {
       //get ice path
-      final matchedlItemData = oItemData.firstWhere(
-        (e) => p.basenameWithoutExtension(e.path) == lItemIceName,
-        orElse: () => OfficialIceFile('', '', 0, ''),
-      );
-      lItemIceFileInTemp = await modSwapOriginalFileDownload(matchedlItemData.path, matchedlItemData.server, modSwapTempLItemDirPath);
+      // final matchedlItemData = oItemData.firstWhere(
+      //   (e) => p.basenameWithoutExtension(e.path) == lItemIceName,
+      //   orElse: () => OfficialIceFile('', '', 0, ''),
+      // );
+      lItemIceFileInTemp = await originalIceDownload(lItemIceName, modSwapTempLItemDirPath, itemSwapWorkingStatus);
+      // await modSwapOriginalFileDownload(matchedlItemData.path, matchedlItemData.server, modSwapTempLItemDirPath);
     } else {
       int modFileIndexF = fromSubmod.modFiles.indexWhere((element) => element.modFileName == lItemIceName);
       if (modFileIndexF != -1) {
@@ -97,7 +99,8 @@ Future<Directory> modSwapAccessories(
     if (icePathFromOgDataT.isNotEmpty) {
       //final iceFileInTempT = await File(icePathFromOgDataT).copy(Uri.file('$modSwapTempRItemDirPath/${p.basename(icePathFromOgDataT)}').toFilePath());
       //download from file from server
-      File? iceFileInTempT = await modSwapOriginalFileDownload(icePathFromOgDataT, matchedrItemData.server, modSwapTempRItemDirPath);
+      File? iceFileInTempT = await originalIceDownload(icePathFromOgDataT, modSwapTempRItemDirPath, itemSwapWorkingStatus);
+      // await modSwapOriginalFileDownload(icePathFromOgDataT, matchedrItemData.server, modSwapTempRItemDirPath);
       if (iceFileInTempT != null) {
         if (Platform.isLinux) {
           await Process.run('wine $zamboniExePath -outdir "$tempSubmodPathT"', [iceFileInTempT.path]);

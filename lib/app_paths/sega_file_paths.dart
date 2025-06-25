@@ -83,17 +83,17 @@ Future<(List<OfficialIceFile>, List<OfficialIceFile>, String, String, String, St
             officialList.add(OfficialIceFile(infoDetails[0].trim(), infoDetails[1].trim(), int.parse(infoDetails[2]), infoDetails[3].trim()));
           }
           // File('${Directory.current.path}/$patchListFile').createSync();
-          // File('${Directory.current.path}/$patchListFile').writeAsStringSync(officialList.map((e) => e.path).join('\n'));
+          // File('${Directory.current.path}/$patchListFile').writeAsStringSync(officialList.map((e) => '${e.path} ${e.server}').join('\n'));
 
           // _na bundle
           if (Directory('$pso2DataDirPath${p.separator}win32_na').existsSync()) {
             for (var path in Directory('$pso2DataDirPath${p.separator}win32_na').listSync(recursive: true).whereType<File>().map((e) => e.path).toList()) {
-              officialListNA.add(OfficialIceFile(path.replaceFirst(pso2binDirPath, ''), '', 0, 'm'));
+              officialListNA.add(OfficialIceFile(path.replaceFirst(pso2binDirPath, ''), '', 0, ''));
             }
           }
           if (Directory('$pso2DataDirPath${p.separator}win32reboot_na').existsSync()) {
             for (var path in Directory('$pso2DataDirPath${p.separator}win32reboot_na').listSync(recursive: true).whereType<File>().map((e) => e.path).toList()) {
-              officialListNA.add(OfficialIceFile(path.replaceFirst(pso2binDirPath, ''), '', 0, 'm'));
+              officialListNA.add(OfficialIceFile(path.replaceFirst(pso2binDirPath, ''), '', 0, ''));
             }
           }
           // debugPrint(officialList.map((e) => e.path).toString());

@@ -75,7 +75,7 @@ Future<bool> lineStrikeBoardRestorePopup(context, LineStrikeBoard board, List<Li
                     return FutureBuilderError(
                       loadingText: appText.dText(appText.restoringFile, board.iceDdsName),
                       snapshotError: snapshot.error.toString(),
-                      isPopup: true,
+                      isPopup: true, showContButton: false,
                     );
                   } else {
                     bool result = snapshot.data;

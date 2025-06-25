@@ -134,6 +134,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..help = json['help'] as String
   ..favorites = json['favorites'] as String
   ..hasPreviews = json['hasPreviews'] as String
+  ..start = json['start'] as String
   ..patchNotes = json['patchNotes'] as String
   ..appUpdate = json['appUpdate'] as String
   ..tryAgain = json['tryAgain'] as String
@@ -267,6 +268,10 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..numItemSelected = json['numItemSelected'] as String
   ..functionOn = json['functionOn'] as String
   ..functionOff = json['functionOff'] as String
+  ..checkedFiles = json['checkedFiles'] as String
+  ..unmatchedMissingFiles = json['unmatchedMissingFiles'] as String
+  ..appliedFilesOnly = json['appliedFilesOnly'] as String
+  ..selectAScanType = json['selectAScanType'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -379,6 +384,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..editVariants = json['editVariants'] as String
   ..matchedItem = json['matchedItem'] as String
   ..includeModsInItemSearch = json['includeModsInItemSearch'] as String
+  ..refreshModManager = json['refreshModManager'] as String
   ..failedToFetchRemoteLocaleData =
       json['failedToFetchRemoteLocaleData'] as String
   ..unableToUpdateFile = json['unableToUpdateFile'] as String
@@ -484,7 +490,9 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..tapToReturn = json['tapToReturn'] as String
   ..homepageStyle = json['homepageStyle'] as String
   ..legacy = json['legacy'] as String
-  ..hideAppliedList = json['hideAppliedList'] as String;
+  ..hideAppliedList = json['hideAppliedList'] as String
+  ..extras = json['extras'] as String
+  ..gameDataIntegrityCheck = json['gameDataIntegrityCheck'] as String;
 
 Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'dfCastParts': instance.dfCastParts,
@@ -614,6 +622,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'help': instance.help,
       'favorites': instance.favorites,
       'hasPreviews': instance.hasPreviews,
+      'start': instance.start,
       'patchNotes': instance.patchNotes,
       'appUpdate': instance.appUpdate,
       'tryAgain': instance.tryAgain,
@@ -744,6 +753,10 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'numItemSelected': instance.numItemSelected,
       'functionOn': instance.functionOn,
       'functionOff': instance.functionOff,
+      'checkedFiles': instance.checkedFiles,
+      'unmatchedMissingFiles': instance.unmatchedMissingFiles,
+      'appliedFilesOnly': instance.appliedFilesOnly,
+      'selectAScanType': instance.selectAScanType,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,
@@ -850,6 +863,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'editVariants': instance.editVariants,
       'matchedItem': instance.matchedItem,
       'includeModsInItemSearch': instance.includeModsInItemSearch,
+      'refreshModManager': instance.refreshModManager,
       'failedToFetchRemoteLocaleData': instance.failedToFetchRemoteLocaleData,
       'unableToUpdateFile': instance.unableToUpdateFile,
       'unableToGetAppVersionDataFromGitHub':
@@ -953,4 +967,6 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'homepageStyle': instance.homepageStyle,
       'legacy': instance.legacy,
       'hideAppliedList': instance.hideAppliedList,
+      'extras': instance.extras,
+      'gameDataIntegrityCheck': instance.gameDataIntegrityCheck,
     };

@@ -31,7 +31,7 @@ Future<bool> saveRestoreAllAppliedMods() async {
                 await File(path).copy(saveFilePath);
                 // restore
                 if (originalFilesBackupsFromSega) {
-                  String iceWebPath = ('${path.replaceFirst(pso2binDirPath + p.separator, '')}.pat').replaceAll(p.separator, '/');
+                  String iceWebPath = (path.replaceFirst(pso2binDirPath + p.separator, '')).replaceAll(p.separator, '/');
                   File? downloadedFile = await originalIceDownload(iceWebPath, p.dirname(path), modApplyStatus);
                   if (downloadedFile != null) {
                     File localBackupFile = File(path.replaceFirst(pso2DataDirPath, backupDirPath));
@@ -57,7 +57,7 @@ Future<bool> saveRestoreAllAppliedMods() async {
             String saveFilePath = item.iconPath!.replaceFirst(pso2DataDirPath, savedAppliedModFileDirPath);
             Directory(p.dirname(saveFilePath)).create(recursive: true);
             await File(item.iconPath!).copy(saveFilePath);
-            String iconWebPath = ('${p.withoutExtension(item.iconPath!).replaceFirst(pso2binDirPath + p.separator, '')}.pat').replaceAll(p.separator, '/');
+            String iconWebPath = (p.withoutExtension(item.iconPath!).replaceFirst(pso2binDirPath + p.separator, '')).replaceAll(p.separator, '/');
             await originalIceDownload(iconWebPath, p.dirname(item.iconPath!), modApplyStatus);
           }
         }

@@ -87,7 +87,7 @@ Future<bool> aqmInjectPopup(
                     return FutureBuilderError(
                       loadingText: appText.dText(appText.editingMod, itemName),
                       snapshotError: snapshot.error.toString(),
-                      isPopup: true,
+                      isPopup: true, showContButton: false,
                     );
                   } else {
                     result = snapshot.data;

@@ -29,7 +29,7 @@ import 'package:pso2_mod_manager/v3_functions/modified_ice_file_save.dart';
 import 'package:pso2_mod_manager/v3_widgets/notifications.dart';
 
 Future<void> modToGameData(context, bool applying, Item item, Mod mod, SubMod submod) async {
-  applying ? modPopupStatus.value = '[${DateTime.now}] Applying files from "${submod.submodName}" to the game' : modPopupStatus.value = '[${DateTime.now}] Removing files from "${submod.submodName}" to the game';
+  applying ? modPopupStatus.value = '[${DateTime.now()}] Applying files from "${submod.submodName}" to the game' : modPopupStatus.value = '[${DateTime.now()}] Removing files from "${submod.submodName}" to the game';
   if (applying) {
     await modApplySequence(context, applying, item, mod, submod, []);
     submod.applyStatus ? applySuccessNotification(submod.submodName) : applyFailedNotification(submod.submodName);
@@ -37,7 +37,7 @@ Future<void> modToGameData(context, bool applying, Item item, Mod mod, SubMod su
     await modUnapplySequence(context, applying, item, mod, submod, []);
     !submod.applyStatus ? restoreSuccessNotification(submod.submodName) : restoreFailedNotification(submod.submodName);
   }
-  modPopupStatus.value = '[${DateTime.now}] Done!';
+  modPopupStatus.value = '[${DateTime.now()}] Done!';
 }
 
 Future<void> modApplySequence(context, bool applying, Item item, Mod mod, SubMod submod, List<ModFile> modFiles) async {

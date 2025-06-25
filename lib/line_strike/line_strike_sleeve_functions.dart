@@ -74,7 +74,7 @@ Future<bool> customSleeveImageApply(String imgPath, LineStrikeSleeve sleeveDataF
 
   //download and replace
   //icon
-  File? downloadedIconIceFile = await originalIceDownload('${sleeveDataFile.iconIcePath.replaceFirst(pso2binDirPath + p.separator, '')}.pat', lineStrikeSleeveTempDirPath, lineStrikeStatus);
+  File? downloadedIconIceFile = await originalIceDownload(sleeveDataFile.iconIcePath.replaceFirst(pso2binDirPath + p.separator, ''), lineStrikeSleeveTempDirPath, lineStrikeStatus);
   if (downloadedIconIceFile == null) return false;
   if (Platform.isLinux) {
     await Process.run('wine $zamboniExePath -outdir "$lineStrikeSleeveTempDirPath"', [downloadedIconIceFile.path]);
@@ -217,8 +217,8 @@ Future<bool> customSleeveImageApply(String imgPath, LineStrikeSleeve sleeveDataF
 }
 
 Future<bool> customSleeveImageRemove(LineStrikeSleeve sleeve, List<LineStrikeSleeve> lineStrikeSleeveList) async {
-  File? downloadedIceFile = await originalIceDownload('${sleeve.icePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(sleeve.icePath), lineStrikeStatus);
-  File? downloadedIconIceFile = await originalIceDownload('${sleeve.iconIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), '')}.pat', p.dirname(sleeve.iconIcePath), lineStrikeStatus);
+  File? downloadedIceFile = await originalIceDownload(sleeve.icePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), ''), p.dirname(sleeve.icePath), lineStrikeStatus);
+  File? downloadedIconIceFile = await originalIceDownload(sleeve.iconIcePath.replaceFirst(Uri.file('$pso2binDirPath/').toFilePath(), ''), p.dirname(sleeve.iconIcePath), lineStrikeStatus);
 
   if (downloadedIceFile != null) sleeve.replacedIceMd5 = '';
   if (downloadedIconIceFile != null) sleeve.replacedIconIceMd5 = '';

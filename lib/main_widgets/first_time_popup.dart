@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/file_check/file_check_popup.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/material_app_service.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
@@ -23,6 +25,17 @@ Future<void> firstTimePopup(context) async {
                 spacing: 5,
                 overflowSpacing: 5,
                 children: [
+                  OutlinedButton(
+                      onPressed: () async {
+                        final prefs = await SharedPreferences.getInstance();
+                        firstBootUp = false;
+                        prefs.setBool('firstBootUp', firstBootUp);
+                        // ignore: use_build_context_synchronously
+                        Navigator.of(context).pop();
+                        await Future.delayed(Duration(milliseconds: 10));
+                        await checkGameFilesPopup(MaterialAppService.navigatorKey.currentContext, true);
+                      },
+                      child: Text(appText.gameDataIntegrityCheck)),
                   OutlinedButton(
                       onPressed: () async {
                         final prefs = await SharedPreferences.getInstance();

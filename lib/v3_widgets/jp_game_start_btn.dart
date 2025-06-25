@@ -32,7 +32,7 @@ class _JpGameStartBtnState extends State<JpGameStartBtn> {
       child: OutlinedButton.icon(
           style: ButtonStyle(
               visualDensity: VisualDensity.compact,
-              shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30), side: BorderSide(width: 1.5, color: Theme.of(context).colorScheme.primary)))),
+              shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5), side: BorderSide(width: 1.5, color: Theme.of(context).colorScheme.primary)))),
           onPressed: () async {
             File startBatch = File('$mainDataDirPath${p.separator}startpso2jp.bat');
             if (!startBatch.existsSync()) await startBatch.create(recursive: true);

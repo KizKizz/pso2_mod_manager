@@ -75,7 +75,7 @@ Future<bool> lineStrikeSleeveApplyPopup(context, String customImagePath, LineStr
                     return FutureBuilderError(
                       loadingText: appText.dText(appText.editingMod, sleeve.iceDdsName),
                       snapshotError: snapshot.error.toString(),
-                      isPopup: true,
+                      isPopup: true, showContButton: false,
                     );
                   } else {
                     bool result = snapshot.data;

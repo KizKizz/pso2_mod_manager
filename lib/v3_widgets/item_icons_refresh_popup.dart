@@ -69,7 +69,7 @@ Future<void> itemIconsRefreshPopup() async {
                     return FutureBuilderError(
                       loadingText: appText.refreshingItemIcons,
                       snapshotError: snapshot.error.toString(),
-                      isPopup: true,
+                      isPopup: true, showContButton: false,
                     );
                   } else {
                     saveMasterModListToJson();

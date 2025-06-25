@@ -139,7 +139,8 @@ class AppText {
       details = 'Details',
       help = 'Help',
       favorites = 'Favorites',
-      hasPreviews = 'Has Previews';
+      hasPreviews = 'Has Previews',
+      start = 'Start';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -270,7 +271,11 @@ class AppText {
       replacedCMLFile = 'Replaced CML: %p%',
       numItemSelected = '%p% Selected',
       functionOn = '%p%: ON',
-      functionOff = '%p%: OFF';
+      functionOff = '%p%: OFF',
+      checkedFiles = 'Checked Files',
+      unmatchedMissingFiles = 'Unmatched - Missing Files',
+      appliedFilesOnly = 'Applied Files',
+      selectAScanType = 'Select A Scan Type';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -375,7 +380,8 @@ class AppText {
       downloadSalonTool = 'Download Salon Tool',
       editVariants = 'Edit Variants',
       matchedItem = 'Matched Item',
-      includeModsInItemSearch = 'Include Mod names and their Variants in this search';
+      includeModsInItemSearch = 'Include Mod names and their Variants in this search',
+      refreshModManager = 'Refresh Mod Manager';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',
@@ -485,7 +491,9 @@ class AppText {
       tapToReturn = 'Tap To Return',
       homepageStyle = 'Homepage Style',
       legacy = 'Legacy',
-      hideAppliedList = 'Hide Applied List';
+      hideAppliedList = 'Hide Applied List',
+      extras = 'Extras',
+      gameDataIntegrityCheck = 'Game Data Integrity Check';
 
   factory AppText.fromJson(Map<String, dynamic> json) => _$AppTextFromJson(json);
   Map<String, dynamic> toJson() => _$AppTextToJson(this);

@@ -78,7 +78,7 @@ Future<void> cmlReplaceWorkingPopup(context, bool isRestoring, Cml cmlItem, File
                     return FutureBuilderError(
                       loadingText: appText.dText(appText.editingMod, cmlItem.getName()),
                       snapshotError: snapshot.error.toString(),
-                      isPopup: true,
+                      isPopup: true, showContButton: false,
                     );
                   } else {
                     bool result = snapshot.data;

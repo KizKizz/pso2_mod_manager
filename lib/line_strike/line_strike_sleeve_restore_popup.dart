@@ -75,7 +75,7 @@ Future<bool> lineStrikeSleeveRestorePopup(context, LineStrikeSleeve sleeve, List
                     return FutureBuilderError(
                       loadingText: appText.dText(appText.restoringFile, sleeve.iceDdsName),
                       snapshotError: snapshot.error.toString(),
-                      isPopup: true,
+                      isPopup: true, showContButton: false,
                     );
                   } else {
                     bool result = snapshot.data;

@@ -64,7 +64,7 @@ class _AppModLoadPageState extends State<AppModLoadPage> {
             ],
           ));
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-          return FutureBuilderError(loadingText: appText.loadingModFiles, snapshotError: snapshot.error.toString(), isPopup: false,);
+          return FutureBuilderError(loadingText: appText.loadingModFiles, snapshotError: snapshot.error.toString(), isPopup: false, showContButton: true,);
         } else {
           masterModList = snapshot.data;
           saveMasterModListToJson();

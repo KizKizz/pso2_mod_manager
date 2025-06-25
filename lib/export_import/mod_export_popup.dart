@@ -74,7 +74,7 @@ Future<void> modExportPopup(context, ExportType exportType, String exportFileNam
                     return FutureBuilderError(
                       loadingText: appText.exportingMods,
                       snapshotError: snapshot.error.toString(),
-                      isPopup: true,
+                      isPopup: true, showContButton: false,
                     );
                   } else {
                     File? exportedFile = snapshot.data;

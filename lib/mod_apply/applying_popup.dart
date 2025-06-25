@@ -79,7 +79,7 @@ Future<void> applyingPopup(context, bool applying, Item item, Mod mod, SubMod su
                     return FutureBuilderError(
                       loadingText: applying ? appText.dText(appText.applyingMod, submod.submodName) : appText.dText(appText.restoringModBackups, submod.submodName),
                       snapshotError: snapshot.error.toString(),
-                      isPopup: true,
+                      isPopup: true, showContButton: false,
                     );
                   } else {
                     taskFinished ??= true;
