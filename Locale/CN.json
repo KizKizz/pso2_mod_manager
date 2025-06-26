@@ -2,7 +2,7 @@
   "checkedFiles": "已检查文件",
   "unmatchedMissingFiles": "不匹配项-缺少的文件",
   "appliedFilesOnly": "仅已应用文件",
-  "selectAScanType": "选择扫描类型-注意：点击开始后会检查文件匹配性并重置到官方文件，请不要在应用mod状态下使用该功能！",
+  "selectAScanType": "选择扫描类型-注意：点击开始后会检查文件匹配性并重置到官方文件，请仅在MOD异常时使用本功能！",
   "refreshModManager": "刷新MOD管理器",
   "extras": "附加内容",
   "gameDataIntegrityCheck": "游戏数据完整性检查",
