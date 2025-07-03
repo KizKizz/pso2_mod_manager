@@ -72,6 +72,13 @@ Future<void> modAddUnpack(context, List<String> addedPaths) async {
       }
     }
   }
+
+  final nestedArchiveFiles = Directory(modAddTempUnpackedDirPath)
+      .listSync(recursive: true)
+      .whereType<File>()
+      .where((e) => p.extension(e.path) == '.zip' || p.extension(e.path) == '.rar' || p.extension(e.path) == '.7z')
+      .toList();
+  if (nestedArchiveFiles.isNotEmpty) await unpackNestedArchives(nestedArchiveFiles);
 }
 
 Future<List<AddingMod>> modAddSort() async {
@@ -772,4 +779,33 @@ Future<String> modAdderNewModSetDialog(context) async {
                       }),
                 ]);
           }));
+}
+
+Future<void> unpackNestedArchives(List<File> nestedArchives) async {
+  for (var file in nestedArchives) {
+    String extractingPath = file.parent.path;
+    if (p.extension(file.path) == '.zip') {
+      await extractFileToDisk(file.path, extractingPath);
+    } else if (p.extension(file.path) == '.rar') {
+      if (Platform.isLinux) {
+        await Process.run('wine $sevenZipExePath', ['x', file.path, '-o $extractingPath', '-r']);
+      } else {
+        await Process.run(sevenZipExePath, ['x', file.path, '-o$extractingPath', '-r']);
+      }
+    } else if (p.extension(file.path) == '.7z') {
+      if (Platform.isLinux) {
+        await Process.run('wine $sevenZipExePath', ['x', file.path, '-o$extractingPath', '-r']);
+      } else {
+        await Process.run(sevenZipExePath, ['x', file.path, '-o$extractingPath', '-r']);
+      }
+    }
+    await file.delete(recursive: true);
+  }
+
+  final nestedArchiveFiles = Directory(modAddTempUnpackedDirPath)
+      .listSync(recursive: true)
+      .whereType<File>()
+      .where((e) => p.extension(e.path) == '.zip' || p.extension(e.path) == '.rar' || p.extension(e.path) == '.7z')
+      .toList();
+  if (nestedArchiveFiles.isNotEmpty) await unpackNestedArchives(nestedArchiveFiles);
 }
