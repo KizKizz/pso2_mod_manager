@@ -1,4 +1,6 @@
 {
+  "useLocalBackupOnly": "ローカルバックアップのみ使用",
+  "useLocalBackupOnlyInfo": "このオプションを有効にすると、MODマネージャーはバックアップ用にSEGAサーバーから元ファイルをダウンロードしなくなります\nまた、「ゲーム内でMOD適用アイテムにマークを付ける」オプションも無効になります",
   "checkedFiles": "チェック済みファイル",
   "unmatchedMissingFiles": "不一致 - 欠落ファイル",
   "appliedFilesOnly": "適用済みファイル",

@@ -19,9 +19,11 @@ Future<List<ModSet>> modSetLoader() async {
   String dataFromFile = File(mainModSetListJsonPath).readAsStringSync();
   if (dataFromFile.isNotEmpty) {
     var jsonData = jsonDecode(dataFromFile);
-    for (var set in jsonData) {
-      newModSets.add(ModSet.fromJson(set));
-      if (newModSets.isNotEmpty) newModSets.last.isFavorite ??= false;
+    for (var data in jsonData) {
+      ModSet set = ModSet.fromJson(data);
+      set.appliedDate ??= DateTime.now();
+      set.isFavorite ??= false;
+      newModSets.add(set);
       // modsetLoadingStatus.value = newModSets.last.setName;
       await Future.delayed(const Duration(microseconds: 100));
     }
@@ -50,28 +52,11 @@ Future<List<ModSet>> modSetLoader() async {
   // Populate sets with items
   for (var set in newModSets) {
     modsetLoadingStatus.value = set.setName;
-    set.setItems = modSetItemsFromMasterList.where((e) => e.setNames.contains(set.setName)).toList();
-    set.appliedDate ??= DateTime.now();
+    set.setItems = modSetItemsFromMasterList
+        .where((e) => e.setNames.contains(set.setName) && e.mods.indexWhere((m) => m.setNames.contains(set.setName)) != -1 && e.getSubmods().indexWhere((s) => s.setNames.contains(set.setName)) != -1)
+        .toList();
     await Future.delayed(const Duration(microseconds: 1000));
   }
-
-  // List<String> setNames = newModSets.map((e) => e.setName).toList();
-  // for (var set in newModSets) {
-  //   for (var item in set.setItems) {
-  //     for (var mod in item.mods.where((e) => e.setNames.isNotEmpty)) {
-  //       for (var submod in mod.submods.where((e) => e.setNames.isNotEmpty)) {
-  //         submod.setNames.removeWhere((e) => !setNames.contains(e));
-  //         submod.activeInSets!.removeWhere((e) => !setNames.contains(e));
-  //         submod.setNames.isEmpty ? submod.isSet = false : submod.isSet = true;
-  //       }
-  //       mod.setNames.removeWhere((e) => !setNames.contains(e));
-  //       mod.setNames.isEmpty ? mod.isSet = false : mod.isSet = true;
-  //     }
-  //     item.setNames.removeWhere((e) => !setNames.contains(e));
-  //     item.setNames.isEmpty ? item.isSet = false : item.isSet = true;
-  //   }
-  //   set.appliedDate ??= DateTime.now();
-  // }
 
   return newModSets;
 }

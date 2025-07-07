@@ -74,7 +74,7 @@ class _SubmodGridLayoutState extends State<SubmodGridLayout> {
 
 class SubmodCardLayout extends StatefulWidget {
   const SubmodCardLayout(
-      {super.key, required this.item, required this.mod, required this.submod, required this.modSetName, required this.isInPopup, required this.isInEditingMode, required this.showPreview});
+      {super.key, required this.item, required this.mod, required this.submod, required this.modSetName, required this.isInPopup, required this.isInEditingMode, required this.showPreview, this.showModName});
 
   final Item item;
   final Mod mod;
@@ -83,6 +83,7 @@ class SubmodCardLayout extends StatefulWidget {
   final bool isInPopup;
   final bool isInEditingMode;
   final bool showPreview;
+  final bool? showModName;
 
   @override
   State<SubmodCardLayout> createState() => _SubmodCardLayoutState();
@@ -134,7 +135,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                 // Text(widget.submod.submodName, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.titleMedium),
                 Expanded(
                     child: Center(
-                        child: AutoSizeText(widget.submod.submodName, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 1, style: Theme.of(context).textTheme.titleMedium))),
+                        child: AutoSizeText(widget.showModName != null && widget.showModName! ? '${widget.submod.modName} > ${widget.submod.submodName}' : widget.submod.submodName, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 1, style: Theme.of(context).textTheme.titleMedium))),
                 Row(spacing: 5, children: [
                   Expanded(
                       child: OutlinedButton(

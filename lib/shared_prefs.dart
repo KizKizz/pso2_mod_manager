@@ -17,8 +17,8 @@ Color darkModeSeedColor = darkColorScheme.primary;
 Signal<bool> hideAppBackgroundSlides = Signal<bool>(false);
 Signal<int> backgroundImageSlideInterval = Signal<int>(10);
 Signal<bool> itemIconSlides = Signal<bool>(false);
-Signal<List<String>> selectedDisplayCategories = Signal<List<String>> (['All']);
-Signal<List<String>> selectedModDisplayCategories = Signal<List<String>> (['All']);
+Signal<List<String>> selectedDisplayCategories = Signal<List<String>>(['All']);
+Signal<List<String>> selectedModDisplayCategories = Signal<List<String>>(['All']);
 Signal<List<String>> selectedAppliedListDisplayCategories = Signal<List<String>>(['All']);
 Signal<String> selectedDisplaySort = Signal<String>('Name (Alphabetical)');
 Signal<String> selectedDisplaySortModView = Signal<String>('Name (Alphabetical)');
@@ -47,6 +47,7 @@ double splitViewFlexValue2 = 1;
 Signal<bool> showAppliedListV2 = Signal(true);
 int popupAfterDismissWaitDelayMilli = 10;
 bool itemListSearchIncludesMods = false;
+bool useLocalBackupOnly = false;
 
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
@@ -100,13 +101,13 @@ Future<void> prefsLoad() async {
   itemIconSlides.value = prefs.getBool('itemIconSlides') ?? false;
 
   // Main list filter
-  selectedDisplayCategories.value = prefs.getStringList('selectedDisplayCategories') ?? [];
+  selectedDisplayCategories.value = prefs.getStringList('selectedDisplayCategories') ?? ['All'];
 
   // Main Mod list filter
-  selectedModDisplayCategories.value = prefs.getStringList('selectedModDisplayCategories') ?? [];
+  selectedModDisplayCategories.value = prefs.getStringList('selectedModDisplayCategories') ?? ['All'];
 
   // Main list applied list filter
-  selectedAppliedListDisplayCategories.value = prefs.getStringList('selectedAppliedListDisplayCategories') ?? [];
+  selectedAppliedListDisplayCategories.value = prefs.getStringList('selectedAppliedListDisplayCategories') ?? ['All'];
 
   // Main list sort
   selectedDisplaySort.value = prefs.getString('selectedDisplaySort') ?? 'Name (Alphabetical)';
@@ -132,6 +133,7 @@ Future<void> prefsLoad() async {
 
   // Backup priority
   originalFilesBackupsFromSega = prefs.getBool('originalFilesBackupsFromSega') ?? true;
+  useLocalBackupOnly = prefs.getBool('useLocalBackupOnly') ?? false;
 
   // Bounding radius value
   boundingRadiusRemovalValue = prefs.getDouble('boundingRadiusRemovalValue') ?? -10;

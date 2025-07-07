@@ -88,7 +88,7 @@ class _AppAqmItemsCheckPageState extends State<AppAqmItemsCheckPage> {
                               if (aqmResult || boundingResult) {
                                 item.injectedHqIceMd5 = await File(pso2binDirPath + p.separator + item.hqIcePath.replaceAll('/', p.separator)).getMd5Hash();
                                 item.injectedLqIceMd5 = await File(pso2binDirPath + p.separator + item.lqIcePath.replaceAll('/', p.separator)).getMd5Hash();
-                                if (replaceItemIconOnApplied) {
+                                if (replaceItemIconOnApplied && !useLocalBackupOnly) {
                                   item.isIconReplaced = await markedAqmItemIconApply(item.iconIcePath);
                                 }
                                 item.isAqmReplaced = aqmResult;

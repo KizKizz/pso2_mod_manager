@@ -221,7 +221,7 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                                                   bool result = await aqmInjectPopup(context, newItem.injectedAQMFilePath!, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName(),
                                                       false, false, false, false, false);
                                                   if (result) {
-                                                    if (replaceItemIconOnApplied) {
+                                                    if (replaceItemIconOnApplied && !useLocalBackupOnly) {
                                                       newItem.isIconReplaced = await markedAqmItemIconApply(newItem.iconIcePath);
                                                     }
                                                     newItem.injectedHqIceMd5 = await File(pso2binDirPath + p.separator + newItem.hqIcePath.replaceAll('/', p.separator)).getMd5Hash();
@@ -278,7 +278,7 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                                                     newItem.isBoundingRemoved = true;
                                                     newItem.isApplied = true;
                                                     masterAqmInjectedItemList.add(newItem);
-                                                    if (replaceItemIconOnApplied) {
+                                                    if (replaceItemIconOnApplied && !useLocalBackupOnly) {
                                                       newItem.isIconReplaced = await markedAqmItemIconApply(newItem.iconIcePath);
                                                     }
                                                     modAqmInjectingRefresh.value = 'Removed Bounding from ${newItem.getName()}';
@@ -336,7 +336,7 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                                                     newItem.isBoundingRemoved = boundingResult;
                                                     newItem.isApplied = true;
                                                     masterAqmInjectedItemList.add(newItem);
-                                                    if (replaceItemIconOnApplied) {
+                                                    if (replaceItemIconOnApplied && !useLocalBackupOnly) {
                                                       newItem.isIconReplaced = await markedAqmItemIconApply(newItem.iconIcePath);
                                                     }
                                                     modAqmInjectingRefresh.value = 'Injected AQM and removed Bounding from ${newItem.getName()}';
