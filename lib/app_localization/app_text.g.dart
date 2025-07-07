@@ -272,6 +272,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..unmatchedMissingFiles = json['unmatchedMissingFiles'] as String
   ..appliedFilesOnly = json['appliedFilesOnly'] as String
   ..selectAScanType = json['selectAScanType'] as String
+  ..useLocalBackupOnly = json['useLocalBackupOnly'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -423,6 +424,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..emptyModViewInfo = json['emptyModViewInfo'] as String
   ..cmlInfo = json['cmlInfo'] as String
   ..boundingRadiusInfo = json['boundingRadiusInfo'] as String
+  ..useLocalBackupOnlyInfo = json['useLocalBackupOnlyInfo'] as String
   ..applyRestoreMods = json['applyRestoreMods'] as String
   ..addModsToModSets = json['addModsToModSets'] as String
   ..swapItemToAnotherItem = json['swapItemToAnotherItem'] as String
@@ -757,6 +759,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'unmatchedMissingFiles': instance.unmatchedMissingFiles,
       'appliedFilesOnly': instance.appliedFilesOnly,
       'selectAScanType': instance.selectAScanType,
+      'useLocalBackupOnly': instance.useLocalBackupOnly,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,
@@ -900,6 +903,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'emptyModViewInfo': instance.emptyModViewInfo,
       'cmlInfo': instance.cmlInfo,
       'boundingRadiusInfo': instance.boundingRadiusInfo,
+      'useLocalBackupOnlyInfo': instance.useLocalBackupOnlyInfo,
       'applyRestoreMods': instance.applyRestoreMods,
       'addModsToModSets': instance.addModsToModSets,
       'swapItemToAnotherItem': instance.swapItemToAnotherItem,
