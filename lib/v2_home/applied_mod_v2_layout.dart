@@ -49,6 +49,7 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
             isInPopup: false,
             isInEditingMode: false,
             showPreview: submod.previewImages.isNotEmpty || submod.previewVideos.isNotEmpty,
+            showModName: true,
           ));
         }
       }
@@ -65,6 +66,7 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
             isInPopup: false,
             isInEditingMode: false,
             showPreview: submod.previewImages.isNotEmpty || submod.previewVideos.isNotEmpty,
+            showModName: true,
           ));
         }
       }
@@ -81,6 +83,7 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
             isInPopup: false,
             isInEditingMode: false,
             showPreview: submod.previewImages.isNotEmpty || submod.previewVideos.isNotEmpty,
+            showModName: true,
           ));
         }
       }

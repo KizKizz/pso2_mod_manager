@@ -275,7 +275,8 @@ class AppText {
       checkedFiles = 'Checked Files',
       unmatchedMissingFiles = 'Unmatched - Missing Files',
       appliedFilesOnly = 'Applied Files',
-      selectAScanType = 'Select A Scan Type';
+      selectAScanType = 'Select A Scan Type',
+      useLocalBackupOnly = 'Use Local Backup Only';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -419,7 +420,8 @@ class AppText {
       emptyModViewInfo = 'Select an item to display its mods here',
       cmlInfo =
           'You can convert your saved character files to cml files using the Model Tool program\nAdd the cml files using the "Add Files" button\nSelect a cml file in the left panel\nPress the "Replace" button on the items in the right panel to replace them with the selected cml file',
-      boundingRadiusInfo = 'High negative values might cause character to be invisible in game on some outfits\nPlease be caution';
+      boundingRadiusInfo = 'High negative values might cause character to be invisible in game on some outfits\nPlease be caution',
+      useLocalBackupOnlyInfo = 'This option will restrict mod manager from downloading original files from Sega servers for backups\nThis will also turn off Mark Modded Items In Game option';
 
   // Help menu
   String applyRestoreMods = 'Apply - restore mods',
@@ -461,7 +463,7 @@ class AppText {
       mainPaths = 'Main Paths',
       currentPathFolder = 'Current path: %p%',
       selectPso2BinFolder = 'Select pso2_bin Folder',
-      selectModManagerDataFolder = 'Select Mod Manager Data Folder',
+      selectModManagerDataFolder = 'Select Mod Manager Main Data Folder',
       locations = 'Locations',
       pso2binFolder = 'pso2_bin Folder',
       modManagerMainFolder = 'Mod Manager Main Data Folder',

@@ -69,9 +69,33 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
                       width: constraints.maxWidth,
                       onChange: (currentIndex, targetIndex) async {
                         final prefs = await SharedPreferences.getInstance();
-                        targetIndex == 0 ? originalFilesBackupsFromSega = true : originalFilesBackupsFromSega = false;
+                        if (targetIndex == 0) {
+                          originalFilesBackupsFromSega = true;
+                          useLocalBackupOnly = false;
+                          prefs.setBool('useLocalBackupOnly', useLocalBackupOnly);
+                        } else {
+                          originalFilesBackupsFromSega = false;
+                        }
                         prefs.setBool('originalFilesBackupsFromSega', originalFilesBackupsFromSega);
+                        setState(() {});
                       },
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ModManTooltip(
+                        message: appText.useLocalBackupOnlyInfo,
+                        child: OutlinedButton.icon(
+                            onPressed: originalFilesBackupsFromSega
+                                ? null
+                                : () async {
+                                    final prefs = await SharedPreferences.getInstance();
+                                    useLocalBackupOnly ? useLocalBackupOnly = false : useLocalBackupOnly = true;
+                                    prefs.setBool('useLocalBackupOnly', useLocalBackupOnly);
+                                    setState(() {});
+                                  },
+                            label: Text(appText.useLocalBackupOnly),
+                            icon: Icon(useLocalBackupOnly ? Icons.check_box_outlined : Icons.check_box_outline_blank_outlined)),
+                      ),
                     ),
                     // Auto bounding radius
                     SettingsHeader(icon: Icons.radio_button_checked_rounded, text: appText.autoRemoveBoundingRadius),
@@ -168,7 +192,6 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
                         final prefs = await SharedPreferences.getInstance();
                         targetIndex == 0 ? replaceItemIconOnApplied = true : replaceItemIconOnApplied = false;
                         prefs.setBool('replaceItemIconOnApplied', replaceItemIconOnApplied);
-                        // Isolate.run(() => profanityRemove);
                       },
                     ),
                     // Remove profanity filter

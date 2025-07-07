@@ -9,6 +9,7 @@ import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/mod_apply/item_icon_mark.dart';
 import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_functions/modified_ice_file_save.dart';
 import 'package:pso2_mod_manager/v3_functions/original_ice_download.dart';
 
 File makerIceFile = File('$pso2DataDirPath${p.separator}win32${p.separator}1c5f7a7fbcdd873336048eaf6e26cd87');
@@ -73,11 +74,12 @@ Future<bool> cmlFileReplacement(Cml cmlItem, File cmlReplacementFile) async {
         if (await packedIceFile.exists()) {
           File renamedIceFile = await packedIceFile.rename('$modCMLReplaceTempDirPath${p.separator}replace${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}');
           renamedIceFile.copy(makerIceFile.path);
-          if (replaceItemIconOnApplied && !cmlItem.itemIconReplaced) {
+          if (replaceItemIconOnApplied && !useLocalBackupOnly && !cmlItem.itemIconReplaced) {
             cmlItem.itemIconReplaced = await markedAqmItemIconApply(cmlItem.itemIconWebPath);
           }
         }
 
+        modifiedIceAdd(p.basenameWithoutExtension(makerIceFile.path));
         return true;
       }
     }

@@ -17,7 +17,6 @@ import 'package:pso2_mod_manager/mod_sets/modset_mod_view_popup.dart';
 import 'package:pso2_mod_manager/mod_sets/modset_rename_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/main_modset_grid.dart';
-import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
@@ -248,128 +247,134 @@ class ModSetCardLayout extends StatefulWidget {
 class _ModSetCardLayoutState extends State<ModSetCardLayout> {
   @override
   Widget build(BuildContext context) {
-    return CardOverlay(
-      paddingValue: 5,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        spacing: 5,
-        children: [
-          Row(
-            spacing: 2.5,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: 2,
-                child: Column(
-                  children: [
-                    ItemIconBox(
-                      item: widget.item,
-                      showSubCategory: true,
-                    ),
-                    Text(widget.item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
-                  ],
-                ),
-              ),
-              Expanded(
-                flex: 6,
-                child: SubmodPreviewBox(imageFilePaths: widget.activeSubmod.previewImages, videoFilePaths: widget.activeSubmod.previewVideos, isNew: widget.activeSubmod.isNew),
-              )
-            ],
-          ),
-          Expanded(
-            child: Row(
+    return Card(
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
+      color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+      margin: EdgeInsets.zero,
+      elevation: 2.5,
+      child: Padding(
+        padding: const EdgeInsets.all(5),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          spacing: 5,
+          children: [
+            Row(
               spacing: 2.5,
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Flexible(child: AutoSizeText(widget.activeMod.modName, maxLines: 2, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge)),
-                const Icon(Icons.arrow_right),
-                Flexible(child: AutoSizeText(widget.activeSubmod.submodName, maxLines: 2, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge)),
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    children: [
+                      ItemIconBox(
+                        item: widget.item,
+                        showSubCategory: true,
+                      ),
+                      Text(widget.item.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 6,
+                  child: SubmodPreviewBox(imageFilePaths: widget.activeSubmod.previewImages, videoFilePaths: widget.activeSubmod.previewVideos, isNew: widget.activeSubmod.isNew),
+                )
               ],
             ),
-          ),
-          Row(
-            spacing: 2.5,
-            children: [
-              Expanded(
-                  child: InfoBox(
-                info: appText.dText(widget.item.mods.where((e) => e.isSet && e.setNames.contains(widget.setName)).length > 1 ? appText.numMods : appText.numMod,
-                    widget.item.mods.where((e) => e.isSet && e.setNames.contains(widget.setName)).length.toString()),
-                borderHighlight: false,
-              )),
-              Expanded(
-                  child: InfoBox(
-                info: appText.dText(widget.item.getSubmods().where((e) => e.isSet && e.setNames.contains(widget.setName)).length > 1 ? appText.numVariants : appText.numVariant,
-                    widget.item.getSubmods().where((e) => e.isSet && e.setNames.contains(widget.setName)).length.toString()),
-                borderHighlight: false,
-              )),
-              Expanded(
-                  flex: 2,
-                  child: InfoBox(
-                    info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedMods().toString()),
-                    borderHighlight: false,
-                  )),
-            ],
-          ),
-          Row(
-            spacing: 5,
-            children: [
-              Visibility(
-                visible:
-                    widget.item.getSubmods().where((e) => e.isSet && e.setNames.contains(widget.setName)).length > 1 || widget.item.mods.where((e) => e.setNames.contains(widget.setName)).length > 1,
-                child: OutlinedButton(
-                    onPressed: () {
-                      modsetModViewPopup(context, widget.item, widget.setName);
-                    },
-                    child: Text(
-                      appText.viewVariants,
-                      textAlign: TextAlign.center,
+            Expanded(
+              child: Row(
+                spacing: 2,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Flexible(child: AutoSizeText(widget.activeMod.modName, maxLines: 1, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge)),
+                  const Icon(Icons.arrow_right),
+                  Flexible(
+                      child: AutoSizeText(widget.activeSubmod.submodName, maxLines: 1, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge)),
+                ],
+              ),
+            ),
+            Row(
+              spacing: 2.5,
+              children: [
+                Expanded(
+                    child: InfoBox(
+                  info: appText.dText(widget.item.mods.where((e) => e.isSet && e.setNames.contains(widget.setName)).length > 1 ? appText.numMods : appText.numMod,
+                      widget.item.mods.where((e) => e.isSet && e.setNames.contains(widget.setName)).length.toString()),
+                  borderHighlight: false,
+                )),
+                Expanded(
+                    child: InfoBox(
+                  info: appText.dText(widget.item.getSubmods().where((e) => e.isSet && e.setNames.contains(widget.setName)).length > 1 ? appText.numVariants : appText.numVariant,
+                      widget.item.getSubmods().where((e) => e.isSet && e.setNames.contains(widget.setName)).length.toString()),
+                  borderHighlight: false,
+                )),
+                Expanded(
+                    flex: 2,
+                    child: InfoBox(
+                      info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedMods().toString()),
+                      borderHighlight: false,
                     )),
-              ),
-              Expanded(
+              ],
+            ),
+            Row(
+              spacing: 5,
+              children: [
+                Visibility(
+                  visible:
+                      widget.item.getSubmods().where((e) => e.isSet && e.setNames.contains(widget.setName)).length > 1 || widget.item.mods.where((e) => e.setNames.contains(widget.setName)).length > 1,
                   child: OutlinedButton(
-                      onPressed: !saveRestoreAppliedModsActive.watch(context)
-                          ? () async {
-                              if (!widget.activeSubmod.applyStatus) {
-                                await modToGameData(context, true, widget.item, widget.activeMod, widget.activeSubmod);
-                                modSetRefreshSignal.value = '[${DateTime.now()}] ${widget.activeSubmod.submodName} in ${widget.item.getDisplayName()} in ${widget.setName} Set was applied';
-                              } else {
-                                await modToGameData(context, false, widget.item, widget.activeMod, widget.activeSubmod);
-                                modSetRefreshSignal.value = '[${DateTime.now()}] ${widget.activeSubmod.submodName} in ${widget.item.getDisplayName()} in ${widget.setName} Set was restored';
+                      onPressed: () {
+                        modsetModViewPopup(context, widget.item, widget.setName);
+                      },
+                      child: Text(
+                        appText.viewVariants,
+                        textAlign: TextAlign.center,
+                      )),
+                ),
+                Expanded(
+                    child: OutlinedButton(
+                        onPressed: !saveRestoreAppliedModsActive.watch(context)
+                            ? () async {
+                                if (!widget.activeSubmod.applyStatus) {
+                                  await modToGameData(context, true, widget.item, widget.activeMod, widget.activeSubmod);
+                                  modSetRefreshSignal.value = '[${DateTime.now()}] ${widget.activeSubmod.submodName} in ${widget.item.getDisplayName()} in ${widget.setName} Set was applied';
+                                } else {
+                                  await modToGameData(context, false, widget.item, widget.activeMod, widget.activeSubmod);
+                                  modSetRefreshSignal.value = '[${DateTime.now()}] ${widget.activeSubmod.submodName} in ${widget.item.getDisplayName()} in ${widget.setName} Set was restored';
+                                }
+                                setState(() {});
                               }
-                              setState(() {});
-                            }
-                          : null,
-                      child: Text(widget.activeSubmod.applyStatus ? appText.restore : appText.apply))),
+                            : null,
+                        child: Text(widget.activeSubmod.applyStatus ? appText.restore : appText.apply))),
 
-              // Quick swap Menu
-              QuickSwapMenu(item: widget.item, mod: widget.activeMod, submod: widget.activeSubmod),
+                // Quick swap Menu
+                QuickSwapMenu(item: widget.item, mod: widget.activeMod, submod: widget.activeSubmod),
 
-              // Function menu
-              SubmodMoreFunctionsMenu(
-                item: widget.item,
-                mod: widget.activeMod,
-                submod: widget.activeSubmod,
-                isInPopup: true,
-                refresh: () {
-                  setState(() {});
-                  modSetRefreshSignal.value = '[${DateTime.now()}] ${widget.item.itemName} > ${widget.activeMod.modName} > ${widget.activeSubmod.submodName} modified in set "${widget.setName}"';
-                },
-              ),
-              // IconButton.outlined(
-              //     onPressed: () async {
-              //       await submodAddToSet(context, widget.item, widget.activeMod, widget.activeSubmod);
-              //       modSetRefreshSignal.value = '${widget.item.itemName} > ${widget.activeMod.modName} > ${widget.activeSubmod.submodName} modified in ${widget.setName}';
-              //     },
-              //     icon: const Icon(
-              //       Icons.edit_attributes_outlined,
-              //     ),
-              //     visualDensity: VisualDensity.adaptivePlatformDensity),
-            ],
-          )
-        ],
+                // Function menu
+                SubmodMoreFunctionsMenu(
+                  item: widget.item,
+                  mod: widget.activeMod,
+                  submod: widget.activeSubmod,
+                  isInPopup: true,
+                  refresh: () {
+                    setState(() {});
+                    modSetRefreshSignal.value = '[${DateTime.now()}] ${widget.item.itemName} > ${widget.activeMod.modName} > ${widget.activeSubmod.submodName} modified in set "${widget.setName}"';
+                  },
+                ),
+                // IconButton.outlined(
+                //     onPressed: () async {
+                //       await submodAddToSet(context, widget.item, widget.activeMod, widget.activeSubmod);
+                //       modSetRefreshSignal.value = '${widget.item.itemName} > ${widget.activeMod.modName} > ${widget.activeSubmod.submodName} modified in ${widget.setName}';
+                //     },
+                //     icon: const Icon(
+                //       Icons.edit_attributes_outlined,
+                //     ),
+                //     visualDensity: VisualDensity.adaptivePlatformDensity),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

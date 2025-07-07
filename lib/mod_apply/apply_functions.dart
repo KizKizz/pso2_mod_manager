@@ -166,9 +166,9 @@ Future<void> modBackupApply(Item item, Mod mod, SubMod submod, List<ModFile> mod
 
   // Mark item icon
   if (markIconCategoryDirs.contains(item.category)) {
-    if (replaceItemIconOnApplied && item.applyStatus && !item.isOverlayedIconApplied!) {
+    if (replaceItemIconOnApplied && !useLocalBackupOnly && item.applyStatus && !item.isOverlayedIconApplied!) {
       await markedItemIconApply(item);
-    } else if (replaceItemIconOnApplied && item.applyStatus && item.overlayedIconPath!.isNotEmpty && await File(item.overlayedIconPath!).getMd5Hash() != await File(item.iconPath!).getMd5Hash()) {
+    } else if (replaceItemIconOnApplied && !useLocalBackupOnly && item.applyStatus && item.overlayedIconPath!.isNotEmpty && await File(item.overlayedIconPath!).getMd5Hash() != await File(item.iconPath!).getMd5Hash()) {
       await markedItemIconApply(item);
     }
   }
