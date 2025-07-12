@@ -52,6 +52,7 @@ Future<void> main(List<String> args) async {
     }
     await windowManager.show();
     await windowManager.focus();
+    if (windowMaximizedState) windowManager.maximize();
   });
 
   runApp(const MyApp());

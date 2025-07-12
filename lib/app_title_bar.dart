@@ -5,12 +5,15 @@ import 'package:pso2_mod_manager/file_check/file_check_popup.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_apply/save_restore_function.dart';
 import 'package:pso2_mod_manager/mod_apply/save_restore_popup.dart';
+import 'package:pso2_mod_manager/settings/other_settings.dart';
+import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v2_home/homepage_v2.dart';
 import 'package:pso2_mod_manager/v3_widgets/jp_game_start_btn.dart';
 import 'package:pso2_mod_manager/mod_checksum/checksum_indicator.dart';
 import 'package:pso2_mod_manager/v3_functions/pso2_version_check.dart';
 import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -156,39 +159,35 @@ class _AppTitleBarState extends State<AppTitleBar> {
       )),
       titleSpacing: 5,
       actions: [
-        SizedBox(
-          width: 35,
-          height: double.maxFinite,
-          child: InkWell(
-            onTap: () => windowManager.minimize(),
-            child: const Icon(
-              Icons.minimize,
-              size: 16,
-            ),
-          ),
+        WindowCaptionButton.minimize(
+          brightness: appThemeMode == AppThemeMode.dark ? Brightness.dark : Brightness.light,
+          onPressed: () => windowManager.minimize(),
         ),
-        SizedBox(
-          width: 35,
-          height: double.maxFinite,
-          child: InkWell(
-            onTap: () async => await windowManager.isMaximized() ? windowManager.restore() : windowManager.maximize(),
-            child: const Icon(
-              Icons.crop_square,
-              size: 16,
-            ),
+        if (!windowMaximizedState)
+          WindowCaptionButton.maximize(
+            brightness: appThemeMode == AppThemeMode.dark ? Brightness.dark : Brightness.light,
+            onPressed: () async {
+              final prefs = await SharedPreferences.getInstance();
+              windowManager.maximize();
+              windowMaximizedState = true;
+              prefs.setBool('windowMaximizedState', windowMaximizedState);
+              setState(() {});
+            },
           ),
-        ),
-        SizedBox(
-          width: 45,
-          height: double.maxFinite,
-          child: InkWell(
-            hoverColor: Colors.red,
-            onTap: () => windowManager.close(),
-            child: const Icon(
-              Icons.close,
-              size: 16,
-            ),
+        if (windowMaximizedState)
+          WindowCaptionButton.unmaximize(
+            brightness: appThemeMode == AppThemeMode.dark ? Brightness.dark : Brightness.light,
+            onPressed: () async {
+              final prefs = await SharedPreferences.getInstance();
+              windowManager.unmaximize();
+              windowMaximizedState = false;
+              prefs.setBool('windowMaximizedState', windowMaximizedState);
+              setState(() {});
+            },
           ),
+        WindowCaptionButton.close(
+          brightness: appThemeMode == AppThemeMode.dark ? Brightness.dark : Brightness.light,
+          onPressed: () => windowManager.close(),
         ),
       ],
     );
