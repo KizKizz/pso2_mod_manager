@@ -112,7 +112,9 @@ class _ModAddDragDropButtonsState extends State<ModAddDragDropButtons> {
                         curModAddProcessedStatus.value = ModAddProcessedState.loadingData;
                         await modAddUnpack(context, modAddDragDropPaths.toList());
                         modAddDragDropPaths.clear();
-                        modAddingList = await modAddSort();
+                        List<AddingMod> sortedModAdds = await modAddSort();
+                        modAddingList.addAll(sortedModAdds.where((e) => modAddingList.indexWhere((i) => i.modDir.path == e.modDir.path) == -1));
+                        modAddingList.sort((a, b) => b.addedDate.compareTo(a.addedDate));
                         // filter
                         if (enableModAddFilters) {
                           for (var filterWord in modAddFilterList) {

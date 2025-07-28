@@ -197,6 +197,18 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
                                               enabled: widget.modSet.setItems.indexWhere((e) => e.applyStatus) == -1,
                                             )),
                                         PopupMenuItem(
+                                            enabled: widget.modSet.setItems.isNotEmpty,
+                                            onTap: () async {
+                                              await modSetDuplicate(widget.modSet);
+                                              modSetRefreshSignal.value = '[${DateTime.now()}] duplicated ${widget.modSet.setName}';
+                                              setState(() {});
+                                            },
+                                            child: MenuIconItem(
+                                              icon: Icons.control_point_duplicate,
+                                              text: appText.duplicate,
+                                              enabled: widget.modSet.setItems.indexWhere((e) => e.applyStatus) == -1,
+                                            )),
+                                        PopupMenuItem(
                                             enabled: widget.modSet.setItems.indexWhere((e) => e.applyStatus) == -1,
                                             onTap: () async {
                                               await modSetDelete(context, widget.modSet);

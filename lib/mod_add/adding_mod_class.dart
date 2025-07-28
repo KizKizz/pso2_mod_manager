@@ -5,7 +5,7 @@ import 'package:path/path.dart' as p;
 
 class AddingMod {
   AddingMod(this.modDir, this.modAddingState, this.submods, this.submodNames, this.submodAddingStates, this.associatedItems, this.aItemAddingStates, this.sameItemIceNames, this.previewImages,
-      this.previewVideos);
+      this.previewVideos, this.addedDate);
 
   Directory modDir;
   bool modAddingState;
@@ -17,6 +17,7 @@ class AddingMod {
   List<MapEntry<String, List<String>>> sameItemIceNames;
   List<File> previewImages;
   List<File> previewVideos;
+  DateTime addedDate;
 }
 
 enum ModAddDragDropState {

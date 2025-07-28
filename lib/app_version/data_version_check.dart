@@ -50,6 +50,6 @@ Future<List<ItemData>> loadItemData() async {
       await Future.delayed(const Duration(microseconds: 10));
     }
   }
-
+  
   return itemDataList;
 }
