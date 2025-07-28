@@ -103,7 +103,7 @@ Future<(List<ModSet>, List<ModSet>)> modToSetPopup(context, SubMod submod) async
                           onPressed: () {
                             Navigator.of(context).pop((modsetsToAdd, modsetsToRemove));
                           },
-                          child: Text(appText.apply)),
+                          child: Text(appText.saveAndReturn)),
                       OutlinedButton(
                           onPressed: () {
                             modsetsToAdd.clear();

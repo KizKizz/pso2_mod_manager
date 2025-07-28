@@ -48,6 +48,7 @@ Signal<bool> showAppliedListV2 = Signal(true);
 int popupAfterDismissWaitDelayMilli = 10;
 bool itemListSearchIncludesMods = false;
 bool useLocalBackupOnly = false;
+bool windowMaximizedState = false;
 
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
@@ -60,6 +61,9 @@ bool autoInjectCustomAqm = false;
 
 Future<void> prefsLoad() async {
   final prefs = await SharedPreferences.getInstance();
+
+  // Maximized state
+  windowMaximizedState = prefs.getBool('windowMaximizedState') ?? false;
 
   // First time boot
   firstBootUp = prefs.getBool('firstBootUp') ?? true;

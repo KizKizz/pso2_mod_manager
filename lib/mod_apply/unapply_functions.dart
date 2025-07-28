@@ -56,7 +56,7 @@ Future<void> restoreFromLocalBackups(Item item, Mod mod, SubMod submod, ModFile 
       modApplyStatus.value = appText.dText(appText.localBackupFoundForModFile, modFile.modFileName);
       final copiedFile = await backedupFile.copy(backedupFile.path.replaceFirst(backupDirPath, pso2DataDirPath));
       modApplyStatus.value = appText.dText(appText.restoringBackupFileToGameData, modFile.modFileName);
-      if (await copiedFile.getMd5Hash() != await modFile.getMd5Hash()) {
+      if (await copiedFile.getMd5Hash() == await backedupFile.getMd5Hash()) {
         if (await backedupFile.exists()) await backedupFile.delete(recursive: true);
         modFile.ogLocations.removeWhere((e) => e == copiedFile.path);
         modFile.applyStatus = false;
@@ -81,7 +81,7 @@ Future<void> restoreFromSegaServers(Item item, Mod mod, SubMod submod, ModFile m
   List<String> restoredPaths = [];
   for (var ogPath in modFile.ogLocations) {
     final downloadedFile = await originalIceDownload(ogPath, p.dirname(ogPath).replaceAll('/', p.separator), modApplyStatus);
-    if (downloadedFile != null && await downloadedFile.getMd5Hash() != await modFile.getMd5Hash()) {
+    if (downloadedFile != null && downloadedFile.path == ogPath) {
       restoredPaths.add(ogPath);
       modApplyStatus.value = appText.dText(appText.restoringBackupFileToGameData, modFile.modFileName);
       File backedUpFile = File(ogPath.replaceFirst(pso2DataDirPath, backupDirPath).replaceAll('/', p.separator));

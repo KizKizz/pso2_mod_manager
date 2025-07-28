@@ -96,7 +96,7 @@ Future<List<ModSet>> modsToSetPopup(context) async {
                           onPressed: () {
                             Navigator.of(context).pop(modsetsToAdd);
                           },
-                          child: Text(appText.apply)),
+                          child: Text(appText.saveAndReturn)),
                       OutlinedButton(
                           onPressed: () {
                             modsetsToAdd.clear();

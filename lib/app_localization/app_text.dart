@@ -140,7 +140,8 @@ class AppText {
       help = 'Help',
       favorites = 'Favorites',
       hasPreviews = 'Has Previews',
-      start = 'Start';
+      start = 'Start',
+      duplicate = 'Duplicate';
 
   // Short Strings
   String patchNotes = 'Patch Notes',

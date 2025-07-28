@@ -99,6 +99,39 @@ Future<void> modSetDelete(context, ModSet modset) async {
   }
 }
 
+Future<void> modSetDuplicate(ModSet modset) async {
+  final existingSetNames = masterModSetList.map((e) => e.setName);
+  String dModsetName = '${modset.setName}_1';
+
+  List<String> affixes = dModsetName.split('_');
+  if (affixes.isNotEmpty || int.tryParse(affixes.last) != null) {
+    while (existingSetNames.contains(dModsetName)) {
+      int i = int.parse(affixes.last) + 1;
+      affixes.last = i.toString();
+      String newName = affixes.join('_');
+      dModsetName = newName;
+    }
+  }
+
+  for (var item in modset.setItems) {
+    for (var mod in item.mods.where((e) => e.setNames.contains(modset.setName))) {
+      for (var submod in mod.submods.where((e) => e.setNames.contains(modset.setName))) {
+        if (!submod.setNames.contains(dModsetName)) submod.setNames.add(dModsetName);
+        if (!submod.activeInSets!.contains(dModsetName)) submod.activeInSets!.add(dModsetName);
+        if (submod.setNames.isNotEmpty) submod.isSet = true;
+      }
+      if (!mod.setNames.contains(dModsetName)) mod.setNames.add(dModsetName);
+      if (mod.setNames.isNotEmpty) mod.isSet = true;
+    }
+    if (!item.setNames.contains(dModsetName)) item.setNames.add(dModsetName);
+    if (item.setNames.isNotEmpty) item.isSet = true;
+  }
+
+  masterModSetList.add(ModSet(dModsetName, 0, true, false, false, DateTime.now(), DateTime(0), modset.setItems));
+  saveMasterModSetListToJson();
+  saveMasterModListToJson();
+}
+
 Future<bool> submodsAddToSet(context, Item item, Mod mod, SubMod submod, List<ModSet> toAddSets) async {
   for (var modset in toAddSets) {
     if (modset.setItems.indexWhere((e) => e.location == item.location) == -1) modset.setItems.add(item);
