@@ -1,5 +1,5 @@
 {
-  "duplicate": "Duplicate",
+  "duplicate": "副本",
   "useLocalBackupOnly": "仅使用本地备份",
   "useLocalBackupOnlyInfo": "此选项将阻止MM从世嘉服务器下载原始文件进行备份\n同时【在游戏中标记已MOD物品】功能将不可用",
   "checkedFiles": "已检查文件",
