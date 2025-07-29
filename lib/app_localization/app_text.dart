@@ -458,7 +458,7 @@ class AppText {
       markModdedItemInGame = 'Mark Modded Items In Game',
       sideBar = 'Side Bar',
       minimal = 'Minimal',
-      alwaysExpanded = 'Always Expand',
+      alwaysExpanded = 'Always Expanded',
       modConfigsLastSaveDate = 'Mod Configs (Latest Backup: %p%)',
       backupNow = 'Backup Now',
       mainPaths = 'Main Paths',
