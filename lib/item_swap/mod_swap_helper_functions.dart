@@ -46,7 +46,7 @@ Future<List<File>> modSwapRename(List<File> lItemFiles, List<File> rItemFiles, L
         final fileNamePartsWoId = p.basename(fileF.path).split(fileIdF);
         // final matchingFileT =
         //     rItemFiles.firstWhere((element) => p.basename(element.path).contains(fileNamePartsWoId.first) && p.basename(element.path).split('_').last == fileNamePartsWoId.last.replaceAll('_', ''), orElse: () => File(''));
-        File matchingFileT = File('');
+        File? matchingFileT;
         for (var fileT in rItemFiles) {
           String fileIdT = p.basenameWithoutExtension(fileT.path).split('_').firstWhere(
                 (element) => int.tryParse(element) != null,
@@ -58,18 +58,11 @@ Future<List<File>> modSwapRename(List<File> lItemFiles, List<File> rItemFiles, L
             break;
           }
         }
-        if (matchingFileT.path.isNotEmpty) {
+        if (matchingFileT != null) {
           String newPath = fileF.path.replaceFirst(p.basenameWithoutExtension(fileF.path), p.basenameWithoutExtension(matchingFileT.path));
           renamedFiles.add(await fileF.rename(newPath));
         } else {
-          final matchingFileNameT = rItemFiles.firstWhere(
-              (element) =>
-                  p.basenameWithoutExtension(element.path).contains(fileNamePartsWoId.first) && p.basenameWithoutExtension(element.path).contains(p.basenameWithoutExtension(fileNamePartsWoId.last)),
-              orElse: () => File(''));
-          if (matchingFileNameT.path.isNotEmpty) {
-            String newPath = fileF.path.replaceFirst(p.basenameWithoutExtension(fileF.path), p.basenameWithoutExtension(matchingFileNameT.path));
-            renamedFiles.add(await fileF.rename(newPath));
-          } else if (p.extension(fileF.path) == '.aqm') {
+          if (p.extension(fileF.path) == '.aqm') {
             final matchingFileNameT =
                 rItemFiles.firstWhere((element) => p.basenameWithoutExtension(element.path).contains(fileNamePartsWoId.first) && p.extension(element.path) == '.aqn', orElse: () => File(''));
             if (matchingFileNameT.path.isNotEmpty) {
@@ -87,6 +80,34 @@ Future<List<File>> modSwapRename(List<File> lItemFiles, List<File> rItemFiles, L
                 renamedFiles.add(await fileF.rename(newPath));
               } else if (rItemAccItemId.isNotEmpty) {
                 String newPath = fileF.path.replaceFirst(fileIdF, rItemAccItemId);
+                renamedFiles.add(await fileF.rename(newPath));
+              }
+            }
+          } else if (p.extension(fileF.path) == '.fltd') {
+            final fltdFilesT = rItemFiles.where((element) => p.extension(element.path) == '.fltd');
+            if (fltdFilesT.isNotEmpty) {
+              final fltdFilePartsT = p.basenameWithoutExtension(fltdFilesT.first.path).split('_');
+              String matchingFltdFileIdT = fltdFilePartsT.firstWhere(
+                (element) => int.tryParse(element) != null,
+                orElse: () => '',
+              );
+              List<String> newFltdFileParts = p.basename(fileF.path).split('_');
+              int indexOfItemIdInFileName = newFltdFileParts.indexOf(fileIdF);
+              if (indexOfItemIdInFileName != -1) {
+                newFltdFileParts[indexOfItemIdInFileName] = matchingFltdFileIdT;
+                String newFileName = newFltdFileParts.join('_');
+                String newPath = Uri.file('${p.dirname(fileF.path)}/$newFileName').toFilePath();
+
+                renamedFiles.add(await fileF.rename(newPath));
+              }
+            } else {
+              List<String> newFltdFileParts = p.basenameWithoutExtension(fileF.path).split('_');
+              int indexOfItemIdInFileName = newFltdFileParts.indexOf(fileIdF);
+              if (indexOfItemIdInFileName != -1) {
+                newFltdFileParts[indexOfItemIdInFileName] = rItemAccItemId;
+                String newFileName = newFltdFileParts.join('_');
+                String newPath = Uri.file('${p.dirname(fileF.path)}/$newFileName.fltd').toFilePath();
+
                 renamedFiles.add(await fileF.rename(newPath));
               }
             }
@@ -126,6 +147,16 @@ Future<List<File>> modSwapRename(List<File> lItemFiles, List<File> rItemFiles, L
               }
               String newFileName = newDdsFileParts.join('_');
               String newPath = Uri.file('${p.dirname(fileF.path)}/$newFileName').toFilePath();
+
+              renamedFiles.add(await fileF.rename(newPath));
+            }
+          } else {
+            List<String> newFltdFileParts = p.basenameWithoutExtension(fileF.path).split('_');
+            int indexOfItemIdInFileName = newFltdFileParts.indexOf(fileIdF);
+            if (indexOfItemIdInFileName != -1) {
+              newFltdFileParts[indexOfItemIdInFileName] = rItemAccItemId;
+              String newFileName = newFltdFileParts.join('_');
+              String newPath = Uri.file('${p.dirname(fileF.path)}/$newFileName${p.extension(fileF.path)}').toFilePath();
 
               renamedFiles.add(await fileF.rename(newPath));
             }
