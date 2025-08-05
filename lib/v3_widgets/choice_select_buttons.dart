@@ -150,23 +150,23 @@ Future<void> _multiChoiceSelectPopup(
                         onPressed: () {
                           selectedItems.value.clear();
                           selectedItems.value.add('All');
-                          setState(
-                            () {},
-                          );
-                          mainGridStatus.value = '[${DateTime.now()}] Selection: ${selectedItems.value.join(', ')}';
-                        },
-                        child: Text(appText.removeAll)),
-                    OutlinedButton(
-                        onPressed: () {
-                          selectedItems.value.clear();
-                          selectedItems.value.add('All');
                           selectedItems.value.addAll(availableItemList);
                           setState(
                             () {},
                           );
                           mainGridStatus.value = '[${DateTime.now()}] Selection: ${selectedItems.value.join(', ')}';
                         },
-                        child: Text(appText.selectAll))
+                        child: Text(appText.selectAll)),
+                    OutlinedButton(
+                        onPressed: () {
+                          selectedItems.value.clear();
+                          selectedItems.value.add('All');
+                          setState(
+                            () {},
+                          );
+                          mainGridStatus.value = '[${DateTime.now()}] Selection: ${selectedItems.value.join(', ')}';
+                        },
+                        child: Text(appText.deselectAll))
                   ],
                 )
               ]);

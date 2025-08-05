@@ -262,6 +262,7 @@
   "appliedFilesOnly": "Applied Files",
   "selectAScanType": "Select A Scan Type",
   "useLocalBackupOnly": "Use Local Backup Only",
+  "deselectAll": "Deselect All",
   "loadingUILanguage": "Loading UI Language",
   "selectUILanguage": "Select UI language",
   "selectItemNameLanguage": "Select item name language",

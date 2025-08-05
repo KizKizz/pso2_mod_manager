@@ -163,25 +163,25 @@ class _AppTitleBarState extends State<AppTitleBar> {
           brightness: appThemeMode == AppThemeMode.dark ? Brightness.dark : Brightness.light,
           onPressed: () => windowManager.minimize(),
         ),
-        if (!windowMaximizedState)
+        if (!windowMaximizedState.watch(context))
           WindowCaptionButton.maximize(
             brightness: appThemeMode == AppThemeMode.dark ? Brightness.dark : Brightness.light,
             onPressed: () async {
               final prefs = await SharedPreferences.getInstance();
               windowManager.maximize();
-              windowMaximizedState = true;
-              prefs.setBool('windowMaximizedState', windowMaximizedState);
+              windowMaximizedState.value = true;
+              prefs.setBool('windowMaximizedState', windowMaximizedState.value);
               setState(() {});
             },
           ),
-        if (windowMaximizedState)
+        if (windowMaximizedState.watch(context))
           WindowCaptionButton.unmaximize(
             brightness: appThemeMode == AppThemeMode.dark ? Brightness.dark : Brightness.light,
             onPressed: () async {
               final prefs = await SharedPreferences.getInstance();
               windowManager.unmaximize();
-              windowMaximizedState = false;
-              prefs.setBool('windowMaximizedState', windowMaximizedState);
+              windowMaximizedState.value = false;
+              prefs.setBool('windowMaximizedState', windowMaximizedState.value);
               setState(() {});
             },
           ),

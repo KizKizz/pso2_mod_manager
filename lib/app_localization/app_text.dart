@@ -277,7 +277,8 @@ class AppText {
       unmatchedMissingFiles = 'Unmatched - Missing Files',
       appliedFilesOnly = 'Applied Files',
       selectAScanType = 'Select A Scan Type',
-      useLocalBackupOnly = 'Use Local Backup Only';
+      useLocalBackupOnly = 'Use Local Backup Only',
+      deselectAll = 'Deselect All';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
