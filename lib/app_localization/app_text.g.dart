@@ -274,6 +274,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..appliedFilesOnly = json['appliedFilesOnly'] as String
   ..selectAScanType = json['selectAScanType'] as String
   ..useLocalBackupOnly = json['useLocalBackupOnly'] as String
+  ..deselectAll = json['deselectAll'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -762,6 +763,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'appliedFilesOnly': instance.appliedFilesOnly,
       'selectAScanType': instance.selectAScanType,
       'useLocalBackupOnly': instance.useLocalBackupOnly,
+      'deselectAll': instance.deselectAll,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,

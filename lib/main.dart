@@ -52,7 +52,7 @@ Future<void> main(List<String> args) async {
     }
     await windowManager.show();
     await windowManager.focus();
-    if (windowMaximizedState) windowManager.maximize();
+    if (windowMaximizedState.value) windowManager.maximize();
   });
 
   runApp(const MyApp());
@@ -132,6 +132,20 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         showMessageOnInactiveOverlay.value = false;
       }
     }
+  }
+
+  @override
+  Future<void> onWindowMaximize() async {
+    final prefs = await SharedPreferences.getInstance();
+    windowMaximizedState.value = true;
+    prefs.setBool('windowMaximizedState', windowMaximizedState.value);
+  }
+
+  @override
+  Future<void> onWindowUnmaximize() async {
+    final prefs = await SharedPreferences.getInstance();
+    windowMaximizedState.value = false;
+    prefs.setBool('windowMaximizedState', windowMaximizedState.value);
   }
 
   @override

@@ -169,6 +169,7 @@ Future<Directory> modSwapAccessories(
     }
 
     //rename texture in aqp
+    List<String> ddsTypes = ['d.dds', 'm.dds', 'n.dds', 's.dds', 'o.dds'];
     //group1
     String group1ExtractedItemPathF = Uri.file('$tempSubmodPathF/${lItemIceName}_ext/group1').toFilePath();
     if (Directory(group1ExtractedItemPathF).existsSync()) {
@@ -196,7 +197,6 @@ Future<Directory> modSwapAccessories(
           String ddsFId = ddsFParts.firstWhere((element) => element.length > 3 && int.tryParse(element) != null);
           List<String> ddsWoId = ddsF.split(ddsFId);
           int ddsIndex = -1;
-          List<String> ddsTypes = ['d.dds', 'm.dds', 'n.dds', 's.dds'];
           if (renamedDdsNamesF.where((element) => element.split('_').length > 1 && element.split('_')[1] == 'rac' && !ddsTypes.contains(element.split('_').last)).isNotEmpty) {
             ddsIndex = renamedDdsNamesF.indexWhere((element) => p.basenameWithoutExtension(element).split('_').last == ddsWoId.last.replaceFirst('_', '').split('_').first);
           } else if (renamedDdsNamesF.where((element) => element.split('_').length > 1 && element.split('_')[1] == 'rac' && ddsTypes.contains(element.split('_').last)).isNotEmpty) {
@@ -268,7 +268,6 @@ Future<Directory> modSwapAccessories(
           );
           List<String> ddsWoId = ddsF.split(ddsFId);
           int ddsIndex = -1;
-          List<String> ddsTypes = ['d.dds', 'm.dds', 'n.dds', 's.dds'];
           if (renamedDdsNamesF.where((element) => element.split('_').length > 1 && element.split('_')[1] == 'rac' && !ddsTypes.contains(element.split('_').last)).isNotEmpty) {
             ddsIndex = renamedDdsNamesF.indexWhere((element) => p.basenameWithoutExtension(element).split('_').last == ddsWoId.last.replaceFirst('_', '').split('_').first);
           } else if (renamedDdsNamesF.where((element) => element.split('_').length > 1 && element.split('_')[1] == 'rac' && ddsTypes.contains(element.split('_').last)).isNotEmpty) {
@@ -311,7 +310,6 @@ Future<Directory> modSwapAccessories(
     }
 
     //pack
-
     rItemName = rItemName.replaceAll(RegExp(charToReplace), '_').trim();
     String packDirPath = '';
     if (fromSubmod.modName == fromSubmod.submodName) {
