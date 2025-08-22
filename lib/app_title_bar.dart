@@ -117,7 +117,7 @@ class _AppTitleBarState extends State<AppTitleBar> {
                 child: SizedBox(
                   height: 20,
                   child: ModManTooltip(
-                    message: saveRestoreAppliedModsActive.watch(context) ? appText.reApplyAllSavedMods : appText.saveAndRestoreAllAppliedMods,
+                    message: saveRestoreAppliedModsActive.watch(context) ? '${appText.reApplyAllSavedMods}\n${appText.quickSaveRestoreModsInfo}' : '${appText.saveAndRestoreAllAppliedMods}\n${appText.quickSaveRestoreModsInfo}',
                     child: OutlinedButton(
                       style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
                       onPressed: () async {

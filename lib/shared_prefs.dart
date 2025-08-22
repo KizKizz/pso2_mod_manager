@@ -49,7 +49,7 @@ int popupAfterDismissWaitDelayMilli = 10;
 bool itemListSearchIncludesMods = false;
 bool useLocalBackupOnly = false;
 Signal<bool> windowMaximizedState = Signal(false);
-
+bool homepageStyleSelection = false;
 int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
 String mainDataDirPath = '';
@@ -67,6 +67,9 @@ Future<void> prefsLoad() async {
 
   // First time boot
   firstBootUp = prefs.getBool('firstBootUp') ?? true;
+
+  // Homepage style selection
+  firstBootUp = prefs.getBool('homepageStyleSelection') ?? false;
 
   // ver 2 main data dir path
   verTwoMainDataDirPath = prefs.getString('mainModManDirPath') ?? '';

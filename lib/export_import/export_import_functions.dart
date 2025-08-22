@@ -14,7 +14,7 @@ import 'package:io/io.dart' as io;
 
 Signal<String> exportStatus = Signal('');
 
-enum ExportType { item, mods, submods }
+enum ExportType {item, mods, submods}
 
 Future<void> modExportSequence(context, ExportType exportType, Item item, Mod? mod, SubMod? submod) async {
   String exportFileName = await exportModNamePopup(context);

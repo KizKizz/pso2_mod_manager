@@ -26,7 +26,7 @@ Future<String> exportModNamePopup(context) async {
             titlePadding: const EdgeInsets.only(top: 5),
             title: Column(children: [
               Text(
-                appText.modExport,
+                appText.export,
                 style: TextStyle(color: Theme.of(context).colorScheme.primary),
               ),
               const HoriDivider()

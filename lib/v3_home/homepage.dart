@@ -21,6 +21,7 @@ import 'package:pso2_mod_manager/v3_home/main_item_grid.dart';
 import 'package:pso2_mod_manager/v3_home/main_mod_grid.dart';
 import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
+import 'package:pso2_mod_manager/v3_widgets/homepage_style_select_popup.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:path/path.dart' as p;
 
@@ -70,13 +71,15 @@ class _HomepageState extends State<Homepage> {
     if (Directory('${Directory.current.path}${p.separator}appUpdate').existsSync()) {
       Directory('${Directory.current.path}${p.separator}appUpdate').deleteSync(recursive: true);
     }
-
+    
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       appLoadingFinished.value = true;
       await jsonAutoBackup();
       // ignore: use_build_context_synchronously
       if (firstBootUp) firstTimePopup(context);
+      // ignore: use_build_context_synchronously
+      if (!homepageStyleSelection) homepageStyleSelectPopup(context);
     });
   }
 
@@ -88,7 +91,17 @@ class _HomepageState extends State<Homepage> {
         () {},
       );
     }
-    List<String> homepageWidgetNames = [appText.itemList, appText.modList, appText.modSets, appText.appliedList, appText.itemSwap, appText.aqmInject, appText.cmlReplace, appText.vitalGauge, appText.lineStrike];
+    List<String> homepageWidgetNames = [
+      appText.itemList,
+      appText.modList,
+      appText.modSets,
+      appText.appliedList,
+      appText.itemSwap,
+      appText.aqmInject,
+      appText.cmlReplace,
+      appText.vitalGauge,
+      appText.lineStrike
+    ];
     List<Icon> homepageWidgetIcons = [
       const Icon(Icons.list_alt),
       const Icon(Icons.grid_view),
@@ -100,8 +113,9 @@ class _HomepageState extends State<Homepage> {
       const Icon(Icons.calendar_view_day_rounded),
       const Icon(Icons.view_carousel_outlined)
     ];
-    List<String> homepageV2WidgetNames =
-        showAppliedListV2.watch(context) ? [appText.itemList, appText.modList, appText.modSets, appText.itemSwap, appText.aqmInject, appText.cmlReplace, appText.vitalGauge, appText.lineStrike] : homepageWidgetNames;
+    List<String> homepageV2WidgetNames = showAppliedListV2.watch(context)
+        ? [appText.itemList, appText.modList, appText.modSets, appText.itemSwap, appText.aqmInject, appText.cmlReplace, appText.vitalGauge, appText.lineStrike]
+        : homepageWidgetNames;
     List<Icon> homepageV2WidgetIcons = showAppliedListV2.watch(context)
         ? [
             const Icon(Icons.list_alt),
