@@ -69,7 +69,7 @@ Future<void> prefsLoad() async {
   firstBootUp = prefs.getBool('firstBootUp') ?? true;
 
   // Homepage style selection
-  firstBootUp = prefs.getBool('homepageStyleSelection') ?? false;
+  homepageStyleSelection = prefs.getBool('homepageStyleSelection') ?? false;
 
   // ver 2 main data dir path
   verTwoMainDataDirPath = prefs.getString('mainModManDirPath') ?? '';
