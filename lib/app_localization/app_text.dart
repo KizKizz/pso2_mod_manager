@@ -425,7 +425,8 @@ class AppText {
           'You can convert your saved character files to cml files using the Model Tool program\nAdd the cml files using the "Add Files" button\nSelect a cml file in the left panel\nPress the "Replace" button on the items in the right panel to replace them with the selected cml file',
       boundingRadiusInfo = 'High negative values might cause character to be invisible in game on some outfits\nPlease be caution',
       useLocalBackupOnlyInfo = 'This option will restrict mod manager from downloading original files from Sega servers for backups\nThis will also disable Mark Modded Items In Game option',
-      quickSaveRestoreModsInfo = 'This will save all currently applied mods then restore original game files\nApply & Restore mods will also be disabled until saved mod files are re-applied using this button';
+      quickSaveRestoreModsInfo = 'This will save all currently applied mods then restore original game files\nApply & Restore mods will also be disabled until saved mod files are re-applied using this button',
+      firstTimeHomepageStyleSelectInfo = 'You can always change Homepage Style in Settings';
 
   // Help menu
   String applyRestoreMods = 'Apply - restore mods',

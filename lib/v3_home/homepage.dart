@@ -86,7 +86,7 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (settingChangeStatus.watch(context) != settingChangeStatus.peek()) {
+    if (settingChangeStatus.watch(context) != settingChangeStatus.peek() || v2Homepage.watch(context) != v2Homepage.peek()) {
       setState(
         () {},
       );
