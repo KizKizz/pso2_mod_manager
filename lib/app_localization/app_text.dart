@@ -138,10 +138,13 @@ class AppText {
       filters = 'Filters',
       details = 'Details',
       help = 'Help',
+      favorite = 'Favorite',
+      unfavorite = 'Unfavorite',
       favorites = 'Favorites',
       hasPreviews = 'Has Previews',
       start = 'Start',
-      duplicate = 'Duplicate';
+      duplicate = 'Duplicate',
+      share = 'Share';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -278,7 +281,9 @@ class AppText {
       appliedFilesOnly = 'Applied Files',
       selectAScanType = 'Select A Scan Type',
       useLocalBackupOnly = 'Use Local Backup Only',
-      deselectAll = 'Deselect All';
+      deselectAll = 'Deselect All',
+      successfullyExportedFileName = 'Successfully exported: %p%',
+      failedToExport = 'Failed to export';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -384,7 +389,12 @@ class AppText {
       editVariants = 'Edit Variants',
       matchedItem = 'Matched Item',
       includeModsInItemSearch = 'Include Mod names and their Variants in this search',
-      refreshModManager = 'Refresh Mod Manager';
+      refreshModManager = 'Refresh Mod Manager',
+      shareAppliedMods = 'Share Applied Mods',
+      addAppliedModsToModSets = 'Add Applied Mods To Mod Sets',
+      shareThisModSet = 'Share This Mod Set',
+      showCustomCmlFiles = 'Show Custom Cml Files',
+      showPremades = 'Show Premades';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',
@@ -423,7 +433,9 @@ class AppText {
       cmlInfo =
           'You can convert your saved character files to cml files using the Model Tool program\nAdd the cml files using the "Add Files" button\nSelect a cml file in the left panel\nPress the "Replace" button on the items in the right panel to replace them with the selected cml file',
       boundingRadiusInfo = 'High negative values might cause character to be invisible in game on some outfits\nPlease be caution',
-      useLocalBackupOnlyInfo = 'This option will restrict mod manager from downloading original files from Sega servers for backups\nThis will also disable Mark Modded Items In Game option';
+      useLocalBackupOnlyInfo = 'This option will restrict mod manager from downloading original files from Sega servers for backups\nThis will also disable Mark Modded Items In Game option',
+      quickSaveRestoreModsInfo = 'This will save all currently applied mods then restore original game files\nApply & Restore mods will also be disabled until saved mod files are re-applied using this button',
+      firstTimeHomepageStyleSelectInfo = 'You can always change Homepage Style in Settings';
 
   // Help menu
   String applyRestoreMods = 'Apply - restore mods',

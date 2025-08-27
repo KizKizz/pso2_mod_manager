@@ -37,10 +37,10 @@ class _ModMoreFunctionsMenuState extends State<ModMoreFunctionsMenu> {
       itemBuilder: (BuildContext context) {
         return [
           PopupMenuItem(
-              onTap: () => modExportSequence(context, ExportType.mods, widget.item, widget.mod, null),
+              onTap: () => modExportSequence(context, ExportType.mods, widget.item, widget.mod, null, null),
               child: MenuIconItem(
-                icon: Icons.import_export,
-                text: appText.export,
+                icon: Icons.ios_share,
+                text: appText.share,
                 enabled: true,
               )),
           PopupMenuItem(

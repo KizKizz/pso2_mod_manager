@@ -140,6 +140,7 @@ class _CmlItemListLayoutState extends State<CmlItemListLayout> {
                                   displayingCml[index].getName(),
                                   style: const TextStyle(fontWeight: FontWeight.w500),
                                 ),
+                                Text('ID: ${displayingCml[index].aId}', style: TextStyle(fontSize: 12)),
                                 Visibility(
                                     visible: displayingCml[index].isReplaced,
                                     child: Text(appText.dText(appText.replacedCMLFile, displayingCml[index].replacedCmlFileName), style: Theme.of(context).textTheme.labelMedium))

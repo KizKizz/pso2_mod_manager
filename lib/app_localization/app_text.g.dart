@@ -132,10 +132,13 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..filters = json['filters'] as String
   ..details = json['details'] as String
   ..help = json['help'] as String
+  ..favorite = json['favorite'] as String
+  ..unfavorite = json['unfavorite'] as String
   ..favorites = json['favorites'] as String
   ..hasPreviews = json['hasPreviews'] as String
   ..start = json['start'] as String
   ..duplicate = json['duplicate'] as String
+  ..share = json['share'] as String
   ..patchNotes = json['patchNotes'] as String
   ..appUpdate = json['appUpdate'] as String
   ..tryAgain = json['tryAgain'] as String
@@ -275,6 +278,9 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..selectAScanType = json['selectAScanType'] as String
   ..useLocalBackupOnly = json['useLocalBackupOnly'] as String
   ..deselectAll = json['deselectAll'] as String
+  ..successfullyExportedFileName =
+      json['successfullyExportedFileName'] as String
+  ..failedToExport = json['failedToExport'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -388,6 +394,11 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..matchedItem = json['matchedItem'] as String
   ..includeModsInItemSearch = json['includeModsInItemSearch'] as String
   ..refreshModManager = json['refreshModManager'] as String
+  ..shareAppliedMods = json['shareAppliedMods'] as String
+  ..addAppliedModsToModSets = json['addAppliedModsToModSets'] as String
+  ..shareThisModSet = json['shareThisModSet'] as String
+  ..showCustomCmlFiles = json['showCustomCmlFiles'] as String
+  ..showPremades = json['showPremades'] as String
   ..failedToFetchRemoteLocaleData =
       json['failedToFetchRemoteLocaleData'] as String
   ..unableToUpdateFile = json['unableToUpdateFile'] as String
@@ -427,6 +438,9 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..cmlInfo = json['cmlInfo'] as String
   ..boundingRadiusInfo = json['boundingRadiusInfo'] as String
   ..useLocalBackupOnlyInfo = json['useLocalBackupOnlyInfo'] as String
+  ..quickSaveRestoreModsInfo = json['quickSaveRestoreModsInfo'] as String
+  ..firstTimeHomepageStyleSelectInfo =
+      json['firstTimeHomepageStyleSelectInfo'] as String
   ..applyRestoreMods = json['applyRestoreMods'] as String
   ..addModsToModSets = json['addModsToModSets'] as String
   ..swapItemToAnotherItem = json['swapItemToAnotherItem'] as String
@@ -624,10 +638,13 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'filters': instance.filters,
       'details': instance.details,
       'help': instance.help,
+      'favorite': instance.favorite,
+      'unfavorite': instance.unfavorite,
       'favorites': instance.favorites,
       'hasPreviews': instance.hasPreviews,
       'start': instance.start,
       'duplicate': instance.duplicate,
+      'share': instance.share,
       'patchNotes': instance.patchNotes,
       'appUpdate': instance.appUpdate,
       'tryAgain': instance.tryAgain,
@@ -764,6 +781,8 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'selectAScanType': instance.selectAScanType,
       'useLocalBackupOnly': instance.useLocalBackupOnly,
       'deselectAll': instance.deselectAll,
+      'successfullyExportedFileName': instance.successfullyExportedFileName,
+      'failedToExport': instance.failedToExport,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,
@@ -871,6 +890,11 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'matchedItem': instance.matchedItem,
       'includeModsInItemSearch': instance.includeModsInItemSearch,
       'refreshModManager': instance.refreshModManager,
+      'shareAppliedMods': instance.shareAppliedMods,
+      'addAppliedModsToModSets': instance.addAppliedModsToModSets,
+      'shareThisModSet': instance.shareThisModSet,
+      'showCustomCmlFiles': instance.showCustomCmlFiles,
+      'showPremades': instance.showPremades,
       'failedToFetchRemoteLocaleData': instance.failedToFetchRemoteLocaleData,
       'unableToUpdateFile': instance.unableToUpdateFile,
       'unableToGetAppVersionDataFromGitHub':
@@ -908,6 +932,9 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'cmlInfo': instance.cmlInfo,
       'boundingRadiusInfo': instance.boundingRadiusInfo,
       'useLocalBackupOnlyInfo': instance.useLocalBackupOnlyInfo,
+      'quickSaveRestoreModsInfo': instance.quickSaveRestoreModsInfo,
+      'firstTimeHomepageStyleSelectInfo':
+          instance.firstTimeHomepageStyleSelectInfo,
       'applyRestoreMods': instance.applyRestoreMods,
       'addModsToModSets': instance.addModsToModSets,
       'swapItemToAnotherItem': instance.swapItemToAnotherItem,
