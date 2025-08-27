@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/export_import/export_import_functions.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_apply/apply_functions.dart';
 import 'package:pso2_mod_manager/mod_apply/load_applied_mods.dart';
@@ -15,6 +16,7 @@ import 'package:pso2_mod_manager/v3_widgets/choice_select_buttons.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/notifications.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
@@ -286,33 +288,50 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                     prefs.setStringList('selectedAppliedListDisplayCategories', selectedAppliedListDisplayCategories.value);
                   }),
               SizedBox(
-                height: 30,
-                child: IconButton.outlined(
-                    visualDensity: VisualDensity.adaptivePlatformDensity,
-                    style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                    onPressed: () async {
-                      int addedCounter = 0;
-                      final toAddSets = await modsToSetPopup(context);
-                      List<Item> appliedItems = await appliedModsFetch();
-                      for (var item in appliedItems) {
-                        for (var mod in item.mods.where((e) => e.applyStatus)) {
-                          for (var submod in mod.submods.where((e) => e.applyStatus)) {
-                            // ignore: use_build_context_synchronously
-                            final result = await submodsAddToSet(context, item, mod, submod, toAddSets);
-                            if (result) addedCounter++;
-                          }
-                        }
-                      }
-                      if (addedCounter > 0) {
-                        addToSetSuccessNotification(appText.dText(addedCounter > 1 ? appText.numMods : appText.numMod, addedCounter.toString()), toAddSets.map((e) => e.setName).toList().join(', '));
-                      }
-                    },
-                    icon: const Icon(
-                      Icons.my_library_books_outlined,
-                    )),
-              ),
+                  height: 30,
+                  child: ModManTooltip(
+                      message: appText.addAppliedModsToModSets,
+                      child: IconButton.outlined(
+                          visualDensity: VisualDensity.adaptivePlatformDensity,
+                          style: ButtonStyle(
+                              backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                              side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                          onPressed: () async {
+                            int addedCounter = 0;
+                            final toAddSets = await modsToSetPopup(context);
+                            List<Item> appliedItems = await appliedModsFetch();
+                            for (var item in appliedItems) {
+                              for (var mod in item.mods.where((e) => e.applyStatus)) {
+                                for (var submod in mod.submods.where((e) => e.applyStatus)) {
+                                  // ignore: use_build_context_synchronously
+                                  final result = await submodsAddToSet(context, item, mod, submod, toAddSets);
+                                  if (result) addedCounter++;
+                                }
+                              }
+                            }
+                            if (addedCounter > 0) {
+                              addToSetSuccessNotification(
+                                  appText.dText(addedCounter > 1 ? appText.numMods : appText.numMod, addedCounter.toString()), toAddSets.map((e) => e.setName).toList().join(', '));
+                            }
+                          },
+                          icon: const Icon(
+                            Icons.my_library_books_outlined,
+                          )))),
+              SizedBox(
+                  height: 30,
+                  child: ModManTooltip(
+                    message: appText.shareAppliedMods,
+                    child: IconButton.outlined(
+                        visualDensity: VisualDensity.adaptivePlatformDensity,
+                        style: ButtonStyle(
+                            backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                            side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                        onPressed: () => modExportSequence(context, ExportType.applied, null, null, null, null),
+                        icon: const Icon(
+                          Icons.ios_share,
+                        )),
+                  )),
+              // col-e
               SizedBox(
                 height: 30,
                 child: IconButton.outlined(

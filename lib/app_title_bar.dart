@@ -8,7 +8,6 @@ import 'package:pso2_mod_manager/mod_apply/save_restore_popup.dart';
 import 'package:pso2_mod_manager/settings/other_settings.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v2_home/homepage_v2.dart';
-import 'package:pso2_mod_manager/v3_widgets/homepage_style_select_popup.dart';
 import 'package:pso2_mod_manager/v3_widgets/jp_game_start_btn.dart';
 import 'package:pso2_mod_manager/mod_checksum/checksum_indicator.dart';
 import 'package:pso2_mod_manager/v3_functions/pso2_version_check.dart';
@@ -91,28 +90,6 @@ class _AppTitleBarState extends State<AppTitleBar> {
               //           ),
               //           label: Text(showPreviewBox.watch(context) ? appText.hidePreview : appText.showPreview)),
               //     )),
-
-              Visibility(
-                visible: appLoadingFinished.watch(context),
-                child: SizedBox(
-                  height: 20,
-                  child: ModManTooltip(
-                    message: saveRestoreAppliedModsActive.watch(context)
-                        ? '${appText.reApplyAllSavedMods}\n${appText.quickSaveRestoreModsInfo}'
-                        : '${appText.saveAndRestoreAllAppliedMods}\n${appText.quickSaveRestoreModsInfo}',
-                    child: OutlinedButton(
-                      style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
-                      onPressed: () async {
-                        homepageStyleSelectPopup(context);
-                      },
-                      child: Icon(
-                        Icons.ios_share,
-                        size: 18,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
 
               Visibility(
                   visible: appLoadingFinished.watch(context),

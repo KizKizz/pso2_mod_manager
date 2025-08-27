@@ -40,7 +40,7 @@ class _ItemMoreFunctionsMenuState extends State<ItemMoreFunctionsMenu> {
       itemBuilder: (BuildContext context) {
         return [
           PopupMenuItem(
-              onTap: () => widget.isSingleModView ? modExportSequence(context, ExportType.mods, widget.item, widget.mod, null) : modExportSequence(context, ExportType.item, widget.item, null, null),
+              onTap: () => widget.isSingleModView ? modExportSequence(context, ExportType.mods, widget.item, widget.mod, null, null) : modExportSequence(context, ExportType.item, widget.item, null, null, null),
               child: MenuIconItem(icon: Icons.ios_share, text: appText.share, enabled: true)),
           PopupMenuItem(
               onTap: () => widget.isSingleModView ? modSwapAllPopup(context, widget.item, widget.mod!) : itemSwapAllPopup(context, widget.item),

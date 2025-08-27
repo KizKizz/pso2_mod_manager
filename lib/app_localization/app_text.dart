@@ -138,6 +138,8 @@ class AppText {
       filters = 'Filters',
       details = 'Details',
       help = 'Help',
+      favorite = 'Favorite',
+      unfavorite = 'Unfavorite',
       favorites = 'Favorites',
       hasPreviews = 'Has Previews',
       start = 'Start',
@@ -279,7 +281,9 @@ class AppText {
       appliedFilesOnly = 'Applied Files',
       selectAScanType = 'Select A Scan Type',
       useLocalBackupOnly = 'Use Local Backup Only',
-      deselectAll = 'Deselect All';
+      deselectAll = 'Deselect All',
+      successfullyExportedFileName = 'Successfully exported: %p%',
+      failedToExport = 'Failed to export';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -385,7 +389,12 @@ class AppText {
       editVariants = 'Edit Variants',
       matchedItem = 'Matched Item',
       includeModsInItemSearch = 'Include Mod names and their Variants in this search',
-      refreshModManager = 'Refresh Mod Manager';
+      refreshModManager = 'Refresh Mod Manager',
+      shareAppliedMods = 'Share Applied Mods',
+      addAppliedModsToModSets = 'Add Applied Mods To Mod Sets',
+      shareThisModSet = 'Share This Mod Set',
+      showCustomCmlFiles = 'Show Custom Cml Files',
+      showPremades = 'Show Premades';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',

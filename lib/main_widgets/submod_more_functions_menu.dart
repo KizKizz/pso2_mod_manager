@@ -163,7 +163,7 @@ class _SubmodMoreFunctionsMenuState extends State<SubmodMoreFunctionsMenu> {
                 enabled: true,
               )),
           PopupMenuItem(
-              onTap: () => modExportSequence(context, ExportType.submods, widget.item, widget.mod, widget.submod),
+              onTap: () => modExportSequence(context, ExportType.submods, widget.item, widget.mod, widget.submod, null),
               child: MenuIconItem(
                 icon: Icons.ios_share,
                 text: appText.share,

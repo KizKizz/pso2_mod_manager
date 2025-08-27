@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/export_import/export_import_functions.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/header_info_box.dart';
 import 'package:pso2_mod_manager/main_widgets/submod_more_functions_menu.dart';
@@ -20,6 +21,7 @@ import 'package:pso2_mod_manager/v3_home/main_modset_grid.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:signals/signals_flutter.dart';
 
 class ModSetGridLayout extends StatefulWidget {
@@ -135,19 +137,40 @@ class _ModSetGridLayoutState extends State<ModSetGridLayout> {
                                               : null,
                                           child: Text(appText.restoreThisSet))),
                                 ),
-                                // Favorite button
-                                IconButton.outlined(
-                                    padding: EdgeInsets.zero,
-                                    visualDensity: VisualDensity.adaptivePlatformDensity,
-                                    onPressed: () {
-                                      widget.modSet.setFavorite(widget.modSet.isFavorite! ? false : true);
-                                      saveMasterModSetListToJson();
-                                      mainGridStatus.value = '[${DateTime.now()}] ${widget.modSet.setName} - favorite has been set to ${widget.modSet.isFavorite.toString()}';
-                                    },
-                                    icon: Icon(widget.modSet.isFavorite! ? Icons.favorite : Icons.favorite_border)),
+
                                 HeaderInfoBox(
                                     info: appText.dText(widget.modSet.setItems.length > 1 ? appText.numItems : appText.numItem, widget.modSet.setItems.length.toString()), borderHighlight: false),
                                 HeaderInfoBox(info: appText.dText(appText.numCurrentlyApplied, widget.modSet.setItems.where((e) => e.applyStatus).length.toString()), borderHighlight: false),
+                                // Favorite button
+                                SizedBox(
+                                    width: 25,
+                                    height: 25,
+                                    child: ModManTooltip(
+                                      message: widget.modSet.isFavorite! ? appText.unfavorite : appText.favorite,
+                                      child: IconButton.outlined(
+                                          padding: EdgeInsets.zero,
+                                          iconSize: 18,
+                                          visualDensity: VisualDensity.adaptivePlatformDensity,
+                                          onPressed: () {
+                                            widget.modSet.setFavorite(widget.modSet.isFavorite! ? false : true);
+                                            saveMasterModSetListToJson();
+                                            mainGridStatus.value = '[${DateTime.now()}] ${widget.modSet.setName} - favorite has been set to ${widget.modSet.isFavorite.toString()}';
+                                          },
+                                          icon: Icon(widget.modSet.isFavorite! ? Icons.favorite : Icons.favorite_border)),
+                                    )),
+                                // Share button
+                                SizedBox(
+                                  width: 25,
+                                  height: 25,
+                                  child: ModManTooltip(
+                                      message: appText.shareThisModSet,
+                                      child: IconButton.outlined(
+                                          padding: EdgeInsets.zero,
+                                          iconSize: 18,
+                                          visualDensity: VisualDensity.adaptivePlatformDensity,
+                                          onPressed: () => modExportSequence(context, ExportType.modsets, null, null, null, widget.modSet),
+                                          icon: Icon(Icons.ios_share))),
+                                ),
                                 SizedBox(
                                   width: 25,
                                   height: 25,

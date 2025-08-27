@@ -7,18 +7,23 @@ import 'package:pso2_mod_manager/export_import/export_import_functions.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
+import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/future_builder_states.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-Future<void> modExportPopup(context, ExportType exportType, String exportFileName, Item item, Mod? mod, SubMod? submod) async {
-  final Future future = exportType == ExportType.submods
-      ? submodExportFunction(exportFileName, mod, submod)
-      : exportType == ExportType.mods
-          ? modExportFunction(exportFileName, mod)
-          : itemExportFunction(exportFileName, item);
+Future<void> modExportPopup(context, ExportType exportType, String exportFileName, Item? item, Mod? mod, SubMod? submod, ModSet? modSet) async {
+  final Future future = exportType == ExportType.applied
+      ? appliedModsExportFunction(exportFileName)
+      : exportType == ExportType.modsets
+          ? modSetExportFunction(exportFileName, modSet)
+          : exportType == ExportType.submods
+              ? submodExportFunction(exportFileName, mod, submod)
+              : exportType == ExportType.mods
+                  ? modExportFunction(exportFileName, mod)
+                  : itemExportFunction(exportFileName, item!);
   await showDialog(
       barrierDismissible: false,
       context: context,
@@ -74,7 +79,8 @@ Future<void> modExportPopup(context, ExportType exportType, String exportFileNam
                     return FutureBuilderError(
                       loadingText: appText.exportingMods,
                       snapshotError: snapshot.error.toString(),
-                      isPopup: true, showContButton: false,
+                      isPopup: true,
+                      showContButton: false,
                     );
                   } else {
                     File? exportedFile = snapshot.data;
@@ -84,14 +90,18 @@ Future<void> modExportPopup(context, ExportType exportType, String exportFileNam
                           spacing: 5,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(exportedFile!.existsSync() ? appText.successful : appText.failed, style: Theme.of(context).textTheme.labelLarge),
-                            const SizedBox(
-                              width: 250,
-                              child: HoriDivider(),
+                            Text(
+                              appText.export,
+                              style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 24),
                             ),
+                            const HoriDivider(),
+                            Text(exportedFile!.existsSync() ? appText.dText(appText.successfullyExportedFileName, '$exportFileName.pmm') : appText.failedToExport,
+                                style: Theme.of(context).textTheme.labelLarge),
+                            const HoriDivider(),
                             Row(
                               spacing: 5,
                               mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
                                 Visibility(
                                   visible: exportedFile.existsSync(),

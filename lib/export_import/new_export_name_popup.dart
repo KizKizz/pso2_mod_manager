@@ -8,6 +8,7 @@ import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:path/path.dart' as p;
+import 'package:url_launcher/url_launcher_string.dart';
 
 Future<String> exportModNamePopup(context) async {
   var focusNode = FocusNode();
@@ -100,6 +101,11 @@ Future<String> exportModNamePopup(context) async {
                 spacing: 5,
                 overflowSpacing: 5,
                 children: [
+                  OutlinedButton(
+                      onPressed: () {
+                        launchUrlString(exportedModsDirPath);
+                      },
+                      child: Text(appText.openInFileExplorer)),
                   OutlinedButton(
                       onPressed: newName.value.text.isNotEmpty
                           ? () {
