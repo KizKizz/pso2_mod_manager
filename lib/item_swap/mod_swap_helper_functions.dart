@@ -189,7 +189,7 @@ Future<List<File>> emoteSwapRename(List<File> lItemFiles, List<File> rItemFiles,
               p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
               p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
               p.basenameWithoutExtension(element.path).split('_')[3] == fileNamePartsF[3] &&
-              p.extension(element.path) == '.bti',
+              (p.extension(element.path) == '.bti' || p.extension(element.path) == '.aqm'),
           orElse: () => File(''));
     } else if (fileNamePartsF.length > 3 && fileNamePartsF[1] == 'std') {
       matchingFileT = rItemFiles.firstWhere(

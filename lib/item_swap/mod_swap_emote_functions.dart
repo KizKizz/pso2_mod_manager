@@ -13,9 +13,8 @@ import 'package:pso2_mod_manager/v3_home/main_item_swap_grid.dart';
 
 final validCharacters = RegExp(r'^[a-zA-Z0-9]+$');
 
-Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, SubMod fromSubmod, String rSelectedItemName, List<String> lItemAvailableIces, List<String> rItemAvailableIces,
-    List<String> emoteSwapQueuePaths) async {
-  List<String> iceTypes = ['human hash', 'fig hash', 'vfx hash'];
+Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, SubMod fromSubmod, String rSelectedItemName, List<String> lItemAvailableIces, List<String> rItemAvailableIces) async {
+  List<String> iceTypes = ['human hash', 'reboot human hash', 'fig hash', 'vfx hash'];
   String newToSelectedItemName = rSelectedItemName;
 
   String tempSubmodPathF = Uri.file('$modSwapTempLItemDirPath/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath();
@@ -211,14 +210,18 @@ Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, Su
           orElse: () => '',
         )
         .split(': ')
-        .last.split('\\').last;
+        .last
+        .split('\\')
+        .last;
     String rebootHumanHashlItemIceName = lItemAvailableIces
         .firstWhere(
           (element) => element.split(': ').first == 'Reboot Human Hash Ice' || element.split(': ').first == 'Reboot Human Hash',
           orElse: () => '',
         )
         .split(': ')
-        .last.split('\\').last;
+        .last
+        .split('\\')
+        .last;
 
     // if bti file in reboot human
     if (Directory(Uri.file('$tempSubmodPathF/${rebootHumanHashlItemIceName}_ext/group1').toFilePath()).existsSync() &&

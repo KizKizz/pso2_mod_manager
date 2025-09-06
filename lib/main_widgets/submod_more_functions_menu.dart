@@ -190,7 +190,7 @@ class _SubmodMoreFunctionsMenuState extends State<SubmodMoreFunctionsMenu> {
                 height: 5,
               )),
           PopupMenuItem(
-              enabled: !widget.submod.applyStatus && widget.submod.location != widget.mod.location,
+              enabled: !widget.submod.applyStatus && (widget.submod.location != widget.mod.location || widget.mod.submods.length == 1),
               onTap: () async {
                 await submodDelete(context, widget.item, widget.mod, widget.submod, false);
                 widget.mod.isNew = widget.mod.getSubmodsIsNewState();
@@ -209,7 +209,7 @@ class _SubmodMoreFunctionsMenuState extends State<SubmodMoreFunctionsMenu> {
               child: MenuIconItem(
                 icon: Icons.delete_forever_outlined,
                 text: appText.delete,
-                enabled: !widget.submod.applyStatus && widget.submod.location != widget.mod.location,
+                enabled: !widget.submod.applyStatus && (widget.submod.location != widget.mod.location || widget.mod.submods.length == 1),
               )),
         ];
       },
