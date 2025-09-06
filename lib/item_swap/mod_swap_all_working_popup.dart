@@ -41,7 +41,7 @@ Future<void> modSwapAllWorkingPopup(context, bool isVanillaSwap, ItemData lItemD
               if (submod.category == defaultCategoryDirs[0]) {
                 swapOutputDir = await modSwapAccessories(context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), rItemData.getItemID());
               } else if (submod.category == defaultCategoryDirs[14] || submod.category == defaultCategoryDirs[7]) {
-                swapOutputDir = await modSwapEmotes(context, isVanillaSwap, mod, submod, rItemData.getName(), lItemData.getIceDetails(), rItemData.getIceDetails(), []);
+                swapOutputDir = await modSwapEmotes(context, isVanillaSwap, mod, submod, rItemData.getName(), lItemData.getIceDetails(), rItemData.getIceDetails());
               } else {
                 swapOutputDir =
                     await modSwapGeneral(context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), lItemData.getItemID(), rItemData.getItemID());
