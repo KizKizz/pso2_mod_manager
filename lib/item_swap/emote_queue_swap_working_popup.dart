@@ -22,6 +22,7 @@ Future<void> emoteQueueSwapWorkingPopup(context, bool isVanillaSwap, List<(ItemD
   Directory swapOutputDir = Directory('');
   List<String> swapOutputDirPaths = [];
   int curPairIndex = 0;
+  int swappedCount = 0;
 
   await showDialog(
       barrierDismissible: false,
@@ -131,7 +132,7 @@ Future<void> emoteQueueSwapWorkingPopup(context, bool isVanillaSwap, List<(ItemD
                     overflowSpacing: 5,
                     children: [
                       Visibility(
-                        visible: swapOutputDir.existsSync() && curPairIndex == emoteSwapQueue.length - 1,
+                        visible: swapOutputDir.existsSync() && swappedCount == emoteSwapQueue.length,
                         child: OutlinedButton(
                             onPressed: () async {
                               launchUrlString(swapOutputDir.parent.path);
@@ -139,7 +140,7 @@ Future<void> emoteQueueSwapWorkingPopup(context, bool isVanillaSwap, List<(ItemD
                             child: Text(appText.openInFileExplorer)),
                       ),
                       Visibility(
-                        visible: swapOutputDir.existsSync() && curPairIndex == emoteSwapQueue.length - 1,
+                        visible: swapOutputDir.existsSync() && swappedCount == emoteSwapQueue.length,
                         child: OutlinedButton(
                             onPressed: () async {
                               await modAddPopup(context, swapOutputDirPaths);
@@ -156,14 +157,22 @@ Future<void> emoteQueueSwapWorkingPopup(context, bool isVanillaSwap, List<(ItemD
                                     await modSwapTempDirsCreate();
                                     swapOutputDir = Directory('');
                                     for (var pair in emoteSwapQueue) {
-                                      // ignore: use_build_context_synchronously
-                                      swapOutputDir = await modSwapEmotes(context, isVanillaSwap, mod, isVanillaSwap ? lItemSubmodGet(pair.$1) : submod, pair.$2.getName(), pair.$1.getIceDetails(), pair.$2.getIceDetails());
+                                      swapOutputDir = await modSwapEmotes(
+                                          // ignore: use_build_context_synchronously
+                                          context,
+                                          isVanillaSwap,
+                                          mod,
+                                          isVanillaSwap ? lItemSubmodGet(pair.$1) : submod,
+                                          pair.$2.getName(),
+                                          pair.$1.getIceDetails(),
+                                          pair.$2.getIceDetails());
                                       if (!swapOutputDirPaths.contains(swapOutputDir.path)) swapOutputDirPaths.add(swapOutputDir.path);
                                       if (curPairIndex < emoteSwapQueue.length - 1) curPairIndex++;
+                                      swappedCount++;
                                       setState(
                                         () {},
                                       );
-                                      await Future.delayed(Duration(milliseconds: 100));
+                                      await Future.delayed(Duration(milliseconds: 10));
                                     }
                                   }
                                 : null,
