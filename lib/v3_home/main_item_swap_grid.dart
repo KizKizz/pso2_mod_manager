@@ -416,7 +416,7 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                                 itemSwapWorkingStatus.value = '';
                                 extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
                                 extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
-                                await emoteQueueSwapWorkingPopup(context, true, emoteSwapQueue, lItemModGet());
+                                await emoteQueueSwapWorkingPopup(context, true, emoteSwapQueue, lItemModGet(), lItemSubmodGet(lSelectedItemData.value!));
                               }
                             : null,
                         child: Text(appText.next)),

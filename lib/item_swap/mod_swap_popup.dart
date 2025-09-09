@@ -394,7 +394,7 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                                     itemSwapWorkingStatus.value = '';
                                     extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
                                     extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
-                                    await emoteQueueSwapWorkingPopup(context, false, emoteSwapQueue, mod);
+                                    await emoteQueueSwapWorkingPopup(context, false, emoteSwapQueue, mod, submod);
                                   }
                                 : null,
                             child: Text(appText.next)),

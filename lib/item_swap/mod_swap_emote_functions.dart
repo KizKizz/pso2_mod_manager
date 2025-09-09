@@ -14,7 +14,7 @@ import 'package:pso2_mod_manager/v3_home/main_item_swap_grid.dart';
 final validCharacters = RegExp(r'^[a-zA-Z0-9]+$');
 
 Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, SubMod fromSubmod, String rSelectedItemName, List<String> lItemAvailableIces, List<String> rItemAvailableIces) async {
-  List<String> iceTypes = ['human hash', 'reboot human hash', 'fig hash', 'vfx hash'];
+  List<String> iceTypes = ['human hash', 'reboot human hash', 'pso2 hash', 'fig hash', 'vfx hash'];
   String newToSelectedItemName = rSelectedItemName;
 
   String tempSubmodPathF = Uri.file('$modSwapTempLItemDirPath/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath();
