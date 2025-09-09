@@ -37,6 +37,7 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
   List<ItemData> displayingItems = [];
   List<(ItemData, ItemData)> emoteSwapQueue = [];
   bool showEmoteQueue = false;
+  ItemData? lastQueuedEmoteItemData;
 
   @override
   void initState() {
@@ -399,6 +400,7 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                             ? () async {
                                 if (emoteSwapQueue.indexWhere((e) => e.$1 == lSelectedItemData.value) == -1) {
                                   emoteSwapQueue.add((lSelectedItemData.value!, rSelectedItemData.value!));
+                                  lastQueuedEmoteItemData = lSelectedItemData.value!;
                                   lSelectedItemData.value = null;
                                   rSelectedItemData.value = null;
                                   if (emoteSwapQueue.isNotEmpty) showEmoteQueue = true;
@@ -416,7 +418,7 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                                 itemSwapWorkingStatus.value = '';
                                 extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
                                 extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
-                                await emoteQueueSwapWorkingPopup(context, true, emoteSwapQueue, lItemModGet(), lItemSubmodGet(lSelectedItemData.value!));
+                                await emoteQueueSwapWorkingPopup(context, true, emoteSwapQueue, lItemModGet(), lItemSubmodGet(lastQueuedEmoteItemData!));
                               }
                             : null,
                         child: Text(appText.next)),
