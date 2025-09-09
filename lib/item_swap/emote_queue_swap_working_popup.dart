@@ -10,6 +10,7 @@ import 'package:pso2_mod_manager/item_swap/mod_swap_helper_functions.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_add/mod_add_popup.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
+import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
@@ -17,7 +18,7 @@ import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-Future<void> emoteQueueSwapWorkingPopup(context, bool isVanillaSwap, List<(ItemData, ItemData)> emoteSwapQueue, Mod mod) async {
+Future<void> emoteQueueSwapWorkingPopup(context, bool isVanillaSwap, List<(ItemData, ItemData)> emoteSwapQueue, Mod mod, SubMod submod) async {
   Directory swapOutputDir = Directory('');
   List<String> swapOutputDirPaths = [];
   int curPairIndex = 0;
@@ -156,7 +157,7 @@ Future<void> emoteQueueSwapWorkingPopup(context, bool isVanillaSwap, List<(ItemD
                                     swapOutputDir = Directory('');
                                     for (var pair in emoteSwapQueue) {
                                       // ignore: use_build_context_synchronously
-                                      swapOutputDir = await modSwapEmotes(context, isVanillaSwap, mod, lItemSubmodGet(pair.$1), pair.$2.getName(), pair.$1.getIceDetails(), pair.$2.getIceDetails());
+                                      swapOutputDir = await modSwapEmotes(context, isVanillaSwap, mod, isVanillaSwap ? lItemSubmodGet(pair.$1) : submod, pair.$2.getName(), pair.$1.getIceDetails(), pair.$2.getIceDetails());
                                       if (!swapOutputDirPaths.contains(swapOutputDir.path)) swapOutputDirPaths.add(swapOutputDir.path);
                                       if (curPairIndex < emoteSwapQueue.length - 1) curPairIndex++;
                                       setState(

@@ -62,7 +62,22 @@ class _ItemSwapGridLayoutState extends State<ItemSwapGridLayout> {
                             spacing: 5,
                             children: [
                               GenericItemIconBox(iconImagePaths: [e.iconImagePath], boxSize: const Size(70, 70), isNetwork: true),
-                              Text(e.getName())
+                              Column(
+                                spacing: 5,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(e.getName()),
+                                  if (!aqmInjectCategoryDirs.contains(e.category) && e.subCategory.isNotEmpty)
+                                    InfoBox(
+                                        info: e.category == defaultCategoryDirs[14]
+                                            ? appText.motionTypeName(e.subCategory)
+                                            : e.category == defaultCategoryDirs[17]
+                                                ? appText.weaponTypeName(e.subCategory.split('* ').last)
+                                                : e.subCategory,
+                                        borderHighlight: false)
+                                ],
+                              )
                             ],
                           )),
                     ),
