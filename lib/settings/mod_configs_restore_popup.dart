@@ -47,20 +47,20 @@ Future<void> modConfigsRestorePopup(context, String latestBackupDate, List<File>
                     child: CardOverlay(
                       paddingValue: 5,
                       child: SuperListView.builder(
-                        shrinkWrap: true,
-                        itemCount: configBackups.length,
-                        itemBuilder: (context, index) => RadioListTile(
-                          value: configBackups[index],
-                          groupValue: selectedFile,
-                          title: Text(p.basenameWithoutExtension(configBackups[index].path)),
-                          onChanged: (value) {
-                            selectedFile = configBackups[index];
-                            setState(
-                              () {},
-                            );
-                          },
-                        ),
-                      ),
+                          shrinkWrap: true,
+                          itemCount: configBackups.length,
+                          itemBuilder: (context, index) => RadioGroup(
+                              groupValue: selectedFile,
+                              onChanged: (value) {
+                                selectedFile = configBackups[index];
+                                setState(
+                                  () {},
+                                );
+                              },
+                              child: RadioListTile(
+                                value: configBackups[index],
+                                title: Text(p.basenameWithoutExtension(configBackups[index].path)),
+                              ))),
                     ),
                   )
                 ],

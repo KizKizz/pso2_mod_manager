@@ -274,7 +274,16 @@ Future<void> _singleChoiceSelectPopup(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: availableItemList
-                    .map((e) => RadioListTile(
+                    .map((e) => RadioGroup(
+                        onChanged: (value) {
+                          selectedItem.value = e;
+                          setState(
+                            () {},
+                          );
+                          mainGridStatus.value = '[${DateTime.now()}] Selection: $e';
+                        },
+                        groupValue: selectedItem.value,
+                        child: RadioListTile(
                           controlAffinity: ListTileControlAffinity.leading,
                           title: Row(
                             spacing: 20,
@@ -287,15 +296,7 @@ Future<void> _singleChoiceSelectPopup(
                           ),
                           selected: selectedItem.value == e,
                           value: e,
-                          groupValue: selectedItem.value,
-                          onChanged: (value) {
-                            selectedItem.value = e;
-                            setState(
-                              () {},
-                            );
-                            mainGridStatus.value = '[${DateTime.now()}] Selection: $e';
-                          },
-                        ))
+                        )))
                     .toList(),
               ),
             ),

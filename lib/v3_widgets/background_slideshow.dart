@@ -178,7 +178,7 @@ class _BackgroundSlideshowState extends State<BackgroundSlideshow> {
                     Text(appText.interval, style: Theme.of(context).textTheme.labelMedium),
                     Expanded(
                       child: SliderTheme(
-                          data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.always),
+                          data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.onDrag),
                           child: Slider(
                             value: backgroundImageSlideInterval.watch(context).toDouble(),
                             min: 1,

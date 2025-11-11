@@ -106,7 +106,7 @@ class _OtherSettingsLayoutState extends State<OtherSettingsLayout> {
                     SizedBox(
                       width: double.infinity,
                       child: SliderTheme(
-                          data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.always),
+                          data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.onDrag),
                           child: Slider(
                             value: uiBackgroundColorAlpha.value.toDouble(),
                             min: 0,
@@ -126,7 +126,7 @@ class _OtherSettingsLayoutState extends State<OtherSettingsLayout> {
                     SizedBox(
                       width: double.infinity,
                       child: SliderTheme(
-                          data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.always),
+                          data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.onDrag),
                           child: Slider(
                             value: uiDialogBackgroundColorAlpha.value.toDouble(),
                             min: 0,

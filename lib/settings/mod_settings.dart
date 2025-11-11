@@ -122,7 +122,7 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
                     SizedBox(
                       width: double.infinity,
                       child: SliderTheme(
-                          data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.always),
+                          data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.onDrag),
                           child: Slider(
                             value: boundingRadiusRemovalValue,
                             min: -200,
