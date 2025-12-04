@@ -242,7 +242,7 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             Text(appText.startAfter, style: Theme.of(context).textTheme.labelMedium),
                             Expanded(
                               child: SliderTheme(
-                                  data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.always),
+                                  data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.onDrag),
                                   child: Slider(
                                     value: hideUIInitDelaySeconds.toDouble(),
                                     min: 0,
