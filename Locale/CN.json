@@ -1,4 +1,10 @@
 {
+  "unpackingFile": "Unpacking\n%p%",
+  "sortingFolder": "Sorting\n%p%",
+  "sortingModIntoItems": "Sorting \"%p%\" into associated items",
+  "removingEmptyDirsInFolder": "Removing empty folders in\n%p%",
+  "checkingForDuplicatesInFolder": "Checking for duplicates in\n%p%",
+  "checkingForPrefixDirsInFolder": "Checking for prefix folders in\n%p%",
   "unfavorite": "取消收藏",
   "favorite": "收藏",
   "successfullyExportedFileName": "成功导出 %p%",

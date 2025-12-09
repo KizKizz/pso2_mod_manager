@@ -34,6 +34,8 @@ String modAddTempSortedDirPath = '$modAddTempDirPath${p.separator}sorted';
 
 Future<void> modAddUnpack(context, List<String> addedPaths) async {
   for (var path in addedPaths) {
+    modAddProcessingStatus.value = appText.dText(appText.unpackingFile, p.basename(path));
+    await Future.delayed(Duration(milliseconds: 10));
     String unpackedDirPath = modAddTempUnpackedDirPath + p.separator + p.basenameWithoutExtension(path);
     if (await FileSystemEntity.isFile(path)) {
       if (p.extension(path) == '.zip') {
@@ -85,6 +87,8 @@ Future<List<AddingMod>> modAddSort() async {
   List<String> recentAddedDirPaths = [];
   // Remove empty root parent dir
   for (var dir in Directory(modAddTempUnpackedDirPath).listSync().whereType<Directory>()) {
+    modAddProcessingStatus.value = appText.dText(appText.removingEmptyDirsInFolder, p.basename(dir.path));
+    await Future.delayed(Duration(milliseconds: 10));
     final innerDirs = dir.listSync();
     if (innerDirs.length == 1 && !win32DirNames.contains(p.basename(innerDirs.first.path)) && FileSystemEntity.isDirectorySync(innerDirs.first.path)) {
       await io.copyPath(innerDirs.first.path, dir.parent.path + p.separator + p.basename(innerDirs.first.path));
@@ -93,6 +97,8 @@ Future<List<AddingMod>> modAddSort() async {
   }
   // Check for duplicates
   for (var dir in Directory(modAddTempUnpackedDirPath).listSync().whereType<Directory>().where((e) => e.listSync(recursive: true).whereType<File>().isNotEmpty)) {
+    modAddProcessingStatus.value = appText.dText(appText.checkingForDuplicatesInFolder, p.basename(dir.path));
+    await Future.delayed(Duration(milliseconds: 10));
     String sortedPath = dir.path.replaceFirst(modAddTempUnpackedDirPath, modAddTempSortedDirPath);
     if (Directory(sortedPath).existsSync()) {
       String renamedSortedPath = sortedPath.renameDuplicate();
@@ -108,6 +114,8 @@ Future<List<AddingMod>> modAddSort() async {
   // Remove reboots
   for (var modDir in Directory(modAddTempSortedDirPath).listSync(recursive: true).whereType<Directory>().where((e) => recentAddedDirPaths.indexWhere((s) => e.path.contains(s)) != -1).toSet()) {
     if (modDir.existsSync()) {
+      modAddProcessingStatus.value = appText.dText(appText.checkingForPrefixDirsInFolder, modDir.path.split(modAddTempSortedDirPath + p.separator).last.split(p.separator).join(' > '));
+      await Future.delayed(Duration(milliseconds: 10));
       String newPath = await removeRebootPath(modDir.path);
       if (modDir.path != newPath) {
         await io.copyPath(modDir.path, newPath);
@@ -117,6 +125,8 @@ Future<List<AddingMod>> modAddSort() async {
   }
   // Remove empty dirs
   for (var dir in Directory(modAddTempSortedDirPath).listSync(recursive: true).whereType<Directory>()) {
+    modAddProcessingStatus.value = appText.dText(appText.removingEmptyDirsInFolder, p.basename(dir.path));
+    await Future.delayed(Duration(milliseconds: 10));
     if (dir.existsSync() && dir.listSync().isEmpty) await dir.delete(recursive: true);
   }
 
@@ -126,6 +136,8 @@ Future<List<AddingMod>> modAddSort() async {
 
   // Get files tree
   for (var modDir in modDirs) {
+    modAddProcessingStatus.value = appText.dText(appText.sortingModIntoItems, p.basename(modDir.path));
+    await Future.delayed(Duration(milliseconds: 10));
     List<Directory> submods = [];
     List<String> submodNames = [];
     List<ItemData> associatedItems = [];
@@ -419,8 +431,8 @@ Future<List<ItemData>> matchItemData(List<ItemData> matchedItemData, List<MapEnt
   List<ItemData> associatedItems = [];
 
   for (var filePath in filePaths.where((e) => p.extension(e) == '')) {
-    modAddProcessingStatus.value = p.basename(filePath);
-    await Future.delayed(const Duration(microseconds: 10));
+    // modAddProcessingStatus.value = p.basename(filePath);
+    // await Future.delayed(const Duration(microseconds: 10));
 
     if (matchedItemData.indexWhere((e) => e.containsIce(p.basename(filePath))) != -1 ||
         associatedItems.indexWhere((e) => e.containsIce(p.basename(filePath))) != -1 ||

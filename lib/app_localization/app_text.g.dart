@@ -281,6 +281,14 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..successfullyExportedFileName =
       json['successfullyExportedFileName'] as String
   ..failedToExport = json['failedToExport'] as String
+  ..unpackingFile = json['unpackingFile'] as String
+  ..sortingFolder = json['sortingFolder'] as String
+  ..sortingModIntoItems = json['sortingModIntoItems'] as String
+  ..removingEmptyDirsInFolder = json['removingEmptyDirsInFolder'] as String
+  ..checkingForDuplicatesInFolder =
+      json['checkingForDuplicatesInFolder'] as String
+  ..checkingForPrefixDirsInFolder =
+      json['checkingForPrefixDirsInFolder'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -783,6 +791,12 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'deselectAll': instance.deselectAll,
       'successfullyExportedFileName': instance.successfullyExportedFileName,
       'failedToExport': instance.failedToExport,
+      'unpackingFile': instance.unpackingFile,
+      'sortingFolder': instance.sortingFolder,
+      'sortingModIntoItems': instance.sortingModIntoItems,
+      'removingEmptyDirsInFolder': instance.removingEmptyDirsInFolder,
+      'checkingForDuplicatesInFolder': instance.checkingForDuplicatesInFolder,
+      'checkingForPrefixDirsInFolder': instance.checkingForPrefixDirsInFolder,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,

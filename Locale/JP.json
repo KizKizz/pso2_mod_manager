@@ -1,4 +1,10 @@
 {
+  "unpackingFile": "Unpacking\n%p%",
+  "sortingFolder": "Sorting\n%p%",
+  "sortingModIntoItems": "Sorting \"%p%\" into associated items",
+  "removingEmptyDirsInFolder": "Removing empty folders in\n%p%",
+  "checkingForDuplicatesInFolder": "Checking for duplicates in\n%p%",
+  "checkingForPrefixDirsInFolder": "Checking for prefix folders in\n%p%",
   "unfavorite": "お気に入り解除",
   "favorite": "お気に入りに追加",
   "successfullyExportedFileName": "正常にエクスポートされました: %p%",

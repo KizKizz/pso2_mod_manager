@@ -80,8 +80,7 @@ class _ModAddGridState extends State<ModAddGrid> {
                               child: ModManTooltip(
                             message: modAddingList[i].submodNames.join('\n'),
                             child: InfoBox(
-                              info:
-                                  appText.dText(modAddingList[i].submods.length > 1 ? appText.numVariants : appText.numVariant, modAddingList[i].submods.length.toString()),
+                              info: appText.dText(modAddingList[i].submods.length > 1 ? appText.numVariants : appText.numVariant, modAddingList[i].submods.length.toString()),
                               borderHighlight: false,
                             ),
                           )),
@@ -89,8 +88,7 @@ class _ModAddGridState extends State<ModAddGrid> {
                               child: ModManTooltip(
                             message: modAddingList[i].submodNames.where((e) => modAddingList[i].submodAddingStates[modAddingList[i].submodNames.indexOf(e)] == true).join('\n'),
                             child: InfoBox(
-                              info:
-                                  appText.dText(appText.numItemSelected, modAddingList[i].submodAddingStates.where((e) => e == true).length.toString()),
+                              info: appText.dText(appText.numItemSelected, modAddingList[i].submodAddingStates.where((e) => e == true).length.toString()),
                               borderHighlight: false,
                             ),
                           ))
@@ -218,7 +216,7 @@ class _ModAddGridState extends State<ModAddGrid> {
                 Visibility(
                     visible: modAddProcessingStatus.watch(context).isNotEmpty &&
                         (curModAddProcessedStatus.watch(context) == ModAddProcessedState.loadingData || curModAddProcessedStatus.watch(context) == ModAddProcessedState.addingToMasterList),
-                    child: CardOverlay(paddingValue: 15, child: Text(modAddProcessingStatus.watch(context))))
+                    child: CardOverlay(paddingValue: 15, child: Text(modAddProcessingStatus.watch(context), textAlign: TextAlign.center)))
               ],
             )))
       ],
