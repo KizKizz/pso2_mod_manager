@@ -144,7 +144,8 @@ class AppText {
       hasPreviews = 'Has Previews',
       start = 'Start',
       duplicate = 'Duplicate',
-      share = 'Share';
+      share = 'Share',
+      donate = 'Donate';
 
   // Short Strings
   String patchNotes = 'Patch Notes',

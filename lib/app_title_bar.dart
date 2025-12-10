@@ -15,6 +15,7 @@ import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:window_manager/window_manager.dart';
 
 class AppTitleBar extends StatefulWidget {
@@ -62,59 +63,57 @@ class _AppTitleBarState extends State<AppTitleBar> {
               ],
             ),
           ),
-          Row(
-            spacing: 2.5,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Visibility(
-                  visible: appLoadingFinished.watch(context) && pso2RegionVersion.watch(context) == PSO2RegionVersion.jp,
-                  child: const Padding(
-                    padding: EdgeInsets.only(right: 2.5),
-                    child: JpGameStartBtn(),
-                  )),
-              // Visibility(
-              //     // visible: appLoadingFinished.watch(context),
-              //     visible: false,
-              //     child: SizedBox(
-              //       height: 20,
-              //       child: OutlinedButton.icon(
-              //           style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
-              //           onPressed: () async {
-              //             final prefs = await SharedPreferences.getInstance();
-              //             showPreviewBox.value ? showPreviewBox.value = false : showPreviewBox.value = true;
-              //             prefs.setBool('showPreviewBox', showPreviewBox.value);
-              //           },
-              //           icon: const Icon(
-              //             Icons.preview,
-              //             size: 18,
-              //           ),
-              //           label: Text(showPreviewBox.watch(context) ? appText.hidePreview : appText.showPreview)),
-              //     )),
+          Visibility(
+            visible: appLoadingFinished.watch(context),
+            child: Row(
+              spacing: 2.5,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Visibility(
+                    visible: pso2RegionVersion.watch(context) == PSO2RegionVersion.jp,
+                    child: const Padding(
+                      padding: EdgeInsets.only(right: 2.5),
+                      child: JpGameStartBtn(),
+                    )),
+                // Visibility(
+                //     // visible: appLoadingFinished.watch(context),
+                //     visible: false,
+                //     child: SizedBox(
+                //       height: 20,
+                //       child: OutlinedButton.icon(
+                //           style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+                //           onPressed: () async {
+                //             final prefs = await SharedPreferences.getInstance();
+                //             showPreviewBox.value ? showPreviewBox.value = false : showPreviewBox.value = true;
+                //             prefs.setBool('showPreviewBox', showPreviewBox.value);
+                //           },
+                //           icon: const Icon(
+                //             Icons.preview,
+                //             size: 18,
+                //           ),
+                //           label: Text(showPreviewBox.watch(context) ? appText.hidePreview : appText.showPreview)),
+                //     )),
 
-              Visibility(
-                  visible: appLoadingFinished.watch(context),
-                  child: SizedBox(
-                    height: 20,
-                    child: ModManTooltip(
-                      message: appText.refresh,
-                      child: OutlinedButton(
-                        style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
-                        onPressed: () async {
-                          selectedItemV2.value = null;
-                          pageIndex = 6;
-                          curPage.value = appPages[pageIndex];
-                        },
-                        child: const Icon(
-                          Icons.refresh,
-                          size: 18,
-                        ),
+                SizedBox(
+                  height: 20,
+                  child: ModManTooltip(
+                    message: appText.refresh,
+                    child: OutlinedButton(
+                      style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+                      onPressed: () async {
+                        selectedItemV2.value = null;
+                        pageIndex = 6;
+                        curPage.value = appPages[pageIndex];
+                      },
+                      child: const Icon(
+                        Icons.refresh,
+                        size: 18,
                       ),
                     ),
-                  )),
+                  ),
+                ),
 
-              Visibility(
-                visible: appLoadingFinished.watch(context),
-                child: SizedBox(
+                SizedBox(
                   height: 20,
                   child: ModManTooltip(
                     message: saveRestoreAppliedModsActive.watch(context)
@@ -133,29 +132,38 @@ class _AppTitleBarState extends State<AppTitleBar> {
                     ),
                   ),
                 ),
-              ),
 
-              Visibility(
-                  visible: appLoadingFinished.watch(context),
-                  child: SizedBox(
-                    height: 20,
-                    child: ModManTooltip(
-                      message: appText.gameDataIntegrityCheck,
-                      child: OutlinedButton(
-                        style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
-                        onPressed: () async {
-                          await checkGameFilesPopup(context, false);
-                        },
-                        child: const Icon(
-                          Icons.checklist_rounded,
-                          size: 18,
-                        ),
+                SizedBox(
+                  height: 20,
+                  child: ModManTooltip(
+                    message: appText.gameDataIntegrityCheck,
+                    child: OutlinedButton(
+                      style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+                      onPressed: () async {
+                        await checkGameFilesPopup(context, false);
+                      },
+                      child: const Icon(
+                        Icons.checklist_rounded,
+                        size: 18,
                       ),
                     ),
-                  )),
+                  ),
+                ),
 
-              Visibility(visible: appLoadingFinished.watch(context), child: const ChecksumIndicator())
-            ],
+                const ChecksumIndicator(),
+
+                SizedBox(
+                    height: 20,
+                    child: OutlinedButton.icon(
+                        style: ButtonStyle(visualDensity: VisualDensity.adaptivePlatformDensity, shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+                        onPressed: () => launchUrlString('https://ko-fi.com/kizkizz'),
+                        icon: const Icon(
+                          Icons.coffee,
+                          size: 18,
+                        ),
+                        label: Text(appText.donate, textAlign: TextAlign.center))),
+              ],
+            ),
           )
         ],
       )),

@@ -77,6 +77,17 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 5,
                       children: [
+                        // Player Item Database
+                        SettingsHeader(icon: Icons.dataset_outlined, text: appText.playerItemDatabase),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: Text(appText.dText(appText.latestVersionNumber, '${remotePlayerDataVersion.$1} - ${remotePlayerDataVersion.$2.split(': ').last}'),
+                              style: Theme.of(context).textTheme.bodyMedium),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: Text(appText.dText(appText.localVersionNumber, localPlayerDataVersion.toString()), style: Theme.of(context).textTheme.bodyMedium),
+                        ),
                         // Profile
                         SettingsHeader(icon: modManCurActiveProfile == 1 ? Icons.filter_1 : Icons.filter_2, text: appText.profiles),
                         AnimatedHorizontalToggleLayout(
@@ -135,17 +146,6 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             targetIndex == 0 ? itemNameLanguage = ItemNameLanguage.en : itemNameLanguage = ItemNameLanguage.jp;
                             prefs.setString('itemNameLanguage', itemNameLanguage.value);
                           },
-                        ),
-                        // Player Item Database
-                        SettingsHeader(icon: Icons.dataset_outlined, text: appText.playerItemDatabase),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 15),
-                          child: Text(appText.dText(appText.latestVersionNumber, '${remotePlayerDataVersion.$1} - ${remotePlayerDataVersion.$2.split(': ').last}'),
-                              style: Theme.of(context).textTheme.bodyMedium),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 15),
-                          child: Text(appText.dText(appText.localVersionNumber, localPlayerDataVersion.toString()), style: Theme.of(context).textTheme.bodyMedium),
                         ),
                         // v2 Homepage
                         SettingsHeader(icon: Icons.view_sidebar, text: appText.homepageStyle),
