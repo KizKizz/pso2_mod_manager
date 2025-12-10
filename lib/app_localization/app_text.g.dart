@@ -38,6 +38,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..nameAlphabetical = json['nameAlphabetical'] as String
   ..recentlyAdded = json['recentlyAdded'] as String
   ..recentlyApplied = json['recentlyApplied'] as String
+  ..highestModCount = json['highestModCount'] as String
+  ..lowestModCount = json['lowestModCount'] as String
   ..cards = json['cards'] as String
   ..boards = json['boards'] as String
   ..sleeves = json['sleeves'] as String
@@ -552,6 +554,8 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'nameAlphabetical': instance.nameAlphabetical,
       'recentlyAdded': instance.recentlyAdded,
       'recentlyApplied': instance.recentlyApplied,
+      'highestModCount': instance.highestModCount,
+      'lowestModCount': instance.lowestModCount,
       'cards': instance.cards,
       'boards': instance.boards,
       'sleeves': instance.sleeves,

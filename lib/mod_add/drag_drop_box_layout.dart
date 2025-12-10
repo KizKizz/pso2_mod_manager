@@ -77,7 +77,7 @@ class _DragDropBoxLayoutState extends State<DragDropBoxLayout> {
                           dense: true,
                         ));
                   },
-                  separatorBuilder: (BuildContext context, int index) => SizedBox(height: 5),
+                  separatorBuilder: (BuildContext context, int index) => SizedBox(height: 2),
                 ))),
             Visibility(
                 visible: modAddDragDropPaths.isEmpty,

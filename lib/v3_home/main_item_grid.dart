@@ -103,6 +103,14 @@ class _MainItemGridState extends State<MainItemGrid> {
       for (var category in displayingCategories) {
         category.items.sort((a, b) => b.applyDate.compareTo(a.applyDate));
       }
+    } else if (selectedDisplaySort.value == modSortingSelections[5]) {
+      for (var category in displayingCategories) {
+        category.items.sort((a, b) => b.mods.length.compareTo(a.mods.length));
+      }
+    } else if (selectedDisplaySort.value == modSortingSelections[6]) {
+      for (var category in displayingCategories) {
+        category.items.sort((a, b) => a.mods.length.compareTo(b.mods.length));
+      }
     }
 
     return AnimatedOpacity(

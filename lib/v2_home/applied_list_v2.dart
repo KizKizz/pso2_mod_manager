@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/export_import/export_import_functions.dart';
@@ -87,15 +88,19 @@ class _AppliedListV2State extends State<AppliedListV2> {
 
     // Sort
     if (selectedDisplaySortAppliedList.value == modSortingSelections[0]) {
-      filteredItems.sort((a, b) => a.favoriteSort().compareTo(b.favoriteSort()));
+        filteredItems.sort((a, b) => a.favoriteSort().compareTo(b.favoriteSort()));
     } else if (selectedDisplaySortAppliedList.value == modSortingSelections[1]) {
-      filteredItems.sort((a, b) => a.hasPreviewsSort().compareTo(b.hasPreviewsSort()));
+        filteredItems.sort((a, b) => a.hasPreviewsSort().compareTo(b.hasPreviewsSort()));
     } else if (selectedDisplaySortAppliedList.value == modSortingSelections[2]) {
-      filteredItems.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
+        filteredItems.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
     } else if (selectedDisplaySortAppliedList.value == modSortingSelections[3]) {
-      filteredItems.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
+        filteredItems.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
     } else if (selectedDisplaySortAppliedList.value == modSortingSelections[4]) {
-      filteredItems.sort((a, b) => b.applyDate.compareTo(a.applyDate));
+        filteredItems.sort((a, b) => b.applyDate.compareTo(a.applyDate));
+    } else if (selectedDisplaySortAppliedList.value == modSortingSelections[5]) {
+        filteredItems.sort((a, b) => b.mods.length.compareTo(a.mods.length));
+    } else if (selectedDisplaySortAppliedList.value == modSortingSelections[6]) {
+        filteredItems.sort((a, b) => a.mods.length.compareTo(b.mods.length));
     }
 
     return Column(
@@ -196,7 +201,7 @@ class _AppliedListV2State extends State<AppliedListV2> {
                                             }
                                           }
                                         : null,
-                                    child: Text(
+                                    child: AutoSizeText(
                                       appText.dText(numOfAppliedMods > 1 ? appText.holdToRestoreNumAppliedMods : appText.holdToRestoreNumAppliedMod, numOfAppliedMods.toString()),
                                       textAlign: TextAlign.center,
                                     )),

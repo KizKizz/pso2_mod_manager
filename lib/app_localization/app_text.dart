@@ -42,7 +42,7 @@ class AppText {
       dfSwimMotion = 'Swim Motion';
 
   // Sorting Name
-  String nameAlphabetical = 'Name (Alphabetical)', recentlyAdded = 'Recently Added', recentlyApplied = 'Recently Applied';
+  String nameAlphabetical = 'Name (Alphabetical)', recentlyAdded = 'Recently Added', recentlyApplied = 'Recently Applied', highestModCount = 'Highest Mod Count', lowestModCount = 'Lowest Mod Count';
 
   // Line Strike types
   String cards = 'Cards', boards = 'Boards', sleeves = 'Sleeves';
@@ -634,6 +634,10 @@ class AppText {
         return recentlyAdded;
       case 4:
         return recentlyApplied;
+      case 5:
+        return highestModCount;
+      case 6:
+        return lowestModCount;
       default:
         return name;
     }

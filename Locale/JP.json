@@ -1,4 +1,6 @@
 {
+  "highestModCount": "Highest Mod Count",
+  "lowestModCount": "Lowest Mod Count",
   "unpackingFile": "Unpacking\n%p%",
   "sortingFolder": "Sorting\n%p%",
   "sortingModIntoItems": "Sorting \"%p%\" into associated items",

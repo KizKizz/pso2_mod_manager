@@ -64,15 +64,31 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
 
     // Sort
     if (selectedDisplaySort.value == modSortingSelections[0]) {
-      allMods.sort((a, b) => a.$2.favoriteSort().compareTo(b.$2.favoriteSort()));
+      allMods.sort((a, b) => a.$2.favoriteSort().compareTo(b.$2.favoriteSort()) == 0
+          ? a.$2.favoriteSort().compareTo(b.$2.favoriteSort()) + a.$2.modName.toLowerCase().compareTo(b.$2.modName.toLowerCase())
+          : a.$2.favoriteSort().compareTo(b.$2.favoriteSort()));
     } else if (selectedDisplaySort.value == modSortingSelections[1]) {
-      allMods.sort((a, b) => a.$2.hasPreviewsSort().compareTo(b.$2.hasPreviewsSort()));
+      allMods.sort((a, b) => a.$2.hasPreviewsSort().compareTo(b.$2.hasPreviewsSort()) == 0
+          ? a.$2.hasPreviewsSort().compareTo(b.$2.hasPreviewsSort()) + a.$2.modName.toLowerCase().compareTo(b.$2.modName.toLowerCase())
+          : a.$2.hasPreviewsSort().compareTo(b.$2.hasPreviewsSort()));
     } else if (selectedDisplaySort.value == modSortingSelections[2]) {
       allMods.sort((a, b) => a.$2.modName.toLowerCase().compareTo(b.$2.modName.toLowerCase()));
     } else if (selectedDisplaySort.value == modSortingSelections[3]) {
-      allMods.sort((a, b) => b.$2.creationDate!.compareTo(a.$2.creationDate!));
+      allMods.sort((a, b) => b.$2.creationDate!.compareTo(a.$2.creationDate!) == 0
+          ? b.$2.creationDate!.compareTo(a.$2.creationDate!) + a.$2.modName.toLowerCase().compareTo(b.$2.modName.toLowerCase())
+          : b.$2.creationDate!.compareTo(a.$2.creationDate!));
     } else if (selectedDisplaySort.value == modSortingSelections[4]) {
-      allMods.sort((a, b) => b.$2.applyDate.compareTo(a.$2.applyDate));
+      allMods.sort((a, b) => b.$2.applyDate.compareTo(a.$2.applyDate) == 0
+          ? b.$2.applyDate.compareTo(a.$2.applyDate) + a.$2.modName.toLowerCase().compareTo(b.$2.modName.toLowerCase())
+          : b.$2.applyDate.compareTo(a.$2.applyDate));
+    } else if (selectedDisplaySort.value == modSortingSelections[5]) {
+      allMods.sort((a, b) => b.$2.submods.length.compareTo(a.$2.submods.length) == 0
+          ? b.$2.submods.length.compareTo(a.$2.submods.length) + a.$2.modName.toLowerCase().compareTo(b.$2.modName.toLowerCase())
+          : b.$2.submods.length.compareTo(a.$2.submods.length));
+    } else if (selectedDisplaySort.value == modSortingSelections[6]) {
+      allMods.sort((a, b) => a.$2.submods.length.compareTo(b.$2.submods.length) == 0
+          ? a.$2.submods.length.compareTo(b.$2.submods.length) + a.$2.modName.toLowerCase().compareTo(b.$2.modName.toLowerCase())
+          : a.$2.submods.length.compareTo(b.$2.submods.length));
     }
     modCardList.addAll(allMods.map((e) => ModCardLayout(item: e.$1, mod: e.$2)));
 
