@@ -101,15 +101,23 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
 
     // Sort
     if (selectedDisplaySortAppliedList.value == modSortingSelections[0]) {
-        displayingSubmodCards.sort((a, b) => a.submod.favoriteSort().compareTo(b.submod.favoriteSort()));
+      displayingSubmodCards.sort((a, b) => a.submod.favoriteSort().compareTo(b.submod.favoriteSort()) == 0
+          ? a.submod.favoriteSort().compareTo(b.submod.favoriteSort()) + a.submod.itemName.toLowerCase().compareTo(b.submod.itemName.toLowerCase())
+          : a.submod.favoriteSort().compareTo(b.submod.favoriteSort()));
     } else if (selectedDisplaySortAppliedList.value == modSortingSelections[1]) {
-        displayingSubmodCards.sort((a, b) => a.submod.hasPreviewsSort().compareTo(b.submod.hasPreviewsSort()));
+      displayingSubmodCards.sort((a, b) => a.submod.hasPreviewsSort().compareTo(b.submod.hasPreviewsSort()) == 0
+          ? a.submod.hasPreviewsSort().compareTo(b.submod.hasPreviewsSort()) + a.submod.itemName.toLowerCase().compareTo(b.submod.itemName.toLowerCase())
+          : a.submod.hasPreviewsSort().compareTo(b.submod.hasPreviewsSort()));
     } else if (selectedDisplaySortAppliedList.value == modSortingSelections[2]) {
-        displayingSubmodCards.sort((a, b) => a.submod.itemName.toLowerCase().compareTo(b.submod.itemName.toLowerCase()));
+      displayingSubmodCards.sort((a, b) => a.submod.itemName.toLowerCase().compareTo(b.submod.itemName.toLowerCase()));
     } else if (selectedDisplaySortAppliedList.value == modSortingSelections[3]) {
-        displayingSubmodCards.sort((a, b) => b.submod.creationDate!.compareTo(a.submod.creationDate!));
+      displayingSubmodCards.sort((a, b) => b.submod.creationDate!.compareTo(a.submod.creationDate!) == 0
+          ? b.submod.creationDate!.compareTo(a.submod.creationDate!) + a.submod.itemName.toLowerCase().compareTo(b.submod.itemName.toLowerCase())
+          : b.submod.creationDate!.compareTo(a.submod.creationDate!));
     } else if (selectedDisplaySortAppliedList.value == modSortingSelections[4]) {
-        displayingSubmodCards.sort((a, b) => b.submod.applyDate.compareTo(a.submod.applyDate));
+      displayingSubmodCards.sort((a, b) => b.submod.applyDate.compareTo(a.submod.applyDate) == 0
+          ? b.submod.applyDate.compareTo(a.submod.applyDate) + a.submod.itemName.toLowerCase().compareTo(b.submod.itemName.toLowerCase())
+          : b.submod.applyDate.compareTo(a.submod.applyDate));
     }
 
     return SliverPadding(

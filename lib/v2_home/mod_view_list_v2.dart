@@ -238,74 +238,24 @@ class _ModViewListV2State extends State<ModViewListV2> {
                         // Search box
                         if (!itemEditingMode)
                           Expanded(
-                            child: SizedBox(
-                              height: 30,
-                              child: Stack(alignment: AlignmentDirectional.centerEnd, children: [
-                                SearchField<Mod>(
-                                  enabled: !itemListSearchIncludesMods || searchTextController.value.text.isEmpty,
-                                  itemHeight: 90,
-                                  searchInputDecoration: SearchInputDecoration(
-                                      filled: true,
-                                      fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-                                      isDense: true,
-                                      contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
-                                      cursorHeight: 15,
-                                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
-                                      cursorColor: Theme.of(context).colorScheme.inverseSurface,
-                                      hintText: appText.search),
-                                  suggestions: filteredMods
-                                      .map(
-                                        (e) => SearchFieldListItem<Mod>(
-                                          e.modName,
-                                          item: e,
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.min,
-                                              spacing: 5,
-                                              children: [
-                                                SizedBox(
-                                                  width: 75,
-                                                  height: 75,
-                                                  child: SubmodPreviewBox(imageFilePaths: e.previewImages, videoFilePaths: e.previewVideos, isNew: false),
-                                                ),
-                                                Column(
-                                                  spacing: 5,
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    Text(e.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
-                                                    Row(
-                                                      spacing: 5,
-                                                      children: [
-                                                        InfoBox(
-                                                          info: appText.dText(e.submods.length > 1 ? appText.numVariants : appText.numVariant, e.submods.length.toString()),
-                                                          borderHighlight: false,
-                                                        ),
-                                                        InfoBox(
-                                                          info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedSubmods().toString()),
-                                                          borderHighlight: e.applyStatus,
-                                                        ),
-                                                      ],
-                                                    )
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                      .toList(),
-                                  controller: modViewListV2SearchTextController,
-                                  onSuggestionTap: (p0) {
-                                    modViewListV2SearchTextController.text = p0.searchKey;
-                                    setState(() {});
-                                  },
-                                  onSearchTextChanged: (p0) {
-                                    setState(() {});
-                                    return filteredMods
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 1),
+                              child: SizedBox(
+                                height: 30,
+                                child: Stack(alignment: AlignmentDirectional.centerEnd, children: [
+                                  SearchField<Mod>(
+                                    enabled: !itemListSearchIncludesMods || searchTextController.value.text.isEmpty,
+                                    itemHeight: 90,
+                                    searchInputDecoration: SearchInputDecoration(
+                                        filled: true,
+                                        fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                                        isDense: true,
+                                        contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
+                                        cursorHeight: 15,
+                                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
+                                        cursorColor: Theme.of(context).colorScheme.inverseSurface,
+                                        hintText: appText.search),
+                                    suggestions: filteredMods
                                         .map(
                                           (e) => SearchFieldListItem<Mod>(
                                             e.modName,
@@ -349,25 +299,78 @@ class _ModViewListV2State extends State<ModViewListV2> {
                                             ),
                                           ),
                                         )
-                                        .toList();
-                                  },
-                                ),
-                                Visibility(
-                                  visible: modViewListV2SearchTextController.value.text.isNotEmpty,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 2),
-                                    child: IconButton(
-                                        visualDensity: VisualDensity.adaptivePlatformDensity,
-                                        onPressed: modViewListV2SearchTextController.value.text.isNotEmpty && (!itemListSearchIncludesMods || searchTextController.value.text.isEmpty)
-                                            ? () {
-                                                modViewListV2SearchTextController.clear();
-                                                setState(() {});
-                                              }
-                                            : null,
-                                        icon: const Icon(Icons.close)),
+                                        .toList(),
+                                    controller: modViewListV2SearchTextController,
+                                    onSuggestionTap: (p0) {
+                                      modViewListV2SearchTextController.text = p0.searchKey;
+                                      setState(() {});
+                                    },
+                                    onSearchTextChanged: (p0) {
+                                      setState(() {});
+                                      return filteredMods
+                                          .map(
+                                            (e) => SearchFieldListItem<Mod>(
+                                              e.modName,
+                                              item: e,
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 5),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  spacing: 5,
+                                                  children: [
+                                                    SizedBox(
+                                                      width: 75,
+                                                      height: 75,
+                                                      child: SubmodPreviewBox(imageFilePaths: e.previewImages, videoFilePaths: e.previewVideos, isNew: false),
+                                                    ),
+                                                    Column(
+                                                      spacing: 5,
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      mainAxisSize: MainAxisSize.min,
+                                                      children: [
+                                                        Text(e.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                                                        Row(
+                                                          spacing: 5,
+                                                          children: [
+                                                            InfoBox(
+                                                              info: appText.dText(e.submods.length > 1 ? appText.numVariants : appText.numVariant, e.submods.length.toString()),
+                                                              borderHighlight: false,
+                                                            ),
+                                                            InfoBox(
+                                                              info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedSubmods().toString()),
+                                                              borderHighlight: e.applyStatus,
+                                                            ),
+                                                          ],
+                                                        )
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                          .toList();
+                                    },
                                   ),
-                                )
-                              ]),
+                                  Visibility(
+                                    visible: modViewListV2SearchTextController.value.text.isNotEmpty,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(right: 2),
+                                      child: IconButton(
+                                          visualDensity: VisualDensity.adaptivePlatformDensity,
+                                          onPressed: modViewListV2SearchTextController.value.text.isNotEmpty && (!itemListSearchIncludesMods || searchTextController.value.text.isEmpty)
+                                              ? () {
+                                                  modViewListV2SearchTextController.clear();
+                                                  setState(() {});
+                                                }
+                                              : null,
+                                          icon: const Icon(Icons.close)),
+                                    ),
+                                  )
+                                ]),
+                              ),
                             ),
                           ),
                         if (itemEditingMode)

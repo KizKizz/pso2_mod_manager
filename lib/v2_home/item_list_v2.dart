@@ -78,33 +78,32 @@ class _ItemListV2State extends State<ItemListV2> {
     }
 
     // Sort
-    if (selectedDisplaySort.value == modSortingSelections[0]) {
-      for (var category in displayingCategories) {
-        category.items.sort((a, b) => a.favoriteSort().compareTo(b.favoriteSort()));
-      }
-    } else if (selectedDisplaySort.value == modSortingSelections[1]) {
-      for (var category in displayingCategories) {
-        category.items.sort((a, b) => a.hasPreviewsSort().compareTo(b.hasPreviewsSort()));
-      }
-    } else if (selectedDisplaySort.value == modSortingSelections[2]) {
-      for (var category in displayingCategories) {
+    for (var category in displayingCategories) {
+      if (selectedDisplaySort.value == modSortingSelections[0]) {
+        category.items.sort((a, b) => a.favoriteSort().compareTo(b.favoriteSort()) == 0
+            ? a.favoriteSort().compareTo(b.favoriteSort()) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
+            : a.favoriteSort().compareTo(b.favoriteSort()));
+      } else if (selectedDisplaySort.value == modSortingSelections[1]) {
+        category.items.sort((a, b) => a.hasPreviewsSort().compareTo(b.hasPreviewsSort()) == 0
+            ? a.hasPreviewsSort().compareTo(b.hasPreviewsSort()) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
+            : a.hasPreviewsSort().compareTo(b.hasPreviewsSort()));
+      } else if (selectedDisplaySort.value == modSortingSelections[2]) {
         category.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
-      }
-    } else if (selectedDisplaySort.value == modSortingSelections[3]) {
-      for (var category in displayingCategories) {
-        category.items.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
-      }
-    } else if (selectedDisplaySort.value == modSortingSelections[4]) {
-      for (var category in displayingCategories) {
-        category.items.sort((a, b) => b.applyDate.compareTo(a.applyDate));
-      }
-    } else if (selectedDisplaySort.value == modSortingSelections[5]) {
-      for (var category in displayingCategories) {
-        category.items.sort((a, b) => b.mods.length.compareTo(a.mods.length));
-      }
-    } else if (selectedDisplaySort.value == modSortingSelections[6]) {
-      for (var category in displayingCategories) {
-        category.items.sort((a, b) => a.mods.length.compareTo(b.mods.length));
+      } else if (selectedDisplaySort.value == modSortingSelections[3]) {
+        category.items.sort((a, b) => b.creationDate!.compareTo(a.creationDate!) == 0
+            ? b.creationDate!.compareTo(a.creationDate!) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
+            : b.creationDate!.compareTo(a.creationDate!));
+      } else if (selectedDisplaySort.value == modSortingSelections[4]) {
+        category.items.sort(
+            (a, b) => b.applyDate.compareTo(a.applyDate) == 0 ? b.applyDate.compareTo(a.applyDate) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()) : b.applyDate.compareTo(a.applyDate));
+      } else if (selectedDisplaySort.value == modSortingSelections[5]) {
+        category.items.sort((a, b) => b.mods.length.compareTo(a.mods.length) == 0
+            ? b.mods.length.compareTo(a.mods.length) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
+            : b.mods.length.compareTo(a.mods.length));
+      } else if (selectedDisplaySort.value == modSortingSelections[6]) {
+        category.items.sort((a, b) => a.mods.length.compareTo(b.mods.length) == 0
+            ? a.mods.length.compareTo(b.mods.length) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
+            : a.mods.length.compareTo(b.mods.length));
       }
     }
 

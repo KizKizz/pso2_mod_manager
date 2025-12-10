@@ -289,7 +289,9 @@ class AppText {
       sortingModIntoItems = 'Sorting "%p%" into associated items',
       removingEmptyDirsInFolder = 'Removing empty folders in\n%p%',
       checkingForDuplicatesInFolder = 'Checking for duplicates in\n%p%',
-      checkingForPrefixDirsInFolder = 'Checking for prefix folders in\n%p%';
+      checkingForPrefixDirsInFolder = 'Checking for prefix folders in\n%p%',
+      latestVersionNumber = 'Latest Version: %p%',
+      localVersionNumber = 'Local Version: %p%';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -400,7 +402,8 @@ class AppText {
       addAppliedModsToModSets = 'Add Applied Mods To Mod Sets',
       shareThisModSet = 'Share This Mod Set',
       showCustomCmlFiles = 'Show Custom Cml Files',
-      showPremades = 'Show Premades';
+      showPremades = 'Show Premades',
+      playerItemDatabase = 'Player Item Database';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',

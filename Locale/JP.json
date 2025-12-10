@@ -1,4 +1,7 @@
 {
+  "latestVersionNumber": "Latest Version: %p%",
+  "localVersionNumber": "Local Version: %p%",
+  "playerItemDatabase": "Player Item Database",
   "highestModCount": "Highest Mod Count",
   "lowestModCount": "Lowest Mod Count",
   "unpackingFile": "Unpacking\n%p%",

@@ -6,6 +6,7 @@ import 'package:pso2_mod_manager/app_localization/app_locale.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_localization/item_locale.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/settings/repath_confirm_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/homepage.dart';
@@ -73,6 +74,7 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                 child: SingleChildScrollView(
                     physics: const SuperRangeMaintainingScrollPhysics(),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 5,
                       children: [
                         // Profile
@@ -133,6 +135,17 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             targetIndex == 0 ? itemNameLanguage = ItemNameLanguage.en : itemNameLanguage = ItemNameLanguage.jp;
                             prefs.setString('itemNameLanguage', itemNameLanguage.value);
                           },
+                        ),
+                        // Player Item Database
+                        SettingsHeader(icon: Icons.dataset_outlined, text: appText.playerItemDatabase),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: Text(appText.dText(appText.latestVersionNumber, '${remotePlayerDataVersion.$1} - ${remotePlayerDataVersion.$2.split(': ').last}'),
+                              style: Theme.of(context).textTheme.bodyMedium),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: Text(appText.dText(appText.localVersionNumber, localPlayerDataVersion.toString()), style: Theme.of(context).textTheme.bodyMedium),
                         ),
                         // v2 Homepage
                         SettingsHeader(icon: Icons.view_sidebar, text: appText.homepageStyle),

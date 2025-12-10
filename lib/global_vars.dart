@@ -134,6 +134,8 @@ String charToReplaceWithoutSeparators = '[:*?"<>|]';
 
 String appTitle = 'PSO2NGS Mod Manager';
 String curAppVersion = '';
+(int, String) remotePlayerDataVersion = (-1, '');
+int localPlayerDataVersion = -1;
 bool offlineMode = false;
 List<CategoryType> masterModList = [];
 List<ModSet> masterModSetList = [];

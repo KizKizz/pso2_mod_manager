@@ -101,16 +101,19 @@ class _DataUpdatePageState extends State<DataUpdatePage> {
             return FutureBuilderError(
               loadingText: appText.checkingItemDataVersion,
               snapshotError: snapshot.error.toString(),
-              isPopup: false, showContButton: true,
+              isPopup: false,
+              showContButton: true,
             );
           } else {
             String remoteVersion = snapshot.data.$1;
             String desc = snapshot.data.$2;
+            remotePlayerDataVersion = (int.tryParse(remoteVersion) ?? -1, desc);
             File itemDataLocalVersionFile = File('${Directory.current.path}${p.separator}itemData${p.separator}itemDataLocalVersion.json');
             Map<String, dynamic> curItemDataVersion = jsonDecode(itemDataLocalVersionFile.readAsStringSync());
+            localPlayerDataVersion = int.tryParse(curItemDataVersion.entries.firstWhere((e) => e.key == 'version', orElse: () => const MapEntry('version', '0')).value) ?? -1;
             if (!File('${Directory.current.path}${p.separator}itemData${p.separator}playerItemData.json').existsSync() ||
                 (remoteVersion.isNotEmpty &&
-                    int.parse(remoteVersion) > int.parse(curItemDataVersion.entries.firstWhere((e) => e.key == 'version', orElse: () => const MapEntry('version', '0')).value))) {
+                    int.parse(remoteVersion) > localPlayerDataVersion)) {
               return Center(
                   child: CardOverlay(
                       paddingValue: 15,
