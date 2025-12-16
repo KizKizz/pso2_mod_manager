@@ -25,42 +25,23 @@ class _ChecksumIndicatorState extends State<ChecksumIndicator> {
         () {},
       );
     }
-    return Padding(
-        padding: const EdgeInsets.only(right: 10),
-        child: Row(
-          spacing: 5,
-          children: [
-            Visibility(
-              visible: checksumAvailability.watch(context),
-              child: SizedBox(
-                height: 20,
-                child: OutlinedButton.icon(
-                      style: ButtonStyle(
-                        visualDensity: VisualDensity.adaptivePlatformDensity,
-                        shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
-                      onPressed: () => launchUrlString(File(modChecksumFilePath).parent.path),
-                      icon: const Icon(Icons.app_registration_outlined, size: 18,),
-                      label: Text('${appText.checksum}: ${appText.ok}', textAlign: TextAlign.center)),
-              ) 
-              
-              
-            ),
-            Visibility(
-                visible: !checksumAvailability.watch(context),
-                child: SizedBox(
-                  height: 20,
-                  child: OutlinedButton.icon(
-                      style: ButtonStyle(
-                        visualDensity: VisualDensity.adaptivePlatformDensity,
-                        shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
-                      onPressed: () async {
-                        await checksumFileSelect();
-                      },
-                      icon: const Icon(Icons.apps_outage_outlined, size: 18, color: Colors.redAccent),
-                      label: Text('${appText.checksum}: ${appText.notFoundClickToBrowse}',
-                          textAlign: TextAlign.center, style: const TextStyle(color: Colors.redAccent))),
-                ))
-          ],
-        ));
+    return SizedBox(
+        height: 20,
+        child: checksumAvailability.watch(context)
+            ? OutlinedButton.icon(
+                style: ButtonStyle(visualDensity: VisualDensity.adaptivePlatformDensity, shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+                onPressed: () => launchUrlString(File(modChecksumFilePath).parent.path),
+                icon: const Icon(
+                  Icons.app_registration_outlined,
+                  size: 18,
+                ),
+                label: Text('${appText.checksum}: ${appText.ok}', textAlign: TextAlign.center))
+            : OutlinedButton.icon(
+                style: ButtonStyle(visualDensity: VisualDensity.adaptivePlatformDensity, shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+                onPressed: () async {
+                  await checksumFileSelect();
+                },
+                icon: const Icon(Icons.apps_outage_outlined, size: 18, color: Colors.redAccent),
+                label: Text('${appText.checksum}: ${appText.notFoundClickToBrowse}', textAlign: TextAlign.center, style: const TextStyle(color: Colors.redAccent))));
   }
 }

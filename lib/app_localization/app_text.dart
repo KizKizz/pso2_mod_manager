@@ -42,7 +42,7 @@ class AppText {
       dfSwimMotion = 'Swim Motion';
 
   // Sorting Name
-  String nameAlphabetical = 'Name (Alphabetical)', recentlyAdded = 'Recently Added', recentlyApplied = 'Recently Applied';
+  String nameAlphabetical = 'Name (Alphabetical)', recentlyAdded = 'Recently Added', recentlyApplied = 'Recently Applied', highestModCount = 'Highest Mod Count', lowestModCount = 'Lowest Mod Count';
 
   // Line Strike types
   String cards = 'Cards', boards = 'Boards', sleeves = 'Sleeves';
@@ -144,7 +144,8 @@ class AppText {
       hasPreviews = 'Has Previews',
       start = 'Start',
       duplicate = 'Duplicate',
-      share = 'Share';
+      share = 'Share',
+      donate = 'Donate';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -176,7 +177,7 @@ class AppText {
       iceFiles = 'Ice Files',
       step1 = 'Step 1',
       step2 = 'Step 2',
-      processingItems = 'Processing Items',
+      processingItems = 'Processing Mod Files',
       numMatchedItem = '%p% Matched Item',
       numMatchedItems = '%p% Matched Items',
       editItemsAndVariants = 'Edit Items & Variants',
@@ -230,7 +231,7 @@ class AppText {
       imageName = 'Image Name',
       showAll = 'Show All',
       lineStrike = 'Line Strike',
-      exportingFile = 'Exporting "%p%',
+      exportingFile = 'Exporting "%p%"',
       convertingFileToPng = 'Converting "%p%" to png',
       restoringFile = 'Restoring "%p%"',
       successfullyAppliedFile = 'Successfully applied "%p%"',
@@ -283,7 +284,15 @@ class AppText {
       useLocalBackupOnly = 'Use Local Backup Only',
       deselectAll = 'Deselect All',
       successfullyExportedFileName = 'Successfully exported: %p%',
-      failedToExport = 'Failed to export';
+      failedToExport = 'Failed to export',
+      unpackingFile = 'Unpacking\n%p%',
+      sortingFolder = 'Sorting\n%p%',
+      sortingModIntoItems = 'Sorting "%p%" into associated items',
+      removingEmptyDirsInFolder = 'Removing empty folders in\n%p%',
+      checkingForDuplicatesInFolder = 'Checking for duplicates in\n%p%',
+      checkingForPrefixDirsInFolder = 'Checking for prefix folders in\n%p%',
+      latestVersionNumber = 'Latest Version: %p%',
+      localVersionNumber = 'Local Version: %p%';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -314,7 +323,7 @@ class AppText {
       downloadItemData = 'Download Item Data',
       browseDownloadedItemDataLocation = 'Browse Downloaded Item Data Location',
       loadingItemData = 'Loading Item Data',
-      waitingForItems = 'Waiting For Items',
+      waitingForItems = 'Waiting For Mods',
       fetchingDataFromSegaServers = 'Fetching Data From Sega Servers',
       enterNewNameHere = 'Enter new name here',
       loadingModSets = 'Loading Mod Sets',
@@ -394,7 +403,8 @@ class AppText {
       addAppliedModsToModSets = 'Add Applied Mods To Mod Sets',
       shareThisModSet = 'Share This Mod Set',
       showCustomCmlFiles = 'Show Custom Cml Files',
-      showPremades = 'Show Premades';
+      showPremades = 'Show Premades',
+      playerItemDatabase = 'Player Item Database';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',
@@ -434,7 +444,8 @@ class AppText {
           'You can convert your saved character files to cml files using the Model Tool program\nAdd the cml files using the "Add Files" button\nSelect a cml file in the left panel\nPress the "Replace" button on the items in the right panel to replace them with the selected cml file',
       boundingRadiusInfo = 'High negative values might cause character to be invisible in game on some outfits\nPlease be caution',
       useLocalBackupOnlyInfo = 'This option will restrict mod manager from downloading original files from Sega servers for backups\nThis will also disable Mark Modded Items In Game option',
-      quickSaveRestoreModsInfo = 'This will save all currently applied mods then restore original game files\nApply & Restore mods will also be disabled until saved mod files are re-applied using this button',
+      quickSaveRestoreModsInfo =
+          'This will save all currently applied mods then restore original game files\nApply & Restore mods will also be disabled until saved mod files are re-applied using this button',
       firstTimeHomepageStyleSelectInfo = 'You can always change Homepage Style in Settings';
 
   // Help menu
@@ -627,6 +638,10 @@ class AppText {
         return recentlyAdded;
       case 4:
         return recentlyApplied;
+      case 5:
+        return highestModCount;
+      case 6:
+        return lowestModCount;
       default:
         return name;
     }

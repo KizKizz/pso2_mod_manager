@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
@@ -67,7 +68,7 @@ class _MultiChoiceSelectButtonState extends State<MultiChoiceSelectButton> {
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 4.5),
-                child: Text(
+                child: AutoSizeText(
                     widget.selectedItems.watch(context).length == widget.availableItemList.length || widget.selectedItems.value.contains('All')
                         ? appText.all
                         : widget.selectedItems.watch(context).length == 1
@@ -233,7 +234,7 @@ class _SingleChoiceSelectButtonState extends State<SingleChoiceSelectButton> {
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 4.5),
-                child: Text(
+                child: AutoSizeText(
                     FileSystemEntity.isFileSync(widget.selectedItem.value)
                         ? p.basename(widget.selectedItem.value)
                         : widget.availableItemList.contains(widget.selectedItem.value)

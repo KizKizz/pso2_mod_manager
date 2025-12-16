@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/export_import/export_import_functions.dart';
@@ -96,6 +97,25 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
       displayingCategories = categories.where((e) => e.getNumOfAppliedItems() > 0).toList();
     } else {
       displayingCategories = categories.where((e) => selectedAppliedListDisplayCategories.value.contains(e.categoryName)).toList();
+    }
+
+    // Sort
+    for (var cate in displayingCategories) {
+      if (selectedDisplaySortAppliedList.value == modSortingSelections[0]) {
+        cate.items.sort((a, b) => a.favoriteSort().compareTo(b.favoriteSort()));
+      } else if (selectedDisplaySortAppliedList.value == modSortingSelections[1]) {
+        cate.items.sort((a, b) => a.hasPreviewsSort().compareTo(b.hasPreviewsSort()));
+      } else if (selectedDisplaySortAppliedList.value == modSortingSelections[2]) {
+        cate.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
+      } else if (selectedDisplaySortAppliedList.value == modSortingSelections[3]) {
+        cate.items.sort((a, b) => b.creationDate!.compareTo(a.creationDate!));
+      } else if (selectedDisplaySortAppliedList.value == modSortingSelections[4]) {
+        cate.items.sort((a, b) => b.applyDate.compareTo(a.applyDate));
+      } else if (selectedDisplaySortAppliedList.value == modSortingSelections[5]) {
+        cate.items.sort((a, b) => b.mods.length.compareTo(a.mods.length));
+      } else if (selectedDisplaySortAppliedList.value == modSortingSelections[6]) {
+        cate.items.sort((a, b) => a.mods.length.compareTo(b.mods.length));
+      }
     }
 
     return AnimatedOpacity(
@@ -265,11 +285,29 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                                 }
                               }
                             : null,
-                        child: Text(
+                        child: AutoSizeText(
                           appText.dText(numOfAppliedMods > 1 ? appText.holdToRestoreNumAppliedMods : appText.holdToRestoreNumAppliedMod, numOfAppliedMods.toString()),
                           textAlign: TextAlign.center,
                         )),
                   )),
+              Flexible(
+                  flex: 2,
+                  fit: FlexFit.tight,
+                  child: SingleChoiceSelectButton(
+                      width: double.infinity,
+                      height: 30,
+                      label: appText.sort,
+                      selectPopupLabel: appText.sort,
+                      availableItemList: modSortingSelections,
+                      availableItemLabels: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                      selectedItemsLabel: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                      selectedItem: selectedDisplaySortAppliedList,
+                      extraWidgets: [],
+                      savePref: () async {
+                        final prefs = await SharedPreferences.getInstance();
+                        prefs.setString('selectedDisplaySortAppliedList', selectedDisplaySortAppliedList.value);
+                        controller.jumpTo(0);
+                      })),
               MultiChoiceSelectButton(
                   width: 200,
                   height: 30,

@@ -53,15 +53,30 @@ class _MainModSetGridState extends State<MainModSetGrid> {
 
     // Sort
     if (selectedDisplaySortModSet.value == modSortingSelections[0]) {
-      displayingModSets.sort((a, b) => a.favoriteSort().compareTo(b.favoriteSort()));
+      displayingModSets.sort((a, b) => a.favoriteSort().compareTo(b.favoriteSort()) == 0
+          ? a.favoriteSort().compareTo(b.favoriteSort()) + a.setName.toLowerCase().compareTo(b.setName.toLowerCase())
+          : a.favoriteSort().compareTo(b.favoriteSort()));
     } else if (selectedDisplaySortModSet.value == modSortingSelections[1]) {
-      displayingModSets.sort((a, b) => a.hasPreviewsSort().compareTo(b.hasPreviewsSort()));
+      displayingModSets.sort((a, b) => a.hasPreviewsSort().compareTo(b.hasPreviewsSort()) == 0
+          ? a.hasPreviewsSort().compareTo(b.hasPreviewsSort()) + a.setName.toLowerCase().compareTo(b.setName.toLowerCase())
+          : a.hasPreviewsSort().compareTo(b.hasPreviewsSort()));
     } else if (selectedDisplaySortModSet.value == modSortingSelections[2]) {
       displayingModSets.sort((a, b) => a.setName.toLowerCase().compareTo(b.setName.toLowerCase()));
     } else if (selectedDisplaySortModSet.value == modSortingSelections[3]) {
-      displayingModSets.sort((a, b) => b.addedDate.compareTo(a.addedDate));
+      displayingModSets.sort(
+          (a, b) => b.addedDate.compareTo(a.addedDate) == 0 ? b.addedDate.compareTo(a.addedDate) + a.setName.toLowerCase().compareTo(b.setName.toLowerCase()) : b.addedDate.compareTo(a.addedDate));
     } else if (selectedDisplaySortModSet.value == modSortingSelections[4]) {
-      displayingModSets.sort((a, b) => b.appliedDate!.compareTo(a.appliedDate!));
+      displayingModSets.sort((a, b) => b.appliedDate!.compareTo(a.appliedDate!) == 0
+          ? b.appliedDate!.compareTo(a.appliedDate!) + a.setName.toLowerCase().compareTo(b.setName.toLowerCase())
+          : b.appliedDate!.compareTo(a.appliedDate!));
+    } else if (selectedDisplaySortModSet.value == modSortingSelections[5]) {
+      displayingModSets.sort((a, b) => b.setItems.length.compareTo(a.setItems.length) == 0
+          ? b.setItems.length.compareTo(a.setItems.length) + a.setName.toLowerCase().compareTo(b.setName.toLowerCase())
+          : b.setItems.length.compareTo(a.setItems.length));
+    } else if (selectedDisplaySortModSet.value == modSortingSelections[6]) {
+      displayingModSets.sort((a, b) => a.setItems.length.compareTo(b.setItems.length) == 0
+          ? a.setItems.length.compareTo(b.setItems.length) + a.setName.toLowerCase().compareTo(b.setName.toLowerCase())
+          : a.setItems.length.compareTo(b.setItems.length));
     }
 
     return AnimatedOpacity(

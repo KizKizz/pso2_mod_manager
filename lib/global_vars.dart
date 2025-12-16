@@ -127,13 +127,15 @@ final defaultWeaponTypes = [
 final lineStrikeItemTypes = [LineStrikeItemType.cards.value, LineStrikeItemType.boards.value, LineStrikeItemType.sleeves.value];
 final itemTypes = ['Both', 'PSO2', 'NGS'];
 final defaultMotionTypes = ['Glide Motion', 'Jump Motion', 'Landing Motion', 'Dash Motion', 'Run Motion', 'Standby Motion', 'Swim Motion'];
-final modSortingSelections = ['Favorites', 'Has Previews', 'Name (Alphabetical)', 'Recently Added', 'Recently Applied'];
+final modSortingSelections = ['Favorites', 'Has Previews', 'Name (Alphabetical)', 'Recently Added', 'Recently Applied', 'Highest Mod Count', 'Lowest Mod Count'];
 final win32DirNames = ['win32', 'win32reboot', 'win32_na', 'win32reboot_na'];
 String charToReplace = '[\\/:*?"<>|]';
 String charToReplaceWithoutSeparators = '[:*?"<>|]';
 
 String appTitle = 'PSO2NGS Mod Manager';
 String curAppVersion = '';
+(int, String) remotePlayerDataVersion = (-1, '');
+int localPlayerDataVersion = -1;
 bool offlineMode = false;
 List<CategoryType> masterModList = [];
 List<ModSet> masterModSetList = [];

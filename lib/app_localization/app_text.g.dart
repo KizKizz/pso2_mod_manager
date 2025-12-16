@@ -38,6 +38,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..nameAlphabetical = json['nameAlphabetical'] as String
   ..recentlyAdded = json['recentlyAdded'] as String
   ..recentlyApplied = json['recentlyApplied'] as String
+  ..highestModCount = json['highestModCount'] as String
+  ..lowestModCount = json['lowestModCount'] as String
   ..cards = json['cards'] as String
   ..boards = json['boards'] as String
   ..sleeves = json['sleeves'] as String
@@ -139,6 +141,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..start = json['start'] as String
   ..duplicate = json['duplicate'] as String
   ..share = json['share'] as String
+  ..donate = json['donate'] as String
   ..patchNotes = json['patchNotes'] as String
   ..appUpdate = json['appUpdate'] as String
   ..tryAgain = json['tryAgain'] as String
@@ -281,6 +284,16 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..successfullyExportedFileName =
       json['successfullyExportedFileName'] as String
   ..failedToExport = json['failedToExport'] as String
+  ..unpackingFile = json['unpackingFile'] as String
+  ..sortingFolder = json['sortingFolder'] as String
+  ..sortingModIntoItems = json['sortingModIntoItems'] as String
+  ..removingEmptyDirsInFolder = json['removingEmptyDirsInFolder'] as String
+  ..checkingForDuplicatesInFolder =
+      json['checkingForDuplicatesInFolder'] as String
+  ..checkingForPrefixDirsInFolder =
+      json['checkingForPrefixDirsInFolder'] as String
+  ..latestVersionNumber = json['latestVersionNumber'] as String
+  ..localVersionNumber = json['localVersionNumber'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -399,6 +412,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..shareThisModSet = json['shareThisModSet'] as String
   ..showCustomCmlFiles = json['showCustomCmlFiles'] as String
   ..showPremades = json['showPremades'] as String
+  ..playerItemDatabase = json['playerItemDatabase'] as String
   ..failedToFetchRemoteLocaleData =
       json['failedToFetchRemoteLocaleData'] as String
   ..unableToUpdateFile = json['unableToUpdateFile'] as String
@@ -544,6 +558,8 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'nameAlphabetical': instance.nameAlphabetical,
       'recentlyAdded': instance.recentlyAdded,
       'recentlyApplied': instance.recentlyApplied,
+      'highestModCount': instance.highestModCount,
+      'lowestModCount': instance.lowestModCount,
       'cards': instance.cards,
       'boards': instance.boards,
       'sleeves': instance.sleeves,
@@ -645,6 +661,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'start': instance.start,
       'duplicate': instance.duplicate,
       'share': instance.share,
+      'donate': instance.donate,
       'patchNotes': instance.patchNotes,
       'appUpdate': instance.appUpdate,
       'tryAgain': instance.tryAgain,
@@ -783,6 +800,14 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'deselectAll': instance.deselectAll,
       'successfullyExportedFileName': instance.successfullyExportedFileName,
       'failedToExport': instance.failedToExport,
+      'unpackingFile': instance.unpackingFile,
+      'sortingFolder': instance.sortingFolder,
+      'sortingModIntoItems': instance.sortingModIntoItems,
+      'removingEmptyDirsInFolder': instance.removingEmptyDirsInFolder,
+      'checkingForDuplicatesInFolder': instance.checkingForDuplicatesInFolder,
+      'checkingForPrefixDirsInFolder': instance.checkingForPrefixDirsInFolder,
+      'latestVersionNumber': instance.latestVersionNumber,
+      'localVersionNumber': instance.localVersionNumber,
       'loadingUILanguage': instance.loadingUILanguage,
       'selectUILanguage': instance.selectUILanguage,
       'selectItemNameLanguage': instance.selectItemNameLanguage,
@@ -895,6 +920,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'shareThisModSet': instance.shareThisModSet,
       'showCustomCmlFiles': instance.showCustomCmlFiles,
       'showPremades': instance.showPremades,
+      'playerItemDatabase': instance.playerItemDatabase,
       'failedToFetchRemoteLocaleData': instance.failedToFetchRemoteLocaleData,
       'unableToUpdateFile': instance.unableToUpdateFile,
       'unableToGetAppVersionDataFromGitHub':
