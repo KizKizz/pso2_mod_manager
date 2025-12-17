@@ -121,11 +121,11 @@ Future<Directory> modSwapAccessories(
     //group1 > group1
     List<File> renamedExtractedGroup1Files = [];
     if (extractedGroup1FilesF.isNotEmpty && extractedGroup1FilesT.isNotEmpty) {
-      renamedExtractedGroup1Files = await modSwapRename(extractedGroup1FilesF, extractedGroup1FilesT, [], rItemID, false, false);
+      renamedExtractedGroup1Files = await modSwapRename(extractedGroup1FilesF, extractedGroup1FilesT, [], rItemID, ItemCrossSwap.none);
     } else if (extractedGroup1FilesF.isEmpty && extractedGroup1FilesT.isNotEmpty) {
-      renamedExtractedGroup1Files = await modSwapRename(extractedGroup2FilesF, extractedGroup1FilesT, [], rItemID, false, false);
+      renamedExtractedGroup1Files = await modSwapRename(extractedGroup2FilesF, extractedGroup1FilesT, [], rItemID, ItemCrossSwap.none);
     } else if (extractedGroup1FilesF.isNotEmpty && extractedGroup1FilesT.isEmpty) {
-      renamedExtractedGroup1Files = await modSwapRename(extractedGroup1FilesF, extractedGroup2FilesT, [], rItemID, false, false);
+      renamedExtractedGroup1Files = await modSwapRename(extractedGroup1FilesF, extractedGroup2FilesT, [], rItemID, ItemCrossSwap.none);
       String extractedGroup2PathF = Uri.file('$tempSubmodPathF/${lItemIceName}_ext/group2').toFilePath();
       if (!Directory(extractedGroup2PathF).existsSync()) {
         Directory(extractedGroup2PathF).createSync();
@@ -138,11 +138,11 @@ Future<Directory> modSwapAccessories(
     //group2 > group2
     List<File> renamedExtractedGroup2Files = [];
     if (extractedGroup2FilesF.isNotEmpty && extractedGroup2FilesT.isNotEmpty) {
-      renamedExtractedGroup2Files = await modSwapRename(extractedGroup2FilesF, extractedGroup2FilesT, [], rItemID, false, false);
+      renamedExtractedGroup2Files = await modSwapRename(extractedGroup2FilesF, extractedGroup2FilesT, [], rItemID, ItemCrossSwap.none);
     } else if (extractedGroup2FilesF.isEmpty && extractedGroup2FilesT.isNotEmpty) {
-      renamedExtractedGroup2Files = await modSwapRename(extractedGroup1FilesF, extractedGroup2FilesT, [], rItemID, false, false);
+      renamedExtractedGroup2Files = await modSwapRename(extractedGroup1FilesF, extractedGroup2FilesT, [], rItemID, ItemCrossSwap.none);
     } else if (extractedGroup2FilesF.isNotEmpty && extractedGroup2FilesT.isEmpty) {
-      renamedExtractedGroup2Files = await modSwapRename(extractedGroup2FilesF, extractedGroup1FilesT, [], rItemID, false, false);
+      renamedExtractedGroup2Files = await modSwapRename(extractedGroup2FilesF, extractedGroup1FilesT, [], rItemID, ItemCrossSwap.none);
       String extractedGroup1PathF = Uri.file('$tempSubmodPathF/${lItemIceName}_ext/group1').toFilePath();
       if (!Directory(extractedGroup1PathF).existsSync()) {
         Directory(extractedGroup1PathF).createSync();

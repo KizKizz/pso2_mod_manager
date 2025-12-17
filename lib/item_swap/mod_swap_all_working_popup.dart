@@ -22,7 +22,7 @@ import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
-Future<void> modSwapAllWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, ItemData rItemData, Mod mod, SubMod submod) async {
+Future<void> modSwapAllWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, ItemData rItemData, Mod mod, SubMod submod, ItemCrossSwap itemCrossSwap) async {
   Directory swapOutputDir = Directory('');
   bool taskWorking = false;
 
@@ -44,7 +44,7 @@ Future<void> modSwapAllWorkingPopup(context, bool isVanillaSwap, ItemData lItemD
                 swapOutputDir = await modSwapEmotes(context, isVanillaSwap, mod, submod, rItemData.getName(), lItemData.getIceDetails(), rItemData.getIceDetails());
               } else {
                 swapOutputDir =
-                    await modSwapGeneral(context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), lItemData.getItemID(), rItemData.getItemID());
+                    await modSwapGeneral(context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), lItemData.getItemID(), rItemData.getItemID(), itemCrossSwap);
               }
               if (swapOutputDir.existsSync()) {
                 // Add to mod manager

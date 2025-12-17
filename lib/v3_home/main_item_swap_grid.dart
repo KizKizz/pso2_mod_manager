@@ -15,8 +15,8 @@ import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 bool replaceLQTexturesWithHQ = false;
-bool emoteToIdleMotion = false;
-bool idleMotionToEmote = false;
+// bool emoteToIdleMotion = false;
+// bool idleMotionToEmote = false;
 
 class MainItemSwapGrid extends StatefulWidget {
   const MainItemSwapGrid({super.key});
@@ -38,6 +38,7 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
   List<(ItemData, ItemData)> emoteSwapQueue = [];
   bool showEmoteQueue = false;
   ItemData? lastQueuedEmoteItemData;
+  ItemCrossSwap itemCrossSwap = ItemCrossSwap.none;
 
   @override
   void initState() {
@@ -354,6 +355,11 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                               extraCategory.isEmpty ? extraCategory = selectedDisplayItemSwapCategory.watch(context) : extraCategory = '';
                               extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
                               extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
+                              extraCategory == defaultCategoryDirs[2]
+                                  ? itemCrossSwap = ItemCrossSwap.bodyPaintToInnerwear
+                                  : extraCategory == defaultCategoryDirs[11]
+                                      ? itemCrossSwap = ItemCrossSwap.innerwearToBodyPaint
+                                      : itemCrossSwap = ItemCrossSwap.none;
                               rScrollController.jumpTo(0);
                             });
                           },
@@ -429,7 +435,7 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                                 itemSwapWorkingStatus.value = '';
                                 extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
                                 extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
-                                itemSwapWorkingPopup(context, true, lSelectedItemData.value!, rSelectedItemData.value!, lItemModGet(), lItemSubmodGet(lSelectedItemData.value!));
+                                itemSwapWorkingPopup(context, true, lSelectedItemData.value!, rSelectedItemData.value!, lItemModGet(), lItemSubmodGet(lSelectedItemData.value!), itemCrossSwap);
                               }
                             : null,
                         child: Text(appText.next))

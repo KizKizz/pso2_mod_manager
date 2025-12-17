@@ -13,7 +13,7 @@ import 'package:pso2_mod_manager/v3_functions/original_ice_download.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_swap_grid.dart';
 
 Future<Directory> modSwapGeneral(
-    context, bool isVanillaItemSwap, Mod fromMod, SubMod fromSubmod, List<String> lItemAvailableIces, List<String> rItemAvailableIces, String rItemName, String lItemId, String rItemId) async {
+    context, bool isVanillaItemSwap, Mod fromMod, SubMod fromSubmod, List<String> lItemAvailableIces, List<String> rItemAvailableIces, String rItemName, String lItemId, String rItemId, ItemCrossSwap itemCrossSwap) async {
   // Clean and create temp dirs
   // await modSwapTempDirsRemove();
   // await modSwapTempDirsCreate();
@@ -218,11 +218,11 @@ Future<Directory> modSwapGeneral(
     //group2 > group2
     List<File> renamedExtractedGroup2Files = [];
     if (extractedGroup2FilesF.isNotEmpty && extractedGroup2FilesT.isNotEmpty) {
-      renamedExtractedGroup2Files = await modSwapRename(extractedGroup2FilesF, extractedGroup2FilesT, [lItemId, rItemId], '', false, false);
+      renamedExtractedGroup2Files = await modSwapRename(extractedGroup2FilesF, extractedGroup2FilesT, [lItemId, rItemId], '', itemCrossSwap);
     } else if (extractedGroup2FilesF.isEmpty && extractedGroup2FilesT.isNotEmpty) {
-      renamedExtractedGroup2Files = await modSwapRename(extractedGroup1FilesF, extractedGroup2FilesT, [lItemId, rItemId], '', false, false);
+      renamedExtractedGroup2Files = await modSwapRename(extractedGroup1FilesF, extractedGroup2FilesT, [lItemId, rItemId], '', itemCrossSwap);
     } else if (extractedGroup2FilesF.isNotEmpty && extractedGroup2FilesT.isEmpty) {
-      renamedExtractedGroup2Files = await modSwapRename(extractedGroup2FilesF, extractedGroup1FilesT, [lItemId, rItemId], '', false, false);
+      renamedExtractedGroup2Files = await modSwapRename(extractedGroup2FilesF, extractedGroup1FilesT, [lItemId, rItemId], '', itemCrossSwap);
       String extractedGroup1PathF = Uri.file('$tempSubmodPathF/${lItemIceName}_ext/group1').toFilePath();
       if (!Directory(extractedGroup1PathF).existsSync()) {
         Directory(extractedGroup1PathF).createSync();
@@ -235,11 +235,11 @@ Future<Directory> modSwapGeneral(
     //group1 > group1
     List<File> renamedExtractedGroup1Files = [];
     if (extractedGroup1FilesF.isNotEmpty && extractedGroup1FilesT.isNotEmpty) {
-      renamedExtractedGroup1Files = await modSwapRename(extractedGroup1FilesF, extractedGroup1FilesT, [lItemId, rItemId], '', false, false);
+      renamedExtractedGroup1Files = await modSwapRename(extractedGroup1FilesF, extractedGroup1FilesT, [lItemId, rItemId], '', itemCrossSwap);
     } else if (extractedGroup1FilesF.isEmpty && extractedGroup1FilesT.isNotEmpty) {
-      renamedExtractedGroup1Files = await modSwapRename(extractedGroup2FilesF, extractedGroup1FilesT, [lItemId, rItemId], '', false, false);
+      renamedExtractedGroup1Files = await modSwapRename(extractedGroup2FilesF, extractedGroup1FilesT, [lItemId, rItemId], '', itemCrossSwap);
     } else if (extractedGroup1FilesF.isNotEmpty && extractedGroup1FilesT.isEmpty) {
-      renamedExtractedGroup1Files = await modSwapRename(extractedGroup1FilesF, extractedGroup2FilesT, [lItemId, rItemId], '', false, false);
+      renamedExtractedGroup1Files = await modSwapRename(extractedGroup1FilesF, extractedGroup2FilesT, [lItemId, rItemId], '', itemCrossSwap);
       String extractedGroup2PathF = Uri.file('$tempSubmodPathF/${lItemIceName}_ext/group2').toFilePath();
       if (!Directory(extractedGroup2PathF).existsSync()) {
         Directory(extractedGroup2PathF).createSync();

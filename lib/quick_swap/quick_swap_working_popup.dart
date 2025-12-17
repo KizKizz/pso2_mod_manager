@@ -46,7 +46,7 @@ void quickSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, Item
                 swapOutputDir = await modSwapEmotes(context, isVanillaSwap, mod, submod, rItemData.getName(), lItemData.getIceDetails(), rItemData.getIceDetails());
               } else {
                 swapOutputDir =
-                    await modSwapGeneral(context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), lItemData.getItemID(), rItemData.getItemID());
+                    await modSwapGeneral(context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), lItemData.getItemID(), rItemData.getItemID(), ItemCrossSwap.none);
               }
               if (swapOutputDir.existsSync()) {
                 // Add to mod manager

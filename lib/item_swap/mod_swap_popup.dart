@@ -5,6 +5,7 @@ import 'package:pso2_mod_manager/item_swap/emote_queue_swap_working_popup.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_grid_layout.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_working_popup.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_grid_layout.dart';
+import 'package:pso2_mod_manager/item_swap/mod_swap_helper_functions.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
@@ -32,6 +33,7 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
   List<ItemData> lDisplayingItems = [];
   List<(ItemData, ItemData)> emoteSwapQueue = [];
   bool showEmoteQueue = false;
+  ItemCrossSwap itemCrossSwap = ItemCrossSwap.none;
 
   await showDialog(
       barrierDismissible: false,
@@ -405,7 +407,7 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                                     itemSwapWorkingStatus.value = '';
                                     extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
                                     extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
-                                    await itemSwapWorkingPopup(context, false, lSelectedItemData.value!, rSelectedItemData.value!, mod, submod);
+                                    await itemSwapWorkingPopup(context, false, lSelectedItemData.value!, rSelectedItemData.value!, mod, submod, itemCrossSwap);
                                   }
                                 : null,
                             child: Text(appText.next)),
