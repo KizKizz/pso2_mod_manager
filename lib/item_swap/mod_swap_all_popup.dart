@@ -182,12 +182,16 @@ Future<void> modSwapAllPopup(context, Item item, Mod mod) async {
                               onPressed: () {
                                 setState(() {
                                   extraCategory.isEmpty ? extraCategory = mod.category : extraCategory = '';
-                                  mod.category == defaultCategoryDirs[11] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
-                                  item.category == defaultCategoryDirs[2]
-                                      ? itemCrossSwap = ItemCrossSwap.bodyPaintToInnerwear
-                                      : item.category == defaultCategoryDirs[11]
-                                          ? itemCrossSwap = ItemCrossSwap.innerwearToBodyPaint
-                                          : itemCrossSwap = ItemCrossSwap.none;
+                                  // mod.category == defaultCategoryDirs[11] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
+                                  // extraCategory == defaultCategoryDirs[2]
+                                  //     ? itemCrossSwap = ItemCrossSwap.bodyPaintToInnerwear
+                                  //     : extraCategory == defaultCategoryDirs[11]
+                                  //         ? itemCrossSwap = ItemCrossSwap.innerwearToBodyPaint
+                                  //         : extraCategory == defaultCategoryDirs[7]
+                                  //             ? itemCrossSwap = ItemCrossSwap.emoteToIdleMotion
+                                  //             : extraCategory == defaultCategoryDirs[14]
+                                  //                 ? itemCrossSwap = ItemCrossSwap.idleMotionToEmote
+                                  //                 : itemCrossSwap = ItemCrossSwap.none;
                                   rScrollController.jumpTo(0);
                                 });
                               },
@@ -224,6 +228,15 @@ Future<void> modSwapAllPopup(context, Item item, Mod mod) async {
                                     }
 
                                     if (lSelectedItemData.value != null) {
+                                      lSelectedItemData.value!.category == defaultCategoryDirs[2] && rSelectedItemData.value!.category == defaultCategoryDirs[11]
+                                          ? itemCrossSwap = ItemCrossSwap.bodyPaintToInnerwear
+                                          : lSelectedItemData.value!.category == defaultCategoryDirs[11] && rSelectedItemData.value!.category == defaultCategoryDirs[2]
+                                              ? itemCrossSwap = ItemCrossSwap.innerwearToBodyPaint
+                                              : lSelectedItemData.value!.category == defaultCategoryDirs[7] && rSelectedItemData.value!.category == defaultCategoryDirs[14]
+                                                  ? itemCrossSwap = ItemCrossSwap.emoteToIdleMotion
+                                                  : lSelectedItemData.value!.category == defaultCategoryDirs[14] && rSelectedItemData.value!.category == defaultCategoryDirs[7]
+                                                      ? itemCrossSwap = ItemCrossSwap.idleMotionToEmote
+                                                      : itemCrossSwap = ItemCrossSwap.none;
                                       await modSwapAllWorkingPopup(
                                           MaterialAppService.navigatorKey.currentContext, false, lSelectedItemData.value!, rSelectedItemData.value!, mod, submod, itemCrossSwap);
                                       await Future.delayed(const Duration(milliseconds: 100));

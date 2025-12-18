@@ -36,6 +36,10 @@ Future<void> itemSwapAllPopup(context, Item item) async {
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (dialogContext, setState) {
+          void refresh() {
+            setState(() {});
+          }
+
           displayingItems = pItemData
               .where((e) => showNoNameItems.watch(context) || (!showNoNameItems.watch(context) && e.getName().isNotEmpty))
               .where((e) => item.category == defaultCategoryDirs[1]
@@ -76,6 +80,10 @@ Future<void> itemSwapAllPopup(context, Item item) async {
           List<SubMod> availableSubmods = [];
           for (var mod in item.mods) {
             availableSubmods.addAll(mod.submods);
+          }
+
+          for (var aMod in availableSubmods) {
+            if (!selectedSubmods.value.contains(aMod)) selectedSubmods.value.add(aMod);
           }
 
           // Data from mod
@@ -169,16 +177,7 @@ Future<void> itemSwapAllPopup(context, Item item) async {
                         showPreview: showPreviews,
                         item: item,
                       )),
-                      Expanded(
-                          child: ItemSwapAllSelectedGridLayout(
-                        itemDataList: rSelectedItemData,
-                        scrollController: mScrollController,
-                        refresh: () {
-                          setState(
-                            () {},
-                          );
-                        },
-                      )),
+                      Expanded(child: ItemSwapAllSelectedGridLayout(itemDataList: rSelectedItemData, scrollController: mScrollController, refresh: refresh)),
                       Expanded(
                           child: ItemSwapAllGridLayout(
                         itemDataList: extraCategory == defaultCategoryDirs[1] ||
@@ -190,11 +189,7 @@ Future<void> itemSwapAllPopup(context, Item item) async {
                             : displayingItems,
                         scrollController: rScrollController,
                         selectedItemData: rSelectedItemData,
-                        refresh: () {
-                          setState(
-                            () {},
-                          );
-                        },
+                        refresh: refresh,
                       ))
                     ],
                   )),
@@ -232,12 +227,16 @@ Future<void> itemSwapAllPopup(context, Item item) async {
                               onPressed: () {
                                 setState(() {
                                   extraCategory.isEmpty ? extraCategory = item.category : extraCategory = '';
-                                  item.category == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
-                                  item.category == defaultCategoryDirs[2]
-                                      ? itemCrossSwap = ItemCrossSwap.bodyPaintToInnerwear
-                                      : item.category == defaultCategoryDirs[11]
-                                          ? itemCrossSwap = ItemCrossSwap.innerwearToBodyPaint
-                                          : itemCrossSwap = ItemCrossSwap.none;
+                                  // item.category == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
+                                  // extraCategory == defaultCategoryDirs[2]
+                                  //     ? itemCrossSwap = ItemCrossSwap.bodyPaintToInnerwear
+                                  //     : extraCategory == defaultCategoryDirs[11]
+                                  //         ? itemCrossSwap = ItemCrossSwap.innerwearToBodyPaint
+                                  //         : extraCategory == defaultCategoryDirs[7]
+                                  //             ? itemCrossSwap = ItemCrossSwap.emoteToIdleMotion
+                                  //             : extraCategory == defaultCategoryDirs[14]
+                                  //                 ? itemCrossSwap = ItemCrossSwap.idleMotionToEmote
+                                  //                 : itemCrossSwap = ItemCrossSwap.none;
                                   rScrollController.jumpTo(0);
                                 });
                               },
@@ -276,6 +275,15 @@ Future<void> itemSwapAllPopup(context, Item item) async {
 
                                       if (lSelectedItemData.value != null) {
                                         for (var rItemData in rSelectedItemData.value) {
+                                          lSelectedItemData.value!.category == defaultCategoryDirs[2] && rItemData.category == defaultCategoryDirs[11]
+                                              ? itemCrossSwap = ItemCrossSwap.bodyPaintToInnerwear
+                                              : lSelectedItemData.value!.category == defaultCategoryDirs[11] && rItemData.category == defaultCategoryDirs[2]
+                                                  ? itemCrossSwap = ItemCrossSwap.innerwearToBodyPaint
+                                                  : lSelectedItemData.value!.category == defaultCategoryDirs[7] && rItemData.category == defaultCategoryDirs[14]
+                                                      ? itemCrossSwap = ItemCrossSwap.emoteToIdleMotion
+                                                      : lSelectedItemData.value!.category == defaultCategoryDirs[14] && rItemData.category == defaultCategoryDirs[7]
+                                                          ? itemCrossSwap = ItemCrossSwap.idleMotionToEmote
+                                                          : itemCrossSwap = ItemCrossSwap.none;
                                           await modSwapAllWorkingPopup(MaterialAppService.navigatorKey.currentContext, false, lSelectedItemData.value!, rItemData, mod, submod, itemCrossSwap);
                                           await Future.delayed(const Duration(milliseconds: 100));
                                         }

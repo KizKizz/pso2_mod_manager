@@ -326,14 +326,25 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                               submod.category == defaultCategoryDirs[14] && item.subCategory! == 'Standby Motion' ||
                               submod.category == defaultCategoryDirs[16],
                           child: ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  extraCategory.isEmpty ? extraCategory = submod.category : extraCategory = '';
-                                  extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
-                                  extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
-                                  rScrollController.jumpTo(0);
-                                });
-                              },
+                              onPressed: submod.category == defaultCategoryDirs[7] && emoteSwapQueue.isNotEmpty
+                                  ? null
+                                  : () {
+                                      setState(() {
+                                        extraCategory.isEmpty ? extraCategory = submod.category : extraCategory = '';
+                                        // extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
+                                        // extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
+                                        extraCategory == defaultCategoryDirs[2]
+                                            ? itemCrossSwap = ItemCrossSwap.bodyPaintToInnerwear
+                                            : extraCategory == defaultCategoryDirs[11]
+                                                ? itemCrossSwap = ItemCrossSwap.innerwearToBodyPaint
+                                                : extraCategory == defaultCategoryDirs[7]
+                                                    ? itemCrossSwap = ItemCrossSwap.emoteToIdleMotion
+                                                    : extraCategory == defaultCategoryDirs[14]
+                                                        ? itemCrossSwap = ItemCrossSwap.idleMotionToEmote
+                                                        : itemCrossSwap = ItemCrossSwap.none;
+                                        rScrollController.jumpTo(0);
+                                      });
+                                    },
                               child: submod.category == defaultCategoryDirs[1]
                                   ? Text(extraCategory == defaultCategoryDirs[1] ? appText.swapToBasewears : appText.swapToSetwears)
                                   : submod.category == defaultCategoryDirs[2]
@@ -394,9 +405,9 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                             onPressed: emoteSwapQueue.isNotEmpty
                                 ? () async {
                                     itemSwapWorkingStatus.value = '';
-                                    extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
-                                    extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
-                                    await emoteQueueSwapWorkingPopup(context, false, emoteSwapQueue, mod, submod);
+                                    // extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
+                                    // extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
+                                    await emoteQueueSwapWorkingPopup(context, false, emoteSwapQueue, mod, submod, itemCrossSwap);
                                   }
                                 : null,
                             child: Text(appText.next)),
@@ -405,8 +416,8 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
                             onPressed: lSelectedItemData.watch(context) != null && rSelectedItemData.watch(context) != null
                                 ? () async {
                                     itemSwapWorkingStatus.value = '';
-                                    extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
-                                    extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
+                                    // extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
+                                    // extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
                                     await itemSwapWorkingPopup(context, false, lSelectedItemData.value!, rSelectedItemData.value!, mod, submod, itemCrossSwap);
                                   }
                                 : null,

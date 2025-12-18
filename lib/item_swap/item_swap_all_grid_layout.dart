@@ -340,10 +340,6 @@ class _ItemSwapAllSubmodGridLayout extends State<ItemSwapAllSubmodGridLayout> {
       displayingSubmods = widget.submodList.where((e) => e.submodName.toLowerCase().contains(itemSwapAllSubmodSearchTextController.value.text.toLowerCase())).toList();
     }
 
-    for (var displayingSubmod in displayingSubmods) {
-      if (!widget.selectedSubmods.value.contains(displayingSubmod)) widget.selectedSubmods.value.add(displayingSubmod);
-    }
-
     return Column(
       spacing: 5,
       children: [
@@ -391,7 +387,7 @@ class _ItemSwapAllSubmodGridLayout extends State<ItemSwapAllSubmodGridLayout> {
                                       Expanded(
                                         flex: 2,
                                         child: InfoBox(
-                                          info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedMods().toString()),
+                                          info: appText.dText(appText.numItemSelected, widget.selectedSubmods.value.length.toString()),
                                           borderHighlight: widget.item.applyStatus,
                                         ),
                                       ),

@@ -169,12 +169,12 @@ Future<List<File>> modSwapRename(List<File> lItemFiles, List<File> rItemFiles, L
   return renamedFiles;
 }
 
-Future<List<File>> emoteSwapRename(List<File> lItemFiles, List<File> rItemFiles, bool isEmotesToStandbyMotions, bool isIdleMotionsToEmotes) async {
+Future<List<File>> emoteSwapRename(List<File> lItemFiles, List<File> rItemFiles, ItemCrossSwap itemCrossSwap) async {
   List<File> renamedFiles = [];
   for (var fileF in lItemFiles) {
     List<String> fileNamePartsF = p.basenameWithoutExtension(fileF.path).split('_');
     File matchingFileT = File('');
-    if (isIdleMotionsToEmotes) {
+    if (itemCrossSwap == ItemCrossSwap.idleMotionToEmote) {
       if (p.extension(fileF.path) == '.aqm') {
         final fileFNameParts = p.basenameWithoutExtension(fileF.path).split('_');
         if (fileFNameParts.isNotEmpty && fileFNameParts[0] == 'pl' && fileFNameParts[1] == 'std' && fileFNameParts.last == 'lp') {
@@ -222,7 +222,7 @@ Future<List<File>> emoteSwapRename(List<File> lItemFiles, List<File> rItemFiles,
       if (figFile.path.isNotEmpty) {
         figFile.copySync(fileF.path);
       }
-    } else if (isEmotesToStandbyMotions &&
+    } else if (itemCrossSwap == ItemCrossSwap.emoteToIdleMotion &&
         fileNamePartsF[0] == 'pl' &&
         p.extension(fileF.path) == '.aqm' &&
         (p.basenameWithoutExtension(fileF.path).contains('_std_') || p.basenameWithoutExtension(fileF.path).contains('_hum_'))) {

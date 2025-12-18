@@ -9,11 +9,10 @@ import 'package:pso2_mod_manager/item_swap/mod_swap_helper_functions.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/v3_functions/original_ice_download.dart';
-import 'package:pso2_mod_manager/v3_home/main_item_swap_grid.dart';
 
 final validCharacters = RegExp(r'^[a-zA-Z0-9]+$');
 
-Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, SubMod fromSubmod, String rSelectedItemName, List<String> lItemAvailableIces, List<String> rItemAvailableIces) async {
+Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, SubMod fromSubmod, String rSelectedItemName, List<String> lItemAvailableIces, List<String> rItemAvailableIces, ItemCrossSwap itemCrossSwap) async {
   List<String> iceTypes = ['human hash', 'reboot human hash', 'pso2 hash', 'fig hash', 'vfx hash'];
   String newToSelectedItemName = rSelectedItemName;
 
@@ -123,11 +122,11 @@ Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, Su
     //group2 > group2
     List<File> renamedExtractedGroup2Files = [];
     if (extractedGroup2FilesF.isNotEmpty && extractedGroup2FilesT.isNotEmpty) {
-      renamedExtractedGroup2Files = await emoteSwapRename(extractedGroup2FilesF, extractedGroup2FilesT, emoteToIdleMotion, idleMotionToEmote);
+      renamedExtractedGroup2Files = await emoteSwapRename(extractedGroup2FilesF, extractedGroup2FilesT, itemCrossSwap);
     } else if (extractedGroup2FilesF.isEmpty && extractedGroup2FilesT.isNotEmpty) {
-      renamedExtractedGroup2Files = await emoteSwapRename(extractedGroup1FilesF, extractedGroup2FilesT, emoteToIdleMotion, idleMotionToEmote);
+      renamedExtractedGroup2Files = await emoteSwapRename(extractedGroup1FilesF, extractedGroup2FilesT, itemCrossSwap);
     } else if (extractedGroup2FilesF.isNotEmpty && extractedGroup2FilesT.isEmpty) {
-      renamedExtractedGroup2Files = await emoteSwapRename(extractedGroup2FilesF, extractedGroup1FilesT, emoteToIdleMotion, idleMotionToEmote);
+      renamedExtractedGroup2Files = await emoteSwapRename(extractedGroup2FilesF, extractedGroup1FilesT, itemCrossSwap);
       String extractedGroup1PathF = Uri.file('$tempSubmodPathF/${lItemIceName}_ext/group1').toFilePath();
       if (!Directory(extractedGroup1PathF).existsSync()) {
         Directory(extractedGroup1PathF).createSync();
@@ -140,11 +139,11 @@ Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, Su
     //group1 > group1
     List<File> renamedExtractedGroup1Files = [];
     if (extractedGroup1FilesF.isNotEmpty && extractedGroup1FilesT.isNotEmpty) {
-      renamedExtractedGroup1Files = await emoteSwapRename(extractedGroup1FilesF, extractedGroup1FilesT, emoteToIdleMotion, idleMotionToEmote);
+      renamedExtractedGroup1Files = await emoteSwapRename(extractedGroup1FilesF, extractedGroup1FilesT, itemCrossSwap);
     } else if (extractedGroup1FilesF.isEmpty && extractedGroup1FilesT.isNotEmpty) {
-      renamedExtractedGroup1Files = await emoteSwapRename(extractedGroup2FilesF, extractedGroup1FilesT, emoteToIdleMotion, idleMotionToEmote);
+      renamedExtractedGroup1Files = await emoteSwapRename(extractedGroup2FilesF, extractedGroup1FilesT, itemCrossSwap);
     } else if (extractedGroup1FilesF.isNotEmpty && extractedGroup1FilesT.isEmpty) {
-      renamedExtractedGroup1Files = await emoteSwapRename(extractedGroup1FilesF, extractedGroup2FilesT, emoteToIdleMotion, idleMotionToEmote);
+      renamedExtractedGroup1Files = await emoteSwapRename(extractedGroup1FilesF, extractedGroup2FilesT, itemCrossSwap);
       String extractedGroup2PathF = Uri.file('$tempSubmodPathF/${lItemIceName}_ext/group2').toFilePath();
       if (!Directory(extractedGroup2PathF).existsSync()) {
         Directory(extractedGroup2PathF).createSync();
@@ -153,7 +152,7 @@ Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, Su
         }
       }
       // extra step for renaming .bti for idles to emotes
-      if (idleMotionToEmote) {
+      if (itemCrossSwap == ItemCrossSwap.idleMotionToEmote) {
         File btiToRename = extractedGroup1FilesF.firstWhere(
             (e) =>
                 p.extension(e.path) == '.bti' &&
