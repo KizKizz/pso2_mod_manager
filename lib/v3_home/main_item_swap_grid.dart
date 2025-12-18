@@ -15,8 +15,8 @@ import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 bool replaceLQTexturesWithHQ = false;
-bool emoteToIdleMotion = false;
-bool idleMotionToEmote = false;
+// bool emoteToIdleMotion = false;
+// bool idleMotionToEmote = false;
 
 class MainItemSwapGrid extends StatefulWidget {
   const MainItemSwapGrid({super.key});
@@ -38,6 +38,7 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
   List<(ItemData, ItemData)> emoteSwapQueue = [];
   bool showEmoteQueue = false;
   ItemData? lastQueuedEmoteItemData;
+  ItemCrossSwap itemCrossSwap = ItemCrossSwap.none;
 
   @override
   void initState() {
@@ -349,14 +350,25 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                           selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[14] && lSelectedItemData.value != null && lSelectedItemData.value!.subCategory == 'Standby Motion' ||
                           selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[16],
                       child: ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              extraCategory.isEmpty ? extraCategory = selectedDisplayItemSwapCategory.watch(context) : extraCategory = '';
-                              extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
-                              extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
-                              rScrollController.jumpTo(0);
-                            });
-                          },
+                          onPressed: selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7] && emoteSwapQueue.isNotEmpty
+                              ? null
+                              : () {
+                                  setState(() {
+                                    extraCategory.isEmpty ? extraCategory = selectedDisplayItemSwapCategory.watch(context) : extraCategory = '';
+                                    // extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
+                                    // extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
+                                    extraCategory == defaultCategoryDirs[2]
+                                        ? itemCrossSwap = ItemCrossSwap.bodyPaintToInnerwear
+                                        : extraCategory == defaultCategoryDirs[11]
+                                            ? itemCrossSwap = ItemCrossSwap.innerwearToBodyPaint
+                                            : extraCategory == defaultCategoryDirs[7]
+                                                ? itemCrossSwap = ItemCrossSwap.emoteToIdleMotion
+                                                : extraCategory == defaultCategoryDirs[14]
+                                                    ? itemCrossSwap = ItemCrossSwap.idleMotionToEmote
+                                                    : itemCrossSwap = ItemCrossSwap.none;
+                                    rScrollController.jumpTo(0);
+                                  });
+                                },
                           child: selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[1]
                               ? Text(extraCategory == defaultCategoryDirs[1] ? appText.swapToBasewears : appText.swapToSetwears)
                               : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[2]
@@ -416,9 +428,9 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                         onPressed: emoteSwapQueue.isNotEmpty
                             ? () async {
                                 itemSwapWorkingStatus.value = '';
-                                extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
-                                extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
-                                await emoteQueueSwapWorkingPopup(context, true, emoteSwapQueue, lItemModGet(), lItemSubmodGet(lastQueuedEmoteItemData!));
+                                // extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
+                                // extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
+                                await emoteQueueSwapWorkingPopup(context, true, emoteSwapQueue, lItemModGet(), lItemSubmodGet(lastQueuedEmoteItemData!), itemCrossSwap);
                               }
                             : null,
                         child: Text(appText.next)),
@@ -427,9 +439,9 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                         onPressed: lSelectedItemData.watch(context) != null && rSelectedItemData.watch(context) != null
                             ? () {
                                 itemSwapWorkingStatus.value = '';
-                                extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
-                                extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
-                                itemSwapWorkingPopup(context, true, lSelectedItemData.value!, rSelectedItemData.value!, lItemModGet(), lItemSubmodGet(lSelectedItemData.value!));
+                                // extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
+                                // extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
+                                itemSwapWorkingPopup(context, true, lSelectedItemData.value!, rSelectedItemData.value!, lItemModGet(), lItemSubmodGet(lSelectedItemData.value!), itemCrossSwap);
                               }
                             : null,
                         child: Text(appText.next))

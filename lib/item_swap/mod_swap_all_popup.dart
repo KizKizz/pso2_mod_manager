@@ -4,6 +4,7 @@ import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_grid_layout.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_working_popup.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_all_working_popup.dart';
+import 'package:pso2_mod_manager/item_swap/mod_swap_helper_functions.dart';
 import 'package:pso2_mod_manager/material_app_service.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_data/item_class.dart';
@@ -23,6 +24,7 @@ Future<void> modSwapAllPopup(context, Item item, Mod mod) async {
   String extraCategory = '';
   List<ItemData> displayingItems = [];
   // List<ItemData> lDisplayingItems = [];
+  ItemCrossSwap itemCrossSwap = ItemCrossSwap.none;
 
   await showDialog(
       barrierDismissible: false,
@@ -180,7 +182,16 @@ Future<void> modSwapAllPopup(context, Item item, Mod mod) async {
                               onPressed: () {
                                 setState(() {
                                   extraCategory.isEmpty ? extraCategory = mod.category : extraCategory = '';
-                                  mod.category == defaultCategoryDirs[11] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
+                                  // mod.category == defaultCategoryDirs[11] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
+                                  // extraCategory == defaultCategoryDirs[2]
+                                  //     ? itemCrossSwap = ItemCrossSwap.bodyPaintToInnerwear
+                                  //     : extraCategory == defaultCategoryDirs[11]
+                                  //         ? itemCrossSwap = ItemCrossSwap.innerwearToBodyPaint
+                                  //         : extraCategory == defaultCategoryDirs[7]
+                                  //             ? itemCrossSwap = ItemCrossSwap.emoteToIdleMotion
+                                  //             : extraCategory == defaultCategoryDirs[14]
+                                  //                 ? itemCrossSwap = ItemCrossSwap.idleMotionToEmote
+                                  //                 : itemCrossSwap = ItemCrossSwap.none;
                                   rScrollController.jumpTo(0);
                                 });
                               },
@@ -217,7 +228,17 @@ Future<void> modSwapAllPopup(context, Item item, Mod mod) async {
                                     }
 
                                     if (lSelectedItemData.value != null) {
-                                      await modSwapAllWorkingPopup(MaterialAppService.navigatorKey.currentContext, false, lSelectedItemData.value!, rSelectedItemData.value!, mod, submod);
+                                      lSelectedItemData.value!.category == defaultCategoryDirs[2] && rSelectedItemData.value!.category == defaultCategoryDirs[11]
+                                          ? itemCrossSwap = ItemCrossSwap.bodyPaintToInnerwear
+                                          : lSelectedItemData.value!.category == defaultCategoryDirs[11] && rSelectedItemData.value!.category == defaultCategoryDirs[2]
+                                              ? itemCrossSwap = ItemCrossSwap.innerwearToBodyPaint
+                                              : lSelectedItemData.value!.category == defaultCategoryDirs[7] && rSelectedItemData.value!.category == defaultCategoryDirs[14]
+                                                  ? itemCrossSwap = ItemCrossSwap.emoteToIdleMotion
+                                                  : lSelectedItemData.value!.category == defaultCategoryDirs[14] && rSelectedItemData.value!.category == defaultCategoryDirs[7]
+                                                      ? itemCrossSwap = ItemCrossSwap.idleMotionToEmote
+                                                      : itemCrossSwap = ItemCrossSwap.none;
+                                      await modSwapAllWorkingPopup(
+                                          MaterialAppService.navigatorKey.currentContext, false, lSelectedItemData.value!, rSelectedItemData.value!, mod, submod, itemCrossSwap);
                                       await Future.delayed(const Duration(milliseconds: 100));
                                     } else {
                                       errorNotification(appText.noMatchingFilesBetweenItemsToSwap);

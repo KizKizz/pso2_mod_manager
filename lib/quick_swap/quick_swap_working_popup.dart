@@ -43,10 +43,10 @@ void quickSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, Item
               if (submod.category == defaultCategoryDirs[0]) {
                 swapOutputDir = await modSwapAccessories(context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), rItemData.getItemID());
               } else if (submod.category == defaultCategoryDirs[14] || submod.category == defaultCategoryDirs[7]) {
-                swapOutputDir = await modSwapEmotes(context, isVanillaSwap, mod, submod, rItemData.getName(), lItemData.getIceDetails(), rItemData.getIceDetails());
+                swapOutputDir = await modSwapEmotes(context, isVanillaSwap, mod, submod, rItemData.getName(), lItemData.getIceDetails(), rItemData.getIceDetails(), ItemCrossSwap.none);
               } else {
                 swapOutputDir =
-                    await modSwapGeneral(context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), lItemData.getItemID(), rItemData.getItemID());
+                    await modSwapGeneral(context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), lItemData.getItemID(), rItemData.getItemID(), ItemCrossSwap.none);
               }
               if (swapOutputDir.existsSync()) {
                 // Add to mod manager

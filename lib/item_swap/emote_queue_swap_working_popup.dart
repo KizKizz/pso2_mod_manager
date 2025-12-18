@@ -18,7 +18,7 @@ import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-Future<void> emoteQueueSwapWorkingPopup(context, bool isVanillaSwap, List<(ItemData, ItemData)> emoteSwapQueue, Mod mod, SubMod submod) async {
+Future<void> emoteQueueSwapWorkingPopup(context, bool isVanillaSwap, List<(ItemData, ItemData)> emoteSwapQueue, Mod mod, SubMod submod, ItemCrossSwap itemCrossSwap) async {
   Directory swapOutputDir = Directory('');
   List<String> swapOutputDirPaths = [];
   int curPairIndex = 0;
@@ -165,7 +165,8 @@ Future<void> emoteQueueSwapWorkingPopup(context, bool isVanillaSwap, List<(ItemD
                                           isVanillaSwap ? lItemSubmodGet(pair.$1) : submod,
                                           pair.$2.getName(),
                                           pair.$1.getIceDetails(),
-                                          pair.$2.getIceDetails());
+                                          pair.$2.getIceDetails(),
+                                          itemCrossSwap);
                                       if (!swapOutputDirPaths.contains(swapOutputDir.path)) swapOutputDirPaths.add(swapOutputDir.path);
                                       if (curPairIndex < emoteSwapQueue.length - 1) curPairIndex++;
                                       swappedCount++;

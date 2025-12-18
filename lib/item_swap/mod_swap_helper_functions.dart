@@ -11,7 +11,7 @@ import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:path/path.dart' as p;
 
-Future<List<File>> modSwapRename(List<File> lItemFiles, List<File> rItemFiles, List<String> rItemIds, String rItemAccItemId, bool isBodyPaintToInnerwear, bool isInnerwearToBodyPaint) async {
+Future<List<File>> modSwapRename(List<File> lItemFiles, List<File> rItemFiles, List<String> rItemIds, String rItemAccItemId, ItemCrossSwap itemCrossSwap) async {
   List<File> renamedFiles = [];
   //ah to rac
   //Look for corresponding T file
@@ -125,7 +125,7 @@ Future<List<File>> modSwapRename(List<File> lItemFiles, List<File> rItemFiles, L
                 newDdsFileParts[indexOfItemIdInFileName] = matchingDdsFileIdT;
               }
               //modification for body paints to inners
-              if (isBodyPaintToInnerwear) {
+              if (itemCrossSwap == ItemCrossSwap.bodyPaintToInnerwear) {
                 int rbaIndex = newDdsFileParts.indexOf('rba');
                 if (rbaIndex != -1) {
                   newDdsFileParts[rbaIndex] = 'rbd';
@@ -135,7 +135,7 @@ Future<List<File>> modSwapRename(List<File> lItemFiles, List<File> rItemFiles, L
                 }
               }
               //modification for inners to body paints
-              if (isInnerwearToBodyPaint) {
+              if (itemCrossSwap == ItemCrossSwap.innerwearToBodyPaint) {
                 int rbdIndex = newDdsFileParts.indexOf('rbd');
                 if (rbdIndex != -1) {
                   newDdsFileParts[rbdIndex] = 'rba';
@@ -169,12 +169,12 @@ Future<List<File>> modSwapRename(List<File> lItemFiles, List<File> rItemFiles, L
   return renamedFiles;
 }
 
-Future<List<File>> emoteSwapRename(List<File> lItemFiles, List<File> rItemFiles, bool isEmotesToStandbyMotions, bool isIdleMotionsToEmotes) async {
+Future<List<File>> emoteSwapRename(List<File> lItemFiles, List<File> rItemFiles, ItemCrossSwap itemCrossSwap) async {
   List<File> renamedFiles = [];
   for (var fileF in lItemFiles) {
     List<String> fileNamePartsF = p.basenameWithoutExtension(fileF.path).split('_');
     File matchingFileT = File('');
-    if (isIdleMotionsToEmotes) {
+    if (itemCrossSwap == ItemCrossSwap.idleMotionToEmote) {
       if (p.extension(fileF.path) == '.aqm') {
         final fileFNameParts = p.basenameWithoutExtension(fileF.path).split('_');
         if (fileFNameParts.isNotEmpty && fileFNameParts[0] == 'pl' && fileFNameParts[1] == 'std' && fileFNameParts.last == 'lp') {
@@ -222,7 +222,7 @@ Future<List<File>> emoteSwapRename(List<File> lItemFiles, List<File> rItemFiles,
       if (figFile.path.isNotEmpty) {
         figFile.copySync(fileF.path);
       }
-    } else if (isEmotesToStandbyMotions &&
+    } else if (itemCrossSwap == ItemCrossSwap.emoteToIdleMotion &&
         fileNamePartsF[0] == 'pl' &&
         p.extension(fileF.path) == '.aqm' &&
         (p.basenameWithoutExtension(fileF.path).contains('_std_') || p.basenameWithoutExtension(fileF.path).contains('_hum_'))) {
@@ -348,4 +348,12 @@ SubMod lItemSubmodGet(ItemData lItemData) {
 
 Mod lItemModGet() {
   return Mod('', '', '', '', false, DateTime(0), 0, false, false, false, [], [], [], [], []);
+}
+
+enum ItemCrossSwap {
+  none,
+  bodyPaintToInnerwear,
+  innerwearToBodyPaint,
+  emoteToIdleMotion,
+  idleMotionToEmote;
 }
