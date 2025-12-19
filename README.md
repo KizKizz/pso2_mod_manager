@@ -4,6 +4,7 @@
 
 ![pso2ngs](https://github.com/user-attachments/assets/fa8593ed-d3ce-44d5-b35d-b7200e4cbe24)
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/I3I61Q1Q1R)
 
 # Download
 
