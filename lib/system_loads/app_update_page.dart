@@ -135,7 +135,7 @@ class _AppUpdatePageState extends State<AppUpdatePage> {
                                         onPressed: patchLauncher != null && downloadStatus.watch(context) == appText.extractCompletedReadyToPatch
                                             ? () {
                                                 if (patchLauncher != null && patchLauncher!.existsSync()) {
-                                                  Process.run(patchLauncher!.path, []);
+                                                  Process.run('"${patchLauncher!.path}"', []);
                                                 } else {
                                                   curPage.value = const DataUpdatePage();
                                                 }
