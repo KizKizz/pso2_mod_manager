@@ -1,4 +1,7 @@
 {
+  "updaterNotFound": "Updater not found",
+  "unableToExtractUpdateData": "Unable to extract update data",
+  "manualDownload": "Manual Download",
   "donate": "Donate",
   "latestVersionNumber": "Latest Version: %p%",
   "localVersionNumber": "Local Version: %p%",

@@ -304,6 +304,9 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
       json['extractCompletedReadyToPatch'] as String
   ..cannotCreatePatchLauncherCheckPerm =
       json['cannotCreatePatchLauncherCheckPerm'] as String
+  ..updaterNotFound = json['updaterNotFound'] as String
+  ..unableToUpdate = json['unableToUpdate'] as String
+  ..unableToExtractUpdateData = json['unableToExtractUpdateData'] as String
   ..checkingItemDataVersion = json['checkingItemDataVersion'] as String
   ..newItemDataVersionFound = json['newItemDataVersionFound'] as String
   ..fetchingNecessaryDirPaths = json['fetchingNecessaryDirPaths'] as String
@@ -413,6 +416,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..showCustomCmlFiles = json['showCustomCmlFiles'] as String
   ..showPremades = json['showPremades'] as String
   ..playerItemDatabase = json['playerItemDatabase'] as String
+  ..manualDownload = json['manualDownload'] as String
   ..failedToFetchRemoteLocaleData =
       json['failedToFetchRemoteLocaleData'] as String
   ..unableToUpdateFile = json['unableToUpdateFile'] as String
@@ -817,6 +821,9 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'extractCompletedReadyToPatch': instance.extractCompletedReadyToPatch,
       'cannotCreatePatchLauncherCheckPerm':
           instance.cannotCreatePatchLauncherCheckPerm,
+      'updaterNotFound': instance.updaterNotFound,
+      'unableToUpdate': instance.unableToUpdate,
+      'unableToExtractUpdateData': instance.unableToExtractUpdateData,
       'checkingItemDataVersion': instance.checkingItemDataVersion,
       'newItemDataVersionFound': instance.newItemDataVersionFound,
       'fetchingNecessaryDirPaths': instance.fetchingNecessaryDirPaths,
@@ -921,6 +928,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
       'showCustomCmlFiles': instance.showCustomCmlFiles,
       'showPremades': instance.showPremades,
       'playerItemDatabase': instance.playerItemDatabase,
+      'manualDownload': instance.manualDownload,
       'failedToFetchRemoteLocaleData': instance.failedToFetchRemoteLocaleData,
       'unableToUpdateFile': instance.unableToUpdateFile,
       'unableToGetAppVersionDataFromGitHub':

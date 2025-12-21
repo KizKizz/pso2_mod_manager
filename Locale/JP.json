@@ -1,4 +1,7 @@
 {
+  "updaterNotFound": "Updater not found",
+  "unableToExtractUpdateData": "Unable to extract update data",
+  "manualDownload": "Manual Download",
   "donate": "寄付",
   "latestVersionNumber": "最新バージョン: %p%",
   "localVersionNumber": "現在のバージョン: %p%",
