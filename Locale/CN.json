@@ -2,7 +2,7 @@
   "donate": "捐赠",
   "latestVersionNumber": "最新版本: %p%",
   "localVersionNumber": "本地版本: %p%",
-  "playerItemDatabase": "游戏物品数据库",
+  "playerItemDatabase": "游戏物品数据",
   "highestModCount": "最高MOD计数",
   "lowestModCount": "最低MOD计数",
   "unpackingFile": "解包中\n%p%",
