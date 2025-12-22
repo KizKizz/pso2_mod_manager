@@ -90,7 +90,7 @@
   "selectedOnly": "仅选定",
   "allPossible": "总是",
   "applyHQFilesOnly": "仅应用 HQ 文件",
-  "applyHQOnlyInfo": "总是：始终尝试将 HQ 文件应用到游戏\n仅选定：仅替换已标记为【仅应用HQ文件】的MOD\n注：如果MOD中不含HQ文件，则该选项不起作用",
+  "applyHQOnlyInfo": "总是：始终尝试将 HQ 文件应用到游戏\n仅选定：仅应用已标记的MOD\n【注意】如果MOD不含HQ文件，该选项无效",
   "hideUIWhenAppUnfocused": "空闲自动锁定界面",
   "startAfter": "锁定延迟",
   "tapToReturn": "点击返回",
