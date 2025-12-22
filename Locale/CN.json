@@ -1,4 +1,5 @@
 {
+  "unableToUpdate": "Unable to update",
   "updaterNotFound": "Updater not found",
   "unableToExtractUpdateData": "Unable to extract update data",
   "manualDownload": "Manual Download",

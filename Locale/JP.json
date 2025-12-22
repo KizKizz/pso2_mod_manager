@@ -1,4 +1,5 @@
 {
+  "unableToUpdate": "更新できません",
   "updaterNotFound": "アップデータが見つかりません",
   "unableToExtractUpdateData": "更新データの抽出ができません",
   "manualDownload": "手動ダウンロード",
