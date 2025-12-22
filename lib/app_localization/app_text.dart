@@ -303,6 +303,9 @@ class AppText {
       extractingDownloadedZipFile = 'Extracting downloaded zip file',
       extractCompletedReadyToPatch = 'Extraction completed, ready to patch',
       cannotCreatePatchLauncherCheckPerm = 'Cannot create patch launcher, check permission',
+      updaterNotFound = 'Updater not found',
+      unableToUpdate = 'Unable to update',
+      unableToExtractUpdateData = 'Unable to extract update data',
       checkingItemDataVersion = 'Checking Item Data Version',
       newItemDataVersionFound = 'New Item Data Version Found',
       fetchingNecessaryDirPaths = 'Fetching Necessary Directory Paths',
@@ -404,7 +407,8 @@ class AppText {
       shareThisModSet = 'Share This Mod Set',
       showCustomCmlFiles = 'Show Custom Cml Files',
       showPremades = 'Show Premades',
-      playerItemDatabase = 'Player Item Database';
+      playerItemDatabase = 'Player Item Database',
+      manualDownload = 'Manual Download';
 
   // Errors
   String failedToFetchRemoteLocaleData = 'Failed to fetch remote locale data',

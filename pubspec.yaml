@@ -44,7 +44,7 @@ dependencies:
   quickalert: ^1.1.0
   background_downloader: ^9.2.0
   archive: ^4.0.2
-  file_selector: ^1.0.3
+  file_selector: ^1.1.0
   media_kit: ^1.1.11 # Primary package.
   media_kit_video: ^2.0.1 # For video rendering.
   media_kit_libs_video: ^1.0.5 # Native video dependencies.
@@ -66,6 +66,7 @@ dependencies:
   flutter_sticky_header: ^0.8.0
   multi_split_view: ^3.6.0
   auto_size_text: ^3.0.0
+  file_picker: ^10.3.8
   
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
