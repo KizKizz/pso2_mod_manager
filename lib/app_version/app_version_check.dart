@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 
@@ -43,13 +41,13 @@ bool newAppVersionCheck(String remoteVersion) {
   }
 }
 
-Future<File> patchFileLauncherGenerate(String remoteVersion) async {
-  File patchFile = File('${Directory.current.path}${p.separator}appUpdate${p.separator}patchLauncher.bat');
-  if (!patchFile.existsSync()) {
-    patchFile.createSync(recursive: true);
-  }
-  String commands = 'chcp 65001 >nul\nstart /B "" "${'${Directory.current.path}${p.separator}appUpdate${p.separator}updater.exe'}" PSO2NGSModManager $remoteVersion "${Directory.current.path}"';
-  await patchFile.writeAsString(commands);
+// Future<File> patchFileLauncherGenerate(String remoteVersion) async {
+//   File patchFile = File('${Directory.current.path}${p.separator}appUpdate${p.separator}patchLauncher.bat');
+//   if (!patchFile.existsSync()) {
+//     patchFile.createSync(recursive: true);
+//   }
+//   String commands = 'chcp 65001 >nul\nstart /B "" "${'${Directory.current.path}${p.separator}appUpdate${p.separator}updater.exe'}" PSO2NGSModManager $remoteVersion "${Directory.current.path}"';
+//   await patchFile.writeAsString(commands);
 
-  return patchFile;
-}
+//   return patchFile;
+// }

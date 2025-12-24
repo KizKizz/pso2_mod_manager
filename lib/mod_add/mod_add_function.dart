@@ -144,7 +144,7 @@ Future<List<AddingMod>> modAddSort() async {
     List<File> previewImages = [];
     List<File> previewVideos = [];
     List<MapEntry<String, List<String>>> sameItemIceNames = [];
-    ItemData unknownItem = ItemData('', '', '', ['Misc'], 'Misc', '', 13, '', Map.fromEntries([const MapEntry('Japanese Name', '不明項目'), const MapEntry('English Name', 'Unknown Item')]));
+    ItemData unknownItem = ItemData('', '', '', ['Misc'], 'Misc', '', 13, '', Map.fromEntries([MapEntry('Japanese Name', appText.unknownItem), MapEntry('English Name', appText.unknownItem)]));
     // mod dir
     List<File> modDirFiles = modDir.listSync().whereType<File>().toList();
     if (modDirFiles.isNotEmpty && modDirFiles.indexWhere((e) => p.extension(e.path) == '' && p.basenameWithoutExtension(e.path).length > 29) != -1) {
@@ -211,10 +211,12 @@ Future<List<AddingMod>> modAddSort() async {
         }
       }
       await io.copyPath(modDir.path, newModDir.path);
-      final fileList = Directory(newModDir.path).listSync(recursive: true).whereType<File>().where((e) => p.extension(e.path) == '');
-      for (var f in fileList) {
-        if (!aItem.containsIce(p.basename(f.path)) && sameItemIceNames.indexWhere((e) => e.key == aItem.getName() && e.value.contains(p.basename(f.path))) == -1) await f.delete();
-        if (f.parent.listSync(recursive: true).isEmpty) await f.parent.delete();
+      if (aItem.getName() != appText.unknownItem) {
+        final fileList = Directory(newModDir.path).listSync(recursive: true).whereType<File>().where((e) => p.extension(e.path) == '');
+        for (var f in fileList) {
+          if (!aItem.containsIce(p.basename(f.path)) && sameItemIceNames.indexWhere((e) => e.key == aItem.getName() && e.value.contains(p.basename(f.path))) == -1) await f.delete();
+          if (f.parent.existsSync() && f.parent.listSync(recursive: true).isEmpty) await f.parent.delete();
+        }
       }
       List<Directory> newItemSubmodDirs =
           newModDir.listSync(recursive: true).whereType<Directory>().where((e) => e.existsSync() && e.listSync().whereType<File>().where((i) => p.extension(i.path) == '').isNotEmpty).toList();
