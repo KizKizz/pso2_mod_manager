@@ -18,13 +18,13 @@ Cml _$CmlFromJson(Map<String, dynamic> json) => Cml()
   ..itemIconReplaced = json['itemIconReplaced'] as bool;
 
 Map<String, dynamic> _$CmlToJson(Cml instance) => <String, dynamic>{
-      'id': instance.id,
-      'aId': instance.aId,
-      'itemNameEN': instance.itemNameEN,
-      'itemNameJP': instance.itemNameJP,
-      'isReplaced': instance.isReplaced,
-      'replacedCmlFileName': instance.replacedCmlFileName,
-      'cloudItemIconPath': instance.cloudItemIconPath,
-      'itemIconWebPath': instance.itemIconWebPath,
-      'itemIconReplaced': instance.itemIconReplaced,
-    };
+  'id': instance.id,
+  'aId': instance.aId,
+  'itemNameEN': instance.itemNameEN,
+  'itemNameJP': instance.itemNameJP,
+  'isReplaced': instance.isReplaced,
+  'replacedCmlFileName': instance.replacedCmlFileName,
+  'cloudItemIconPath': instance.cloudItemIconPath,
+  'itemIconWebPath': instance.itemIconWebPath,
+  'itemIconReplaced': instance.itemIconReplaced,
+};

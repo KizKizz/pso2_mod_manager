@@ -248,6 +248,7 @@ class AppText {
       enterANameToExport = 'Enter a name to export',
       exportingMods = 'Exporting Mods',
       unknownMod = 'Unknown Mod',
+      unknownItem = 'Unknown Item',
       enterModName = 'Enter mod name',
       clearAll = 'Clear All',
       backupSuccess = 'Backup success',
