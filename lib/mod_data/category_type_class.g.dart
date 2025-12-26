@@ -7,14 +7,14 @@ part of 'category_type_class.dart';
 // **************************************************************************
 
 CategoryType _$CategoryTypeFromJson(Map<String, dynamic> json) => CategoryType(
-      json['groupName'] as String,
-      (json['position'] as num).toInt(),
-      json['visible'] as bool,
-      json['expanded'] as bool,
-      (json['categories'] as List<dynamic>)
-          .map((e) => Category.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
+  json['groupName'] as String,
+  (json['position'] as num).toInt(),
+  json['visible'] as bool,
+  json['expanded'] as bool,
+  (json['categories'] as List<dynamic>)
+      .map((e) => Category.fromJson(e as Map<String, dynamic>))
+      .toList(),
+);
 
 Map<String, dynamic> _$CategoryTypeToJson(CategoryType instance) =>
     <String, dynamic>{

@@ -1,4 +1,9 @@
 {
+  "unknownItem": "不明項目",
+  "unableToUpdate": "更新できません",
+  "updaterNotFound": "アップデータが見つかりません",
+  "unableToExtractUpdateData": "更新データの抽出ができません",
+  "manualDownload": "手動ダウンロード",
   "donate": "寄付",
   "latestVersionNumber": "最新バージョン: %p%",
   "localVersionNumber": "現在のバージョン: %p%",

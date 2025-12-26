@@ -7,27 +7,27 @@ part of 'mod_set_class.dart';
 // **************************************************************************
 
 ModSet _$ModSetFromJson(Map<String, dynamic> json) => ModSet(
-      json['setName'] as String,
-      (json['position'] as num).toInt(),
-      json['visible'] as bool,
-      json['expanded'] as bool,
-      json['isFavorite'] as bool?,
-      DateTime.parse(json['addedDate'] as String),
-      json['appliedDate'] == null
-          ? null
-          : DateTime.parse(json['appliedDate'] as String),
-      (json['setItems'] as List<dynamic>)
-          .map((e) => Item.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
+  json['setName'] as String,
+  (json['position'] as num).toInt(),
+  json['visible'] as bool,
+  json['expanded'] as bool,
+  json['isFavorite'] as bool?,
+  DateTime.parse(json['addedDate'] as String),
+  json['appliedDate'] == null
+      ? null
+      : DateTime.parse(json['appliedDate'] as String),
+  (json['setItems'] as List<dynamic>)
+      .map((e) => Item.fromJson(e as Map<String, dynamic>))
+      .toList(),
+);
 
 Map<String, dynamic> _$ModSetToJson(ModSet instance) => <String, dynamic>{
-      'setName': instance.setName,
-      'position': instance.position,
-      'visible': instance.visible,
-      'expanded': instance.expanded,
-      'isFavorite': instance.isFavorite,
-      'addedDate': instance.addedDate.toIso8601String(),
-      'appliedDate': instance.appliedDate?.toIso8601String(),
-      'setItems': instance.setItems,
-    };
+  'setName': instance.setName,
+  'position': instance.position,
+  'visible': instance.visible,
+  'expanded': instance.expanded,
+  'isFavorite': instance.isFavorite,
+  'addedDate': instance.addedDate.toIso8601String(),
+  'appliedDate': instance.appliedDate?.toIso8601String(),
+  'setItems': instance.setItems,
+};

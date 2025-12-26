@@ -13,8 +13,8 @@ AppLocale _$AppLocaleFromJson(Map<String, dynamic> json) => AppLocale()
   ..isActive = json['isActive'] as bool;
 
 Map<String, dynamic> _$AppLocaleToJson(AppLocale instance) => <String, dynamic>{
-      'language': instance.language,
-      'version': instance.version,
-      'translationFilePath': instance.translationFilePath,
-      'isActive': instance.isActive,
-    };
+  'language': instance.language,
+  'version': instance.version,
+  'translationFilePath': instance.translationFilePath,
+  'isActive': instance.isActive,
+};
