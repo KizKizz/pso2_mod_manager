@@ -124,7 +124,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                                   visible: widget.submod.applyHQFilesOnly!,
                                   child: Icon(Icons.high_quality_outlined, color: selectedModsApplyHQFilesOnly ? Theme.of(context).colorScheme.primary : null)),
                               Visibility(visible: widget.submod.hasCmx!, child: InfoTag(info: appText.cmx, borderHighlight: widget.submod.cmxApplied!)),
-                              Visibility(visible: widget.submod.customAQMInjected!, child: InfoTag(info: appText.aqm, borderHighlight: widget.submod.customAQMInjected!)),
+                              Visibility(visible: widget.submod.customAQMInjected!, child: ModManTooltip(message: widget.submod.customAQMFileName!, child: InfoTag(info: appText.aqm, borderHighlight: widget.submod.customAQMInjected!))),
                               Visibility(visible: widget.submod.boundingRemoved!, child: InfoTag(info: appText.bounding, borderHighlight: widget.submod.boundingRemoved!)),
                             ],
                           ),

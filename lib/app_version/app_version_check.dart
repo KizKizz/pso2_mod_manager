@@ -9,7 +9,13 @@ const String latestGitHubReleaseAPILink = 'https://api.github.com/repos/KizKizz/
 Future<(String, String)> appLatestReleaseFetch() async {
   String version = '';
   String patchNotes = '';
-  final response = await http.get(Uri.parse(latestGitHubReleaseAPILink));
+  int retries = 0;
+  http.Response response = await http.get(Uri.parse(latestGitHubReleaseAPILink));
+  while (retries < 3 && response.statusCode != 200) {
+    await Future.delayed(Duration(milliseconds: 1000));
+    response = await http.get(Uri.parse(latestGitHubReleaseAPILink));
+    retries++;
+  }
   if (response.statusCode == 200) {
     final jsonData = jsonDecode(response.body);
     // Get version tag

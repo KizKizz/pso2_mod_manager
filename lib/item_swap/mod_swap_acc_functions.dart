@@ -14,7 +14,15 @@ import 'package:pso2_mod_manager/v3_functions/original_ice_download.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_swap_grid.dart';
 
 Future<Directory> modSwapAccessories(
-    context, bool isVanillaItemSwap, Mod fromMod, SubMod fromSubmod, List<String> lItemAvailableIces, List<String> rItemAvailableIces, String rItemName, String rItemID) async {
+  context,
+  bool isVanillaItemSwap,
+  Mod fromMod,
+  SubMod fromSubmod,
+  List<String> lItemAvailableIces,
+  List<String> rItemAvailableIces,
+  String rItemName,
+  String rItemID,
+) async {
   // Clean and create temp dirs
   // await modSwapTempDirsRemove();
   // await modSwapTempDirsCreate();
@@ -91,10 +99,7 @@ Future<Directory> modSwapAccessories(
     }
 
     //copy to temp toitem dir
-    final matchedrItemData = oItemData.firstWhere(
-      (e) => p.basenameWithoutExtension(e.path) == rItemIceName,
-      orElse: () => OfficialIceFile('', '', 0, ''),
-    );
+    final matchedrItemData = oItemData.firstWhere((e) => p.basenameWithoutExtension(e.path) == rItemIceName, orElse: () => OfficialIceFile('', '', 0, ''));
     String icePathFromOgDataT = matchedrItemData.path;
     if (icePathFromOgDataT.isNotEmpty) {
       //final iceFileInTempT = await File(icePathFromOgDataT).copy(Uri.file('$modSwapTempRItemDirPath/${p.basename(icePathFromOgDataT)}').toFilePath());
@@ -184,10 +189,7 @@ Future<Directory> modSwapAccessories(
         ogDdsNamesF = extractedGroup2FilesF.where((element) => p.extension(element.path) == '.dds').map((e) => p.basename(e.path)).toList();
       }
       //get .aqp
-      File aqpInDirF = Directory(group1ExtractedItemPathF).listSync(recursive: true).whereType<File>().firstWhere(
-            (element) => p.extension(element.path) == '.aqp',
-            orElse: () => File(''),
-          );
+      File aqpInDirF = Directory(group1ExtractedItemPathF).listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.aqp', orElse: () => File(''));
       if (aqpInDirF.path.isNotEmpty) {
         Uint8List aqpBytesRead = await aqpInDirF.readAsBytes();
         List<int> aqpBytes = [];
@@ -252,21 +254,15 @@ Future<Directory> modSwapAccessories(
         ogDdsNamesF = extractedGroup1FilesF.where((element) => p.extension(element.path) == '.dds').map((e) => p.basename(e.path)).toList();
       }
       //get .aqp
-      File aqpInDirF = Directory(group2ExtractedItemPathF).listSync(recursive: true).whereType<File>().firstWhere(
-            (element) => p.extension(element.path) == '.aqp',
-            orElse: () => File(''),
-          );
+      File aqpInDirF = Directory(group2ExtractedItemPathF).listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.aqp', orElse: () => File(''));
       if (aqpInDirF.path.isNotEmpty) {
         Uint8List aqpBytesRead = await aqpInDirF.readAsBytes();
         List<int> aqpBytes = [];
         aqpBytes.addAll(aqpBytesRead);
         for (var ddsF in ogDdsNamesF) {
           List<String> ddsFParts = ddsF.split('_');
-          String ddsFId = ddsFParts.firstWhere(
-            (element) => element.length > 3 && int.tryParse(element) != null,
-            orElse: () => '',
-          );
-          List<String> ddsWoId = ddsF.split(ddsFId);
+          String ddsFId = ddsFParts.firstWhere((element) => element.length > 3 && int.tryParse(element) != null, orElse: () => '');
+          List<String> ddsWoId = ddsFId.isEmpty ? ddsF.split('_') : ddsF.split(ddsFId);
           int ddsIndex = -1;
           if (renamedDdsNamesF.where((element) => element.split('_').length > 1 && element.split('_')[1] == 'rac' && !ddsTypes.contains(element.split('_').last)).isNotEmpty) {
             ddsIndex = renamedDdsNamesF.indexWhere((element) => p.basenameWithoutExtension(element).split('_').last == ddsWoId.last.replaceFirst('_', '').split('_').first);
@@ -293,7 +289,8 @@ Future<Directory> modSwapAccessories(
             //   }
             //   aqpInDirF.writeAsBytesSync(Uint8List.fromList(aqpBytes));
             // }
-            while (firstMatchingIndex != -1) {
+            int lastMatchingIndex = -1;
+            while (firstMatchingIndex != -1 && lastMatchingIndex != firstMatchingIndex) {
               if (ddsFBytes.length > ddsTBytes.length) {
                 List<String> paddingTextList = List.filled(ddsFBytes.length - ddsTBytes.length, String.fromCharCode(aqpBytes[firstMatchingIndex + ddsFBytes.length + 1]));
                 Uint8List paddingText = Uint8List.fromList(paddingTextList.join().codeUnits);
@@ -302,6 +299,7 @@ Future<Directory> modSwapAccessories(
                 aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsTBytes.length, ddsTBytes);
               }
               aqpInDirF.writeAsBytesSync(Uint8List.fromList(aqpBytes));
+              lastMatchingIndex = firstMatchingIndex;
               firstMatchingIndex = aqpBytes.indexOfElements(ddsFBytes);
             }
           }
@@ -315,8 +313,9 @@ Future<Directory> modSwapAccessories(
     if (fromSubmod.modName == fromSubmod.submodName) {
       packDirPath = Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath();
     } else {
-      packDirPath =
-          Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName}/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath();
+      packDirPath = Uri.file(
+        '$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName}/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}',
+      ).toFilePath();
     }
     Directory(packDirPath).createSync(recursive: true);
     if (Platform.isLinux) {
@@ -330,21 +329,17 @@ Future<Directory> modSwapAccessories(
     //mod previews
     //image
     for (var imagePath in fromMod.previewImages) {
-      if (Directory(Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath())
-          .listSync()
-          .whereType<File>()
-          .where((element) => p.basename(element.path) == p.basename(imagePath))
-          .isEmpty) {
+      if (Directory(
+        Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath(),
+      ).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(imagePath)).isEmpty) {
         File(imagePath).copySync(Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}/${p.basename(imagePath)}').toFilePath());
       }
     }
     //video
     for (var videoPath in fromMod.previewVideos) {
-      if (Directory(Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath())
-          .listSync()
-          .whereType<File>()
-          .where((element) => p.basename(element.path) == p.basename(videoPath))
-          .isEmpty) {
+      if (Directory(
+        Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath(),
+      ).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(videoPath)).isEmpty) {
         File(videoPath).copySync(Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}/${p.basename(videoPath)}').toFilePath());
       }
     }
