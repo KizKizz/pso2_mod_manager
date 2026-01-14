@@ -1,4 +1,7 @@
 {
+  "openInFileExplorerLC": "Open in File Explorer",
+  "effect": "Effect",
+  "showEffectAccessories": "Show Effect Accessories",
   "unknownItem": "未知物品",
   "unableToUpdate": "无法更新",
   "updaterNotFound": "未发现升级程序",

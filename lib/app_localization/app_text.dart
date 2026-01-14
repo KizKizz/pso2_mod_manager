@@ -145,7 +145,8 @@ class AppText {
       start = 'Start',
       duplicate = 'Duplicate',
       share = 'Share',
-      donate = 'Donate';
+      donate = 'Donate',
+      effect = 'Effect';
 
   // Short Strings
   String patchNotes = 'Patch Notes',
@@ -293,7 +294,9 @@ class AppText {
       checkingForDuplicatesInFolder = 'Checking for duplicates in\n%p%',
       checkingForPrefixDirsInFolder = 'Checking for prefix folders in\n%p%',
       latestVersionNumber = 'Latest Version: %p%',
-      localVersionNumber = 'Local Version: %p%';
+      localVersionNumber = 'Local Version: %p%',
+      showEffectAccessories = 'Show Effect Accessories',
+      openInFileExplorerLC = 'Open in File Explorer';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -514,7 +517,7 @@ class AppText {
       applyOnlyHQFilesFromMods = 'Apply Only HQ Files From Mods',
       selectedOnly = 'Selected Only',
       allPossible = 'All Possible',
-      applyHQFilesOnly = 'Apply HQ Files Only',
+      applyHQFilesOnly = 'Apply HQ files only',
       applyHQOnlyInfo =
           'All Possible: Always try to apply HQ files to the game\nSelected Only: Only HQ files of the selected mods will be applied to the game\nNote: If a mod does not have any HQ file, all files will be applied like normal',
       hideUIWhenAppUnfocused = 'Hide UI When App Unfocused',

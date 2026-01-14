@@ -56,7 +56,7 @@ class _ModMoreFunctionsMenuState extends State<ModMoreFunctionsMenu> {
                 mainGridStatus.value = '"${widget.mod.modName}" in "${widget.item.getDisplayName()}" is renamed';
               },
               child: MenuIconItem(icon: Icons.edit, text: appText.rename, enabled: true)),
-          PopupMenuItem(onTap: () => launchUrlString(widget.mod.location), child: MenuIconItem(icon: Icons.folder_open, text: appText.openInFileExplorer, enabled: true)),
+          PopupMenuItem(onTap: () => launchUrlString(widget.mod.location), child: MenuIconItem(icon: Icons.folder_open, text: appText.openInFileExplorerLC, enabled: true)),
           const PopupMenuItem(
               height: 0,
               enabled: false,

@@ -170,7 +170,7 @@ class _SubmodMoreFunctionsMenuState extends State<SubmodMoreFunctionsMenu> {
           ),
           PopupMenuItem(
             onTap: () => launchUrlString(widget.submod.location),
-            child: MenuIconItem(icon: Icons.folder_open, text: appText.openInFileExplorer, enabled: true),
+            child: MenuIconItem(icon: Icons.folder_open, text: appText.openInFileExplorerLC, enabled: true),
           ),
           const PopupMenuItem(height: 0, enabled: false, child: PopupMenuDivider(height: 5)),
           PopupMenuItem(

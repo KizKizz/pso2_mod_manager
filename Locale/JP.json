@@ -1,4 +1,7 @@
 {
+  "openInFileExplorerLC": "ファイルエクスプローラーで開く",
+  "effect": "効果",
+  "showEffectAccessories": "効果アクセサリーを表示",
   "unknownItem": "不明項目",
   "unableToUpdate": "更新できません",
   "updaterNotFound": "アップデータが見つかりません",

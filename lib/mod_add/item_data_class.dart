@@ -19,6 +19,11 @@ class ItemData {
   String iconImagePath;
   Map<String, String> infos = {};
 
+  bool accessoryContainsEffects() {
+    if (category != defaultCategoryDirs[0]) return false;
+    return infos.entries.firstWhere((e) => e.key.contains('Effect Name'), orElse: () => const MapEntry('', '')).value.contains('effh_rac_');
+  }
+
   String getJPNameOriginal() {
     return infos.entries.firstWhere((element) => element.key.contains('JP Name') || element.key.contains('Japanese Name'), orElse: () => const MapEntry('', '')).value.trim();
   }
