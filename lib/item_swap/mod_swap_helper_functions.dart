@@ -13,6 +13,21 @@ import 'package:path/path.dart' as p;
 
 Future<List<File>> modSwapRename(List<File> lItemFiles, List<File> rItemFiles, List<String> rItemIds, String rItemAccItemId, ItemCrossSwap itemCrossSwap) async {
   List<File> renamedFiles = [];
+  // effect accessories
+  int lItemslp01Index = lItemFiles.indexWhere((e) => p.basename(e.path).contains('lp01.aqe'));
+  int lItemsAqpIndex = lItemFiles.indexWhere((e) => p.extension(e.path) == '.aqp');
+  int rItemslp01Index = rItemFiles.indexWhere((e) => p.basename(e.path).contains('lp01.aqe'));
+  if (rItemAccItemId.isNotEmpty && lItemslp01Index != -1 && lItemsAqpIndex == -1 && rItemslp01Index != -1) {
+    renamedFiles.add(await lItemFiles[lItemslp01Index].rename(p.dirname(lItemFiles[lItemslp01Index].path) + p.separator + p.basename(rItemFiles[rItemslp01Index].path)));
+    List<String> fileNamePartsF = p.basenameWithoutExtension(p.basenameWithoutExtension(lItemFiles[lItemslp01Index].path)).split('_');
+    String fileIdF = fileNamePartsF.firstWhere((element) => int.tryParse(element) != null, orElse: () => '');
+    for (var fFile in lItemFiles.where((e) => !p.basename(e.path).contains('lp01.aqe'))) {
+      if (p.basenameWithoutExtension(fFile.path).contains(fileIdF)) {
+        renamedFiles.add(await fFile.rename(fFile.path.replaceAll(fileIdF, rItemAccItemId)));
+      }
+    }
+    return renamedFiles;
+  }
   //ah to rac
   //Look for corresponding T file
   final fileTWithRac = rItemFiles.where((element) => p.basenameWithoutExtension(element.path).contains('rac'));
@@ -38,20 +53,14 @@ Future<List<File>> modSwapRename(List<File> lItemFiles, List<File> rItemFiles, L
   for (var fileF in lItemFiles) {
     if (fileF.existsSync()) {
       List<String> fileNamePartsF = p.basenameWithoutExtension(fileF.path).split('_');
-      String fileIdF = fileNamePartsF.firstWhere(
-        (element) => int.tryParse(element) != null,
-        orElse: () => '',
-      );
+      String fileIdF = fileNamePartsF.firstWhere((element) => int.tryParse(element) != null, orElse: () => '');
       if (fileIdF.isNotEmpty) {
         final fileNamePartsWoId = p.basename(fileF.path).split(fileIdF);
         // final matchingFileT =
         //     rItemFiles.firstWhere((element) => p.basename(element.path).contains(fileNamePartsWoId.first) && p.basename(element.path).split('_').last == fileNamePartsWoId.last.replaceAll('_', ''), orElse: () => File(''));
         File? matchingFileT;
         for (var fileT in rItemFiles) {
-          String fileIdT = p.basenameWithoutExtension(fileT.path).split('_').firstWhere(
-                (element) => int.tryParse(element) != null,
-                orElse: () => '',
-              );
+          String fileIdT = p.basenameWithoutExtension(fileT.path).split('_').firstWhere((element) => int.tryParse(element) != null, orElse: () => '');
           final fileNamePartsWoIdT = p.basename(fileT.path).split(fileIdT);
           if (fileNamePartsWoIdT.first == fileNamePartsWoId.first && fileNamePartsWoIdT.last == fileNamePartsWoId.last) {
             matchingFileT = fileT;
@@ -63,8 +72,10 @@ Future<List<File>> modSwapRename(List<File> lItemFiles, List<File> rItemFiles, L
           renamedFiles.add(await fileF.rename(newPath));
         } else {
           if (p.extension(fileF.path) == '.aqm') {
-            final matchingFileNameT =
-                rItemFiles.firstWhere((element) => p.basenameWithoutExtension(element.path).contains(fileNamePartsWoId.first) && p.extension(element.path) == '.aqn', orElse: () => File(''));
+            final matchingFileNameT = rItemFiles.firstWhere(
+              (element) => p.basenameWithoutExtension(element.path).contains(fileNamePartsWoId.first) && p.extension(element.path) == '.aqn',
+              orElse: () => File(''),
+            );
             if (matchingFileNameT.path.isNotEmpty) {
               String matchingFileIdF = p.basenameWithoutExtension(matchingFileNameT.path).split('_').firstWhere((element) => int.tryParse(element) != null, orElse: () => '');
               if (matchingFileIdF.isNotEmpty) {
@@ -87,10 +98,7 @@ Future<List<File>> modSwapRename(List<File> lItemFiles, List<File> rItemFiles, L
             final fltdFilesT = rItemFiles.where((element) => p.extension(element.path) == '.fltd');
             if (fltdFilesT.isNotEmpty) {
               final fltdFilePartsT = p.basenameWithoutExtension(fltdFilesT.first.path).split('_');
-              String matchingFltdFileIdT = fltdFilePartsT.firstWhere(
-                (element) => int.tryParse(element) != null,
-                orElse: () => '',
-              );
+              String matchingFltdFileIdT = fltdFilePartsT.firstWhere((element) => int.tryParse(element) != null, orElse: () => '');
               List<String> newFltdFileParts = p.basename(fileF.path).split('_');
               int indexOfItemIdInFileName = newFltdFileParts.indexOf(fileIdF);
               if (indexOfItemIdInFileName != -1) {
@@ -115,10 +123,7 @@ Future<List<File>> modSwapRename(List<File> lItemFiles, List<File> rItemFiles, L
             final ddsFilesT = rItemFiles.where((element) => p.extension(element.path) == '.dds');
             if (ddsFilesT.isNotEmpty) {
               final ddsFilePartsT = p.basenameWithoutExtension(ddsFilesT.first.path).split('_');
-              String matchingDdsFileIdT = ddsFilePartsT.firstWhere(
-                (element) => int.tryParse(element) != null,
-                orElse: () => '',
-              );
+              String matchingDdsFileIdT = ddsFilePartsT.firstWhere((element) => int.tryParse(element) != null, orElse: () => '');
               List<String> newDdsFileParts = p.basename(fileF.path).split('_');
               int indexOfItemIdInFileName = newDdsFileParts.indexOf(fileIdF);
               if (indexOfItemIdInFileName != -1) {
@@ -179,46 +184,51 @@ Future<List<File>> emoteSwapRename(List<File> lItemFiles, List<File> rItemFiles,
         final fileFNameParts = p.basenameWithoutExtension(fileF.path).split('_');
         if (fileFNameParts.isNotEmpty && fileFNameParts[0] == 'pl' && fileFNameParts[1] == 'std' && fileFNameParts.last == 'lp') {
           matchingFileT = rItemFiles.firstWhere(
-              (e) => p.extension(e.path) == '.aqm' && p.basenameWithoutExtension(e.path).split('_')[0] == 'pl' && p.basenameWithoutExtension(e.path).split('_')[1] == 'hum',
-              orElse: () => File(''));
+            (e) => p.extension(e.path) == '.aqm' && p.basenameWithoutExtension(e.path).split('_')[0] == 'pl' && p.basenameWithoutExtension(e.path).split('_')[1] == 'hum',
+            orElse: () => File(''),
+          );
         }
       }
     } else if (p.extension(fileF.path) == '.bti') {
       matchingFileT = rItemFiles.firstWhere(
-          (element) =>
-              p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
-              p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
-              p.basenameWithoutExtension(element.path).split('_')[3] == fileNamePartsF[3] &&
-              (p.extension(element.path) == '.bti' || p.extension(element.path) == '.aqm'),
-          orElse: () => File(''));
+        (element) =>
+            p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
+            p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
+            p.basenameWithoutExtension(element.path).split('_')[3] == fileNamePartsF[3] &&
+            (p.extension(element.path) == '.bti' || p.extension(element.path) == '.aqm'),
+        orElse: () => File(''),
+      );
     } else if (fileNamePartsF.length > 3 && fileNamePartsF[1] == 'std') {
       matchingFileT = rItemFiles.firstWhere(
-          (element) =>
-              p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
-              p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
-              p.basenameWithoutExtension(element.path).split('_')[3] == fileNamePartsF[3] &&
-              p.extension(element.path) == p.extension(fileF.path),
-          orElse: () => File(''));
+        (element) =>
+            p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
+            p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
+            p.basenameWithoutExtension(element.path).split('_')[3] == fileNamePartsF[3] &&
+            p.extension(element.path) == p.extension(fileF.path),
+        orElse: () => File(''),
+      );
     } else if (fileNamePartsF.length > 2 && fileNamePartsF[1] == 'sb') {
       //copy .fig file over instead of rename
       File figFile = rItemFiles.firstWhere(
-          (element) =>
-              p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
-              p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
-              p.basenameWithoutExtension(element.path).split('_')[2] == fileNamePartsF[2] &&
-              p.extension(element.path) == p.extension(fileF.path),
-          orElse: () => File(''));
+        (element) =>
+            p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
+            p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
+            p.basenameWithoutExtension(element.path).split('_')[2] == fileNamePartsF[2] &&
+            p.extension(element.path) == p.extension(fileF.path),
+        orElse: () => File(''),
+      );
       if (figFile.path.isNotEmpty) {
         figFile.copySync(fileF.path);
       }
     } else if (fileNamePartsF.length > 2 && fileNamePartsF[1] == 'la' && p.extension(fileF.path) == '.fig') {
       //copy .fig file over instead of rename
       File figFile = rItemFiles.firstWhere(
-          (element) =>
-              p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
-              p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
-              p.extension(element.path) == p.extension(fileF.path),
-          orElse: () => File(''));
+        (element) =>
+            p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
+            p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
+            p.extension(element.path) == p.extension(fileF.path),
+        orElse: () => File(''),
+      );
       if (figFile.path.isNotEmpty) {
         figFile.copySync(fileF.path);
       }
@@ -228,11 +238,12 @@ Future<List<File>> emoteSwapRename(List<File> lItemFiles, List<File> rItemFiles,
         (p.basenameWithoutExtension(fileF.path).contains('_std_') || p.basenameWithoutExtension(fileF.path).contains('_hum_'))) {
       //emotes to motions
       File aqmFile = rItemFiles.firstWhere(
-          (element) =>
-              p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
-              p.basenameWithoutExtension(element.path).split('_')[3] == '00120' &&
-              p.extension(element.path) == p.extension(fileF.path),
-          orElse: () => File(''));
+        (element) =>
+            p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
+            p.basenameWithoutExtension(element.path).split('_')[3] == '00120' &&
+            p.extension(element.path) == p.extension(fileF.path),
+        orElse: () => File(''),
+      );
       if (aqmFile.path.isNotEmpty) {
         renamedFiles.add(await fileF.rename(Uri.file('${fileF.parent.path}/${p.basename(aqmFile.path)}').toFilePath()));
       }
@@ -240,11 +251,12 @@ Future<List<File>> emoteSwapRename(List<File> lItemFiles, List<File> rItemFiles,
       renamedFiles.add(fileF);
     } else if (fileNamePartsF.length > 2) {
       matchingFileT = rItemFiles.firstWhere(
-          (element) =>
-              p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
-              p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
-              p.extension(element.path) == p.extension(fileF.path),
-          orElse: () => File(''));
+        (element) =>
+            p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
+            p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
+            p.extension(element.path) == p.extension(fileF.path),
+        orElse: () => File(''),
+      );
     }
     if (matchingFileT.path.isNotEmpty) {
       String newPath = fileF.path.replaceFirst(p.basenameWithoutExtension(fileF.path), p.basenameWithoutExtension(matchingFileT.path));
@@ -330,30 +342,64 @@ SubMod lItemSubmodGet(ItemData lItemData) {
   for (var iceNameWithType in lItemData.getIceDetails()) {
     String iceName = p.basenameWithoutExtension(iceNameWithType.split(': ').last);
 
-    final icePathFromOgData = oItemData
-        .firstWhere(
-          (element) => p.basenameWithoutExtension(element.path) == iceName,
-          orElse: () => OfficialIceFile('', '', 0, ''),
-        )
-        .path;
+    final icePathFromOgData = oItemData.firstWhere((element) => p.basenameWithoutExtension(element.path) == iceName, orElse: () => OfficialIceFile('', '', 0, '')).path;
     if (icePathFromOgData.isNotEmpty) {
-      modFileList.add(ModFile(iceName, fromItemNameSwap, fromItemNameSwap, fromItemNameSwap, lItemData.category, '', [], pso2DataDirPath + p.separator + p.fromUri(Uri.parse(icePathFromOgData)), false,
-          DateTime(0), 0, false, false, false, [], [], [], [], [], []));
+      modFileList.add(
+        ModFile(
+          iceName,
+          fromItemNameSwap,
+          fromItemNameSwap,
+          fromItemNameSwap,
+          lItemData.category,
+          '',
+          [],
+          pso2DataDirPath + p.separator + p.fromUri(Uri.parse(icePathFromOgData)),
+          false,
+          DateTime(0),
+          0,
+          false,
+          false,
+          false,
+          [],
+          [],
+          [],
+          [],
+          [],
+          [],
+        ),
+      );
     }
   }
 
   return SubMod(
-      fromItemNameSwap, fromItemNameSwap, lItemData.getName(), lItemData.category, '', false, DateTime(0), 0, false, false, false, [], false, false, -1, -1, '', [], [], [], [], [], modFileList);
+    fromItemNameSwap,
+    fromItemNameSwap,
+    lItemData.getName(),
+    lItemData.category,
+    '',
+    false,
+    DateTime(0),
+    0,
+    false,
+    false,
+    false,
+    [],
+    false,
+    false,
+    -1,
+    -1,
+    '',
+    [],
+    [],
+    [],
+    [],
+    [],
+    modFileList,
+  );
 }
 
 Mod lItemModGet() {
   return Mod('', '', '', '', false, DateTime(0), 0, false, false, false, [], [], [], [], []);
 }
 
-enum ItemCrossSwap {
-  none,
-  bodyPaintToInnerwear,
-  innerwearToBodyPaint,
-  emoteToIdleMotion,
-  idleMotionToEmote;
-}
+enum ItemCrossSwap { none, bodyPaintToInnerwear, innerwearToBodyPaint, emoteToIdleMotion, idleMotionToEmote }

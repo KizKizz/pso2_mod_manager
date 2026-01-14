@@ -142,6 +142,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..duplicate = json['duplicate'] as String
   ..share = json['share'] as String
   ..donate = json['donate'] as String
+  ..effect = json['effect'] as String
   ..patchNotes = json['patchNotes'] as String
   ..appUpdate = json['appUpdate'] as String
   ..tryAgain = json['tryAgain'] as String
@@ -295,6 +296,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
       json['checkingForPrefixDirsInFolder'] as String
   ..latestVersionNumber = json['latestVersionNumber'] as String
   ..localVersionNumber = json['localVersionNumber'] as String
+  ..showEffectAccessories = json['showEffectAccessories'] as String
+  ..openInFileExplorerLC = json['openInFileExplorerLC'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -667,6 +670,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
   'duplicate': instance.duplicate,
   'share': instance.share,
   'donate': instance.donate,
+  'effect': instance.effect,
   'patchNotes': instance.patchNotes,
   'appUpdate': instance.appUpdate,
   'tryAgain': instance.tryAgain,
@@ -814,6 +818,8 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
   'checkingForPrefixDirsInFolder': instance.checkingForPrefixDirsInFolder,
   'latestVersionNumber': instance.latestVersionNumber,
   'localVersionNumber': instance.localVersionNumber,
+  'showEffectAccessories': instance.showEffectAccessories,
+  'openInFileExplorerLC': instance.openInFileExplorerLC,
   'loadingUILanguage': instance.loadingUILanguage,
   'selectUILanguage': instance.selectUILanguage,
   'selectItemNameLanguage': instance.selectItemNameLanguage,
