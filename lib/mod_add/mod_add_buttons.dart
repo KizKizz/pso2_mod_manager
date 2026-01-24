@@ -39,7 +39,7 @@ class _ModAddDragDropButtonsState extends State<ModAddDragDropButtons> {
               onPressed: () async {
                 XTypeGroup archiveTypeGroup = XTypeGroup(label: appText.archives, extensions: widget.dragDropFileTypes);
                 XTypeGroup iceTypeGroup = XTypeGroup(label: appText.iceFiles, extensions: const <String>['*']);
-                final List<XFile> selectedFiles = await openFiles(acceptedTypeGroups: <XTypeGroup>[archiveTypeGroup, iceTypeGroup]);
+                final List<XFile> selectedFiles = await openFiles(acceptedTypeGroups: <XTypeGroup>[archiveTypeGroup, iceTypeGroup], confirmButtonText: appText.add);
                 // FilePickerResult? result = await FilePicker.platform.pickFiles(
                 //   allowMultiple: true,
                 //   type: FileType.custom,
@@ -59,7 +59,7 @@ class _ModAddDragDropButtonsState extends State<ModAddDragDropButtons> {
             Expanded(
               child: ElevatedButton(
                 onPressed: () async {
-                  final List<String?> selectedDirPaths = await getDirectoryPaths();
+                  final List<String?> selectedDirPaths = await getDirectoryPaths(confirmButtonText: appText.add);
                   if (selectedDirPaths.isNotEmpty) {
                     for (var path in selectedDirPaths) {
                       curModAddDragDropStatus.value = ModAddDragDropState.waitingForFiles;
