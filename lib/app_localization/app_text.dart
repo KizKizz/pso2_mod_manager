@@ -296,7 +296,8 @@ class AppText {
       latestVersionNumber = 'Latest Version: %p%',
       localVersionNumber = 'Local Version: %p%',
       showEffectAccessories = 'Show Effect Accessories',
-      openInFileExplorerLC = 'Open in File Explorer';
+      openInFileExplorerLC = 'Open in File Explorer',
+      useAlternateFilePicker = 'Use Alternate File Picker';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',
@@ -514,10 +515,10 @@ class AppText {
       auxiliaryUIOpacity = 'Auxiliary UI Opacity',
       showPreview = 'Show Preview',
       hidePreview = 'Hide Preview',
-      applyOnlyHQFilesFromMods = 'Apply Only HQ Files From Mods',
+      applyOnlyHQFilesFromMods = 'Apply Mods To Your Character Only',
       selectedOnly = 'Selected Only',
       allPossible = 'All Possible',
-      applyHQFilesOnly = 'Apply HQ files only',
+      applyHQFilesOnly = 'Apply to your character only',
       applyHQOnlyInfo =
           'All Possible: Always try to apply HQ files to the game\nSelected Only: Only HQ files of the selected mods will be applied to the game\nNote: If a mod does not have any HQ file, all files will be applied like normal',
       hideUIWhenAppUnfocused = 'Hide UI When App Unfocused',

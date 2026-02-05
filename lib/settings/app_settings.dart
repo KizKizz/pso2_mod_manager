@@ -271,6 +271,18 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             ),
                           ],
                         ),
+                        // Use alt file picker
+                        SettingsHeader(icon: Icons.file_open, text: appText.useAlternateFilePicker),
+                        AnimatedHorizontalToggleLayout(
+                          taps: [appText.on, appText.off],
+                          initialIndex: useAltFilePicker ? 0 : 1,
+                          width: constraints.maxWidth,
+                          onChange: (currentIndex, targetIndex) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            targetIndex == 0 ? useAltFilePicker = true : useAltFilePicker = false;
+                            prefs.setBool('useAltFilePicker', useAltFilePicker);
+                          },
+                        ),
                         // Main paths reselect
                         SettingsHeader(icon: Icons.folder, text: appText.mainPaths),
                         Column(

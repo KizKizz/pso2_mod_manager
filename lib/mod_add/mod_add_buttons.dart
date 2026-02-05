@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
@@ -37,15 +38,16 @@ class _ModAddDragDropButtonsState extends State<ModAddDragDropButtons> {
             // Browse files
             ElevatedButton(
               onPressed: () async {
-                XTypeGroup archiveTypeGroup = XTypeGroup(label: appText.archives, extensions: widget.dragDropFileTypes);
-                XTypeGroup iceTypeGroup = XTypeGroup(label: appText.iceFiles, extensions: const <String>['*']);
-                final List<XFile> selectedFiles = await openFiles(acceptedTypeGroups: <XTypeGroup>[archiveTypeGroup, iceTypeGroup]);
-                // FilePickerResult? result = await FilePicker.platform.pickFiles(
-                //   allowMultiple: true,
-                //   type: FileType.custom,
-                //   allowedExtensions: widget.dragDropFileTypes,
-                // );
-                // List<XFile> selectedFiles = result?.xFiles ?? [];
+                List<XFile> selectedFiles = [];
+                if (useAltFilePicker) {
+                  FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['7z', 'zip', 'rar', 'pmm']);
+                  if (result != null) selectedFiles = result.xFiles;
+                } else {
+                  XTypeGroup archiveTypeGroup = XTypeGroup(label: appText.archives, extensions: widget.dragDropFileTypes);
+                  XTypeGroup iceTypeGroup = XTypeGroup(label: appText.iceFiles, extensions: const <String>['*']);
+                  selectedFiles = await openFiles(acceptedTypeGroups: <XTypeGroup>[archiveTypeGroup, iceTypeGroup], confirmButtonText: appText.add);
+                }
+
                 if (selectedFiles.isNotEmpty) {
                   curModAddDragDropStatus.value = ModAddDragDropState.waitingForFiles;
                   modAddDragDropPaths.addAll(selectedFiles.map((e) => e.path));
@@ -59,7 +61,14 @@ class _ModAddDragDropButtonsState extends State<ModAddDragDropButtons> {
             Expanded(
               child: ElevatedButton(
                 onPressed: () async {
-                  final List<String?> selectedDirPaths = await getDirectoryPaths();
+                  List<String?> selectedDirPaths = [];
+                  if (useAltFilePicker) {
+                    final path = await FilePicker.platform.getDirectoryPath();
+                    if (path != null) selectedDirPaths = [path];
+                  } else {
+                    selectedDirPaths = await getDirectoryPaths(confirmButtonText: appText.add);
+                  }
+
                   if (selectedDirPaths.isNotEmpty) {
                     for (var path in selectedDirPaths) {
                       curModAddDragDropStatus.value = ModAddDragDropState.waitingForFiles;

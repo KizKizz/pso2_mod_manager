@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
@@ -49,13 +50,15 @@ class _MainItemAqmInjectGridState extends State<MainItemAqmInjectGrid> {
     // Sort item data
     displayingItems = pItemData
         .where((e) => showNoNameItems.watch(context) || (!showNoNameItems.watch(context) && e.getName().isNotEmpty))
-        .where((e) => selectedAqmInjectCategory.watch(context) == defaultCategoryDirs[1]
-            ? e.subCategory == 'Basewear'
-            : selectedAqmInjectCategory.watch(context) == defaultCategoryDirs[16]
-                ? e.subCategory == 'Setwear'
-                : selectedAqmInjectCategory.watch(context) == defaultCategoryDirs[14]
-                    ? e.category == selectedAqmInjectCategory.watch(context) && (e.subCategory == selectedItemSwapMotionType.watch(context) || selectedItemSwapMotionType.watch(context) == 'All')
-                    : e.category == selectedAqmInjectCategory.watch(context))
+        .where(
+          (e) => selectedAqmInjectCategory.watch(context) == defaultCategoryDirs[1]
+              ? e.subCategory == 'Basewear'
+              : selectedAqmInjectCategory.watch(context) == defaultCategoryDirs[16]
+              ? e.subCategory == 'Setwear'
+              : selectedAqmInjectCategory.watch(context) == defaultCategoryDirs[14]
+              ? e.category == selectedAqmInjectCategory.watch(context) && (e.subCategory == selectedItemSwapMotionType.watch(context) || selectedItemSwapMotionType.watch(context) == 'All')
+              : e.category == selectedAqmInjectCategory.watch(context),
+        )
         .where((e) => selectedItemSwapTypeCategory.watch(context) == 'Both' || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.watch(context).toLowerCase())
         .toList();
     displayingItems.sort((a, b) => a.getName().compareTo(b.getName()));
@@ -71,38 +74,44 @@ class _MainItemAqmInjectGridState extends State<MainItemAqmInjectGrid> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                  child: SizedBox(
-                height: 30,
-                child: OutlinedButton(
+                child: SizedBox(
+                  height: 30,
+                  child: OutlinedButton(
                     style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                      side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
+                    ),
                     onPressed: () {
                       showNoNameItems.watch(context) ? showNoNameItems.value = false : showNoNameItems.value = true;
                     },
-                    child: Text(showNoNameItems.watch(context) ? appText.hideNoNameItems : appText.showNoNameItems)),
-              )),
+                    child: Text(showNoNameItems.watch(context) ? appText.hideNoNameItems : appText.showNoNameItems),
+                  ),
+                ),
+              ),
               Expanded(
-                  child: Padding(
-                      padding: const EdgeInsets.only(top: 1),
-                      child: SingleChoiceSelectButton(
-                          width: double.infinity,
-                          height: 30,
-                          label: appText.types,
-                          selectPopupLabel: appText.types,
-                          availableItemList: itemTypes,
-                          availableItemLabels: itemTypes.map((e) => appText.itemTypeName(e)).toList(),
-                          selectedItemsLabel: itemTypes.map((e) => appText.itemTypeName(e)).toList(),
-                          selectedItem: selectedItemSwapTypeCategory,
-                          extraWidgets: [],
-                          savePref: () {
-                            lScrollController.jumpTo(0);
-                            rScrollController.jumpTo(0);
-                          }))),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 1),
+                  child: SingleChoiceSelectButton(
+                    width: double.infinity,
+                    height: 30,
+                    label: appText.types,
+                    selectPopupLabel: appText.types,
+                    availableItemList: itemTypes,
+                    availableItemLabels: itemTypes.map((e) => appText.itemTypeName(e)).toList(),
+                    selectedItemsLabel: itemTypes.map((e) => appText.itemTypeName(e)).toList(),
+                    selectedItem: selectedItemSwapTypeCategory,
+                    extraWidgets: [],
+                    savePref: () {
+                      lScrollController.jumpTo(0);
+                      rScrollController.jumpTo(0);
+                    },
+                  ),
+                ),
+              ),
               Expanded(
-                  child: Padding(
-                padding: const EdgeInsets.only(top: 1),
-                child: SingleChoiceSelectButton(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 1),
+                  child: SingleChoiceSelectButton(
                     width: double.infinity,
                     height: 30,
                     label: appText.view,
@@ -115,64 +124,66 @@ class _MainItemAqmInjectGridState extends State<MainItemAqmInjectGrid> {
                     savePref: () {
                       lSelectedItemData.value = null;
                       lScrollController.jumpTo(0);
-                    }),
-              )),
+                    },
+                  ),
+                ),
+              ),
             ],
           ),
           Expanded(
-              child: Row(
-            spacing: 5,
-            children: [
-              Expanded(
-                  child: AqmInjectGridLayout(
-                itemDataList: displayingItems,
-                scrollController: lScrollController,
-                selectedItemData: lSelectedItemData,
-              )),
-              Expanded(
-                  child: AqmInjectedGridLayout(
-                injectedItemList: masterAqmInjectedItemList,
-                scrollController: rScrollController,
-                selectedAqmInjectedItem: rSelectedItemData,
-              )),
-            ],
-          )),
+            child: Row(
+              spacing: 5,
+              children: [
+                Expanded(
+                  child: AqmInjectGridLayout(itemDataList: displayingItems, scrollController: lScrollController, selectedItemData: lSelectedItemData),
+                ),
+                Expanded(
+                  child: AqmInjectedGridLayout(injectedItemList: masterAqmInjectedItemList, scrollController: rScrollController, selectedAqmInjectedItem: rSelectedItemData),
+                ),
+              ],
+            ),
+          ),
           Row(
             spacing: 5,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               ElevatedButton(
-                  onPressed: () async {
-                    const XTypeGroup aqmTypeGroup = XTypeGroup(
-                      label: 'AQM',
-                      extensions: <String>['aqm'],
-                    );
-                    final List<XFile> files = await openFiles(acceptedTypeGroups: <XTypeGroup>[
-                      aqmTypeGroup,
-                    ]);
-                    for (var file in files) {
-                      await File(file.path).copy(modCustomAqmsDirPath + p.separator + p.basename(file.path));
-                      setState(() {});
-                    }
-                  },
-                  child: Text(appText.addCustomAqmFiles)),
+                onPressed: () async {
+                  List<XFile> files = [];
+                  if (useAltFilePicker) {
+                    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['aqm']);
+                    if (result != null) files = result.xFiles;
+                  } else {
+                    const XTypeGroup aqmTypeGroup = XTypeGroup(label: 'AQM', extensions: <String>['aqm']);
+                    files = await openFiles(acceptedTypeGroups: <XTypeGroup>[aqmTypeGroup]);
+                  }
+
+                  for (var file in files) {
+                    await File(file.path).copy(modCustomAqmsDirPath + p.separator + p.basename(file.path));
+                    setState(() {});
+                  }
+                },
+                child: Text(appText.addCustomAqmFiles),
+              ),
               Expanded(
-                  child: SingleChoiceSelectButton(
-                      width: double.infinity,
-                      height: 30,
-                      label: appText.currentAqmFile,
-                      selectPopupLabel: appText.customAQMFiles,
-                      availableItemList: Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').map((e) => e.path).toList(),
-                      availableItemLabels: [],
-                      selectedItemsLabel: Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').map((e) => e.path).toList(),
-                      selectedItem: selectedCustomAQMFilePath,
-                      extraWidgets: [],
-                      savePref: () async {
-                        final prefs = await SharedPreferences.getInstance();
-                        prefs.setString('selectedCustomAQMFilePath', selectedCustomAQMFilePath.value);
-                      }))
+                child: SingleChoiceSelectButton(
+                  width: double.infinity,
+                  height: 30,
+                  label: appText.currentAqmFile,
+                  selectPopupLabel: appText.customAQMFiles,
+                  availableItemList: Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').map((e) => e.path).toList(),
+                  availableItemLabels: [],
+                  selectedItemsLabel: Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').map((e) => e.path).toList(),
+                  selectedItem: selectedCustomAQMFilePath,
+                  extraWidgets: [],
+                  savePref: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    prefs.setString('selectedCustomAQMFilePath', selectedCustomAQMFilePath.value);
+                  },
+                ),
+              ),
             ],
-          )
+          ),
         ],
       ),
     );

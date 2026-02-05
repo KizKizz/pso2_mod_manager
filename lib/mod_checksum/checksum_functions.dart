@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:path/path.dart' as p;
 import 'package:http/http.dart' as http;
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
+import 'package:pso2_mod_manager/shared_prefs.dart';
 
 Future<bool> checksumFileFetch() async {
   File checksum = File(modChecksumFilePath);
@@ -26,7 +28,13 @@ Future<bool> checksumFileFetch() async {
 }
 
 Future<void> checksumFileSelect() async {
-  final XFile? checksumFile = await openFile();
+  XFile? checksumFile;
+  if (useAltFilePicker) {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.any);
+    if (result != null) checksumFile = result.xFiles.single;
+  } else {
+    checksumFile = await openFile();
+  }
 
   if (checksumFile != null) {
     final copiedFile = await File(checksumFile.path).copy(modChecksumFilePath);
