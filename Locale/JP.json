@@ -98,7 +98,7 @@
   "applyOnlyHQFilesFromMods": "キャラクターにのみMODを適用する",
   "selectedOnly": "選抜のみ",
   "allPossible": "すべて可能",
-  "applyHQFilesOnly": "HQファイルのみ適用",
+  "applyHQFilesOnly": "あなたのキャラクターにのみ適用",
   "applyHQOnlyInfo": "すべて可能: 常にHQファイルをゲームに適用するよう試みる\n選択のみ: 選択したMODのHQファイルのみをゲームに適用する\n注意: MODにHQファイルがない場合、すべてのファイルが通常通り適用される",
   "hideUIWhenAppUnfocused": "アプリがフォーカスを失ったときにUIを非表示",
   "startAfter": "後で開始",
