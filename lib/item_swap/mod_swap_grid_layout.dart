@@ -33,7 +33,9 @@ class _ModSwapGridLayoutState extends State<ModSwapGridLayout> {
     if (itemSwapSearchTextController.value.text.isEmpty) {
       displayingItemData = widget.itemDataList;
     } else {
-      displayingItemData = widget.itemDataList.where((e) => e.getName().toLowerCase().contains(itemSwapSearchTextController.value.text.toLowerCase())).toList();
+      displayingItemData = widget.itemDataList
+          .where((e) => e.getName().toLowerCase().contains(itemSwapSearchTextController.value.text.toLowerCase()) || e.containsIce(itemSwapSearchTextController.value.text.toLowerCase()))
+          .toList();
     }
 
     return Column(

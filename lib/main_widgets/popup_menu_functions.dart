@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_popup.dart';
@@ -155,18 +156,16 @@ Future<void> submodRename(context, Mod mod, SubMod submod) async {
 }
 
 Future<void> addPreviews(Mod mod, SubMod submod) async {
-  const XTypeGroup imageTypeGroup = XTypeGroup(
-    label: 'Images',
-    extensions: <String>['jpg', 'png'],
-  );
-  const XTypeGroup videoTypeGroup = XTypeGroup(
-    label: 'Videos',
-    extensions: <String>['webm', 'mp4'],
-  );
-  final List<XFile> files = await openFiles(acceptedTypeGroups: <XTypeGroup>[
-    imageTypeGroup,
-    videoTypeGroup,
-  ]);
+  List<XFile> files = [];
+  if (useAltFilePicker) {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['jpg', 'png', 'webm', 'mp4']);
+    if (result != null) files = result.xFiles;
+  } else {
+    const XTypeGroup imageTypeGroup = XTypeGroup(label: 'Images', extensions: <String>['jpg', 'png']);
+    const XTypeGroup videoTypeGroup = XTypeGroup(label: 'Videos', extensions: <String>['webm', 'mp4']);
+    files = await openFiles(acceptedTypeGroups: <XTypeGroup>[imageTypeGroup, videoTypeGroup]);
+  }
+
   for (var file in files) {
     if (p.extension(file.path) == '.jpg' || p.extension(file.path) == '.png') {
       final copiedFile = await File(file.path).copy(submod.location + p.separator + p.basename(file.path));

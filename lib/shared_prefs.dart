@@ -54,6 +54,7 @@ int modManCurActiveProfile = 1;
 String pso2binDirPath = '';
 String mainDataDirPath = '';
 String verTwoMainDataDirPath = '';
+bool useAltFilePicker = false;
 
 // Auto features
 bool autoBoundingRadiusRemoval = false;
@@ -129,14 +130,24 @@ Future<void> prefsLoad() async {
   selectedDisplaySortModSet.value = prefs.getString('selectedDisplaySortModSet') ?? 'Name (Alphabetical)';
 
   // Color schemes
-  final lightModeSeedColorValue = prefs.getStringList('lightModeSeedColorValue') ??
+  final lightModeSeedColorValue =
+      prefs.getStringList('lightModeSeedColorValue') ??
       [lightColorScheme.primary.r.toString(), lightColorScheme.primary.g.toString(), lightColorScheme.primary.b.toString(), lightColorScheme.primary.a.toString()];
   lightModeSeedColor = Color.from(
-      red: double.parse(lightModeSeedColorValue[0]), green: double.parse(lightModeSeedColorValue[1]), blue: double.parse(lightModeSeedColorValue[2]), alpha: double.parse(lightModeSeedColorValue[3]));
-  final darkModeSeedColorValue = prefs.getStringList('darkModeSeedColorValue') ??
+    red: double.parse(lightModeSeedColorValue[0]),
+    green: double.parse(lightModeSeedColorValue[1]),
+    blue: double.parse(lightModeSeedColorValue[2]),
+    alpha: double.parse(lightModeSeedColorValue[3]),
+  );
+  final darkModeSeedColorValue =
+      prefs.getStringList('darkModeSeedColorValue') ??
       [darkColorScheme.primary.r.toString(), darkColorScheme.primary.g.toString(), darkColorScheme.primary.b.toString(), darkColorScheme.primary.a.toString()];
   darkModeSeedColor = Color.from(
-      red: double.parse(darkModeSeedColorValue[0]), green: double.parse(darkModeSeedColorValue[1]), blue: double.parse(darkModeSeedColorValue[2]), alpha: double.parse(darkModeSeedColorValue[3]));
+    red: double.parse(darkModeSeedColorValue[0]),
+    green: double.parse(darkModeSeedColorValue[1]),
+    blue: double.parse(darkModeSeedColorValue[2]),
+    alpha: double.parse(darkModeSeedColorValue[3]),
+  );
 
   // Backup priority
   originalFilesBackupsFromSega = prefs.getBool('originalFilesBackupsFromSega') ?? true;
@@ -175,7 +186,7 @@ Future<void> prefsLoad() async {
   // categorize by items
   // modAddCategorizeModsByItems = prefs.getBool('modAddCategorizeModsByItems') ?? true;
 
-  // show previwe box
+  // show preview box
   showPreviewBox.value = prefs.getBool('showPreviewBox') ?? true;
 
   // mod apply hq files only
@@ -205,4 +216,7 @@ Future<void> prefsLoad() async {
 
   // Item list serach includes mods
   itemListSearchIncludesMods = prefs.getBool('itemListSearchIncludesMods') ?? false;
+
+  // Use alt file picker
+  useAltFilePicker = prefs.getBool('useAltFilePicker') ?? false;
 }

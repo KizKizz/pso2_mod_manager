@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
@@ -40,9 +41,7 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
   Widget build(BuildContext context) {
     // Refresh
     if (settingChangeStatus.watch(context) != settingChangeStatus.peek()) {
-      setState(
-        () {},
-      );
+      setState(() {});
     }
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -50,10 +49,7 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              appText.modSettings,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            Text(appText.modSettings, style: Theme.of(context).textTheme.titleLarge),
             const HoriDivider(),
             Expanded(
               child: SingleChildScrollView(
@@ -85,16 +81,17 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
                       child: ModManTooltip(
                         message: appText.useLocalBackupOnlyInfo,
                         child: OutlinedButton.icon(
-                            onPressed: originalFilesBackupsFromSega
-                                ? null
-                                : () async {
-                                    final prefs = await SharedPreferences.getInstance();
-                                    useLocalBackupOnly ? useLocalBackupOnly = false : useLocalBackupOnly = true;
-                                    prefs.setBool('useLocalBackupOnly', useLocalBackupOnly);
-                                    setState(() {});
-                                  },
-                            label: Text(appText.useLocalBackupOnly),
-                            icon: Icon(useLocalBackupOnly ? Icons.check_box_outlined : Icons.check_box_outline_blank_outlined)),
+                          onPressed: originalFilesBackupsFromSega
+                              ? null
+                              : () async {
+                                  final prefs = await SharedPreferences.getInstance();
+                                  useLocalBackupOnly ? useLocalBackupOnly = false : useLocalBackupOnly = true;
+                                  prefs.setBool('useLocalBackupOnly', useLocalBackupOnly);
+                                  setState(() {});
+                                },
+                          label: Text(appText.useLocalBackupOnly),
+                          icon: Icon(useLocalBackupOnly ? Icons.check_box_outlined : Icons.check_box_outline_blank_outlined),
+                        ),
                       ),
                     ),
                     // Auto bounding radius
@@ -116,25 +113,26 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SettingsHeader(icon: Icons.radio_button_checked_rounded, text: appText.boundingRadiusRemovalValue),
-                        ModManTooltip(message: appText.boundingRadiusInfo, child: Icon(Icons.info_outline))
+                        ModManTooltip(message: appText.boundingRadiusInfo, child: Icon(Icons.info_outline)),
                       ],
                     ),
                     SizedBox(
                       width: double.infinity,
                       child: SliderTheme(
-                          data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.onDrag),
-                          child: Slider(
-                            value: boundingRadiusRemovalValue,
-                            min: -200,
-                            max: 0,
-                            label: boundingRadiusRemovalValue.toString(),
-                            onChanged: (value) async {
-                              final prefs = await SharedPreferences.getInstance();
-                              boundingRadiusRemovalValue = value.ceilToDouble();
-                              prefs.setDouble('boundingRadiusRemovalValue', boundingRadiusRemovalValue);
-                              setState(() {});
-                            },
-                          )),
+                        data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.onDrag),
+                        child: Slider(
+                          value: boundingRadiusRemovalValue,
+                          min: -200,
+                          max: 0,
+                          label: boundingRadiusRemovalValue.toString(),
+                          onChanged: (value) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            boundingRadiusRemovalValue = value.ceilToDouble();
+                            prefs.setDouble('boundingRadiusRemovalValue', boundingRadiusRemovalValue);
+                            setState(() {});
+                          },
+                        ),
+                      ),
                     ),
                     // Auto remove custom aqm
                     SettingsHeader(icon: Icons.auto_fix_high, text: appText.autoInjectCustomAQM),
@@ -153,35 +151,39 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton(
-                          onPressed: () async {
-                            const XTypeGroup aqmTypeGroup = XTypeGroup(
-                              label: 'AQM',
-                              extensions: <String>['aqm'],
-                            );
-                            final List<XFile> files = await openFiles(acceptedTypeGroups: <XTypeGroup>[
-                              aqmTypeGroup,
-                            ]);
-                            for (var file in files) {
-                              await File(file.path).copy(modCustomAqmsDirPath + p.separator + p.basename(file.path));
-                              setState(() {});
-                            }
-                          },
-                          child: Text(appText.addCustomAqmFiles)),
+                        onPressed: () async {
+                          List<XFile> files = [];
+                          if (useAltFilePicker) {
+                            FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['aqm']);
+                            if (result != null) files = result.xFiles;
+                          } else {
+                            const XTypeGroup aqmTypeGroup = XTypeGroup(label: 'AQM', extensions: <String>['aqm']);
+                            files = await openFiles(acceptedTypeGroups: <XTypeGroup>[aqmTypeGroup]);
+                          }
+
+                          for (var file in files) {
+                            await File(file.path).copy(modCustomAqmsDirPath + p.separator + p.basename(file.path));
+                            setState(() {});
+                          }
+                        },
+                        child: Text(appText.addCustomAqmFiles),
+                      ),
                     ),
                     SingleChoiceSelectButton(
-                        width: double.infinity,
-                        height: 30,
-                        label: appText.currentAqmFile,
-                        selectPopupLabel: appText.customAQMFiles,
-                        availableItemList: Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').map((e) => e.path).toList(),
-                        availableItemLabels: [],
-                        selectedItemsLabel: Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').map((e) => e.path).toList(),
-                        selectedItem: selectedCustomAQMFilePath,
-                        extraWidgets: [],
-                        savePref: () async {
-                          final prefs = await SharedPreferences.getInstance();
-                          prefs.setString('selectedCustomAQMFilePath', selectedCustomAQMFilePath.value);
-                        }),
+                      width: double.infinity,
+                      height: 30,
+                      label: appText.currentAqmFile,
+                      selectPopupLabel: appText.customAQMFiles,
+                      availableItemList: Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').map((e) => e.path).toList(),
+                      availableItemLabels: [],
+                      selectedItemsLabel: Directory(modCustomAqmsDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.aqm').map((e) => e.path).toList(),
+                      selectedItem: selectedCustomAQMFilePath,
+                      extraWidgets: [],
+                      savePref: () async {
+                        final prefs = await SharedPreferences.getInstance();
+                        prefs.setString('selectedCustomAQMFilePath', selectedCustomAQMFilePath.value);
+                      },
+                    ),
                     // Mark modded items
                     SettingsHeader(icon: Icons.image_search_rounded, text: appText.markModdedItemInGame),
                     AnimatedHorizontalToggleLayout(
@@ -216,8 +218,8 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
                         initialIndex: modAlwaysApplyHQFiles
                             ? 0
                             : selectedModsApplyHQFilesOnly
-                                ? 1
-                                : 2,
+                            ? 1
+                            : 2,
                         width: constraints.maxWidth,
                         onChange: (currentIndex, targetIndex) async {
                           final prefs = await SharedPreferences.getInstance();
@@ -236,40 +238,41 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
                       children: [
                         Expanded(
                           child: OutlinedButton(
-                              onPressed: () async {
-                                await jsonManualBackup();
-                                latestJsonBackupDate = getLatestBackupDate();
-                                setState(() {});
-                              },
-                              child: Text(appText.backupNow)),
+                            onPressed: () async {
+                              await jsonManualBackup();
+                              latestJsonBackupDate = getLatestBackupDate();
+                              setState(() {});
+                            },
+                            child: Text(appText.backupNow),
+                          ),
                         ),
                         Expanded(
                           child: OutlinedButton(
-                              onPressed: () async {
-                                List<File> configBackups = Directory(jsonBackupDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.zip').toList();
-                                configBackups.sort(
-                                  (a, b) => b.statSync().modified.compareTo(a.statSync().modified),
-                                );
-                                if (configBackups.isNotEmpty) {
-                                  await modConfigsRestorePopup(context, latestJsonBackupDate, configBackups);
-                                }
-                              },
-                              child: Text(appText.restore)),
+                            onPressed: () async {
+                              List<File> configBackups = Directory(jsonBackupDirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '.zip').toList();
+                              configBackups.sort((a, b) => b.statSync().modified.compareTo(a.statSync().modified));
+                              if (configBackups.isNotEmpty) {
+                                await modConfigsRestorePopup(context, latestJsonBackupDate, configBackups);
+                              }
+                            },
+                            child: Text(appText.restore),
+                          ),
                         ),
                         ModManTooltip(
                           message: appText.openInFileExplorer,
                           child: OutlinedButton.icon(
-                              onPressed: () async {
-                                launchUrlString(jsonBackupDirPath);
-                              },
-                              label: const Icon(Icons.folder_open)),
+                            onPressed: () async {
+                              launchUrlString(jsonBackupDirPath);
+                            },
+                            label: const Icon(Icons.folder_open),
+                          ),
                         ),
                       ],
                     ),
                   ],
                 ),
               ),
-            )
+            ),
           ],
         );
       },

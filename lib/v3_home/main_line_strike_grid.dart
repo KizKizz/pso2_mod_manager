@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
@@ -69,18 +70,23 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                  child: SizedBox(
-                height: 30,
-                child: OutlinedButton(
+                child: SizedBox(
+                  height: 30,
+                  child: OutlinedButton(
                     style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                      side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
+                    ),
                     onPressed: () async {
-                      XTypeGroup typeGroup = XTypeGroup(
-                        label: appText.images,
-                        extensions: const <String>['jpg', 'png'],
-                      );
-                      final XFile? selectedImageFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+                      XFile? selectedImageFile;
+                      if (useAltFilePicker) {
+                        FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['jpg', 'png']);
+                        if (result != null) selectedImageFile = result.xFiles.single;
+                      } else {
+                        XTypeGroup typeGroup = XTypeGroup(label: appText.images, extensions: const <String>['jpg', 'png']);
+                        selectedImageFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+                      }
+
                       if (selectedImageFile != null) {
                         // ignore: use_build_context_synchronously
                         File? croppedImage = await lineStrikeImageCropPopup(context, File(selectedImageFile.path), selectedLineStrikeType.value);
@@ -88,31 +94,39 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
                         setState(() {});
                       }
                     },
-                    child: Text(appText.createNewBackground)),
-              )),
+                    child: Text(appText.createNewBackground),
+                  ),
+                ),
+              ),
               Expanded(
-                  child: SizedBox(
-                height: 30,
-                child: OutlinedButton(
+                child: SizedBox(
+                  height: 30,
+                  child: OutlinedButton(
                     style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                      side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
+                    ),
                     onPressed: () async {
-                      launchUrlString(selectedLineStrikeType.value == LineStrikeItemType.cards.value
-                          ? lineStrikeCardsDirPath
-                          : selectedLineStrikeType.value == LineStrikeItemType.boards.value
-                              ? lineStrikeBoardsDirPath
-                              : lineStrikeSleevesDirPath);
+                      launchUrlString(
+                        selectedLineStrikeType.value == LineStrikeItemType.cards.value
+                            ? lineStrikeCardsDirPath
+                            : selectedLineStrikeType.value == LineStrikeItemType.boards.value
+                            ? lineStrikeBoardsDirPath
+                            : lineStrikeSleevesDirPath,
+                      );
                     },
-                    child: Text(appText.openInFileExplorer)),
-              )),
+                    child: Text(appText.openInFileExplorer),
+                  ),
+                ),
+              ),
               Expanded(
-                  child: SizedBox(
-                height: 30,
-                child: OutlinedButton(
+                child: SizedBox(
+                  height: 30,
+                  child: OutlinedButton(
                     style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                      side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
+                    ),
                     onPressed: () async {
                       if (selectedLineStrikeType.value == LineStrikeItemType.cards.value) {
                         customBackgroundImages = await customCardImagesFetch();
@@ -123,72 +137,89 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
                       }
                       setState(() {});
                     },
-                    child: Text(appText.refresh)),
-              )),
+                    child: Text(appText.refresh),
+                  ),
+                ),
+              ),
               Expanded(
-                  child: SizedBox(
-                height: 30,
-                child: OutlinedButton(
+                child: SizedBox(
+                  height: 30,
+                  child: OutlinedButton(
                     style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                      side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
+                    ),
                     onPressed: () async {
                       lineStrikeShowAppliedOnly ? lineStrikeShowAppliedOnly = false : lineStrikeShowAppliedOnly = true;
                       setState(() {});
                     },
-                    child: Text(lineStrikeShowAppliedOnly ? appText.showAll : appText.showAppliedOnly)),
-              )),
-              Expanded(child: SingleChoiceSelectButton(
-                        width: double.infinity,
-                        height: 30,
-                        label: appText.view,
-                        selectPopupLabel: appText.view,
-                        availableItemList: lineStrikeItemTypes,
-                        availableItemLabels: lineStrikeItemTypes.map((e) => appText.lineStrikeItemTypeName(e)).toList(),
-                        selectedItemsLabel: lineStrikeItemTypes.map((e) => appText.lineStrikeItemTypeName(e)).toList(),
-                        selectedItem: selectedLineStrikeType,
-                        extraWidgets: [],
-                        savePref: () {
-                          lScrollController.jumpTo(0);
-                          rScrollController.jumpTo(0);
-                        }))
+                    child: Text(lineStrikeShowAppliedOnly ? appText.showAll : appText.showAppliedOnly),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: SingleChoiceSelectButton(
+                  width: double.infinity,
+                  height: 30,
+                  label: appText.view,
+                  selectPopupLabel: appText.view,
+                  availableItemList: lineStrikeItemTypes,
+                  availableItemLabels: lineStrikeItemTypes.map((e) => appText.lineStrikeItemTypeName(e)).toList(),
+                  selectedItemsLabel: lineStrikeItemTypes.map((e) => appText.lineStrikeItemTypeName(e)).toList(),
+                  selectedItem: selectedLineStrikeType,
+                  extraWidgets: [],
+                  savePref: () {
+                    lScrollController.jumpTo(0);
+                    rScrollController.jumpTo(0);
+                  },
+                ),
+              ),
             ],
           ),
           Visibility(
             visible: selectedLineStrikeType.value == LineStrikeItemType.cards.value,
             child: Expanded(
-                child: Row(
-              spacing: 5,
-              children: [
-                LineStrikeCardcustomImageGridLayout(customImageFiles: customBackgroundImages, lScrollController: lScrollController),
-                LineStrikeCardOriginalGridLayout(
-                    cards: lineStrikeShowAppliedOnly ? masterLineStrikeCardList.where((e) => e.isReplaced).toList() : masterLineStrikeCardList, rScrollController: rScrollController)
-              ],
-            )),
+              child: Row(
+                spacing: 5,
+                children: [
+                  LineStrikeCardcustomImageGridLayout(customImageFiles: customBackgroundImages, lScrollController: lScrollController),
+                  LineStrikeCardOriginalGridLayout(
+                    cards: lineStrikeShowAppliedOnly ? masterLineStrikeCardList.where((e) => e.isReplaced).toList() : masterLineStrikeCardList,
+                    rScrollController: rScrollController,
+                  ),
+                ],
+              ),
+            ),
           ),
           Visibility(
             visible: selectedLineStrikeType.value == LineStrikeItemType.boards.value,
             child: Expanded(
-                child: Row(
-              spacing: 5,
-              children: [
-                LineStrikeBoardCustomImageGridLayout(customImageFiles: customBackgroundImages, lScrollController: lScrollController),
-                LineStrikeBoardOriginalGridLayout(
-                    boards: lineStrikeShowAppliedOnly ? masterLineStrikeBoardList.where((e) => e.isReplaced).toList() : masterLineStrikeBoardList, rScrollController: rScrollController)
-              ],
-            )),
+              child: Row(
+                spacing: 5,
+                children: [
+                  LineStrikeBoardCustomImageGridLayout(customImageFiles: customBackgroundImages, lScrollController: lScrollController),
+                  LineStrikeBoardOriginalGridLayout(
+                    boards: lineStrikeShowAppliedOnly ? masterLineStrikeBoardList.where((e) => e.isReplaced).toList() : masterLineStrikeBoardList,
+                    rScrollController: rScrollController,
+                  ),
+                ],
+              ),
+            ),
           ),
           Visibility(
             visible: selectedLineStrikeType.value == LineStrikeItemType.sleeves.value,
             child: Expanded(
-                child: Row(
-              spacing: 5,
-              children: [
-                LineStrikesSleeveCustomImageGridLayout(customImageFiles: customBackgroundImages, lScrollController: lScrollController),
-                LineStrikeSleeveOriginalGridLayout(
-                    sleeves: lineStrikeShowAppliedOnly ? masterLineStrikeSleeveList.where((e) => e.isReplaced).toList() : masterLineStrikeSleeveList, rScrollController: rScrollController)
-              ],
-            )),
+              child: Row(
+                spacing: 5,
+                children: [
+                  LineStrikesSleeveCustomImageGridLayout(customImageFiles: customBackgroundImages, lScrollController: lScrollController),
+                  LineStrikeSleeveOriginalGridLayout(
+                    sleeves: lineStrikeShowAppliedOnly ? masterLineStrikeSleeveList.where((e) => e.isReplaced).toList() : masterLineStrikeSleeveList,
+                    rScrollController: rScrollController,
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),

@@ -298,6 +298,7 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..localVersionNumber = json['localVersionNumber'] as String
   ..showEffectAccessories = json['showEffectAccessories'] as String
   ..openInFileExplorerLC = json['openInFileExplorerLC'] as String
+  ..useAlternateFilePicker = json['useAlternateFilePicker'] as String
   ..loadingUILanguage = json['loadingUILanguage'] as String
   ..selectUILanguage = json['selectUILanguage'] as String
   ..selectItemNameLanguage = json['selectItemNameLanguage'] as String
@@ -820,6 +821,7 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
   'localVersionNumber': instance.localVersionNumber,
   'showEffectAccessories': instance.showEffectAccessories,
   'openInFileExplorerLC': instance.openInFileExplorerLC,
+  'useAlternateFilePicker': instance.useAlternateFilePicker,
   'loadingUILanguage': instance.loadingUILanguage,
   'selectUILanguage': instance.selectUILanguage,
   'selectItemNameLanguage': instance.selectItemNameLanguage,
