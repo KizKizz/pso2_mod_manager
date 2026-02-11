@@ -1,8 +1,8 @@
 {
-  "useAlternateFilePicker": "Use Alternate File Picker",
-  "openInFileExplorerLC": "Open in File Explorer",
-  "effect": "Effect",
-  "showEffectAccessories": "Show Effect Accessories",
+  "useAlternateFilePicker": "使用其他方式选择文件",
+  "openInFileExplorerLC": "在文件管理器中打开",
+  "effect": "特效",
+  "showEffectAccessories": "显示特效饰品",
   "unknownItem": "未知物品",
   "unableToUpdate": "无法更新",
   "updaterNotFound": "未发现升级程序",
