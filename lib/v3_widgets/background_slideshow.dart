@@ -10,6 +10,7 @@ import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/settings.dart';
+import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -169,7 +170,7 @@ class _BackgroundSlideshowState extends State<BackgroundSlideshow> {
                   ],
                 ),
                 Row(
-                  spacing: 5,
+                  spacing: 2.5,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const SizedBox(width: 5),
@@ -190,6 +191,7 @@ class _BackgroundSlideshowState extends State<BackgroundSlideshow> {
                         ),
                       ),
                     ),
+                    InfoBox(info: appText.dText(appText.intervalNumSecond, backgroundImageSlideInterval.value.toString()), borderHighlight: false),
                   ],
                 ),
                 SizedBox(
