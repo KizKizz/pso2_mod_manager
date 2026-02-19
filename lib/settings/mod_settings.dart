@@ -14,6 +14,7 @@ import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:pso2_mod_manager/v3_widgets/animated_hori_toggle_layout.dart';
 import 'package:pso2_mod_manager/v3_widgets/choice_select_buttons.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
+import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
@@ -118,20 +119,28 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
                     ),
                     SizedBox(
                       width: double.infinity,
-                      child: SliderTheme(
-                        data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.onDrag),
-                        child: Slider(
-                          value: boundingRadiusRemovalValue,
-                          min: -200,
-                          max: 0,
-                          label: boundingRadiusRemovalValue.toString(),
-                          onChanged: (value) async {
-                            final prefs = await SharedPreferences.getInstance();
-                            boundingRadiusRemovalValue = value.ceilToDouble();
-                            prefs.setDouble('boundingRadiusRemovalValue', boundingRadiusRemovalValue);
-                            setState(() {});
-                          },
-                        ),
+                      child: Row(
+                        spacing: 2.5,
+                        children: [
+                          Expanded(
+                            child: SliderTheme(
+                              data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.onDrag),
+                              child: Slider(
+                                value: boundingRadiusRemovalValue,
+                                min: -200,
+                                max: 0,
+                                label: boundingRadiusRemovalValue.toString(),
+                                onChanged: (value) async {
+                                  final prefs = await SharedPreferences.getInstance();
+                                  boundingRadiusRemovalValue = value.ceilToDouble();
+                                  prefs.setDouble('boundingRadiusRemovalValue', boundingRadiusRemovalValue);
+                                  setState(() {});
+                                },
+                              ),
+                            ),
+                          ),
+                          InfoBox(info: boundingRadiusRemovalValue.toString(), borderHighlight: false),
+                        ],
                       ),
                     ),
                     // Auto remove custom aqm

@@ -123,21 +123,24 @@ Future<bool> itemCustomAqmInject(context, String customAQMFilePath, String hqIce
         modAqmInjectingStatus.value = appText.dText(appText.editingMod, p.basename(file.path));
         await Future.delayed(const Duration(milliseconds: 10));
 
-        File aqpFile = Directory(extractedGroup2Path).listSync().whereType<File>().firstWhere((e) => p.extension(e.path) == '.aqp', orElse: () => File(''));
+        File baseFile = Directory(extractedGroup2Path).listSync().whereType<File>().firstWhere((e) => p.extension(e.path) == '.aqp' || p.extension(e.path) == '.aqn', orElse: () => File(''));
         int id = -1;
-        if (aqpFile.path.isNotEmpty && aqpFile.existsSync()) {
-          final aqpFileNameParts = p.basenameWithoutExtension(aqpFile.path).split('_');
-          for (var part in aqpFileNameParts) {
+        String type = 'bw';
+        if (baseFile.path.isNotEmpty && baseFile.existsSync()) {
+          final baseFileNameParts = p.basenameWithoutExtension(baseFile.path).split('_');
+          for (var part in baseFileNameParts) {
             if (int.tryParse(part) != null) {
               id = int.parse(part);
+              int i = baseFileNameParts.indexOf(part) + 1;
+              if (i < baseFileNameParts.length) type = baseFileNameParts[i];
               break;
             }
           }
         }
         //copy custom aqm file
         if (id > -1) {
-          String newAQMFilePath = Uri.file('$extractedGroup2Path/pl_rbd_${id}_bw_sa${p.extension(customAQMFilePath)}').toFilePath();
-          if (await File(newAQMFilePath).exists()) await File(newAQMFilePath).rename(Uri.file('$extractedGroup2Path/pl_rbd_${id}_bw_sa_ori${p.extension(customAQMFilePath)}').toFilePath());
+          String newAQMFilePath = Uri.file('$extractedGroup2Path/pl_rbd_${id}_${type}_sa${p.extension(customAQMFilePath)}').toFilePath();
+          if (await File(newAQMFilePath).exists()) await File(newAQMFilePath).rename(Uri.file('$extractedGroup2Path/pl_rbd_${id}_${type}_sa_ori${p.extension(customAQMFilePath)}').toFilePath());
           final copiedFile = File(customAQMFilePath).copySync(newAQMFilePath);
           modAqmInjectingStatus.value = appText.dText(appText.repackingFile, p.basename(file.path));
           await Future.delayed(const Duration(milliseconds: 10));
@@ -192,10 +195,50 @@ Future<bool> itemCustomAqmInject(context, String customAQMFilePath, String hqIce
 }
 
 Future<bool> itemCustomAqmBounding(context, String hqIcePath, String lqIcePath, String itemName) async {
-  ModFile hqModFile = ModFile(p.basename(hqIcePath), itemName, itemName, itemName, '', '', [], pso2binDirPath + p.separator + hqIcePath.replaceAll('/', p.separator), false, DateTime(0), 0, false,
-      false, false, [], [], [], [], [], []);
-  ModFile lqModFile = ModFile(p.basename(lqIcePath), itemName, itemName, itemName, '', '', [], pso2binDirPath + p.separator + lqIcePath.replaceAll('/', p.separator), false, DateTime(0), 0, false,
-      false, false, [], [], [], [], [], []);
+  ModFile hqModFile = ModFile(
+    p.basename(hqIcePath),
+    itemName,
+    itemName,
+    itemName,
+    '',
+    '',
+    [],
+    pso2binDirPath + p.separator + hqIcePath.replaceAll('/', p.separator),
+    false,
+    DateTime(0),
+    0,
+    false,
+    false,
+    false,
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+  );
+  ModFile lqModFile = ModFile(
+    p.basename(lqIcePath),
+    itemName,
+    itemName,
+    itemName,
+    '',
+    '',
+    [],
+    pso2binDirPath + p.separator + lqIcePath.replaceAll('/', p.separator),
+    false,
+    DateTime(0),
+    0,
+    false,
+    false,
+    false,
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+  );
   SubMod submod = SubMod(itemName, itemName, itemName, '', '', false, DateTime(0), 0, false, false, false, [], false, false, 0, 0, '', [], [], [], [], [], [hqModFile, lqModFile]);
   await boundingRadiusPopup(context, submod);
   return true;
@@ -270,24 +313,27 @@ Future<bool> itemCustomAqmRestoreAqm(String hqIcePath, String lqIcePath, bool fr
         //get id from aqp file
         modAqmInjectingStatus.value = appText.dText(appText.editingMod, p.basename(file.path));
         await Future.delayed(const Duration(milliseconds: 10));
-        File aqpFile = Directory(extractedGroup2Path).listSync().whereType<File>().firstWhere((e) => p.extension(e.path) == '.aqp', orElse: () => File(''));
+        File baseFile = Directory(extractedGroup2Path).listSync().whereType<File>().firstWhere((e) => p.extension(e.path) == '.aqp' || p.extension(e.path) == '.aqn', orElse: () => File(''));
         int id = -1;
-        if (aqpFile.path.isNotEmpty && aqpFile.existsSync()) {
-          final aqpFileNameParts = p.basenameWithoutExtension(aqpFile.path).split('_');
-          for (var part in aqpFileNameParts) {
+        String type = 'bw';
+        if (baseFile.path.isNotEmpty && baseFile.existsSync()) {
+          final baseFileNameParts = p.basenameWithoutExtension(baseFile.path).split('_');
+          for (var part in baseFileNameParts) {
             if (int.tryParse(part) != null) {
               id = int.parse(part);
+              int i = baseFileNameParts.indexOf(part) + 1;
+              if (i < baseFileNameParts.length) type = baseFileNameParts[i];
               break;
             }
           }
         }
         //copy custom aqm file
-        final customAqmFile = File(Uri.file('$extractedGroup2Path/pl_rbd_${id}_bw_sa.aqm').toFilePath());
+        final customAqmFile = File(Uri.file('$extractedGroup2Path/pl_rbd_${id}_${type}_sa.aqm').toFilePath());
         if (customAqmFile.existsSync()) {
           await customAqmFile.delete();
-          File oriAQMFile = File(Uri.file('$extractedGroup2Path/pl_rbd_${id}_bw_sa_ori.aqm').toFilePath());
+          File oriAQMFile = File(Uri.file('$extractedGroup2Path/pl_rbd_${id}_${type}_sa_ori.aqm').toFilePath());
           if (await oriAQMFile.exists()) {
-            await oriAQMFile.rename(Uri.file('$extractedGroup2Path/pl_rbd_${id}_bw_sa.aqm').toFilePath());
+            await oriAQMFile.rename(Uri.file('$extractedGroup2Path/pl_rbd_${id}_${type}_sa.aqm').toFilePath());
           }
           modAqmInjectingStatus.value = appText.dText(appText.repackingFile, p.basename(file.path));
           await Future.delayed(const Duration(milliseconds: 10));
@@ -305,8 +351,9 @@ Future<bool> itemCustomAqmRestoreAqm(String hqIcePath, String lqIcePath, bool fr
           modAqmInjectingStatus.value = appText.dText(appText.applyingMod, p.basename(file.path));
           await Future.delayed(const Duration(milliseconds: 10));
           try {
-            File renamedFile =
-                await File(Uri.file('${p.dirname(customAqmFile.parent.path)}.ice').toFilePath()).rename(Uri.file(p.dirname(customAqmFile.parent.path).replaceAll('_ext', '')).toFilePath());
+            File renamedFile = await File(
+              Uri.file('${p.dirname(customAqmFile.parent.path)}.ice').toFilePath(),
+            ).rename(Uri.file(p.dirname(customAqmFile.parent.path).replaceAll('_ext', '')).toFilePath());
             if (p.basenameWithoutExtension(file.path) == p.basenameWithoutExtension(hqIcePath)) {
               await renamedFile.copy(localHQIce.path);
             } else if (p.basenameWithoutExtension(file.path) == p.basenameWithoutExtension(lqIcePath)) {

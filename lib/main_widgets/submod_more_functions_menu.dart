@@ -108,7 +108,7 @@ class _SubmodMoreFunctionsMenuState extends State<SubmodMoreFunctionsMenu> {
             onTap: () async {
               await boundingRadiusPopup(context, widget.submod);
               // widget.submod.boundingRemoved = true;
-              saveMasterModListToJson();
+              // saveMasterModListToJson();
               setState(() {});
               widget.refresh();
             },

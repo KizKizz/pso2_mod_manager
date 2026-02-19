@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_aqm_inject/aqm_inject_popup.dart';
 import 'package:pso2_mod_manager/item_bounding_radius/bounding_radius_popup.dart';
@@ -187,19 +188,19 @@ Future<bool> submodAqmInject(context, SubMod submod) async {
   String lqIcePath = '';
   for (var modFile in submod.modFiles) {
     if (hqIcePath.isEmpty) {
-      int hqIndex = pItemData.indexWhere((e) => (e.category == submod.category || submod.category.contains(e.subCategory)) && e.getHQIceName().contains(modFile.modFileName));
+      int hqIndex = pItemData.indexWhere((e) => (e.category == submod.category && submod.category.contains(e.subCategory)) && e.getHQIceName().contains(modFile.modFileName));
       if (hqIndex != -1) {
         hqIcePath = modFile.location;
-        if (lqIcePath.isNotEmpty) break;
+        debugPrint(pItemData[hqIndex].category);
       }
     }
     if (lqIcePath.isEmpty) {
-      int lqIndex = pItemData.indexWhere((e) => (e.category == submod.category || submod.category.contains(e.subCategory)) && e.getLQIceName().contains(modFile.modFileName));
+      int lqIndex = pItemData.indexWhere((e) => (e.category == submod.category && submod.category.contains(e.subCategory)) && e.getLQIceName().contains(modFile.modFileName));
       if (lqIndex != -1) {
         lqIcePath = modFile.location;
-        if (hqIcePath.isNotEmpty) break;
       }
     }
+    if (lqIcePath.isNotEmpty && hqIcePath.isNotEmpty) break;
   }
 
   bool result = await aqmInjectPopup(context, selectedCustomAQMFilePath.value, hqIcePath, lqIcePath, submod.itemName, false, false, false, false, true);

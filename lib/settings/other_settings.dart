@@ -11,6 +11,7 @@ import 'package:pso2_mod_manager/v3_home/settings.dart';
 import 'package:pso2_mod_manager/v3_widgets/animated_hori_toggle_layout.dart';
 import 'package:pso2_mod_manager/v3_widgets/background_slideshow.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
+import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
@@ -28,9 +29,7 @@ class _OtherSettingsLayoutState extends State<OtherSettingsLayout> {
   Widget build(BuildContext context) {
     // Refresh
     if (settingChangeStatus.watch(context) != settingChangeStatus.peek()) {
-      setState(
-        () {},
-      );
+      setState(() {});
     }
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -38,10 +37,7 @@ class _OtherSettingsLayoutState extends State<OtherSettingsLayout> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              appText.others,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            Text(appText.others, style: Theme.of(context).textTheme.titleLarge),
             const HoriDivider(),
             Expanded(
               child: SingleChildScrollView(
@@ -78,8 +74,12 @@ class _OtherSettingsLayoutState extends State<OtherSettingsLayout> {
                             if (pickedColor != null) {
                               lightModeSeedColor = pickedColor;
                             }
-                            prefs.setStringList(
-                                'lightModeSeedColorValue', [lightModeSeedColor.r.toString(), lightModeSeedColor.g.toString(), lightModeSeedColor.b.toString(), lightModeSeedColor.a.toString()]);
+                            prefs.setStringList('lightModeSeedColorValue', [
+                              lightModeSeedColor.r.toString(),
+                              lightModeSeedColor.g.toString(),
+                              lightModeSeedColor.b.toString(),
+                              lightModeSeedColor.a.toString(),
+                            ]);
                             setState(() {});
                             MyApp.themeNotifier.value = ThemeMode.dark;
                             MyApp.themeNotifier.value = ThemeMode.light;
@@ -89,8 +89,12 @@ class _OtherSettingsLayoutState extends State<OtherSettingsLayout> {
                             if (pickedColor != null) {
                               darkModeSeedColor = pickedColor;
                             }
-                            prefs.setStringList(
-                                'darkModeSeedColorValue', [darkModeSeedColor.r.toString(), darkModeSeedColor.g.toString(), darkModeSeedColor.b.toString(), darkModeSeedColor.a.toString()]);
+                            prefs.setStringList('darkModeSeedColorValue', [
+                              darkModeSeedColor.r.toString(),
+                              darkModeSeedColor.g.toString(),
+                              darkModeSeedColor.b.toString(),
+                              darkModeSeedColor.a.toString(),
+                            ]);
                             setState(() {});
                             MyApp.themeNotifier.value = ThemeMode.light;
                             MyApp.themeNotifier.value = ThemeMode.dark;
@@ -105,50 +109,63 @@ class _OtherSettingsLayoutState extends State<OtherSettingsLayout> {
                     SettingsHeader(icon: Icons.opacity, text: appText.uiOpacity),
                     SizedBox(
                       width: double.infinity,
-                      child: SliderTheme(
-                          data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.onDrag),
-                          child: Slider(
-                            value: uiBackgroundColorAlpha.value.toDouble(),
-                            min: 0,
-                            max: 255,
-                            label: uiBackgroundColorAlpha.toString(),
-                            onChanged: (value) async {
-                              final prefs = await SharedPreferences.getInstance();
-                              uiBackgroundColorAlpha.value = value.round();
-                              prefs.setInt('uiBackgroundColorAlpha', uiBackgroundColorAlpha.value);
-                              setState(() {});
-                            },
-                          )),
+                      child: Row(
+                        spacing: 2.5,
+                        children: [
+                          Expanded(
+                            child: SliderTheme(
+                              data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.onDrag),
+                              child: Slider(
+                                value: uiBackgroundColorAlpha.value.toDouble(),
+                                min: 0,
+                                max: 255,
+                                label: uiBackgroundColorAlpha.toString(),
+                                onChanged: (value) async {
+                                  final prefs = await SharedPreferences.getInstance();
+                                  uiBackgroundColorAlpha.value = value.round();
+                                  prefs.setInt('uiBackgroundColorAlpha', uiBackgroundColorAlpha.value);
+                                  setState(() {});
+                                },
+                              ),
+                            ),
+                          ),
+                          InfoBox(info: uiBackgroundColorAlpha.toString(), borderHighlight: false),
+                        ],
+                      ),
                     ),
 
                     // Aux UI Opacity
                     SettingsHeader(icon: Icons.opacity_outlined, text: appText.auxiliaryUIOpacity),
                     SizedBox(
                       width: double.infinity,
-                      child: SliderTheme(
-                          data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.onDrag),
-                          child: Slider(
-                            value: uiDialogBackgroundColorAlpha.value.toDouble(),
-                            min: 0,
-                            max: 255,
-                            label: uiDialogBackgroundColorAlpha.toString(),
-                            onChanged: (value) async {
-                              final prefs = await SharedPreferences.getInstance();
-                              uiDialogBackgroundColorAlpha.value = value.round();
-                              prefs.setInt('uiDialogBackgroundColorAlpha', uiDialogBackgroundColorAlpha.value);
-                              setState(() {});
-                            },
-                          )),
+                      child: Row(
+                        spacing: 2.5,
+                        children: [
+                          Expanded(
+                            child: SliderTheme(
+                              data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.onDrag),
+                              child: Slider(
+                                value: uiDialogBackgroundColorAlpha.value.toDouble(),
+                                min: 0,
+                                max: 255,
+                                label: uiDialogBackgroundColorAlpha.toString(),
+                                onChanged: (value) async {
+                                  final prefs = await SharedPreferences.getInstance();
+                                  uiDialogBackgroundColorAlpha.value = value.round();
+                                  prefs.setInt('uiDialogBackgroundColorAlpha', uiDialogBackgroundColorAlpha.value);
+                                  setState(() {});
+                                },
+                              ),
+                            ),
+                          ),
+                          InfoBox(info: uiDialogBackgroundColorAlpha.toString(), borderHighlight: false),
+                        ],
+                      ),
                     ),
 
                     // Background slideshow
                     SettingsHeader(icon: Icons.slideshow, text: appText.backgroundSlideshow),
-                    const SizedBox(
-                      width: double.infinity,
-                      child: BackgroundSlideshow(
-                        isMini: true,
-                      ),
-                    ),
+                    const SizedBox(width: double.infinity, child: BackgroundSlideshow(isMini: true)),
                     // Locations
                     SettingsHeader(icon: Icons.folder_open, text: appText.locations),
                     Column(
@@ -172,17 +189,18 @@ class _OtherSettingsLayoutState extends State<OtherSettingsLayout> {
                         SizedBox(
                           width: double.infinity,
                           child: OutlinedButton(
-                              onPressed: () async {
-                                await checkGameFilesPopup(context, false);
-                              },
-                              child: Text(appText.gameDataIntegrityCheck)),
+                            onPressed: () async {
+                              await checkGameFilesPopup(context, false);
+                            },
+                            child: Text(appText.gameDataIntegrityCheck),
+                          ),
                         ),
                       ],
                     ),
                   ],
                 ),
               ),
-            )
+            ),
           ],
         );
       },

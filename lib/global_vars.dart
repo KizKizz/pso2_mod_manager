@@ -80,9 +80,9 @@ List<String> boundingRadiusCategoryDirs = [
 ];
 List<String> aqmInjectCategoryDirs = [
   'Basewears', //1
-  // 'Cast Arm Parts', //3
-  // 'Cast Body Parts', //4
-  // 'Cast Leg Parts', //5
+  'Cast Arm Parts', //3
+  'Cast Body Parts', //4
+  'Cast Leg Parts', //5
   'Outerwears', //15
   'Setwears', //16
 ];
