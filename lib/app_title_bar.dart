@@ -3,8 +3,10 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
 import 'package:pso2_mod_manager/file_check/file_check_popup.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/material_app_service.dart';
 import 'package:pso2_mod_manager/mod_apply/save_restore_function.dart';
 import 'package:pso2_mod_manager/mod_apply/save_restore_popup.dart';
+import 'package:pso2_mod_manager/mod_sync/mod_sync_popup.dart';
 import 'package:pso2_mod_manager/settings/other_settings.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v2_home/homepage_v2.dart';
@@ -75,19 +77,19 @@ class _AppTitleBarState extends State<AppTitleBar> {
                     child: const Padding(padding: EdgeInsets.only(right: 2.5), child: JpGameStartBtn()),
                   ),
 
-                  // SizedBox(
-                  //   height: 20,
-                  //   child: ModManTooltip(
-                  //     message: appText.refresh,
-                  //     child: OutlinedButton(
-                  //       style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
-                  //       onPressed: () async {
-                  //         await modLinkPopup(MaterialAppService.navigatorKey.currentContext);
-                  //       },
-                  //       child: const Icon(Icons.developer_board, size: 18),
-                  //     ),
-                  //   ),
-                  // ),
+                  SizedBox(
+                    height: 20,
+                    child: ModManTooltip(
+                      message: appText.refresh,
+                      child: OutlinedButton(
+                        style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+                        onPressed: () async {
+                          await modSyncPopup(MaterialAppService.navigatorKey.currentContext);
+                        },
+                        child: const Icon(Icons.developer_board, size: 18),
+                      ),
+                    ),
+                  ),
 
                   // Show/Hide Previews
                   // Visibility(

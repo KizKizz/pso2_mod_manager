@@ -1,93 +1,104 @@
-// import 'dart:io';
 
-// import 'package:file_picker/file_picker.dart';
-// import 'package:file_selector/file_selector.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_webrtc/flutter_webrtc.dart';
-// import 'package:pso2_mod_manager/global_vars.dart';
-// import 'package:pso2_mod_manager/mod_sync/mod_sync_functions.dart';
-// import 'package:pso2_mod_manager/mod_sync/mod_sync_variables.dart';
-// import 'package:pso2_mod_manager/shared_prefs.dart';
-// import 'package:signals/signals_flutter.dart';
-// import 'package:url_launcher/url_launcher_string.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/mod_sync/mod_sync_class.dart';
+import 'package:pso2_mod_manager/mod_sync/mod_sync_variables.dart';
+import 'package:signals/signals_flutter.dart';
 
-// Future<void> modLinkPopup(context) async {
-//   return await showDialog(
-//     barrierDismissible: true,
-//     context: context,
-//     builder: (BuildContext context) {
-//       return StatefulBuilder(
-//         builder: (dialogContext, setState) {
-//           return AlertDialog(
-//             shape: RoundedRectangleBorder(
-//               side: BorderSide(color: Theme.of(context).colorScheme.outline),
-//               borderRadius: const BorderRadius.all(Radius.circular(5)),
-//             ),
-//             backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
-//             scrollable: true,
-//             insetPadding: const EdgeInsets.all(5),
-//             contentPadding: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-//             content: Column(
-//               spacing: 5,
-//               children: [
-//                 Text(modSyncConnection?.iceConnectionState?.name ?? 'null'),
-//                 ElevatedButton(
-//                   onPressed: modSyncConnection != null
-//                       ? () async {
-//                           if (modSyncConnection?.connectionState == null) {
-//                             modSyncConnection = null;
-//                             modSyncConnectionOffer = null;
-//                           } else {
-//                             await modSyncConnection!.close();
-//                             if (modSyncConnection?.connectionState! == RTCPeerConnectionState.RTCPeerConnectionStateClosed) {
-//                               modSyncConnection = null;
-//                               modSyncConnectionOffer = null;
-//                             }
-//                           }
-//                           await modSyncOfferFile.delete();
-//                           setState(() {});
-//                         }
-//                       : null,
-//                   child: Text('Close Connection'),
-//                 ),
-//                 ElevatedButton(
-//                   onPressed: () async {
-//                     if (modSyncOfferFile.existsSync() && modSyncConnectionOffer != null) {
-//                       launchUrlString(modSyncOfferFile.parent.path);
-//                     } else {
-//                       await modSyncGenerateOffer();
-//                     }
-//                     setState(() {});
-//                   },
-//                   child: Text(modSyncOfferFile.existsSync() && modSyncConnectionOffer != null ? 'Browse' : 'Generate Offer'),
-//                 ),
-//                 // Visibility(visible: modSyncConnectionOffer != null, child: Text(modSyncConnectionOffer.toString())),
-//                 ElevatedButton(
-//                   onPressed: () async {
-//                     XFile? selectedFile;
-//                     if (useAltFilePicker) {
-//                       FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['pmmo']);
-//                       if (result != null) selectedFile = result.xFiles.single;
-//                     } else {
-//                       XTypeGroup fileTypeGroup = XTypeGroup(label: 'Offer File', extensions: ['pmmo']);
-//                       selectedFile = await openFile(acceptedTypeGroups: <XTypeGroup>[fileTypeGroup]);
-//                     }
+Future<void> modSyncPopup(context) async {
+  var focusNode = FocusNode();
+  TextEditingController newName = TextEditingController();
+  final nameFormKey = GlobalKey<FormState>();
+  focusNode.requestFocus();
+  return await showDialog(
+    barrierDismissible: true,
+    context: context,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (dialogContext, setState) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: Theme.of(context).colorScheme.outline),
+              borderRadius: const BorderRadius.all(Radius.circular(5)),
+            ),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
+            scrollable: true,
+            insetPadding: const EdgeInsets.all(5),
+            contentPadding: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+            content: Column(
+              spacing: 5,
+              children: [
+                Form(
+                  key: nameFormKey,
+                  child: TextFormField(
+                    controller: newName,
+                    focusNode: focusNode,
+                    maxLines: 1,
+                    maxLength: 20,
+                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                    textAlignVertical: TextAlignVertical.center,
+                    inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
+                    validator: (value) {
+                      if (newName.value.text.isEmpty) return appText.nameCannotBeEmpty;
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Name',
+                      suffix: MaterialButton(
+                        minWidth: 20,
+                        onPressed: (() {
+                          newName.clear();
+                          setState(() {});
+                        }),
+                        child: const Icon(Icons.clear, size: 18),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.error),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.error),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                      //isCollapsed: true,
+                      //isDense: true,
+                      contentPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 2),
+                      constraints: const BoxConstraints.tightForFinite(),
+                      // Set border for enabled state (default)
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.outline),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      // Set border for focused state
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.primary),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    onChanged: (value) async {
+                      nameFormKey.currentState!.validate();
+                      setState(() {});
+                    },
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: nameFormKey.currentState != null && nameFormKey.currentState!.validate()
+                      ? () {
+                          meshManager = MeshManager(newName.text.trim());
+                        }
+                      : null,
+                  child: Text('Join'),
+                ),
+              ],
+            ),
 
-//                     if (selectedFile != null) {
-//                       modSyncGenerateReply(File(selectedFile.path));
-//                       setState(() {});
-//                     }
-//                   },
-//                   child: Text('Generate Reply'),
-//                 ),
-//               ],
-//             ),
-
-//             actionsPadding: const EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),
-//             actions: [],
-//           );
-//         },
-//       );
-//     },
-//   );
-// }
+            actionsPadding: const EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),
+            actions: [],
+          );
+        },
+      );
+    },
+  );
+}
