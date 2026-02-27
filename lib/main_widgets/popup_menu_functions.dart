@@ -188,14 +188,18 @@ Future<bool> submodAqmInject(context, SubMod submod) async {
   String lqIcePath = '';
   for (var modFile in submod.modFiles) {
     if (hqIcePath.isEmpty) {
-      int hqIndex = pItemData.indexWhere((e) => (e.category == submod.category && submod.category.contains(e.subCategory)) && e.getHQIceName().contains(modFile.modFileName));
+      int hqIndex = submod.category == defaultCategoryDirs[16]
+          ? pItemData.indexWhere((e) => (e.category == defaultCategoryDirs[1] && submod.category.contains(e.subCategory)) && e.getHQIceName().contains(modFile.modFileName))
+          : pItemData.indexWhere((e) => (e.category == submod.category && submod.category.contains(e.subCategory)) && e.getHQIceName().contains(modFile.modFileName));
       if (hqIndex != -1) {
         hqIcePath = modFile.location;
         debugPrint(pItemData[hqIndex].category);
       }
     }
     if (lqIcePath.isEmpty) {
-      int lqIndex = pItemData.indexWhere((e) => (e.category == submod.category && submod.category.contains(e.subCategory)) && e.getLQIceName().contains(modFile.modFileName));
+      int lqIndex = submod.category == defaultCategoryDirs[16]
+          ? pItemData.indexWhere((e) => (e.category == defaultCategoryDirs[1] && submod.category.contains(e.subCategory)) && e.getLQIceName().contains(modFile.modFileName))
+          : pItemData.indexWhere((e) => (e.category == submod.category && submod.category.contains(e.subCategory)) && e.getLQIceName().contains(modFile.modFileName));
       if (lqIndex != -1) {
         lqIcePath = modFile.location;
       }
