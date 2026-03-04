@@ -12,6 +12,7 @@ import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v2_home/homepage_v2.dart';
 import 'package:pso2_mod_manager/v3_widgets/fav_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
+import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
@@ -129,7 +130,7 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
                                   spacing: 5,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(widget.mod.modName, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.titleMedium),
+                                    ModManTooltip(message: widget.mod.modName, child: Text(widget.mod.modName, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.titleMedium)),
                                     Row(
                                       spacing: 2.5,
                                       mainAxisSize: MainAxisSize.min,

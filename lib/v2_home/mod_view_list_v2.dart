@@ -235,6 +235,7 @@ class _ModViewListV2State extends State<ModViewListV2> {
                             ],
                           ),
                         ),
+                        
                         // Search box
                         if (!itemEditingMode)
                           Expanded(
