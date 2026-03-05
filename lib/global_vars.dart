@@ -182,3 +182,4 @@ Signal<String> selectedItemSwapTypeCategory = Signal<String>('Both');
 Signal<String> selectedWeaponType = Signal<String>('All');
 Signal<String> selectedLineStrikeType = Signal<String>(LineStrikeItemType.cards.value);
 TextEditingController modViewListV2SearchTextController = TextEditingController();
+TextEditingController submodViewPopupSearchTextController = TextEditingController();

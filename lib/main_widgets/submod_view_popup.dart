@@ -36,8 +36,8 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
           if (selectedMod != null && !item.mods.contains(selectedMod)) selectedMod = null;
 
           // Suggestions
-          if (modViewListV2SearchTextController.value.text.isNotEmpty) {
-            toShowSubmods = selectedMod!.submods.where((mod) => mod.submodName.toLowerCase().contains(modViewListV2SearchTextController.text.toLowerCase())).toList();
+          if (submodViewPopupSearchTextController.value.text.isNotEmpty) {
+            toShowSubmods = selectedMod!.submods.where((mod) => mod.submodName.toLowerCase().contains(submodViewPopupSearchTextController.text.toLowerCase())).toList();
           } else {
             toShowSubmods = selectedMod!.submods;
           }
@@ -191,7 +191,7 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
                                       filled: true,
                                       fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
                                       isDense: true,
-                                      contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
+                                      contentPadding: const EdgeInsets.only(left: 20, right: 40, bottom: 15),
                                       cursorHeight: 15,
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(25),
@@ -217,16 +217,18 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
                                                     height: 75,
                                                     child: SubmodPreviewBox(imageFilePaths: e.previewImages, videoFilePaths: e.previewVideos, isNew: false),
                                                   ),
-                                                  Text(e.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                                                  Expanded(
+                                                    child: Text(e.submodName, textAlign: TextAlign.left, style: Theme.of(context).textTheme.labelLarge),
+                                                  ),
                                                 ],
                                               ),
                                             ),
                                           ),
                                         )
                                         .toList(),
-                                    controller: modViewListV2SearchTextController,
+                                    controller: submodViewPopupSearchTextController,
                                     onSuggestionTap: (p0) {
-                                      modViewListV2SearchTextController.text = p0.searchKey;
+                                      submodViewPopupSearchTextController.text = p0.searchKey;
                                       setState(() {});
                                     },
                                     onSearchTextChanged: (p0) {
@@ -248,7 +250,9 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
                                                       height: 75,
                                                       child: SubmodPreviewBox(imageFilePaths: e.previewImages, videoFilePaths: e.previewVideos, isNew: false),
                                                     ),
-                                                    Text(e.submodName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                                                    Expanded(
+                                                      child: Text(e.submodName, textAlign: TextAlign.left, style: Theme.of(context).textTheme.labelLarge),
+                                                    ),
                                                   ],
                                                 ),
                                               ),
@@ -258,14 +262,14 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
                                     },
                                   ),
                                   Visibility(
-                                    visible: modViewListV2SearchTextController.value.text.isNotEmpty,
+                                    visible: submodViewPopupSearchTextController.value.text.isNotEmpty,
                                     child: Padding(
                                       padding: const EdgeInsets.only(right: 2),
                                       child: IconButton(
                                         visualDensity: VisualDensity.adaptivePlatformDensity,
-                                        onPressed: modViewListV2SearchTextController.value.text.isNotEmpty && (!itemListSearchIncludesMods || searchTextController.value.text.isEmpty)
+                                        onPressed: submodViewPopupSearchTextController.value.text.isNotEmpty && (!itemListSearchIncludesMods || searchTextController.value.text.isEmpty)
                                             ? () {
-                                                modViewListV2SearchTextController.clear();
+                                                submodViewPopupSearchTextController.clear();
                                                 setState(() {});
                                               }
                                             : null,
@@ -293,6 +297,7 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
                             savePref: () async {
                               final prefs = await SharedPreferences.getInstance();
                               prefs.setString('selectedDisplaySortModView', selectedDisplaySortModView.value);
+                              setState(() {});
                             },
                           ),
                         ),
