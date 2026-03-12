@@ -11,14 +11,16 @@ class ModManTooltip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Tooltip(
-        message: message,
-        constraints: BoxConstraints(minHeight: 25),
-        textStyle: const TextStyle(fontSize: 14),
-        decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
-            border: Border.all(color: Theme.of(context).colorScheme.outline, width: 1),
-            borderRadius: const BorderRadius.all(Radius.circular(5))),
-        waitDuration: const Duration(milliseconds: 0),
-        child: child);
+      message: message,
+      constraints: BoxConstraints(minHeight: 25),
+      textStyle: const TextStyle(fontSize: 14),
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiTooltipBackgroundColorAlpha.watch(context)),
+        border: Border.all(color: Theme.of(context).colorScheme.outline, width: 1),
+        borderRadius: const BorderRadius.all(Radius.circular(5)),
+      ),
+      waitDuration: const Duration(milliseconds: 0),
+      child: child,
+    );
   }
 }

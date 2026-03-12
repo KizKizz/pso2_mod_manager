@@ -77,7 +77,7 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
             insetPadding: EdgeInsets.zero,
-            contentPadding: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+            contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
             content: SizedBox(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
@@ -170,154 +170,156 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
                       ),
                     ),
                     const HoriDivider(),
-                    Row(
-                      spacing: 5,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Expanded(
-                          flex: 3,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 1),
-                            child: SizedBox(
-                              height: 30,
-                              child: Stack(
-                                alignment: AlignmentDirectional.centerEnd,
-                                children: [
-                                  SearchField<SubMod>(
-                                    enabled: searchTextController.value.text.isEmpty,
-                                    itemHeight: 90,
-                                    suggestionDirection: SuggestionDirection.up,
-                                    searchInputDecoration: SearchInputDecoration(
-                                      filled: true,
-                                      fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-                                      isDense: true,
-                                      contentPadding: const EdgeInsets.only(left: 20, right: 40, bottom: 15),
-                                      cursorHeight: 15,
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(25),
-                                        borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface),
-                                      ),
-                                      cursorColor: Theme.of(context).colorScheme.inverseSurface,
-                                      hintText: appText.search,
-                                    ),
-                                    suggestions: toShowSubmods
-                                        .map(
-                                          (e) => SearchFieldListItem<SubMod>(
-                                            e.submodName,
-                                            item: e,
-                                            child: Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 5),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                spacing: 5,
-                                                children: [
-                                                  SizedBox(
-                                                    width: 75,
-                                                    height: 75,
-                                                    child: SubmodPreviewBox(imageFilePaths: e.previewImages, videoFilePaths: e.previewVideos, isNew: false),
-                                                  ),
-                                                  Expanded(
-                                                    child: Text(e.submodName, textAlign: TextAlign.left, style: Theme.of(context).textTheme.labelLarge),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                        .toList(),
-                                    controller: submodViewPopupSearchTextController,
-                                    onSuggestionTap: (p0) {
-                                      submodViewPopupSearchTextController.text = p0.searchKey;
-                                      setState(() {});
-                                    },
-                                    onSearchTextChanged: (p0) {
-                                      setState(() {});
-                                      return toShowSubmods
-                                          .map(
-                                            (e) => SearchFieldListItem<SubMod>(
-                                              e.submodName,
-                                              item: e,
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 5),
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  spacing: 5,
-                                                  children: [
-                                                    SizedBox(
-                                                      width: 75,
-                                                      height: 75,
-                                                      child: SubmodPreviewBox(imageFilePaths: e.previewImages, videoFilePaths: e.previewVideos, isNew: false),
-                                                    ),
-                                                    Expanded(
-                                                      child: Text(e.submodName, textAlign: TextAlign.left, style: Theme.of(context).textTheme.labelLarge),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                          .toList();
-                                    },
-                                  ),
-                                  Visibility(
-                                    visible: submodViewPopupSearchTextController.value.text.isNotEmpty,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 2),
-                                      child: IconButton(
-                                        visualDensity: VisualDensity.adaptivePlatformDensity,
-                                        onPressed: submodViewPopupSearchTextController.value.text.isNotEmpty && (!itemListSearchIncludesMods || searchTextController.value.text.isEmpty)
-                                            ? () {
-                                                submodViewPopupSearchTextController.clear();
-                                                setState(() {});
-                                              }
-                                            : null,
-                                        icon: const Icon(Icons.close),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: SingleChoiceSelectButton(
-                            width: double.infinity,
-                            height: 30,
-                            label: appText.sort,
-                            selectPopupLabel: appText.sort,
-                            availableItemList: submodSortingSelections,
-                            availableItemLabels: submodSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
-                            selectedItemsLabel: submodSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
-                            selectedItem: selectedDisplaySortModView,
-                            extraWidgets: [],
-                            savePref: () async {
-                              final prefs = await SharedPreferences.getInstance();
-                              prefs.setString('selectedDisplaySortModView', selectedDisplaySortModView.value);
-                              setState(() {});
-                            },
-                          ),
-                        ),
-                        OutlinedButton(
-                          onPressed: selectedMod!.getNumOfAppliedSubmods() > 0
-                              ? () {
-                                  setState(() {
-                                    showAppliedSubmods ? showAppliedSubmods = false : showAppliedSubmods = true;
-                                  });
-                                }
-                              : null,
-                          child: Text(!showAppliedSubmods ? appText.showAppliedOnly : appText.showAll),
-                        ),
-                        OutlinedButton(onPressed: () => Navigator.of(context).pop(), child: Text(appText.returns)),
-                      ],
-                    ),
                   ],
                 ),
               ),
             ),
+            actionsPadding: EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),
+            actions: [
+              Row(
+                spacing: 5,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 1),
+                      child: SizedBox(
+                        height: 30,
+                        child: Stack(
+                          alignment: AlignmentDirectional.centerEnd,
+                          children: [
+                            SearchField<SubMod>(
+                              enabled: searchTextController.value.text.isEmpty,
+                              itemHeight: 90,
+                              suggestionDirection: SuggestionDirection.up,
+                              searchInputDecoration: SearchInputDecoration(
+                                filled: true,
+                                fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                                isDense: true,
+                                contentPadding: const EdgeInsets.only(left: 20, right: 40, bottom: 15),
+                                cursorHeight: 15,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface),
+                                ),
+                                cursorColor: Theme.of(context).colorScheme.inverseSurface,
+                                hintText: appText.search,
+                              ),
+                              suggestions: toShowSubmods
+                                  .map(
+                                    (e) => SearchFieldListItem<SubMod>(
+                                      e.submodName,
+                                      item: e,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          spacing: 5,
+                                          children: [
+                                            SizedBox(
+                                              width: 75,
+                                              height: 75,
+                                              child: SubmodPreviewBox(imageFilePaths: e.previewImages, videoFilePaths: e.previewVideos, isNew: false),
+                                            ),
+                                            Expanded(
+                                              child: Text(e.submodName, textAlign: TextAlign.left, style: Theme.of(context).textTheme.labelLarge),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                              controller: submodViewPopupSearchTextController,
+                              onSuggestionTap: (p0) {
+                                submodViewPopupSearchTextController.text = p0.searchKey;
+                                setState(() {});
+                              },
+                              onSearchTextChanged: (p0) {
+                                setState(() {});
+                                return toShowSubmods
+                                    .map(
+                                      (e) => SearchFieldListItem<SubMod>(
+                                        e.submodName,
+                                        item: e,
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            spacing: 5,
+                                            children: [
+                                              SizedBox(
+                                                width: 75,
+                                                height: 75,
+                                                child: SubmodPreviewBox(imageFilePaths: e.previewImages, videoFilePaths: e.previewVideos, isNew: false),
+                                              ),
+                                              Expanded(
+                                                child: Text(e.submodName, textAlign: TextAlign.left, style: Theme.of(context).textTheme.labelLarge),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                    .toList();
+                              },
+                            ),
+                            Visibility(
+                              visible: submodViewPopupSearchTextController.value.text.isNotEmpty,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 2),
+                                child: IconButton(
+                                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                                  onPressed: submodViewPopupSearchTextController.value.text.isNotEmpty && (!itemListSearchIncludesMods || searchTextController.value.text.isEmpty)
+                                      ? () {
+                                          submodViewPopupSearchTextController.clear();
+                                          setState(() {});
+                                        }
+                                      : null,
+                                  icon: const Icon(Icons.close),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 250,
+                    child: SingleChoiceSelectButton(
+                      width: double.infinity,
+                      height: 30,
+                      label: appText.sort,
+                      selectPopupLabel: appText.sort,
+                      availableItemList: submodSortingSelections,
+                      availableItemLabels: submodSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                      selectedItemsLabel: submodSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                      selectedItem: selectedDisplaySortModView,
+                      extraWidgets: [],
+                      savePref: () async {
+                        final prefs = await SharedPreferences.getInstance();
+                        prefs.setString('selectedDisplaySortModView', selectedDisplaySortModView.value);
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                  OutlinedButton(
+                    onPressed: selectedMod!.getNumOfAppliedSubmods() > 0
+                        ? () {
+                            setState(() {
+                              showAppliedSubmods ? showAppliedSubmods = false : showAppliedSubmods = true;
+                            });
+                          }
+                        : null,
+                    child: Text(!showAppliedSubmods ? appText.showAppliedOnly : appText.showAll),
+                  ),
+                  OutlinedButton(onPressed: () => Navigator.of(context).pop(), child: Text(appText.returns)),
+                ],
+              ),
+            ],
           );
         },
       );

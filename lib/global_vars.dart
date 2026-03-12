@@ -170,6 +170,7 @@ List<String> modifiedIceList = [];
 List<String> modAddFilterList = [];
 Signal<bool> appLoadingFinished = Signal(false);
 Signal<int> uiDialogBackgroundColorAlpha = Signal(uiBackgroundColorAlpha.value + 50 <= 255 ? uiBackgroundColorAlpha.value + 50 : uiBackgroundColorAlpha.value);
+Signal<int> uiTooltipBackgroundColorAlpha = Signal(uiBackgroundColorAlpha.value + 50 <= 255 ? uiBackgroundColorAlpha.value + 50 : uiBackgroundColorAlpha.value);
 Signal<bool> showMessageOnInactiveOverlay = Signal(false);
 Signal<bool> saveRestoreAppliedModsActive = Signal(false);
 Signal<String> selectedAqmInjectCategory = Signal<String>(aqmInjectCategoryDirs[0]);

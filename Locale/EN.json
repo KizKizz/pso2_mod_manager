@@ -502,5 +502,6 @@
   "legacy": "Legacy",
   "hideAppliedList": "Hide Applied List",
   "extras": "Extras",
-  "gameDataIntegrityCheck": "Game Data Integrity Check"
+  "gameDataIntegrityCheck": "Game Data Integrity Check",
+  "uiTooltipOpacity": "UI Tooltip Opacity"
 }
