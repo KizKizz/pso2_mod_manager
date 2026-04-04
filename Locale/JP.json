@@ -1,4 +1,5 @@
 {
+  "uiTooltipOpacity": "UIツールチップの不透明度",
   "useAlternateFilePicker": "代替ファイルピッカーを使用する",
   "openInFileExplorerLC": "ファイルエクスプローラーで開く",
   "effect": "効果",
@@ -234,7 +235,7 @@
   "replace": "置き換え",
   "cmx": "CMX",
   "aqm": "AQM",
-  "bounding": "Bounding",
+  "bounding": "バウンディング",
   "export": "エクスポート",
   "delete": "削除",
   "sort": "ソート",

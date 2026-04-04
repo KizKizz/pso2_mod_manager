@@ -163,6 +163,35 @@ class _OtherSettingsLayoutState extends State<OtherSettingsLayout> {
                       ),
                     ),
 
+                    // UI Tooltip Opacity
+                    SettingsHeader(icon: Icons.opacity_outlined, text: appText.uiTooltipOpacity),
+                    SizedBox(
+                      width: double.infinity,
+                      child: Row(
+                        spacing: 2.5,
+                        children: [
+                          Expanded(
+                            child: SliderTheme(
+                              data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.onDrag),
+                              child: Slider(
+                                value: uiTooltipBackgroundColorAlpha.value.toDouble(),
+                                min: 0,
+                                max: 255,
+                                label: uiTooltipBackgroundColorAlpha.toString(),
+                                onChanged: (value) async {
+                                  final prefs = await SharedPreferences.getInstance();
+                                  uiTooltipBackgroundColorAlpha.value = value.round();
+                                  prefs.setInt('uiTooltipBackgroundColorAlpha', uiTooltipBackgroundColorAlpha.value);
+                                  setState(() {});
+                                },
+                              ),
+                            ),
+                          ),
+                          InfoBox(info: uiTooltipBackgroundColorAlpha.toString(), borderHighlight: false),
+                        ],
+                      ),
+                    ),
+
                     // Background slideshow
                     SettingsHeader(icon: Icons.slideshow, text: appText.backgroundSlideshow),
                     const SizedBox(width: double.infinity, child: BackgroundSlideshow(isMini: true)),

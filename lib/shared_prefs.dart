@@ -94,7 +94,10 @@ Future<void> prefsLoad() async {
   uiBackgroundColorAlpha.value = prefs.getInt('uiBackgroundColorAlpha') ?? 150;
 
   // Aux UI alpha
-  uiDialogBackgroundColorAlpha.value = prefs.getInt('uiDialogBackgroundColorAlpha') ?? 180;
+  uiDialogBackgroundColorAlpha.value = prefs.getInt('uiDialogBackgroundColorAlpha') ?? 200;
+
+  // UI tooltip alpha
+  uiTooltipBackgroundColorAlpha.value = prefs.getInt('uiTooltipBackgroundColorAlpha') ?? 200;
 
   // App Theme Mode
   appThemeMode = AppThemeMode.values.firstWhere((e) => e.value == prefs.getString('appThemeMode'), orElse: () => AppThemeMode.dark);
