@@ -37,9 +37,9 @@ Future<void> modViewPopup(context, Item item) async {
 
           // Suggestions
           if (submodViewPopupSearchTextController.value.text.isNotEmpty) {
-            toShowSubmods = selectedMod!.submods.where((mod) => mod.submodName.toLowerCase().contains(submodViewPopupSearchTextController.text.toLowerCase())).toList();
+            toShowSubmods = selectedMod != null ?  selectedMod!.submods.where((mod) => mod.submodName.toLowerCase().contains(submodViewPopupSearchTextController.text.toLowerCase())).toList() : [];
           } else {
-            toShowSubmods = selectedMod!.submods;
+            toShowSubmods = selectedMod != null ? selectedMod!.submods : [];
           }
 
           // Show applied only
@@ -308,7 +308,7 @@ Future<void> modViewPopup(context, Item item) async {
                     ),
                   ),
                   OutlinedButton(
-                    onPressed: selectedMod!.getNumOfAppliedSubmods() > 0
+                    onPressed: selectedMod != null && selectedMod!.getNumOfAppliedSubmods() > 0
                         ? () {
                             setState(() {
                               showAppliedSubmods ? showAppliedSubmods = false : showAppliedSubmods = true;
