@@ -1,0 +1,1063 @@
+// ignore_for_file: unused_import
+
+import 'dart:io';
+
+import 'package:archive/archive_io.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:path/path.dart' as p;
+import 'package:io/io.dart' as io;
+import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/app_paths/main_paths.dart';
+import 'package:pso2_mod_manager/app_paths/sega_file_paths.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/material_app_service.dart';
+import 'package:pso2_mod_manager/mod_add/adding_mod_class.dart';
+import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
+import 'package:pso2_mod_manager/mod_add/mod_add_grid.dart';
+import 'package:pso2_mod_manager/mod_add/new_mod_name_popup.dart';
+import 'package:pso2_mod_manager/mod_data/category_class.dart';
+import 'package:pso2_mod_manager/mod_data/item_class.dart';
+import 'package:pso2_mod_manager/mod_data/load_mods.dart';
+import 'package:pso2_mod_manager/mod_data/mod_class.dart';
+import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
+import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
+import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
+import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/system_loads/app_aqm_item_load_page.dart';
+import 'package:pso2_mod_manager/v3_functions/video_thumbnail_fetch.dart';
+import 'package:pso2_mod_manager/v3_home/mod_add.dart';
+import 'package:signals/signals_flutter.dart';
+import 'package:http/http.dart' as http;
+
+String modAddTempUnpackedDirPath = '$modAddTempDirPath${p.separator}unpacked';
+String modAddTempSortedDirPath = '$modAddTempDirPath${p.separator}sorted';
+
+Future<void> modAddUnpack(context, List<String> addedPaths) async {
+  for (var path in addedPaths) {
+    modAddProcessingStatus.value = appText.dText(appText.unpackingFile, p.basename(path));
+    await Future.delayed(Duration(milliseconds: 10));
+    String unpackedDirPath = modAddTempUnpackedDirPath + p.separator + p.basenameWithoutExtension(path);
+    if (await FileSystemEntity.isFile(path)) {
+      if (p.extension(path) == '.zip') {
+        await extractFileToDisk(path, unpackedDirPath);
+      } else if (p.extension(path) == '.rar') {
+        if (Platform.isLinux) {
+          await Process.run('wine $sevenZipExePath', ['x', path, '-o $unpackedDirPath', '-r']);
+        } else {
+          await Process.run(sevenZipExePath, ['x', path, '-o$unpackedDirPath', '-r']);
+        }
+      } else if (p.extension(path) == '.7z') {
+        if (Platform.isLinux) {
+          await Process.run('wine $sevenZipExePath', ['x', path, '-o$unpackedDirPath', '-r']);
+        } else {
+          await Process.run(sevenZipExePath, ['x', path, '-o$unpackedDirPath', '-r']);
+        }
+      } else if (p.extension(path) == '.pmm') {
+        await Directory(modAddTempUnpackedDirPath).create(recursive: true);
+        File copiedFile = await File(path).copy('$modAddTempUnpackedDirPath${p.separator}${p.basenameWithoutExtension(path)}.zip');
+        File renamedFile = await copiedFile.rename('${p.withoutExtension(copiedFile.path)}.zip');
+        await extractFileToDisk(renamedFile.path, modAddTempUnpackedDirPath);
+        await renamedFile.delete();
+      } else {
+        String tempParentDirPath = modAddTempUnpackedDirPath + p.separator + p.basenameWithoutExtension(await newModNamePopup(MaterialAppService.navigatorKey.currentContext));
+        await Future.delayed(Duration(milliseconds: 10));
+        if (Directory(modAddTempUnpackedDirPath).existsSync() && Directory(tempParentDirPath).existsSync()) {
+          tempParentDirPath.renameDuplicate();
+        }
+        Directory(tempParentDirPath).createSync(recursive: true);
+        if (File(path).existsSync()) await File(path).copy(tempParentDirPath + p.separator + p.basename(path));
+      }
+    } else if (FileSystemEntity.isDirectorySync(path)) {
+      if (Directory(modAddTempUnpackedDirPath).existsSync() && Directory(unpackedDirPath).existsSync()) {
+        await io.copyPath(path, unpackedDirPath.renameDuplicate());
+      } else {
+        await io.copyPath(path, unpackedDirPath);
+      }
+    }
+  }
+
+  final nestedArchiveFiles = Directory(
+    modAddTempUnpackedDirPath,
+  ).listSync(recursive: true).whereType<File>().where((e) => p.extension(e.path) == '.zip' || p.extension(e.path) == '.rar' || p.extension(e.path) == '.7z').toList();
+  if (nestedArchiveFiles.isNotEmpty) await unpackNestedArchives(nestedArchiveFiles);
+}
+
+Future<List<AddingMod>> modAddSort() async {
+  List<String> recentAddedDirPaths = [];
+  // Remove empty root parent dir
+  for (var dir in Directory(modAddTempUnpackedDirPath).listSync().whereType<Directory>()) {
+    modAddProcessingStatus.value = appText.dText(appText.removingEmptyDirsInFolder, p.basename(dir.path));
+    await Future.delayed(Duration(milliseconds: 10));
+    final innerDirs = dir.listSync();
+    if (innerDirs.length == 1 && !win32DirNames.contains(p.basename(innerDirs.first.path)) && FileSystemEntity.isDirectorySync(innerDirs.first.path)) {
+      await io.copyPath(innerDirs.first.path, dir.parent.path + p.separator + p.basename(innerDirs.first.path));
+      await innerDirs.first.delete(recursive: true);
+    }
+  }
+  // Check for duplicates
+  for (var dir in Directory(modAddTempUnpackedDirPath).listSync().whereType<Directory>().where((e) => e.listSync(recursive: true).whereType<File>().isNotEmpty)) {
+    modAddProcessingStatus.value = appText.dText(appText.checkingForDuplicatesInFolder, p.basename(dir.path));
+    await Future.delayed(Duration(milliseconds: 10));
+    String sortedPath = dir.path.replaceFirst(modAddTempUnpackedDirPath, modAddTempSortedDirPath);
+    if (Directory(sortedPath).existsSync()) {
+      String renamedSortedPath = sortedPath.renameDuplicate();
+      await io.copyPath(dir.path, renamedSortedPath);
+      recentAddedDirPaths.add(renamedSortedPath);
+    } else {
+      await io.copyPath(dir.path, sortedPath);
+      recentAddedDirPaths.add(sortedPath);
+    }
+  }
+  await Directory(modAddTempUnpackedDirPath).delete(recursive: true);
+
+  // Remove reboots
+  for (var modDir in Directory(modAddTempSortedDirPath).listSync(recursive: true).whereType<Directory>().where((e) => recentAddedDirPaths.indexWhere((s) => e.path.contains(s)) != -1).toSet()) {
+    if (modDir.existsSync()) {
+      modAddProcessingStatus.value = appText.dText(appText.checkingForPrefixDirsInFolder, modDir.path.split(modAddTempSortedDirPath + p.separator).last.split(p.separator).join(' > '));
+      await Future.delayed(Duration(milliseconds: 10));
+      String newPath = await removeRebootPath(modDir.path);
+      if (modDir.path != newPath) {
+        await io.copyPath(modDir.path, newPath);
+        await modDir.delete(recursive: true);
+      }
+    }
+  }
+  // Remove empty dirs
+  for (var dir in Directory(modAddTempSortedDirPath).listSync(recursive: true).whereType<Directory>()) {
+    modAddProcessingStatus.value = appText.dText(appText.removingEmptyDirsInFolder, p.basename(dir.path));
+    await Future.delayed(Duration(milliseconds: 10));
+    if (dir.existsSync() && dir.listSync().isEmpty) await dir.delete(recursive: true);
+  }
+
+  List<AddingMod> addingModList = [];
+  List<Directory> modDirs = Directory(modAddTempSortedDirPath).listSync().whereType<Directory>().where((e) => recentAddedDirPaths.contains(e.path)).toList();
+  List<File> fileToRemove = [];
+
+  // Get files tree
+  for (var modDir in modDirs) {
+    modAddProcessingStatus.value = appText.dText(appText.sortingModIntoItems, p.basename(modDir.path));
+    await Future.delayed(Duration(milliseconds: 10));
+    List<Directory> submods = [];
+    List<String> submodNames = [];
+    List<ItemData> associatedItems = [];
+    List<File> previewImages = [];
+    List<File> previewVideos = [];
+    List<MapEntry<String, List<String>>> sameItemIceNames = [];
+    ItemData unknownItem = ItemData('', '', '', ['Misc'], 'Misc', '', 13, '', Map.fromEntries([MapEntry('Japanese Name', appText.unknownItem), MapEntry('English Name', appText.unknownItem)]));
+    // mod dir
+    List<File> modDirFiles = modDir.listSync().whereType<File>().toList();
+    if (modDirFiles.isNotEmpty && modDirFiles.indexWhere((e) => p.extension(e.path) == '' && p.basenameWithoutExtension(e.path).length > 29) != -1) {
+      submods.add(modDir);
+      // submodNames.add(p.basename(modDir.path));
+      associatedItems.addAll(await matchItemData(associatedItems, sameItemIceNames, modDirFiles.where((e) => p.extension(e.path) == '').map((e) => e.path).toList()));
+      if (associatedItems.isEmpty) {
+        associatedItems.add(unknownItem);
+      }
+    }
+    previewImages.addAll(modDirFiles.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png'));
+    previewVideos.addAll(modDirFiles.where((e) => p.extension(e.path) == '.webm' || p.extension(e.path) == '.mp4'));
+    // sub dirs
+    for (var subdir in modDir.listSync(recursive: true).whereType<Directory>().toSet()) {
+      List<File> files = subdir.listSync(recursive: true).whereType<File>().toList();
+      if (files.isNotEmpty && subdir.listSync().whereType<File>().where((e) => p.extension(e.path) == '').isNotEmpty && files.indexWhere((e) => p.extension(e.path) == '') != -1) {
+        submods.add(subdir);
+        // submodNames.add(subdir.path.replaceFirst(modDir.path + p.separator, '').trim().replaceAll(p.separator, ' > '));
+        associatedItems.addAll(await matchItemData(associatedItems, sameItemIceNames, files.where((e) => p.extension(e.path) == '').map((e) => e.path).toList()));
+        if (associatedItems.isEmpty && !associatedItems.contains(unknownItem)) {
+          associatedItems.add(unknownItem);
+        }
+        final previewImageFiles = files.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png');
+        final previewVideoFiles = files.where((e) => p.extension(e.path) == '.webm' || p.extension(e.path) == '.mp4');
+        previewImages.addAll(previewImageFiles);
+        previewVideos.addAll(previewVideoFiles);
+        if (previewImageFiles.isEmpty) {
+          for (var file in modDirFiles.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png')) {
+            await file.copy(file.path.replaceFirst(file.parent.path, subdir.path));
+          }
+        }
+        if (previewVideoFiles.isEmpty) {
+          for (var file in modDirFiles.where((e) => p.extension(e.path) == '.webm' || p.extension(e.path) == '.mp4')) {
+            final copiedPreviewVid = await file.copy(file.path.replaceFirst(file.parent.path, subdir.path));
+            if (!await File('${p.withoutExtension(copiedPreviewVid.path)}.jpg').exists()) {
+              final previewThumbnailData = await getVideoThumbnail(copiedPreviewVid.path);
+              if (previewThumbnailData != null) {
+                await File('${p.withoutExtension(copiedPreviewVid.path)}.jpg').writeAsBytes(previewThumbnailData);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    for (var element in previewVideos) {
+      if (!await File('${p.withoutExtension(element.path)}.jpg').exists()) {
+        final previewThumbnailData = await getVideoThumbnail(element.path);
+        if (previewThumbnailData != null) {
+          await File('${p.withoutExtension(element.path)}.jpg').writeAsBytes(previewThumbnailData);
+        }
+      }
+    }
+
+    // Sort by items
+    for (var aItem in associatedItems) {
+      Directory newModDir = Directory(modAddTempSortedDirPath + p.separator + aItem.getName().replaceAll(RegExp(charToReplace), '_') + p.separator + p.basename(modDir.path));
+      fileToRemove.addAll(modDir.listSync(recursive: true).whereType<File>().toList());
+      if (p.basename(modDir.path).toLowerCase() == p.basename(p.dirname(newModDir.path).toLowerCase())) {
+        String renamedModPath = modDir.path.renameDuplicate();
+        await io.copyPath(modDir.path, renamedModPath);
+        if (Directory(renamedModPath).existsSync()) {
+          modDir = Directory(renamedModPath);
+        }
+      }
+      await io.copyPath(modDir.path, newModDir.path);
+      if (aItem.getName() != appText.unknownItem) {
+        final fileList = Directory(newModDir.path).listSync(recursive: true).whereType<File>().where((e) => p.extension(e.path) == '');
+        for (var f in fileList) {
+          if (!aItem.containsIce(p.basename(f.path)) && sameItemIceNames.indexWhere((e) => e.key == aItem.getName() && e.value.contains(p.basename(f.path))) == -1) await f.delete();
+          if (f.parent.existsSync() && f.parent.listSync(recursive: true).isEmpty) await f.parent.delete();
+        }
+      }
+      List<Directory> newItemSubmodDirs = newModDir
+          .listSync(recursive: true)
+          .whereType<Directory>()
+          .where((e) => e.existsSync() && e.listSync().whereType<File>().where((i) => p.extension(i.path) == '').isNotEmpty)
+          .toList();
+      submodNames = newItemSubmodDirs.map((e) => e.path.replaceFirst(newModDir.path + p.separator, '').trim().replaceAll(p.separator, ' > ')).toList();
+      if (newModDir.listSync().whereType<File>().where((i) => p.extension(i.path) == '').isNotEmpty) {
+        newItemSubmodDirs.insert(0, newModDir);
+        submodNames.insert(0, p.basename(newModDir.path));
+      }
+
+      AddingMod newAddingModItem = AddingMod(
+        newModDir,
+        true,
+        newItemSubmodDirs,
+        submodNames,
+        List.generate(newItemSubmodDirs.length, (int i) => true),
+        [aItem],
+        [true],
+        sameItemIceNames,
+        previewImages.map((e) => File(e.path.replaceFirst(modDir.path, newModDir.path))).toList(),
+        previewVideos.map((e) => File(e.path.replaceFirst(modDir.path, newModDir.path))).toList(),
+        DateTime.now(),
+      );
+
+      // Rename duplicates
+      String newItemDirDestPath = aItem.category == defaultCategoryDirs[1] && aItem.getName().split(' ').last == '[Se]'
+          ? mainModDirPath + p.separator + defaultCategoryDirs[16] + p.separator + aItem.getName().replaceAll(RegExp(charToReplace), '_')
+          : mainModDirPath + p.separator + aItem.category + p.separator + aItem.getName().replaceAll(RegExp(charToReplace), '_');
+      String existingModDirPath = newItemDirDestPath + p.separator + p.basename(newModDir.path);
+      while (Directory(existingModDirPath).existsSync()) {
+        if (Directory(newModDir.path.replaceFirst(p.dirname(newModDir.path), newItemDirDestPath)).existsSync()) {
+          String newModDirPath = newModDir.path.renameDuplicate();
+          existingModDirPath = newModDirPath.replaceFirst(
+            modAddTempSortedDirPath,
+            aItem.category == defaultCategoryDirs[1] && aItem.getName().split(' ').last == '[Se]'
+                ? mainModDirPath + p.separator + defaultCategoryDirs[16]
+                : mainModDirPath + p.separator + aItem.category,
+          );
+          await io.copyPath(newModDir.path, newModDirPath);
+          if (newModDir.existsSync()) await newModDir.delete(recursive: true);
+          newAddingModItem = await modAddRenameRefresh(Directory(newModDirPath), newAddingModItem);
+          newModDir = newAddingModItem.modDir;
+        }
+      }
+
+      addingModList.add(newAddingModItem);
+    }
+    // modDir.deleteSync(recursive: true);
+    fileToRemove.addAll(modDir.listSync(recursive: true).whereType<File>().toList());
+  }
+
+  if (fileToRemove.isNotEmpty) {
+    for (var file in fileToRemove.toSet()) {
+      if (file.existsSync()) await file.delete(recursive: true);
+    }
+    for (var dir in Directory(modAddTempSortedDirPath).listSync(recursive: true).whereType<Directory>()) {
+      if (dir.existsSync() && dir.listSync(recursive: true).whereType<File>().isEmpty) await dir.delete(recursive: true);
+    }
+  }
+
+  return addingModList;
+}
+
+Future<List<Item>> modAddToMasterList(bool addingToSet, List<ModSet> modSets) async {
+  List<Item> addedItems = [];
+  for (var modAddingItem in modAddingList) {
+    for (int i = 0; i < modAddingItem.associatedItems.length; i++) {
+      if (modAddingItem.aItemAddingStates[i]) {
+        final item = modAddingItem.associatedItems[i];
+        String itemName = item.getName().replaceAll(RegExp(charToReplace), '_');
+        String category = item.category == defaultCategoryDirs[1] && item.subCategory == 'Setwear' ? defaultCategoryDirs[16] : item.category;
+        String newItemDirDestPath = mainModDirPath + p.separator + category + p.separator + itemName;
+
+        for (int j = 0; j < modAddingItem.submods.length; j++) {
+          if (!modAddingItem.submodAddingStates[j] && modAddingItem.submods[j].existsSync()) {
+            await modAddingItem.submods[j].delete(recursive: true);
+          }
+        }
+
+        for (var state in modAddingItem.submodAddingStates) {
+          if (!state) {
+            int i = modAddingItem.submodAddingStates.indexOf(state);
+            modAddingItem.submods.removeAt(i);
+          }
+        }
+
+        // List<String> sameItemIceNames = [];
+        // for (var sameItem in modAddingItem.sameItemIceNames.where((e) => e.key == item.getName())) {
+        //   sameItemIceNames.addAll(sameItem.value);
+        // }
+
+        // if (modAddCategorizeModsByItems && category != defaultCategoryDirs[13]) {
+        // for (var submodDir in modAddingItem.submods.where((e) => e.existsSync())) {
+        //   var allFiles = submodDir.listSync(recursive: true).whereType<File>();
+        //   for (var file in allFiles) {
+        //     if ((p.extension(file.path) == '' && (item.containsIce(p.basenameWithoutExtension(file.path)) || sameItemIceNames.contains(p.basenameWithoutExtension(file.path)))) ||
+        //         p.extension(file.path) != '') {
+        //       String newFilePath = file.path.replaceFirst(modAddTempSortedDirPath + p.separator + itemName, newItemDirDestPath);
+        //       await Directory(p.dirname(newFilePath)).create(recursive: true);
+        //       await file.copy(newFilePath);
+        //     }
+        //   }
+        // }
+        // } else {
+        await io.copyPath(modAddingItem.modDir.path, modAddingItem.modDir.path.replaceFirst(modAddTempSortedDirPath + p.separator + itemName, newItemDirDestPath));
+        // }
+
+        if (Directory(newItemDirDestPath).existsSync() && Directory(newItemDirDestPath).listSync().whereType<File>().toList().indexWhere((e) => p.basename(e.path) == '$itemName.png') == -1) {
+          final response = await http.get(Uri.parse(githubIconDatabaseLink + item.iconImagePath));
+          if (response.statusCode == 200) File(newItemDirDestPath + p.separator + p.basename(item.iconImagePath)).writeAsBytesSync(response.bodyBytes);
+        }
+
+        //Add to current moddedItemList
+        for (var cateType in masterModList) {
+          int cateIndex = cateType.categories.indexWhere((element) => element.categoryName == category);
+          if (cateIndex != -1) {
+            Category cateInList = cateType.categories[cateIndex];
+            int itemInListIndex = cateInList.items.indexWhere((element) => element.itemName.toLowerCase() == itemName.toLowerCase());
+            if (itemInListIndex == -1) {
+              Item newItem = await newItemsFetcher('$mainModDirPath${p.separator}$category', newItemDirDestPath, addingToSet, modSets.map((e) => e.setName).toList());
+              addedItems.add(newItem);
+              if (addingToSet) {
+                for (var set in modSets) {
+                  if (set.setItems.indexWhere((e) => e.location == newItem.location) == -1) set.addItem(newItem);
+                }
+              }
+              cateInList.items.add(newItem);
+            } else {
+              Item itemInList = cateInList.items[itemInListIndex];
+              int modInListIndex = itemInList.mods.indexWhere((element) => element.modName.toLowerCase() == p.basename(modAddingItem.modDir.path).toLowerCase());
+              if (modInListIndex != -1) {
+                Mod modInList = itemInList.mods[modInListIndex];
+                List<SubMod> extraSubmods = await newSubModFetcher(modInList.location, cateInList.categoryName, itemInList.itemName, addingToSet, modSets.map((e) => e.setName).toList());
+                for (var subModInCurMod in modInList.submods) {
+                  extraSubmods.removeWhere((element) => element.submodName.toLowerCase() == subModInCurMod.submodName.toLowerCase());
+                }
+                modInList.submods.addAll(extraSubmods);
+                if (addingToSet) {
+                  for (var set in modSets) {
+                    if (!modInList.setNames.contains(set.setName)) modInList.setNames.add(set.setName);
+                  }
+                }
+                modInList.isNew = true;
+              } else {
+                itemInList.mods.addAll(
+                  await newModsFetcher(
+                    itemInList.location,
+                    cateInList.categoryName,
+                    [Directory(newItemDirDestPath + p.separator + p.basename(modAddingItem.modDir.path))],
+                    addingToSet,
+                    modSets.map((e) => e.setName).toList(),
+                  ),
+                );
+              }
+              itemInList.setLatestCreationDate();
+              itemInList.isNew = true;
+              addedItems.add(itemInList);
+              if (addingToSet) {
+                for (var set in modSets) {
+                  if (set.setItems.indexWhere((e) => e.location == itemInList.location) == -1) set.addItem(itemInList);
+                }
+              }
+            }
+            break;
+          } else if (cateType.groupName == defaultCategoryTypes[2]) {
+            Category newCate = Category(category, cateType.groupName, Uri.file('$mainModDirPath/$category').toFilePath(), cateType.categories.length, true, []);
+            int itemInListIndex = newCate.items.indexWhere((element) => element.itemName.toLowerCase() == itemName.toLowerCase());
+            if (itemInListIndex == -1) {
+              Item newItem = await newItemsFetcher(Uri.file('$mainModDirPath/$category').toFilePath(), newItemDirDestPath, addingToSet, modSets.map((e) => e.setName).toList());
+              addedItems.add(newItem);
+              if (addingToSet) {
+                for (var set in modSets) {
+                  if (set.setItems.indexWhere((e) => e.location == newItem.location) == -1) set.addItem(newItem);
+                }
+              }
+              newCate.items.add(newItem);
+            } else {
+              Item itemInList = newCate.items[itemInListIndex];
+              int modInListIndex = itemInList.mods.indexWhere((element) => element.modName.toLowerCase() == p.basename(modAddingItem.modDir.path).toLowerCase());
+              if (modInListIndex != -1) {
+                Mod modInList = itemInList.mods[modInListIndex];
+                List<SubMod> extraSubmods = await newSubModFetcher(modInList.location, newCate.categoryName, itemInList.itemName, addingToSet, modSets.map((e) => e.setName).toList());
+                for (var subModInCurMod in modInList.submods) {
+                  extraSubmods.removeWhere((element) => element.submodName.toLowerCase() == subModInCurMod.submodName.toLowerCase());
+                }
+                modInList.submods.addAll(extraSubmods);
+                if (addingToSet) {
+                  for (var set in modSets) {
+                    if (!modInList.setNames.contains(set.setName)) modInList.setNames.add(set.setName);
+                  }
+                }
+                modInList.isNew = true;
+              } else {
+                itemInList.mods.addAll(
+                  await newModsFetcher(
+                    itemInList.location,
+                    newCate.categoryName,
+                    [Directory(newItemDirDestPath + p.separator + p.basename(modAddingItem.modDir.path))],
+                    addingToSet,
+                    modSets.map((e) => e.setName).toList(),
+                  ),
+                );
+              }
+              itemInList.isNew = true;
+              addedItems.add(itemInList);
+              if (addingToSet) {
+                for (var set in modSets) {
+                  if (set.setItems.indexWhere((e) => e.location == itemInList.location) == -1) set.addItem(itemInList);
+                }
+              }
+            }
+            newCate.visible = newCate.items.isNotEmpty ? true : false;
+            cateType.categories.add(newCate);
+            cateType.visible = cateType.categories.where((element) => element.items.isNotEmpty).isNotEmpty ? true : false;
+
+            break;
+          }
+        }
+        // Remove dir in sorted
+        await modAddingItem.modDir.delete(recursive: true);
+      }
+    }
+  }
+  mainGridStatus.value = '[${DateTime.now()}] ${modAddingList.map((e) => e.submodNames).join(', ')} added';
+  modAddingList.removeWhere((e) => !e.modDir.existsSync());
+  return addedItems;
+}
+
+// Helpers
+Future<List<ItemData>> matchItemData(List<ItemData> matchedItemData, List<MapEntry<String, List<String>>> sameItemIceNames, List<String> filePaths) async {
+  List<ItemData> associatedItems = [];
+
+  for (var filePath in filePaths.where((e) => p.extension(e) == '')) {
+    // modAddProcessingStatus.value = p.basename(filePath);
+    // await Future.delayed(const Duration(microseconds: 10));
+
+    if (matchedItemData.indexWhere((e) => e.containsIce(p.basename(filePath))) != -1 ||
+        associatedItems.indexWhere((e) => e.containsIce(p.basename(filePath))) != -1 ||
+        sameItemIceNames.indexWhere((e) => e.value.contains(p.basename(filePath))) != -1) {
+      continue;
+    } else {
+      for (var data in pItemData.where((e) => e.getName().isNotEmpty && e.containsIce(p.basename(filePath)))) {
+        if (associatedItems.indexWhere((e) => e.getName() == data.getName()) == -1 && matchedItemData.indexWhere((e) => e.getName() == data.getName()) == -1) {
+          associatedItems.add(data);
+        } else {
+          sameItemIceNames.add(MapEntry(data.getName(), data.getIceDetailsWithoutKeys()));
+        }
+      }
+    }
+  }
+
+  return associatedItems;
+}
+
+Future<String> removeRebootPath(String dirPath) async {
+  if (dirPath.isEmpty) return dirPath;
+
+  String oFilePath = '';
+  for (var file in Directory(dirPath).listSync().whereType<File>().where((e) => p.extension(e.path) == '')) {
+    oFilePath = oItemData.firstWhere((e) => p.basenameWithoutExtension(e.path) == p.basename(file.path), orElse: () => OfficialIceFile('', '', 0, '')).path;
+    if (oFilePath.isNotEmpty) {
+      String newPath = '';
+      final oFilePathDetails = p.dirname(oFilePath).split('/');
+      List<String> filePathDetails = dirPath.split(p.separator);
+      filePathDetails.removeWhere((e) => oFilePathDetails.contains(e) && modAddTempSortedDirPath + p.separator + e != dirPath);
+      newPath = p.joinAll(filePathDetails);
+      if (Platform.isLinux) newPath = p.separator + newPath;
+      return newPath;
+    }
+  }
+
+  return dirPath;
+}
+
+Future<AddingMod> modAddRenameRefresh(Directory modDir, AddingMod currentAddingMod) async {
+  List<Directory> submods = [];
+  List<String> submodNames = [];
+  List<File> previewImages = [];
+  List<File> previewVideos = [];
+  // mod dir
+  List<File> modDirFiles = modDir.listSync().whereType<File>().toList();
+  if (modDirFiles.isNotEmpty && modDirFiles.indexWhere((e) => p.extension(e.path) == '') != -1) {
+    submods.add(modDir);
+    submodNames.add(p.basename(modDir.path));
+    previewImages.addAll(modDirFiles.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png'));
+    previewVideos.addAll(modDirFiles.where((e) => p.extension(e.path) == '.webm' || p.extension(e.path) == '.mp4'));
+  }
+  // sub dirs
+  for (var subdir in modDir.listSync(recursive: true).whereType<Directory>().where((e) => e.listSync().whereType<File>().isNotEmpty).toSet()) {
+    List<File> files = subdir.listSync().whereType<File>().toList();
+    if (files.isNotEmpty && files.indexWhere((e) => p.extension(e.path) == '') != -1) {
+      submods.add(subdir);
+      submodNames.add(subdir.path.replaceFirst(modDir.path + p.separator, '').trim().replaceAll(p.separator, ' > '));
+      previewImages.addAll(files.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png'));
+      previewVideos.addAll(files.where((e) => p.extension(e.path) == '.webm' || p.extension(e.path) == '.mp4'));
+    }
+  }
+
+  return AddingMod(
+    modDir,
+    true,
+    submods,
+    submodNames,
+    List.generate(submods.length, (int i) => true),
+    currentAddingMod.associatedItems,
+    currentAddingMod.aItemAddingStates,
+    currentAddingMod.sameItemIceNames,
+    previewImages,
+    previewVideos,
+    currentAddingMod.addedDate,
+  );
+}
+
+Future<List<String>> modAddFilterListFetch() async {
+  if (!File(modAddFilterListFilePath).existsSync()) {
+    await File(modAddFilterListFilePath).create(recursive: true);
+  }
+  return (await File(modAddFilterListFilePath).readAsString()).split(', ');
+}
+
+// Add to master list helpers
+Future<Item> newItemsFetcher(String catePath, String itemPath, bool addingToSet, List<String> modSetNames) async {
+  //Get icons from dir
+  List<String> itemIcons = [];
+  final imagesFoundInItemDir = Directory(itemPath).listSync().whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png').toList();
+  if (imagesFoundInItemDir.isNotEmpty) {
+    itemIcons = imagesFoundInItemDir.map((e) => e.path).toList();
+  }
+
+  Item newItem = Item(
+    p.basename(itemPath),
+    '',
+    [],
+    itemIcons,
+    '',
+    '',
+    '',
+    false,
+    p.basename(catePath),
+    Uri.file(itemPath).toFilePath(),
+    false,
+    DateTime(0),
+    0,
+    false,
+    addingToSet ? true : false,
+    true,
+    addingToSet ? modSetNames : [],
+    await newModsFetcher(itemPath, p.basename(catePath), [], addingToSet, modSetNames),
+  );
+  newItem.setLatestCreationDate();
+  newItem.subCategory = newItem.getSubCategory();
+
+  return newItem;
+}
+
+Future<List<Mod>> newModsFetcher(String itemPath, String cateName, List<Directory> newModFolders, bool addingToSet, List<String> modSetNames) async {
+  List<Directory> foldersInItemPath = [];
+  if (newModFolders.isEmpty) {
+    foldersInItemPath = Directory(itemPath).listSync(recursive: false).whereType<Directory>().toList();
+  } else {
+    foldersInItemPath = newModFolders;
+  }
+  List<Mod> mods = [];
+
+  //Get modfiles in item folder
+  List<ModFile> modFilesInItemDir = [];
+  List<File> iceFilesInItemDir = Directory(
+    itemPath,
+  ).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '' && p.basenameWithoutExtension(element.path).length > 29).toList();
+  if (iceFilesInItemDir.isNotEmpty) {
+    for (var iceFile in iceFilesInItemDir) {
+      modFilesInItemDir.add(
+        ModFile(
+          p.basename(iceFile.path),
+          p.basename(itemPath),
+          p.basename(itemPath),
+          p.basename(itemPath),
+          cateName,
+          '',
+          [],
+          iceFile.path,
+          false,
+          DateTime(0),
+          0,
+          false,
+          addingToSet ? true : false,
+          true,
+          addingToSet ? modSetNames : [],
+          [],
+          [],
+          [],
+          [],
+          [],
+        ),
+      );
+    }
+    //Get preview images;
+    List<String> modPreviewImages = [];
+    final imagesInModDir = Directory(itemPath).listSync(recursive: false).whereType<File>().where(((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png'));
+    for (var element in imagesInModDir) {
+      bool isIconImage = false;
+      for (var part in p.basenameWithoutExtension(itemPath).split(' ')) {
+        if (p.basenameWithoutExtension(element.path).contains(part)) {
+          isIconImage = true;
+          break;
+        }
+      }
+      if (!isIconImage) {
+        modPreviewImages.add(Uri.file(element.path).toFilePath());
+      }
+    }
+    //Get preview videos;
+    List<String> modPreviewVideos = [];
+    final videosInModDir = Directory(itemPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4');
+    for (var element in videosInModDir) {
+      modPreviewVideos.add(Uri.file(element.path).toFilePath());
+    }
+
+    //add to submod
+    SubMod subModInItemDir = SubMod(
+      p.basename(itemPath),
+      p.basename(itemPath),
+      p.basename(itemPath),
+      cateName,
+      itemPath,
+      false,
+      DateTime(0),
+      0,
+      false,
+      false,
+      addingToSet ? true : false,
+      [],
+      false,
+      false,
+      -1,
+      -1,
+      '',
+      addingToSet ? modSetNames : [],
+      [],
+      modPreviewImages,
+      modPreviewVideos,
+      [],
+      modFilesInItemDir,
+    );
+    subModInItemDir.setLatestCreationDate();
+
+    //add to mod
+    Mod newMod = Mod(
+      p.basename(itemPath),
+      p.basename(itemPath),
+      cateName,
+      itemPath,
+      false,
+      DateTime(0),
+      0,
+      false,
+      false,
+      addingToSet ? true : false,
+      addingToSet ? modSetNames : [],
+      modPreviewImages,
+      modPreviewVideos,
+      [],
+      [subModInItemDir],
+    );
+    newMod.setLatestCreationDate();
+    mods.add(newMod);
+  }
+
+  // get submods in mod folders
+  for (var dir in foldersInItemPath) {
+    //Get preview images;
+    List<String> modPreviewImages = [];
+    List<String> modPreviewVideos = [];
+
+    if (dir.existsSync()) {
+      final imagesInModDir = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png');
+      for (var element in imagesInModDir) {
+        modPreviewImages.add(Uri.file(element.path).toFilePath());
+      }
+      //Get preview videos;
+
+      final videosInModDir = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4');
+      for (var element in videosInModDir) {
+        modPreviewVideos.add(Uri.file(element.path).toFilePath());
+      }
+    }
+
+    Mod newMod = Mod(
+      p.basename(dir.path),
+      p.basename(itemPath),
+      cateName,
+      dir.path,
+      false,
+      DateTime(0),
+      0,
+      true,
+      false,
+      addingToSet ? true : false,
+      addingToSet ? modSetNames : [],
+      modPreviewImages,
+      modPreviewVideos,
+      [],
+      await newSubModFetcher(dir.path, cateName, p.basename(itemPath), addingToSet, modSetNames),
+    );
+    newMod.setLatestCreationDate();
+    mods.add(newMod);
+  }
+
+  //Sort alpha
+  // mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
+
+  return mods;
+}
+
+Future<List<SubMod>> newSubModFetcher(String modPath, String cateName, String itemName, bool addingToSet, List<String> modSetNames) async {
+  List<SubMod> submods = [];
+  //ices in main mod dir
+  final filesInMainModDir = Directory(
+    modPath,
+  ).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '' && p.basenameWithoutExtension(element.path).length > 29).toList();
+  if (filesInMainModDir.isNotEmpty) {
+    List<ModFile> modFiles = [];
+    for (var file in filesInMainModDir) {
+      //final ogFiles = ogDataFiles.where((element) => p.basename(element) == p.basename(file.path)).toList();
+      //List<String> ogFilePaths = [];
+      // for (var element in ogFiles) {
+      //   ogFilePaths.add(element.path);
+      // }
+      modFiles.add(
+        ModFile(
+          p.basename(file.path),
+          p.basename(modPath),
+          p.basename(modPath),
+          itemName,
+          cateName,
+          '',
+          [],
+          file.path,
+          false,
+          DateTime(0),
+          0,
+          false,
+          addingToSet ? true : false,
+          true,
+          addingToSet ? modSetNames : [],
+          [],
+          [],
+          [],
+          [],
+          [],
+        ),
+      );
+      //Sort alpha
+      modFiles.sort((a, b) => a.modFileName.toLowerCase().compareTo(b.modFileName.toLowerCase()));
+    }
+
+    //Get preview images;
+    List<String> modPreviewImages = [];
+    final imagesInModDir = Directory(modPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png');
+    for (var element in imagesInModDir) {
+      modPreviewImages.add(Uri.file(element.path).toFilePath());
+    }
+    //Get preview videos;
+    List<String> modPreviewVideos = [];
+    final videosInModDir = Directory(modPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4');
+    for (var element in videosInModDir) {
+      modPreviewVideos.add(Uri.file(element.path).toFilePath());
+      // if (!await File('${p.withoutExtension(element.path)}.jpg').exists()) {
+      //   final previewThumbnailData = await getVideoThumbnail(element.path);
+      //   if (previewThumbnailData != null) {
+      //     await File('${p.withoutExtension(element.path)}.jpg').writeAsBytes(previewThumbnailData);
+      //   }
+      // }
+    }
+
+    //get cmx file
+    bool hasCmx = false;
+    final cmxFile = Directory(
+      modPath,
+    ).listSync(recursive: false).whereType<File>().firstWhere((element) => p.extension(element.path) == '.txt' && p.basename(element.path).contains('cmxConfig'), orElse: () => File('')).path;
+    if (cmxFile.isNotEmpty) {
+      hasCmx = true;
+    }
+
+    SubMod newSubmod = SubMod(
+      p.basename(modPath),
+      p.basename(modPath),
+      itemName,
+      cateName,
+      modPath,
+      false,
+      DateTime(0),
+      0,
+      true,
+      false,
+      addingToSet ? true : false,
+      [],
+      hasCmx,
+      false,
+      -1,
+      -1,
+      cmxFile,
+      addingToSet ? modSetNames : [],
+      [],
+      modPreviewImages,
+      modPreviewVideos,
+      [],
+      modFiles,
+    );
+    newSubmod.setLatestCreationDate();
+
+    // Status
+    modAddProcessingStatus.value = '${appText.categoryName(newSubmod.category)} > ${newSubmod.itemName} > ${newSubmod.modName} > ${newSubmod.submodName}';
+    await Future.delayed(const Duration(microseconds: 10));
+
+    submods.add(newSubmod);
+  }
+
+  //ices in sub dirs
+  final foldersInModDir = Directory(modPath).listSync(recursive: true).whereType<Directory>().toList();
+  for (var dir in foldersInModDir) {
+    //Get preview images;
+    List<String> modPreviewImages = [];
+    final imagesInModDir = Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png');
+    for (var element in imagesInModDir) {
+      modPreviewImages.add(Uri.file(element.path).toFilePath());
+    }
+    //Get preview videos;
+    List<String> modPreviewVideos = [];
+    final videosInModDir = Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4');
+    for (var element in videosInModDir) {
+      modPreviewVideos.add(Uri.file(element.path).toFilePath());
+    }
+
+    //get cmx file
+    bool hasCmx = false;
+    final cmxFile = Directory(
+      modPath,
+    ).listSync(recursive: false).whereType<File>().firstWhere((element) => p.extension(element.path) == '.txt' && p.basename(element.path).contains('cmxConfig'), orElse: () => File('')).path;
+    if (cmxFile.isNotEmpty) {
+      hasCmx = true;
+    }
+
+    final filesInDir = Directory(
+      dir.path,
+    ).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '' && p.basenameWithoutExtension(element.path).length > 29).toList();
+    List<ModFile> modFiles = [];
+    for (var file in filesInDir) {
+      //final ogFiles = ogDataFiles.where((element) => p.basename(element) == p.basename(file.path)).toList();
+      //List<String> ogFilePaths = [];
+      // for (var element in ogFiles) {
+      //   ogFilePaths.add(element.path);
+      // }
+
+      List<String> parentPaths = file.parent.path.split(modPath).last.trim().split(Uri.file('/').toFilePath());
+      parentPaths.removeWhere((element) => element.isEmpty);
+
+      modFiles.add(
+        ModFile(
+          p.basename(file.path),
+          parentPaths.join(' > '),
+          p.basename(modPath),
+          itemName,
+          cateName,
+          '',
+          [],
+          file.path,
+          false,
+          DateTime(0),
+          0,
+          false,
+          addingToSet ? true : false,
+          true,
+          addingToSet ? modSetNames : [],
+          [],
+          [],
+          [],
+          [],
+          [],
+        ),
+      );
+      //Sort alpha
+      modFiles.sort((a, b) => a.modFileName.toLowerCase().compareTo(b.modFileName.toLowerCase()));
+    }
+
+    //Get submod name
+    List<String> parentPaths = dir.path.split(modPath).last.trim().split(Uri.file('/').toFilePath());
+    parentPaths.removeWhere((element) => element.isEmpty);
+    SubMod newSubmod = SubMod(
+      parentPaths.join(' > '),
+      p.basename(modPath),
+      itemName,
+      cateName,
+      dir.path,
+      false,
+      DateTime(0),
+      0,
+      true,
+      false,
+      addingToSet ? true : false,
+      [],
+      hasCmx,
+      false,
+      -1,
+      -1,
+      cmxFile,
+      addingToSet ? modSetNames : [],
+      [],
+      modPreviewImages,
+      modPreviewVideos,
+      [],
+      modFiles,
+    );
+    newSubmod.setLatestCreationDate();
+
+    // Status
+    modAddProcessingStatus.value = '${appText.categoryName(newSubmod.category)} > ${newSubmod.itemName} > ${newSubmod.modName} > ${newSubmod.submodName}';
+    await Future.delayed(const Duration(microseconds: 10));
+
+    submods.add(newSubmod);
+  }
+
+  //remove empty submods
+  submods.removeWhere((element) => element.modFiles.isEmpty);
+
+  //Sort alpha
+  // submods.sort((a, b) => a.submodName.toLowerCase().compareTo(b.submodName.toLowerCase()));
+
+  return submods;
+}
+
+Future<String> modAdderNewModSetDialog(context) async {
+  TextEditingController newModSetName = TextEditingController();
+  final nameFormKey = GlobalKey<FormState>();
+  return await showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (context) => StatefulBuilder(
+      builder: (context, setState) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Theme.of(context).primaryColorLight),
+            borderRadius: const BorderRadius.all(Radius.circular(5)),
+          ),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+          titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+          // title: Text(curLangText!.uiCreateASetForImportedMods, style: const TextStyle(fontWeight: FontWeight.w700)),
+          contentPadding: const EdgeInsets.only(left: 16, right: 16),
+          actionsPadding: const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
+          content: Form(
+            key: nameFormKey,
+            child: TextFormField(
+              controller: newModSetName,
+              maxLines: 1,
+              textAlignVertical: TextAlignVertical.center,
+              inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
+              validator: (value) {
+                if (masterModSetList.where((element) => element.setName == newModSetName.text).isNotEmpty) {
+                  return appText.nameAlreadyExists;
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                labelText: appText.enterNewNameHere,
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.error),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.error),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+                //isCollapsed: true,
+                //isDense: true,
+                contentPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 2),
+                constraints: const BoxConstraints.tightForFinite(),
+                // Set border for enabled state (default)
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1, color: Theme.of(context).hintColor),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+                // Set border for focused state
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.primary),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              onChanged: (value) async {
+                setState(() {});
+              },
+            ),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              onPressed: newModSetName.value.text.isEmpty
+                  ? null
+                  : () async {
+                      if (nameFormKey.currentState!.validate()) {
+                        Navigator.pop(context, newModSetName.text);
+                      }
+                    },
+              child: Text(appText.add),
+            ),
+            ElevatedButton(
+              child: Text(appText.returns),
+              onPressed: () async {
+                Navigator.pop(context, '');
+              },
+            ),
+          ],
+        );
+      },
+    ),
+  );
+}
+
+Future<void> unpackNestedArchives(List<File> nestedArchives) async {
+  for (var file in nestedArchives) {
+    String extractingPath = file.parent.path;
+    if (p.extension(file.path) == '.zip') {
+      await extractFileToDisk(file.path, extractingPath);
+    } else if (p.extension(file.path) == '.rar') {
+      if (Platform.isLinux) {
+        await Process.run('wine $sevenZipExePath', ['x', file.path, '-o $extractingPath', '-r']);
+      } else {
+        await Process.run(sevenZipExePath, ['x', file.path, '-o$extractingPath', '-r']);
+      }
+    } else if (p.extension(file.path) == '.7z') {
+      if (Platform.isLinux) {
+        await Process.run('wine $sevenZipExePath', ['x', file.path, '-o$extractingPath', '-r']);
+      } else {
+        await Process.run(sevenZipExePath, ['x', file.path, '-o$extractingPath', '-r']);
+      }
+    }
+    await file.delete(recursive: true);
+  }
+
+  final nestedArchiveFiles = Directory(
+    modAddTempUnpackedDirPath,
+  ).listSync(recursive: true).whereType<File>().where((e) => p.extension(e.path) == '.zip' || p.extension(e.path) == '.rar' || p.extension(e.path) == '.7z').toList();
+  if (nestedArchiveFiles.isNotEmpty) await unpackNestedArchives(nestedArchiveFiles);
+}

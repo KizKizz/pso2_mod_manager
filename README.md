@@ -1,7 +1,10 @@
-# PSO2NGS Mod Manager ver.2
- An app to manage, swapping, backup and apply mods to Phantasy Star Online 2 New Genesis  
+# PSO2NGS Mod Manager ver.3
+ **An app to manage, swapping mods and items for Phantasy Star Online 2 New Genesis**
  
-![Screenshot 2023-07-27 182418](https://github.com/KizKizz/pso2_mod_manager/assets/101075148/58d44f3e-fc45-4705-9842-1bae7183aff2)
+
+![pso2ngs](https://github.com/user-attachments/assets/fa8593ed-d3ce-44d5-b35d-b7200e4cbe24)
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/I3I61Q1Q1R)
 
 # Download
 
@@ -10,17 +13,23 @@ Check back for latest releases
 
 # Features
 
-- Organize, keep track of available and applied mods
-- Add, remove single/multiple items or mods
-- Swapping mods to another items (excludes emotes. motions)
-- Apply entire mod, or single .ice file
-- Mod sets, save mods into sets to apply later 
-- Backup originals from the game, restore when unapplying mods
-- Auto apply checksum and reapply mods if they are being unapply after game update
-- Preview mods by hovering mouse cursor on them, and right click to zoom on an image (if there are images [.jpg, .png] or videos [.mp4, .webm] included inside the mod)
-- Search (any keyword, even .ice file names)
-- Organize mods into Favorite, Set List
-
+- Available in English, Japanese and Chinese (by [augurz](https://github.com/augurz))
+- Auto replace checksum on startup and when applying mods
+- Auto sort and categorize mods by associated items upon adding
+- Mods can be added to Mod Sets to be applied together
+- Keep track of available mods and mods that are in the game
+- Custom mod applying locations (win32, win32reboot, win32_na, win32reboot_na or all)
+- Swap mods to other items
+- Quick apply any mod to any selected item
+- Swap original items (costumes, emotes, ...)
+- Inject custom AQM file to items and mods (Auto)
+- Remove bounding radius from items and mods (prevent disappearance on closeup camera - Auto)
+- Profanity filter removal (Auto)
+- Custom images on Vital Gauges
+- Custom images on Line Strike (Cards, Boards, Sleeves)
+- Two different profiles can be used separatedly on different versions of the game
+- Start game bypassing official launcher (JP version only, might need to run as admin)
+  
 and more..
 
 # Usage
@@ -28,49 +37,6 @@ and more..
 - Restore the game files to their originals before using the app
 - App's settings (light\dark mode, pso2_bin path, ect) are stored in:  
   ```C:\Users\YourUserName\AppData\Roaming\PSO2NGS Mod Manager\shared_preferences.json```
-- Mod files settings are stored in:  
-  ```...\PSO2 Mod Manager\PSO2ModManModsList.json```
-- If the app started as a blank white screen, resizing it would fix this issue.
-- If the app wont start or crashing on start:
-
-  ```Right click on PSO2NGSModManager.exe > Properties > Compatibility tab > Check the box under Compatibility mode > Apply```
-  
-**First time setup:**
-
-- Locate pso2_bin folder
-
-   ![Screenshot 2022-06-26 143014](https://user-images.githubusercontent.com/101075148/175836232-f62b8484-c4a5-4815-a7b0-66d54b8f6332.png)
-   ![Screenshot 2022-06-26 143139-crop](https://user-images.githubusercontent.com/101075148/175836300-1d3462b6-57e1-4418-b2ab-12bf66f7bcd8.png)
-
-- Click to auto download checksum, or hold to manually select 
-
-   ![Screenshot 2022-06-26 143206-crop](https://user-images.githubusercontent.com/101075148/175836423-3b2b0ed6-b6b1-401c-9b71-2c7cb911db82.png)
-   
-
-
-**Adding mods:**
-
-**Note**: 
-- Supporting .zip files, folders, .ice files, drag and drop to add
-- Mods can also be added by copying your mod folders into each category folder in ```...\PSO2 Mod Manager\Mods``` then refresh or restart the app
-
-[addmods.webm](https://github.com/KizKizz/pso2_mod_manager/assets/101075148/16846f2e-f631-4323-8358-4dfb0b4635c6)
-
-**Applying - unapplying mod(s):**
-
-https://github.com/KizKizz/pso2_mod_manager/assets/101075148/5b5ffe32-3699-4033-901d-aeccdff65818
-   
-**Add Mods to Sets:**
-
-[addsets.webm](https://github.com/KizKizz/pso2_mod_manager/assets/101075148/3d49c2c1-452e-4779-802b-f07cd6061d11)
-
-**Add Mods from 1 item to another:**
-
-[swapmods.webm](https://github.com/KizKizz/pso2_mod_manager/assets/101075148/1f273e73-f5b6-4179-bc4a-9f4a8f1529e8)
-
-**Vital Gauge backgrounds change:**
-
-https://github.com/KizKizz/pso2_mod_manager/assets/101075148/f8d16fc4-0660-4673-a709-0822fc516452
 
 # Known Issues
 Drag & drop won't work if app is running with Administrator
@@ -83,6 +49,7 @@ More improvements and features
 Flutter and various libraries from [pub.dev](https://pub.dev/packages)
 
 [Zamboni](https://github.com/Shadowth117/Zamboni)
+[7-zip](www.7-zip.org)
 
 Found a bug? [Leave a message here](https://github.com/KizKizz/pso2_mod_manager/issues)
 

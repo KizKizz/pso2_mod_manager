@@ -1,0 +1,225 @@
+import 'dart:ui';
+
+import 'package:pso2_mod_manager/app_colorscheme.dart';
+import 'package:pso2_mod_manager/app_localization/item_locale.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/settings/other_settings.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:signals/signals_flutter.dart';
+
+bool firstBootUp = true;
+ItemNameLanguage itemNameLanguage = ItemNameLanguage.en;
+String appVersionUpdateSkip = '';
+AppThemeMode appThemeMode = AppThemeMode.dark;
+Signal<int> uiBackgroundColorAlpha = Signal<int>(150);
+Color lightModeSeedColor = lightColorScheme.primary;
+Color darkModeSeedColor = darkColorScheme.primary;
+Signal<bool> hideAppBackgroundSlides = Signal<bool>(false);
+Signal<int> backgroundImageSlideInterval = Signal<int>(10);
+Signal<bool> itemIconSlides = Signal<bool>(false);
+Signal<List<String>> selectedDisplayCategories = Signal<List<String>>(['All']);
+Signal<List<String>> selectedModDisplayCategories = Signal<List<String>>(['All']);
+Signal<List<String>> selectedAppliedListDisplayCategories = Signal<List<String>>(['All']);
+Signal<String> selectedDisplaySort = Signal<String>('Name (Alphabetical)');
+Signal<String> selectedDisplaySortModView = Signal<String>('Name (Alphabetical)');
+Signal<String> selectedDisplaySortAppliedList = Signal<String>('Name (Alphabetical)');
+Signal<String> selectedDisplaySortModSet = Signal<String>('Name (Alphabetical)');
+bool originalFilesBackupsFromSega = true;
+double boundingRadiusRemovalValue = -10;
+Signal<String> selectedCustomAQMFilePath = Signal('');
+bool removeProfanityFilter = false;
+bool replaceItemIconOnApplied = true;
+bool sideMenuAlwaysExpanded = false;
+bool enableModAddFilters = false;
+int defaultHomepageIndex = 0;
+bool hideEmptyCategories = true;
+// bool modAddCategorizeModsByItems = true;
+Signal<bool> showPreviewBox = Signal(true);
+bool modAlwaysApplyHQFiles = false;
+bool selectedModsApplyHQFilesOnly = false;
+bool hideUIWhenAppUnfocused = false;
+int hideUIInitDelaySeconds = 30;
+String activeUILanguage = 'EN';
+Signal<bool> v2Homepage = Signal(false);
+double splitViewFlexValue0 = 1;
+double splitViewFlexValue1 = 1;
+double splitViewFlexValue2 = 1;
+Signal<bool> showAppliedListV2 = Signal(true);
+int popupAfterDismissWaitDelayMilli = 10;
+bool itemListSearchIncludesMods = false;
+bool useLocalBackupOnly = false;
+Signal<bool> windowMaximizedState = Signal(false);
+bool homepageStyleSelection = false;
+int modManCurActiveProfile = 1;
+String pso2binDirPath = '';
+String mainDataDirPath = '';
+String verTwoMainDataDirPath = '';
+bool useAltFilePicker = false;
+
+// Auto features
+bool autoBoundingRadiusRemoval = false;
+bool autoInjectCustomAqm = false;
+
+Future<void> prefsLoad() async {
+  final prefs = await SharedPreferences.getInstance();
+
+  // Maximized state
+  windowMaximizedState.value = prefs.getBool('windowMaximizedState') ?? false;
+
+  // First time boot
+  firstBootUp = prefs.getBool('firstBootUp') ?? true;
+
+  // Homepage style selection
+  homepageStyleSelection = prefs.getBool('homepageStyleSelection') ?? false;
+
+  // ver 2 main data dir path
+  verTwoMainDataDirPath = prefs.getString('mainModManDirPath') ?? '';
+
+  // Item Name Language
+  itemNameLanguage = ItemNameLanguage.values.firstWhere((e) => e.value == prefs.getString('itemNameLanguage'), orElse: () => ItemNameLanguage.en);
+
+  // App Version Update Skip
+  appVersionUpdateSkip = prefs.getString('appVersionUpdateSkip') ?? '';
+
+  // Active Profile
+  modManCurActiveProfile = prefs.getInt('modManCurActiveProfile') ?? 1;
+
+  // pso2bin dir path
+  pso2binDirPath = modManCurActiveProfile == 1 ? prefs.getString('pso2binDirPath') ?? '' : prefs.getString('pso2binDirPath_profile2') ?? '';
+
+  // Main dir path
+  mainDataDirPath = prefs.getString('mainDataDirPath') ?? '';
+
+  // Main UI alpha
+  uiBackgroundColorAlpha.value = prefs.getInt('uiBackgroundColorAlpha') ?? 150;
+
+  // Aux UI alpha
+  uiDialogBackgroundColorAlpha.value = prefs.getInt('uiDialogBackgroundColorAlpha') ?? 200;
+
+  // UI tooltip alpha
+  uiTooltipBackgroundColorAlpha.value = prefs.getInt('uiTooltipBackgroundColorAlpha') ?? 200;
+
+  // App Theme Mode
+  appThemeMode = AppThemeMode.values.firstWhere((e) => e.value == prefs.getString('appThemeMode'), orElse: () => AppThemeMode.dark);
+
+  // Hide App background slides
+  hideAppBackgroundSlides.value = prefs.getBool('hideAppBackgroundSlides') ?? false;
+
+  // Background image slide interval
+  backgroundImageSlideInterval.value = prefs.getInt('backgroundImageSlideInterval') ?? 10;
+
+  // Item icon slides
+  itemIconSlides.value = prefs.getBool('itemIconSlides') ?? false;
+
+  // Main list filter
+  selectedDisplayCategories.value = prefs.getStringList('selectedDisplayCategories') ?? ['All'];
+
+  // Main Mod list filter
+  selectedModDisplayCategories.value = prefs.getStringList('selectedModDisplayCategories') ?? ['All'];
+
+  // Main list applied list filter
+  selectedAppliedListDisplayCategories.value = prefs.getStringList('selectedAppliedListDisplayCategories') ?? ['All'];
+
+  // Main list sort
+  selectedDisplaySort.value = prefs.getString('selectedDisplaySort') ?? 'Name (Alphabetical)';
+
+  // Modview v2 sort
+  selectedDisplaySortModView.value = prefs.getString('selectedDisplaySortModView') ?? 'Name (Alphabetical)';
+
+  // AppliedList v2 sort
+  selectedDisplaySortAppliedList.value = prefs.getString('selectedDisplaySortAppliedList') ?? 'Name (Alphabetical)';
+
+  // Mod set list sort
+  selectedDisplaySortModSet.value = prefs.getString('selectedDisplaySortModSet') ?? 'Name (Alphabetical)';
+
+  // Color schemes
+  final lightModeSeedColorValue =
+      prefs.getStringList('lightModeSeedColorValue') ??
+      [lightColorScheme.primary.r.toString(), lightColorScheme.primary.g.toString(), lightColorScheme.primary.b.toString(), lightColorScheme.primary.a.toString()];
+  lightModeSeedColor = Color.from(
+    red: double.parse(lightModeSeedColorValue[0]),
+    green: double.parse(lightModeSeedColorValue[1]),
+    blue: double.parse(lightModeSeedColorValue[2]),
+    alpha: double.parse(lightModeSeedColorValue[3]),
+  );
+  final darkModeSeedColorValue =
+      prefs.getStringList('darkModeSeedColorValue') ??
+      [darkColorScheme.primary.r.toString(), darkColorScheme.primary.g.toString(), darkColorScheme.primary.b.toString(), darkColorScheme.primary.a.toString()];
+  darkModeSeedColor = Color.from(
+    red: double.parse(darkModeSeedColorValue[0]),
+    green: double.parse(darkModeSeedColorValue[1]),
+    blue: double.parse(darkModeSeedColorValue[2]),
+    alpha: double.parse(darkModeSeedColorValue[3]),
+  );
+
+  // Backup priority
+  originalFilesBackupsFromSega = prefs.getBool('originalFilesBackupsFromSega') ?? true;
+  useLocalBackupOnly = prefs.getBool('useLocalBackupOnly') ?? false;
+
+  // Bounding radius value
+  boundingRadiusRemovalValue = prefs.getDouble('boundingRadiusRemovalValue') ?? -10;
+
+  // Auto bounding radius
+  autoBoundingRadiusRemoval = prefs.getBool('autoBoundingRadiusRemoval') ?? false;
+
+  // Selected custom AQM File Path
+  selectedCustomAQMFilePath.value = prefs.getString('selectedCustomAQMFilePath') ?? '';
+
+  // Auto inject custom aqm
+  autoInjectCustomAqm = prefs.getBool('autoInjectCustomAqm') ?? false;
+
+  // Remove profanity
+  removeProfanityFilter = prefs.getBool('removeProfanityFilter') ?? false;
+
+  // Mark modded items
+  replaceItemIconOnApplied = prefs.getBool('replaceItemIconOnApplied') ?? true;
+
+  // Mark modded items
+  sideMenuAlwaysExpanded = prefs.getBool('sideMenuAlwaysExpanded') ?? false;
+
+  // Mod add filter
+  enableModAddFilters = prefs.getBool('enableModAddFilters') ?? false;
+
+  // Default homepage
+  defaultHomepageIndex = prefs.getInt('defaultHomepageIndex') ?? 0;
+
+  // Hide empty categories
+  hideEmptyCategories = prefs.getBool('hideEmptyCategories') ?? true;
+
+  // categorize by items
+  // modAddCategorizeModsByItems = prefs.getBool('modAddCategorizeModsByItems') ?? true;
+
+  // show preview box
+  showPreviewBox.value = prefs.getBool('showPreviewBox') ?? true;
+
+  // mod apply hq files only
+  modAlwaysApplyHQFiles = prefs.getBool('modAlwaysApplyHQFiles') ?? false;
+  selectedModsApplyHQFilesOnly = prefs.getBool('selectedModsApplyHQFilesOnly') ?? false;
+
+  // categorize by items
+  hideUIWhenAppUnfocused = prefs.getBool('hideUIWhenAppUnfocused') ?? false;
+  hideUIInitDelaySeconds = prefs.getInt('hideUIInitDelaySeconds') ?? 30;
+
+  // Active UI Languge
+  activeUILanguage = prefs.getString('activeUILanguage') ?? 'EN';
+
+  // v2 homepage
+  v2Homepage.value = prefs.getBool('v2Homepage') ?? false;
+
+  // v2 applied list
+  showAppliedListV2.value = prefs.getBool('showAppliedListV2') ?? true;
+
+  // split view flex value
+  splitViewFlexValue0 = prefs.getDouble('splitViewFlexValue0') ?? 1;
+  splitViewFlexValue1 = prefs.getDouble('splitViewFlexValue1') ?? 1;
+  splitViewFlexValue2 = prefs.getDouble('splitViewFlexValue2') ?? 1;
+
+  // popup After delay after dismissed
+  popupAfterDismissWaitDelayMilli = prefs.getInt('popupAfterDismissWaitDelayMilli') ?? 50;
+
+  // Item list serach includes mods
+  itemListSearchIncludesMods = prefs.getBool('itemListSearchIncludesMods') ?? false;
+
+  // Use alt file picker
+  useAltFilePicker = prefs.getBool('useAltFilePicker') ?? false;
+}

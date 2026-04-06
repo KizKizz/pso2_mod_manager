@@ -1,0 +1,405 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/app_paths/main_paths.dart';
+import 'package:pso2_mod_manager/app_paths/sega_file_paths.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
+import 'package:pso2_mod_manager/mod_data/mod_class.dart';
+import 'package:pso2_mod_manager/mod_data/mod_file_class.dart';
+import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
+import 'package:path/path.dart' as p;
+
+Future<List<File>> modSwapRename(List<File> lItemFiles, List<File> rItemFiles, List<String> rItemIds, String rItemAccItemId, ItemCrossSwap itemCrossSwap) async {
+  List<File> renamedFiles = [];
+  // effect accessories
+  int lItemslp01Index = lItemFiles.indexWhere((e) => p.basename(e.path).contains('lp01.aqe'));
+  int lItemsAqpIndex = lItemFiles.indexWhere((e) => p.extension(e.path) == '.aqp');
+  int rItemslp01Index = rItemFiles.indexWhere((e) => p.basename(e.path).contains('lp01.aqe'));
+  if (rItemAccItemId.isNotEmpty && lItemslp01Index != -1 && lItemsAqpIndex == -1 && rItemslp01Index != -1) {
+    renamedFiles.add(await lItemFiles[lItemslp01Index].rename(p.dirname(lItemFiles[lItemslp01Index].path) + p.separator + p.basename(rItemFiles[rItemslp01Index].path)));
+    List<String> fileNamePartsF = p.basenameWithoutExtension(p.basenameWithoutExtension(lItemFiles[lItemslp01Index].path)).split('_');
+    String fileIdF = fileNamePartsF.firstWhere((element) => int.tryParse(element) != null, orElse: () => '');
+    for (var fFile in lItemFiles.where((e) => !p.basename(e.path).contains('lp01.aqe'))) {
+      if (p.basenameWithoutExtension(fFile.path).contains(fileIdF)) {
+        renamedFiles.add(await fFile.rename(fFile.path.replaceAll(fileIdF, rItemAccItemId)));
+      }
+    }
+    return renamedFiles;
+  }
+  //ah to rac
+  //Look for corresponding T file
+  final fileTWithRac = rItemFiles.where((element) => p.basenameWithoutExtension(element.path).contains('rac'));
+  if (fileTWithRac.isNotEmpty) {
+    List<File> renamedFilesF = [];
+    for (var fFile in lItemFiles) {
+      if (fFile.existsSync()) {
+        List<String> namePartsF = p.basenameWithoutExtension(fFile.path).split('_');
+        if (namePartsF.length > 3) {
+          namePartsF[1] == 'ah' ? namePartsF[1] = 'rac' : null;
+          namePartsF[3] == 'x' ? namePartsF.removeRange(3, namePartsF.length) : namePartsF.removeRange(4, namePartsF.length);
+          String newFileNameF = namePartsF.join('_') + p.extension(fFile.path);
+          String newFilePathF = Uri.file('${p.dirname(fFile.path)}/$newFileNameF').toFilePath();
+          renamedFilesF.add(fFile.renameSync(newFilePathF));
+        } else if (namePartsF[0] == 'pl' && namePartsF.length <= 3) {
+          renamedFilesF.add(fFile);
+        }
+      }
+    }
+    lItemFiles = renamedFilesF;
+  }
+
+  for (var fileF in lItemFiles) {
+    if (fileF.existsSync()) {
+      List<String> fileNamePartsF = p.basenameWithoutExtension(fileF.path).split('_');
+      String fileIdF = fileNamePartsF.firstWhere((element) => int.tryParse(element) != null, orElse: () => '');
+      if (fileIdF.isNotEmpty) {
+        final fileNamePartsWoId = p.basename(fileF.path).split(fileIdF);
+        // final matchingFileT =
+        //     rItemFiles.firstWhere((element) => p.basename(element.path).contains(fileNamePartsWoId.first) && p.basename(element.path).split('_').last == fileNamePartsWoId.last.replaceAll('_', ''), orElse: () => File(''));
+        File? matchingFileT;
+        for (var fileT in rItemFiles) {
+          String fileIdT = p.basenameWithoutExtension(fileT.path).split('_').firstWhere((element) => int.tryParse(element) != null, orElse: () => '');
+          final fileNamePartsWoIdT = p.basename(fileT.path).split(fileIdT);
+          if (fileNamePartsWoIdT.first == fileNamePartsWoId.first && fileNamePartsWoIdT.last == fileNamePartsWoId.last) {
+            matchingFileT = fileT;
+            break;
+          }
+        }
+        if (matchingFileT != null) {
+          String newPath = fileF.path.replaceFirst(p.basenameWithoutExtension(fileF.path), p.basenameWithoutExtension(matchingFileT.path));
+          renamedFiles.add(await fileF.rename(newPath));
+        } else {
+          if (p.extension(fileF.path) == '.aqm') {
+            final matchingFileNameT = rItemFiles.firstWhere(
+              (element) => p.basenameWithoutExtension(element.path).contains(fileNamePartsWoId.first) && p.extension(element.path) == '.aqn',
+              orElse: () => File(''),
+            );
+            if (matchingFileNameT.path.isNotEmpty) {
+              String matchingFileIdF = p.basenameWithoutExtension(matchingFileNameT.path).split('_').firstWhere((element) => int.tryParse(element) != null, orElse: () => '');
+              if (matchingFileIdF.isNotEmpty) {
+                String newPath = fileF.path.replaceFirst(fileIdF, matchingFileIdF);
+                renamedFiles.add(await fileF.rename(newPath));
+              }
+            } else {
+              if (rItemIds.isNotEmpty && rItemIds[1].isNotEmpty) {
+                String newPath = fileF.path.replaceFirst(fileIdF, rItemIds[1]);
+                renamedFiles.add(await fileF.rename(newPath));
+              } else if (rItemIds.isNotEmpty && rItemIds[0].isNotEmpty) {
+                String newPath = fileF.path.replaceFirst(fileIdF, rItemIds[0]);
+                renamedFiles.add(await fileF.rename(newPath));
+              } else if (rItemAccItemId.isNotEmpty) {
+                String newPath = fileF.path.replaceFirst(fileIdF, rItemAccItemId);
+                renamedFiles.add(await fileF.rename(newPath));
+              }
+            }
+          } else if (p.extension(fileF.path) == '.fltd') {
+            final fltdFilesT = rItemFiles.where((element) => p.extension(element.path) == '.fltd');
+            if (fltdFilesT.isNotEmpty) {
+              final fltdFilePartsT = p.basenameWithoutExtension(fltdFilesT.first.path).split('_');
+              String matchingFltdFileIdT = fltdFilePartsT.firstWhere((element) => int.tryParse(element) != null, orElse: () => '');
+              List<String> newFltdFileParts = p.basename(fileF.path).split('_');
+              int indexOfItemIdInFileName = newFltdFileParts.indexOf(fileIdF);
+              if (indexOfItemIdInFileName != -1) {
+                newFltdFileParts[indexOfItemIdInFileName] = matchingFltdFileIdT;
+                String newFileName = newFltdFileParts.join('_');
+                String newPath = Uri.file('${p.dirname(fileF.path)}/$newFileName').toFilePath();
+
+                renamedFiles.add(await fileF.rename(newPath));
+              }
+            } else {
+              List<String> newFltdFileParts = p.basenameWithoutExtension(fileF.path).split('_');
+              int indexOfItemIdInFileName = newFltdFileParts.indexOf(fileIdF);
+              if (indexOfItemIdInFileName != -1) {
+                newFltdFileParts[indexOfItemIdInFileName] = rItemAccItemId;
+                String newFileName = newFltdFileParts.join('_');
+                String newPath = Uri.file('${p.dirname(fileF.path)}/$newFileName.fltd').toFilePath();
+
+                renamedFiles.add(await fileF.rename(newPath));
+              }
+            }
+          } else if (p.extension(fileF.path) == '.dds') {
+            final ddsFilesT = rItemFiles.where((element) => p.extension(element.path) == '.dds');
+            if (ddsFilesT.isNotEmpty) {
+              final ddsFilePartsT = p.basenameWithoutExtension(ddsFilesT.first.path).split('_');
+              String matchingDdsFileIdT = ddsFilePartsT.firstWhere((element) => int.tryParse(element) != null, orElse: () => '');
+              List<String> newDdsFileParts = p.basename(fileF.path).split('_');
+              int indexOfItemIdInFileName = newDdsFileParts.indexOf(fileIdF);
+              if (indexOfItemIdInFileName != -1) {
+                newDdsFileParts[indexOfItemIdInFileName] = matchingDdsFileIdT;
+              }
+              //modification for body paints to inners
+              if (itemCrossSwap == ItemCrossSwap.bodyPaintToInnerwear) {
+                int rbaIndex = newDdsFileParts.indexOf('rba');
+                if (rbaIndex != -1) {
+                  newDdsFileParts[rbaIndex] = 'rbd';
+                }
+                if (indexOfItemIdInFileName != -1) {
+                  newDdsFileParts.insert(indexOfItemIdInFileName + 1, 'iw');
+                }
+              }
+              //modification for inners to body paints
+              if (itemCrossSwap == ItemCrossSwap.innerwearToBodyPaint) {
+                int rbdIndex = newDdsFileParts.indexOf('rbd');
+                if (rbdIndex != -1) {
+                  newDdsFileParts[rbdIndex] = 'rba';
+                }
+                int iwIndex = newDdsFileParts.indexOf('iw');
+                if (iwIndex != -1) {
+                  newDdsFileParts.removeAt(iwIndex);
+                }
+              }
+              String newFileName = newDdsFileParts.join('_');
+              String newPath = Uri.file('${p.dirname(fileF.path)}/$newFileName').toFilePath();
+
+              renamedFiles.add(await fileF.rename(newPath));
+            }
+          } else {
+            List<String> newFltdFileParts = p.basenameWithoutExtension(fileF.path).split('_');
+            int indexOfItemIdInFileName = newFltdFileParts.indexOf(fileIdF);
+            if (indexOfItemIdInFileName != -1) {
+              newFltdFileParts[indexOfItemIdInFileName] = rItemAccItemId;
+              String newFileName = newFltdFileParts.join('_');
+              String newPath = Uri.file('${p.dirname(fileF.path)}/$newFileName${p.extension(fileF.path)}').toFilePath();
+
+              renamedFiles.add(await fileF.rename(newPath));
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return renamedFiles;
+}
+
+Future<List<File>> emoteSwapRename(List<File> lItemFiles, List<File> rItemFiles, ItemCrossSwap itemCrossSwap) async {
+  List<File> renamedFiles = [];
+  for (var fileF in lItemFiles) {
+    List<String> fileNamePartsF = p.basenameWithoutExtension(fileF.path).split('_');
+    File matchingFileT = File('');
+    if (itemCrossSwap == ItemCrossSwap.idleMotionToEmote) {
+      if (p.extension(fileF.path) == '.aqm') {
+        final fileFNameParts = p.basenameWithoutExtension(fileF.path).split('_');
+        if (fileFNameParts.isNotEmpty && fileFNameParts[0] == 'pl' && fileFNameParts[1] == 'std' && fileFNameParts.last == 'lp') {
+          matchingFileT = rItemFiles.firstWhere(
+            (e) => p.extension(e.path) == '.aqm' && p.basenameWithoutExtension(e.path).split('_')[0] == 'pl' && p.basenameWithoutExtension(e.path).split('_')[1] == 'hum',
+            orElse: () => File(''),
+          );
+        }
+      }
+    } else if (p.extension(fileF.path) == '.bti') {
+      matchingFileT = rItemFiles.firstWhere(
+        (element) =>
+            p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
+            p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
+            p.basenameWithoutExtension(element.path).split('_')[3] == fileNamePartsF[3] &&
+            (p.extension(element.path) == '.bti' || p.extension(element.path) == '.aqm'),
+        orElse: () => File(''),
+      );
+    } else if (fileNamePartsF.length > 3 && fileNamePartsF[1] == 'std') {
+      matchingFileT = rItemFiles.firstWhere(
+        (element) =>
+            p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
+            p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
+            p.basenameWithoutExtension(element.path).split('_')[3] == fileNamePartsF[3] &&
+            p.extension(element.path) == p.extension(fileF.path),
+        orElse: () => File(''),
+      );
+    } else if (fileNamePartsF.length > 2 && fileNamePartsF[1] == 'sb') {
+      //copy .fig file over instead of rename
+      File figFile = rItemFiles.firstWhere(
+        (element) =>
+            p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
+            p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
+            p.basenameWithoutExtension(element.path).split('_')[2] == fileNamePartsF[2] &&
+            p.extension(element.path) == p.extension(fileF.path),
+        orElse: () => File(''),
+      );
+      if (figFile.path.isNotEmpty) {
+        figFile.copySync(fileF.path);
+      }
+    } else if (fileNamePartsF.length > 2 && fileNamePartsF[1] == 'la' && p.extension(fileF.path) == '.fig') {
+      //copy .fig file over instead of rename
+      File figFile = rItemFiles.firstWhere(
+        (element) =>
+            p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
+            p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
+            p.extension(element.path) == p.extension(fileF.path),
+        orElse: () => File(''),
+      );
+      if (figFile.path.isNotEmpty) {
+        figFile.copySync(fileF.path);
+      }
+    } else if (itemCrossSwap == ItemCrossSwap.emoteToIdleMotion &&
+        fileNamePartsF[0] == 'pl' &&
+        p.extension(fileF.path) == '.aqm' &&
+        (p.basenameWithoutExtension(fileF.path).contains('_std_') || p.basenameWithoutExtension(fileF.path).contains('_hum_'))) {
+      //emotes to motions
+      File aqmFile = rItemFiles.firstWhere(
+        (element) =>
+            p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
+            p.basenameWithoutExtension(element.path).split('_')[3] == '00120' &&
+            p.extension(element.path) == p.extension(fileF.path),
+        orElse: () => File(''),
+      );
+      if (aqmFile.path.isNotEmpty) {
+        renamedFiles.add(await fileF.rename(Uri.file('${fileF.parent.path}/${p.basename(aqmFile.path)}').toFilePath()));
+      }
+    } else if (fileNamePartsF.length > 2 && rItemFiles.where((element) => p.basename(element.path) == p.basename(fileF.path)).isNotEmpty) {
+      renamedFiles.add(fileF);
+    } else if (fileNamePartsF.length > 2) {
+      matchingFileT = rItemFiles.firstWhere(
+        (element) =>
+            p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
+            p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
+            p.extension(element.path) == p.extension(fileF.path),
+        orElse: () => File(''),
+      );
+    }
+    if (matchingFileT.path.isNotEmpty) {
+      String newPath = fileF.path.replaceFirst(p.basenameWithoutExtension(fileF.path), p.basenameWithoutExtension(matchingFileT.path));
+      renamedFiles.add(await fileF.rename(newPath));
+    }
+  }
+
+  return renamedFiles;
+}
+
+extension IndexOfElements<T> on List<T> {
+  int indexOfElements(List<T> elements, [int start = 0]) {
+    if (elements.isEmpty) return start;
+    var end = length - elements.length;
+    if (start > end) return -1;
+    var first = elements.first;
+    var pos = start;
+    while (true) {
+      pos = indexOf(first, pos);
+      if (pos < 0 || pos >= end) return -1;
+      for (var i = 1; i < elements.length; i++) {
+        if (this[pos + i] != elements[i]) {
+          if (pos < 0 || pos >= end) return -1;
+          pos++;
+          i = 1;
+          continue;
+        }
+      }
+      return pos;
+    }
+  }
+}
+
+Future<void> modSwapTempDirsCreate() async {
+  await Directory(modSwapTempDirPath).create(recursive: true);
+  await Directory(modSwapTempLItemDirPath).create(recursive: true);
+  await Directory(modSwapTempRItemDirPath).create(recursive: true);
+  await Directory(modSwapTempOutputDirPath).create(recursive: true);
+}
+
+Future<void> modSwapTempDirsRemove() async {
+  if (Directory(modSwapTempDirPath).existsSync()) {
+    try {
+      await Directory(modSwapTempDirPath).delete(recursive: true);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+}
+
+// Future<File?> modSwapOriginalFileDownload_(String networkFilePath, String server, String saveLocation) async {
+//   if (networkFilePath.isNotEmpty) {
+//     final serverURLs = [segaPatchServerURL, segaMasterServerURL, segaPatchServerBackupURL, segaMasterServerBackupURL];
+//     for (var url in serverURLs) {
+//       final task = DownloadTask(
+//           url: '$url$networkFilePath',
+//           filename: p.basenameWithoutExtension(networkFilePath),
+//           headers: {"User-Agent": "AQUA_HTTP"},
+//           baseDirectory: BaseDirectory.root,
+//           directory: saveLocation,
+//           updates: Updates.statusAndProgress,
+//           allowPause: false);
+
+//       final result = await FileDownloader().download(task,
+//           onProgress: (progress) => itemSwapWorkingStatus.value = '${appText.dText(appText.downloadingFileName, p.basenameWithoutExtension(networkFilePath))} [ ${(progress * 100).round()}% ]');
+
+//       switch (result.status) {
+//         case TaskStatus.complete:
+//           itemSwapWorkingStatus.value = appText.fileDownloadSuccessful;
+//           return File(saveLocation + p.separator + p.basenameWithoutExtension(networkFilePath));
+//         default:
+//           itemSwapWorkingStatus.value = appText.fileDownloadFailed;
+//       }
+//     }
+//   }
+
+//   return null;
+// }
+
+SubMod lItemSubmodGet(ItemData lItemData) {
+  List<ModFile> modFileList = [];
+  String fromItemNameSwap = '${lItemData.getName().replaceAll('/', '_')}_${appText.swap}';
+  for (var iceNameWithType in lItemData.getIceDetails()) {
+    String iceName = p.basenameWithoutExtension(iceNameWithType.split(': ').last);
+
+    final icePathFromOgData = oItemData.firstWhere((element) => p.basenameWithoutExtension(element.path) == iceName, orElse: () => OfficialIceFile('', '', 0, '')).path;
+    if (icePathFromOgData.isNotEmpty) {
+      modFileList.add(
+        ModFile(
+          iceName,
+          fromItemNameSwap,
+          fromItemNameSwap,
+          fromItemNameSwap,
+          lItemData.category,
+          '',
+          [],
+          pso2DataDirPath + p.separator + p.fromUri(Uri.parse(icePathFromOgData)),
+          false,
+          DateTime(0),
+          0,
+          false,
+          false,
+          false,
+          [],
+          [],
+          [],
+          [],
+          [],
+          [],
+        ),
+      );
+    }
+  }
+
+  return SubMod(
+    fromItemNameSwap,
+    fromItemNameSwap,
+    lItemData.getName(),
+    lItemData.category,
+    '',
+    false,
+    DateTime(0),
+    0,
+    false,
+    false,
+    false,
+    [],
+    false,
+    false,
+    -1,
+    -1,
+    '',
+    [],
+    [],
+    [],
+    [],
+    [],
+    modFileList,
+  );
+}
+
+Mod lItemModGet() {
+  return Mod('', '', '', '', false, DateTime(0), 0, false, false, false, [], [], [], [], []);
+}
+
+enum ItemCrossSwap { none, bodyPaintToInnerwear, innerwearToBodyPaint, emoteToIdleMotion, idleMotionToEmote }

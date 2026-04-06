@@ -1,0 +1,254 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
+import 'package:file_selector/file_selector.dart';
+import 'package:flutter/material.dart';
+import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/app_paths/main_paths.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/mod_add/adding_mod_class.dart';
+import 'package:pso2_mod_manager/mod_add/mod_add_filter_popup.dart';
+import 'package:pso2_mod_manager/mod_add/mod_add_function.dart';
+import 'package:pso2_mod_manager/mod_add/mod_add_grid.dart';
+import 'package:pso2_mod_manager/mod_add/mod_add_to_set_popup.dart';
+import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
+import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_home/mod_add.dart';
+import 'package:signals/signals_flutter.dart';
+import 'package:path/path.dart' as p;
+
+class ModAddDragDropButtons extends StatefulWidget {
+  const ModAddDragDropButtons({super.key, required this.dragDropFileTypes});
+
+  final List<String> dragDropFileTypes;
+
+  @override
+  State<ModAddDragDropButtons> createState() => _ModAddDragDropButtonsState();
+}
+
+class _ModAddDragDropButtonsState extends State<ModAddDragDropButtons> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      spacing: 5,
+      children: [
+        Row(
+          spacing: 5,
+          children: [
+            // Browse files
+            ElevatedButton(
+              onPressed: () async {
+                List<XFile> selectedFiles = [];
+                if (useAltFilePicker) {
+                  FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['7z', 'zip', 'rar', 'pmm']);
+                  if (result != null) selectedFiles = result.xFiles;
+                } else {
+                  XTypeGroup archiveTypeGroup = XTypeGroup(label: appText.archives, extensions: widget.dragDropFileTypes);
+                  XTypeGroup iceTypeGroup = XTypeGroup(label: appText.iceFiles, extensions: const <String>['*']);
+                  selectedFiles = await openFiles(acceptedTypeGroups: <XTypeGroup>[archiveTypeGroup, iceTypeGroup], confirmButtonText: appText.add);
+                }
+
+                if (selectedFiles.isNotEmpty) {
+                  curModAddDragDropStatus.value = ModAddDragDropState.waitingForFiles;
+                  modAddDragDropPaths.addAll(selectedFiles.map((e) => e.path));
+                  curModAddDragDropStatus.value = ModAddDragDropState.fileInList;
+                }
+              },
+              child: Text(appText.addFiles, textAlign: TextAlign.center),
+            ),
+
+            // Browse Dir
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () async {
+                  List<String?> selectedDirPaths = [];
+                  if (useAltFilePicker) {
+                    final path = await FilePicker.platform.getDirectoryPath();
+                    if (path != null) selectedDirPaths = [path];
+                  } else {
+                    selectedDirPaths = await getDirectoryPaths(confirmButtonText: appText.add);
+                  }
+
+                  if (selectedDirPaths.isNotEmpty) {
+                    for (var path in selectedDirPaths) {
+                      curModAddDragDropStatus.value = ModAddDragDropState.waitingForFiles;
+                      modAddDragDropPaths.add(path!);
+                      curModAddDragDropStatus.value = ModAddDragDropState.fileInList;
+                    }
+                  }
+                },
+                child: Text(appText.addFolders, textAlign: TextAlign.center),
+              ),
+            ),
+
+            // Ignore list
+            ElevatedButton.icon(
+              onPressed: () async {
+                await modAddFilterPopup(context);
+                if (mounted) setState(() {});
+              },
+              icon: enableModAddFilters ? const Icon(Icons.check) : null,
+              iconAlignment: IconAlignment.end,
+              label: Text(appText.filters, textAlign: TextAlign.center),
+            ),
+          ],
+        ),
+        // Process files
+        Row(
+          spacing: 5,
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  shape: WidgetStatePropertyAll(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      side: BorderSide(width: 1.5, color: Theme.of(context).colorScheme.primary),
+                    ),
+                  ),
+                ),
+                onPressed: curModAddDragDropStatus.watch(context) == ModAddDragDropState.fileInList && curModAddDragDropStatus.watch(context) != ModAddDragDropState.unpackingFiles
+                    ? () async {
+                        curModAddDragDropStatus.value = ModAddDragDropState.unpackingFiles;
+                        curModAddProcessedStatus.value = ModAddProcessedState.loadingData;
+                        modAddDropBoxShow.value = false;
+                        await Future.delayed(Duration(milliseconds: 10));
+                        try {
+                          // ignore: use_build_context_synchronously
+                          await modAddUnpack(context, modAddDragDropPaths.toList());
+                          modAddDragDropPaths.clear();
+                        } catch (e) {
+                          modAddProcessingStatus.value = e.toString();
+                        }
+
+                        List<AddingMod> sortedModAdds = [];
+                        try {
+                          sortedModAdds = await modAddSort();
+                        } catch (e) {
+                          modAddProcessingStatus.value = e.toString();
+                        }
+                        modAddingList.addAll(sortedModAdds.where((e) => modAddingList.indexWhere((i) => i.modDir.path == e.modDir.path) == -1));
+                        modAddingList.sort((a, b) => b.addedDate.compareTo(a.addedDate));
+                        // filter
+                        if (enableModAddFilters) {
+                          for (var filterWord in modAddFilterList) {
+                            for (var mod in modAddingList) {
+                              if (p.basename(mod.modDir.path).split(' ').contains(filterWord)) {
+                                mod.modAddingState = false;
+                              }
+                              for (var submodName in mod.submodNames) {
+                                if (submodName.split(' ').contains(filterWord)) {
+                                  int submodIndex = mod.submodNames.indexOf(submodName);
+                                  mod.submodAddingStates[submodIndex] = false;
+                                }
+                              }
+                            }
+                          }
+                        } else {
+                          for (var mod in modAddingList) {
+                            mod.modAddingState = true;
+                          }
+                        }
+                        curModAddDragDropStatus.value = ModAddDragDropState.waitingForFiles;
+                        if (modAddingList.isNotEmpty) curModAddProcessedStatus.value = ModAddProcessedState.dataInList;
+                        modAddDropBoxShow.value = false;
+                        modAddProcessingStatus.value = '';
+                      }
+                    : null,
+                child: Text(appText.process, textAlign: TextAlign.center),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class ModAddProcessedButtons extends StatefulWidget {
+  const ModAddProcessedButtons({super.key, required this.showReturnButton});
+
+  final bool showReturnButton;
+
+  @override
+  State<ModAddProcessedButtons> createState() => _ModAddProcessedButtonsState();
+}
+
+class _ModAddProcessedButtonsState extends State<ModAddProcessedButtons> {
+  List<ModSet> modSetsToAdd = [];
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      spacing: 5,
+      children: [
+        Expanded(
+          child: ElevatedButton.icon(
+            onPressed: curModAddProcessedStatus.watch(context) == ModAddProcessedState.dataInList
+                ? () async {
+                    if (Directory(modAddTempDirPath).existsSync()) {
+                      await Directory(modAddTempDirPath).delete(recursive: true);
+                    }
+                    modAddingList.clear();
+                    modSetsToAdd.clear();
+                    curModAddProcessedStatus.value = ModAddProcessedState.waiting;
+                  }
+                : null,
+            label: Text(appText.clearAll),
+          ),
+        ),
+        Expanded(
+          child: ElevatedButton.icon(
+            onPressed: curModAddProcessedStatus.watch(context) == ModAddProcessedState.dataInList
+                ? () async {
+                    modSetsToAdd = await modAddToSetPopup(context, modSetsToAdd);
+                    setState(() {});
+                  }
+                : null,
+            icon: modSetsToAdd.isNotEmpty ? Icon(Icons.check, color: Theme.of(context).colorScheme.primary) : null,
+            iconAlignment: IconAlignment.end,
+            label: Text(appText.addToSet),
+          ),
+        ),
+        Expanded(
+          flex: 2,
+          child: ElevatedButton(
+            style: ButtonStyle(
+              shape: WidgetStatePropertyAll(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  side: BorderSide(width: 1.5, color: Theme.of(context).colorScheme.primary),
+                ),
+              ),
+            ),
+            onPressed: curModAddProcessedStatus.watch(context) == ModAddProcessedState.dataInList
+                ? () async {
+                    curModAddProcessedStatus.value = ModAddProcessedState.addingToMasterList;
+                    Future.delayed(const Duration(milliseconds: 100));
+                    await modAddToMasterList(modSetsToAdd.isEmpty ? false : true, modSetsToAdd);
+                    modAddingList.isNotEmpty ? curModAddProcessedStatus.value = ModAddProcessedState.dataInList : curModAddProcessedStatus.value = ModAddProcessedState.waiting;
+                    modSetsToAdd.clear();
+                    modAddProcessingStatus.value = '';
+                    mainGridStatus.value = '[${DateTime.now()}] Mod(s) Added';
+                  }
+                : null,
+            child: Text(appText.add, textAlign: TextAlign.center),
+          ),
+        ),
+        if (widget.showReturnButton)
+          OutlinedButton(
+            onPressed: () async {
+              if (Directory(modAddTempDirPath).existsSync()) {
+                await Directory(modAddTempDirPath).delete(recursive: true);
+              }
+              modAddingList.clear();
+              modSetsToAdd.clear();
+              curModAddProcessedStatus.value = ModAddProcessedState.waiting;
+              // ignore: use_build_context_synchronously
+              Navigator.of(context).pop();
+            },
+            child: Text(appText.returns, textAlign: TextAlign.center),
+          ),
+      ],
+    );
+  }
+}

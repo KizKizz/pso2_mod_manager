@@ -1,0 +1,186 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:pso2_mod_manager/app_paths/sega_file_paths.dart';
+import 'package:pso2_mod_manager/cml/cml_class.dart';
+import 'package:pso2_mod_manager/line_strike/line_strike_image_crop_popup.dart';
+import 'package:pso2_mod_manager/mod_data/item_class.dart';
+import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/v3_functions/pso2_version_check.dart';
+import 'package:pso2_mod_manager/item_aqm_inject/aqm_injected_item_class.dart';
+import 'package:pso2_mod_manager/line_strike/line_strike_board_class.dart';
+import 'package:pso2_mod_manager/line_strike/line_strike_card_class.dart';
+import 'package:pso2_mod_manager/line_strike/line_strike_sleeve_class.dart';
+import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
+import 'package:pso2_mod_manager/mod_data/category_type_class.dart';
+import 'package:pso2_mod_manager/mod_sets/mod_set_class.dart';
+import 'package:pso2_mod_manager/vital_gauge/vital_gauge_class.dart';
+import 'package:signals/signals_flutter.dart';
+
+List<String> defaultCategoryTypes = ['Cast Parts', 'Layering Wears', 'Others'];
+List<String> defaultCategoryDirs = [
+  'Accessories', //0
+  'Basewears', //1
+  'Body Paints', //2
+  'Cast Arm Parts', //3
+  'Cast Body Parts', //4
+  'Cast Leg Parts', //5
+  'Costumes', //6
+  'Emotes', //7
+  'Eyes', //8
+  'Face Paints', //9
+  'Hairs', //10
+  'Innerwears', //11
+  'Mags', //12
+  'Misc', //13
+  'Motions', //14
+  'Outerwears', //15
+  'Setwears', //16
+  'Weapons' //17
+];
+List<String> applyHQFilesCategoryDirs = [
+  'Accessories', //0
+  'Basewears', //1
+  'Body Paints', //2
+  'Cast Arm Parts', //3
+  'Cast Body Parts', //4
+  'Cast Leg Parts', //5
+  'Costumes', //6
+  'Eyes', //8
+  'Face Paints', //9
+  'Hairs', //10
+  'Innerwears', //11
+  'Misc', //13
+  'Outerwears', //15
+  'Setwears', //16
+];
+List<String> qualityFilterCategoryDirs = [
+  'Accessories', //0
+  'Basewears', //1
+  'Body Paints', //2
+  'Cast Arm Parts', //3
+  'Cast Body Parts', //4
+  'Cast Leg Parts', //5
+  'Costumes', //6
+  'Eyes', //8
+  'Face Paints', //9
+  'Hairs', //10
+  'Innerwears', //11
+  'Outerwears', //15
+  'Setwears', //16
+];
+List<String> boundingRadiusCategoryDirs = [
+  'Basewears', //1
+  'Body Paints', //2
+  'Cast Arm Parts', //3
+  'Cast Body Parts', //4
+  'Cast Leg Parts', //5
+  'Outerwears', //15
+  'Setwears', //16
+];
+List<String> aqmInjectCategoryDirs = [
+  'Basewears', //1
+  'Cast Arm Parts', //3
+  'Cast Body Parts', //4
+  'Cast Leg Parts', //5
+  'Outerwears', //15
+  'Setwears', //16
+];
+List<String> markIconCategoryDirs = [
+  'Accessories', //0
+  'Basewears', //1
+  'Body Paints', //2
+  'Cast Arm Parts', //3
+  'Cast Body Parts', //4
+  'Cast Leg Parts', //5
+  'Costumes', //6
+  'Eyes', //8
+  'Face Paints', //9
+  'Hairs', //10
+  'Innerwears', //11
+  'Mags', //12
+  'Outerwears', //15
+  'Setwears', //16
+  'Weapons' //17
+];
+final defaultWeaponTypes = [
+  'Swords',
+  'Wired Lances',
+  'Partisans',
+  'Twin Daggers',
+  'Double Sabers',
+  'Knuckles',
+  'Katanas',
+  'Soaring Blades',
+  'Assault Rifles',
+  'Launchers',
+  'Twin Machine Guns',
+  'Bows',
+  'Gunblades',
+  'Rods',
+  'Talises',
+  'Wands',
+  'Jet Boots',
+  'Harmonizers'
+];
+
+final lineStrikeItemTypes = [LineStrikeItemType.cards.value, LineStrikeItemType.boards.value, LineStrikeItemType.sleeves.value];
+final itemTypes = ['Both', 'PSO2', 'NGS'];
+final defaultMotionTypes = ['Glide Motion', 'Jump Motion', 'Landing Motion', 'Dash Motion', 'Run Motion', 'Standby Motion', 'Swim Motion'];
+final modSortingSelections = ['Favorites', 'Has Previews', 'Name (Alphabetical)', 'Recently Added', 'Recently Applied', 'Highest Mod Count', 'Lowest Mod Count'];
+final submodSortingSelections = ['Favorites', 'Has Previews', 'Name (Alphabetical)', 'Recently Added', 'Recently Applied'];
+final win32DirNames = ['win32', 'win32reboot', 'win32_na', 'win32reboot_na'];
+String charToReplace = '[\\/:*?"<>|]';
+String charToReplaceWithoutSeparators = '[:*?"<>|]';
+
+String appTitle = 'PSO2NGS Mod Manager';
+String curAppVersion = '';
+(int, String) remotePlayerDataVersion = (-1, '');
+int localPlayerDataVersion = -1;
+bool offlineMode = false;
+List<CategoryType> masterModList = [];
+List<ModSet> masterModSetList = [];
+TextEditingController searchTextController = TextEditingController();
+Signal<List<File>> backgroundImageFiles = Signal([]);
+List<String> modAddDragDropPaths = [];
+List<ItemData> pItemData = [];
+List<OfficialIceFile> oItemData = [];
+List<OfficialIceFile> oItemDataNA = [];
+String segaMasterServerURL = '';
+String segaMasterServerBackupURL = '';
+String segaPatchServerURL = '';
+String segaPatchServerBackupURL = '';
+Signal<String> modApplyStatus = Signal('');
+Signal<String> modPopupStatus = Signal('');
+List<CategoryType> masterAppliedModList = [];
+List<AqmInjectedItem> masterAqmInjectedItemList = [];
+List<VitalGaugeBackground> masterVitalGaugeBackgroundList = [];
+List<LineStrikeCard> masterLineStrikeCardList = [];
+List<LineStrikeBoard> masterLineStrikeBoardList = [];
+List<LineStrikeSleeve> masterLineStrikeSleeveList = [];
+List<Item> masterUnappliedItemList = [];
+List<AqmInjectedItem> masterUnappliedAQMItemList = [];
+List<Cml> masterCMLItemList = [];
+// List<File> modCustomAQMFiles = [];
+Signal<String> mainGridStatus = Signal('');
+Signal<bool> checksumAvailability = Signal(false);
+List<ItemData> masterQuickSwapItemList = [];
+Signal<PSO2RegionVersion> pso2RegionVersion = Signal(PSO2RegionVersion.unknown);
+List<String> modifiedIceList = [];
+List<String> modAddFilterList = [];
+Signal<bool> appLoadingFinished = Signal(false);
+Signal<int> uiDialogBackgroundColorAlpha = Signal(uiBackgroundColorAlpha.value + 50 <= 255 ? uiBackgroundColorAlpha.value + 50 : uiBackgroundColorAlpha.value);
+Signal<int> uiTooltipBackgroundColorAlpha = Signal(uiBackgroundColorAlpha.value + 50 <= 255 ? uiBackgroundColorAlpha.value + 50 : uiBackgroundColorAlpha.value);
+Signal<bool> showMessageOnInactiveOverlay = Signal(false);
+Signal<bool> saveRestoreAppliedModsActive = Signal(false);
+Signal<String> selectedAqmInjectCategory = Signal<String>(aqmInjectCategoryDirs[0]);
+Signal<String> selectedQuickSwapTypeCategory = Signal<String>('Both');
+Signal<String> selectedDisplayItemSwapCategory = Signal<String>('Accessories');
+Signal<String> selectedModSwapAllMotionType = Signal<String>('All');
+Signal<String> selectedItemSwapMotionType = Signal<String>('All');
+Signal<String> selectedModSwapAllTypeCategory = Signal<String>('Both');
+Signal<String> selectedItemSwapTypeCategory = Signal<String>('Both');
+Signal<String> selectedWeaponType = Signal<String>('All');
+Signal<String> selectedLineStrikeType = Signal<String>(LineStrikeItemType.cards.value);
+TextEditingController modViewListV2SearchTextController = TextEditingController();
+TextEditingController submodViewPopupSearchTextController = TextEditingController();

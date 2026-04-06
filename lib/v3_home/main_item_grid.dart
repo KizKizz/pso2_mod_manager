@@ -1,0 +1,342 @@
+import 'package:flutter/material.dart';
+import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/main_widgets/item_icon_box.dart';
+import 'package:pso2_mod_manager/mod_data/category_class.dart';
+import 'package:pso2_mod_manager/mod_data/item_class.dart';
+import 'package:pso2_mod_manager/mod_data/load_mods.dart';
+import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/main_widgets/cate_item_grid_layout.dart';
+import 'package:pso2_mod_manager/v3_widgets/choice_select_buttons.dart';
+import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
+import 'package:searchfield/searchfield.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:signals/signals_flutter.dart';
+
+class MainItemGrid extends StatefulWidget {
+  const MainItemGrid({super.key});
+
+  @override
+  State<MainItemGrid> createState() => _MainItemGridState();
+}
+
+class _MainItemGridState extends State<MainItemGrid> {
+  double fadeInOpacity = 0;
+  ScrollController controller = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 50), () {
+      fadeInOpacity = 1;
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Refresh
+    if (selectedDisplaySort.watch(context) != selectedDisplaySort.peek() || mainGridStatus.watch(context) != mainGridStatus.peek()) {
+      setState(
+        () {},
+      );
+    }
+
+    // Suggestions
+    List<Item> filteredItems = [];
+    if (searchTextController.value.text.isEmpty) {
+      for (var cateType in masterModList) {
+        for (var cate in cateType.categories.where((e) => selectedDisplayCategories.value.contains(e.categoryName) || selectedDisplayCategories.value.contains('All'))) {
+          filteredItems.addAll(cate.items);
+        }
+      }
+    } else {
+      for (var cateType in masterModList) {
+        for (var cate in cateType.categories.where((e) => selectedDisplayCategories.value.contains(e.categoryName) || selectedDisplayCategories.value.contains('All'))) {
+          filteredItems.addAll(cate.items.where((e) => e.itemName.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
+        }
+      }
+    }
+    filteredItems.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
+
+    // Filter
+    List<Category> categories = [];
+    if (searchTextController.value.text.isNotEmpty) {
+      for (var type in masterModList) {
+        for (var category in type.categories) {
+          if (category.getDistinctNames().where((e) => e.toLowerCase().contains(searchTextController.text.toLowerCase())).isNotEmpty) {
+            categories.add(category);
+          }
+        }
+      }
+    } else {
+      for (var type in masterModList) {
+        hideEmptyCategories ? categories.addAll(type.categories.where((e) => e.items.isNotEmpty)) : categories.addAll(type.categories);
+      }
+    }
+
+    List<Category> displayingCategories = [];
+    if (selectedDisplayCategories.watch(context).contains('All')) {
+      displayingCategories = categories;
+    } else {
+      displayingCategories = categories.where((e) => selectedDisplayCategories.watch(context).contains(e.categoryName)).toList();
+    }
+
+    // Sort
+    for (var category in displayingCategories) {
+      if (selectedDisplaySort.value == modSortingSelections[0]) {
+        category.items.sort((a, b) => a.favoriteSort().compareTo(b.favoriteSort()) == 0
+            ? a.favoriteSort().compareTo(b.favoriteSort()) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
+            : a.favoriteSort().compareTo(b.favoriteSort()));
+      } else if (selectedDisplaySort.value == modSortingSelections[1]) {
+        category.items.sort((a, b) => a.hasPreviewsSort().compareTo(b.hasPreviewsSort()) == 0
+            ? a.hasPreviewsSort().compareTo(b.hasPreviewsSort()) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
+            : a.hasPreviewsSort().compareTo(b.hasPreviewsSort()));
+      } else if (selectedDisplaySort.value == modSortingSelections[2]) {
+        category.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
+      } else if (selectedDisplaySort.value == modSortingSelections[3]) {
+        category.items.sort((a, b) => b.creationDate!.compareTo(a.creationDate!) == 0
+            ? b.creationDate!.compareTo(a.creationDate!) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
+            : b.creationDate!.compareTo(a.creationDate!));
+      } else if (selectedDisplaySort.value == modSortingSelections[4]) {
+        category.items.sort(
+            (a, b) => b.applyDate.compareTo(a.applyDate) == 0 ? b.applyDate.compareTo(a.applyDate) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()) : b.applyDate.compareTo(a.applyDate));
+      } else if (selectedDisplaySort.value == modSortingSelections[5]) {
+        category.items.sort((a, b) => b.mods.length.compareTo(a.mods.length) == 0
+            ? b.mods.length.compareTo(a.mods.length) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
+            : b.mods.length.compareTo(a.mods.length));
+      } else if (selectedDisplaySort.value == modSortingSelections[6]) {
+        category.items.sort((a, b) => a.mods.length.compareTo(b.mods.length) == 0
+            ? a.mods.length.compareTo(b.mods.length) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
+            : a.mods.length.compareTo(b.mods.length));
+      }
+    }
+
+    return AnimatedOpacity(
+      opacity: fadeInOpacity,
+      duration: const Duration(milliseconds: 100),
+      child: Column(
+        spacing: 5,
+        children: [
+          Row(
+            spacing: 5,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 4,
+                child: SizedBox(
+                  height: 30,
+                  child: Stack(alignment: AlignmentDirectional.centerEnd, children: [
+                    SearchField<Item>(
+                      itemHeight: 90,
+                      searchInputDecoration: SearchInputDecoration(
+                          filled: true,
+                          fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                          isDense: true,
+                          contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
+                          cursorHeight: 15,
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
+                          cursorColor: Theme.of(context).colorScheme.inverseSurface,
+                          hintText: appText.search),
+                      suggestions: filteredItems
+                          .map(
+                            (e) => SearchFieldListItem<Item>(
+                              e.itemName,
+                              item: e,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 5),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  spacing: 5,
+                                  children: [
+                                    SizedBox(
+                                        width: 75,
+                                        height: 75,
+                                        child: ItemIconBox(
+                                          item: e,
+                                          showSubCategory: true,
+                                        )),
+                                    Column(
+                                      spacing: 5,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(e.itemName.replaceFirst('_', '/').trim(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                                        Row(
+                                          spacing: 5,
+                                          children: [
+                                            InfoBox(
+                                              info: appText.dText(e.mods.length > 1 ? appText.numMods : appText.numMod, e.mods.length.toString()),
+                                              borderHighlight: false,
+                                            ),
+                                            InfoBox(
+                                              info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedMods().toString()),
+                                              borderHighlight: e.applyStatus,
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                      controller: searchTextController,
+                      onSuggestionTap: (p0) {
+                        searchTextController.text = p0.searchKey;
+                        setState(() {});
+                      },
+                      onSearchTextChanged: (p0) {
+                        setState(() {});
+                        return filteredItems
+                            .map(
+                              (e) => SearchFieldListItem<Item>(
+                                e.itemName,
+                                item: e,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    spacing: 5,
+                                    children: [
+                                      SizedBox(
+                                          width: 75,
+                                          height: 75,
+                                          child: ItemIconBox(
+                                            item: e,
+                                            showSubCategory: true,
+                                          )),
+                                      Column(
+                                        spacing: 5,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(e.itemName.replaceFirst('_', '/').trim(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                                          Row(
+                                            spacing: 5,
+                                            children: [
+                                              InfoBox(
+                                                info: appText.dText(e.mods.length > 1 ? appText.numMods : appText.numMod, e.mods.length.toString()),
+                                                borderHighlight: false,
+                                              ),
+                                              InfoBox(
+                                                info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedMods().toString()),
+                                                borderHighlight: e.applyStatus,
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                            .toList();
+                      },
+                    ),
+                    Visibility(
+                      visible: searchTextController.value.text.isNotEmpty,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 2),
+                        child: IconButton(
+                            visualDensity: VisualDensity.adaptivePlatformDensity,
+                            onPressed: searchTextController.value.text.isNotEmpty
+                                ? () {
+                                    searchTextController.clear();
+                                    setState(() {});
+                                  }
+                                : null,
+                            icon: const Icon(Icons.close)),
+                      ),
+                    )
+                  ]),
+                ),
+              ),
+              SingleChoiceSelectButton(
+                  width: 250,
+                  height: 30,
+                  label: appText.sort,
+                  selectPopupLabel: appText.sort,
+                  availableItemList: modSortingSelections,
+                  availableItemLabels: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                  selectedItemsLabel: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                  selectedItem: selectedDisplaySort,
+                  extraWidgets: [],
+                  savePref: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    prefs.setString('selectedDisplaySort', selectedDisplaySort.value);
+                    controller.jumpTo(0);
+                  }),
+              MultiChoiceSelectButton(
+                width: 200,
+                height: 30,
+                label: appText.view,
+                selectPopupLabel: appText.view,
+                availableItemList: categories.map((e) => e.categoryName).toList(),
+                availableItemLabels: categories.map((e) => appText.categoryName(e.categoryName)).toList(),
+                selectedItemsLabel: selectedDisplayCategories.value.map((e) => appText.categoryName(e)).toList(),
+                selectedItems: selectedDisplayCategories,
+                extraWidgets: categories
+                    .map((e) => Row(
+                          spacing: 5,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            InfoBox(
+                                info: e.items.length > 1 ? appText.dText(appText.numItems, e.items.length.toString()) : appText.dText(appText.numItem, e.items.length.toString()),
+                                borderHighlight: false),
+                            InfoBox(info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedItems().toString()), borderHighlight: false)
+                          ],
+                        ))
+                    .toList(),
+                savePref: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  prefs.setStringList('selectedDisplayCategories', selectedDisplayCategories.value);
+                },
+              ),
+              SizedBox(
+                height: 30,
+                child: IconButton.outlined(
+                    visualDensity: VisualDensity.adaptivePlatformDensity,
+                    style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+                    onPressed: () async {
+                      if (categories.indexWhere((e) => e.visible) != -1) {
+                        for (var cate in categories) {
+                          cate.visible = false;
+                        }
+                      } else {
+                        for (var cate in categories) {
+                          cate.visible = true;
+                        }
+                      }
+                      setState(() {});
+                      saveMasterModListToJson();
+                    },
+                    icon: Icon(
+                      categories.indexWhere((e) => e.visible) != -1 ? Icons.drag_handle_sharp : Icons.expand_outlined,
+                    )),
+              ),
+            ],
+          ),
+          Expanded(
+              child: CustomScrollView(
+            controller: controller,
+            slivers: displayingCategories
+                .map((e) => CateItemGridLayout(
+                      itemCate: e,
+                      searchString: searchTextController.value.text,
+                      scrollController: controller,
+                    ))
+                .toList(),
+          ))
+        ],
+      ),
+    );
+  }
+}
