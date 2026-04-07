@@ -226,6 +226,18 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                       ),
                     ),
                     // Hide empty cate
+                    SettingsHeader(icon: Icons.swipe_up_sharp, text: appText.hideEmptyCategories),
+                    AnimatedHorizontalToggleLayout(
+                      taps: [appText.on, appText.off],
+                      initialIndex: scrollbarsAlwaysVisible ? 0 : 1,
+                      width: constraints.maxWidth,
+                      onChange: (currentIndex, targetIndex) async {
+                        final prefs = await SharedPreferences.getInstance();
+                        targetIndex == 0 ? scrollbarsAlwaysVisible = true : scrollbarsAlwaysVisible = false;
+                        prefs.setBool('scrollbarsAlwaysVisible', scrollbarsAlwaysVisible);
+                      },
+                    ),
+                    // Hide empty cate
                     SettingsHeader(icon: Icons.hide_source, text: appText.hideEmptyCategories),
                     AnimatedHorizontalToggleLayout(
                       taps: [appText.on, appText.off],
