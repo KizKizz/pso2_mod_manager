@@ -3,10 +3,11 @@ import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:signals/signals_flutter.dart';
 
 class CardOverlay extends StatefulWidget {
-  const CardOverlay({super.key, required this.paddingValue, required this.child});
+  const CardOverlay({super.key, required this.paddingValue, required this.child, this.rightPaddingValue});
 
   final Widget child;
   final double paddingValue;
+  final double? rightPaddingValue;
 
   @override
   State<CardOverlay> createState() => _CardOverlayState();
@@ -27,17 +28,23 @@ class _CardOverlayState extends State<CardOverlay> {
   @override
   Widget build(BuildContext context) {
     return AnimatedOpacity(
-        opacity: fadeInOpacity,
-        duration: const Duration(milliseconds: 100),
-        child: Card(
-          shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
-          color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-          margin: EdgeInsets.zero,
-          elevation: 5,
-          child: Padding(
-            padding: EdgeInsets.all(widget.paddingValue),
-            child: widget.child,
-          ),
-        ));
+      opacity: fadeInOpacity,
+      duration: const Duration(milliseconds: 100),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5),
+          borderRadius: const BorderRadius.all(Radius.circular(5)),
+        ),
+        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+        margin: EdgeInsets.zero,
+        elevation: 5,
+        child: Padding(
+          padding: widget.rightPaddingValue == null
+              ? EdgeInsets.all(widget.paddingValue)
+              : EdgeInsets.only(left: widget.paddingValue, right: widget.rightPaddingValue!, top: widget.paddingValue, bottom: widget.paddingValue),
+          child: widget.child,
+        ),
+      ),
+    );
   }
 }

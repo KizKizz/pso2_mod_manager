@@ -23,10 +23,11 @@ import 'package:io/io.dart' as io;
 
 Future<AddingMod?> variantsEditPopup(context, AddingMod addingMod, int curIndex) async {
   return await showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(builder: (dialogContext, setState) {
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (dialogContext, setState) {
           // if (enableModAddFilters) {
           //   final filteredSubmods = addingMod.submods.where((e) => modAddFilterList.contains(p.basenameWithoutExtension(e.path)));
           //   for (var submod in filteredSubmods) {
@@ -35,17 +36,19 @@ Future<AddingMod?> variantsEditPopup(context, AddingMod addingMod, int curIndex)
           //   }
           // }
           return AlertDialog(
-            shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: const BorderRadius.all(Radius.circular(5))),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: Theme.of(context).colorScheme.outline),
+              borderRadius: const BorderRadius.all(Radius.circular(5)),
+            ),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
             insetPadding: EdgeInsets.zero,
             titlePadding: const EdgeInsets.only(top: 5),
-            title: Column(children: [
-              Text(
-                p.basename(addingMod.modDir.path),
-                style: TextStyle(color: Theme.of(context).colorScheme.primary),
-              ),
-              const HoriDivider()
-            ]),
+            title: Column(
+              children: [
+                Text(p.basename(addingMod.modDir.path), style: TextStyle(color: Theme.of(context).colorScheme.primary)),
+                const HoriDivider(),
+              ],
+            ),
             contentPadding: const EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 10),
             content: SizedBox(
               width: MediaQuery.of(context).size.width,
@@ -69,107 +72,142 @@ Future<AddingMod?> variantsEditPopup(context, AddingMod addingMod, int curIndex)
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
-                                    onPressed: () => setState(() {
-                                          addingMod.aItemAddingStates[0] ? addingMod.aItemAddingStates[0] = false : addingMod.aItemAddingStates[0] = true;
-                                        }),
-                                    icon: Icon(addingMod.aItemAddingStates[0] ? Icons.check_box_outlined : Icons.check_box_outline_blank,
-                                        color: addingMod.aItemAddingStates[0] ? Colors.green : Colors.red),
-                                    visualDensity: VisualDensity.adaptivePlatformDensity),
+                                  onPressed: () => setState(() {
+                                    addingMod.aItemAddingStates[0] ? addingMod.aItemAddingStates[0] = false : addingMod.aItemAddingStates[0] = true;
+                                  }),
+                                  icon: Icon(
+                                    addingMod.aItemAddingStates[0] ? Icons.check_box_outlined : Icons.check_box_outline_blank,
+                                    color: addingMod.aItemAddingStates[0] ? Colors.green : Colors.red,
+                                  ),
+                                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                                ),
                                 Visibility(
                                   visible: addingMod.associatedItems[0].category == 'Misc',
                                   child: IconButton(
-                                      onPressed: () async {
-                                        final newName = await renamePopup(context, '$mainModDirPath${p.separator}Misc', addingMod.associatedItems[0].getName());
-                                        if (newName != null) {
-                                          addingMod.associatedItems[0] =
-                                              ItemData('', '', '', ['Misc'], 'Misc', '', 13, '', Map.fromEntries([MapEntry('Japanese Name', newName), MapEntry('English Name', newName)]));
-                                          setState(() {});
-                                        }
-                                      },
-                                      icon: const Icon(Icons.edit),
-                                      visualDensity: VisualDensity.adaptivePlatformDensity),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                  const VertDivider(),
-                  Expanded(
-                      child: ResponsiveGridList(minItemWidth: 300, verticalGridMargin: 0, horizontalGridSpacing: 5, verticalGridSpacing: 5, children: [
-                    for (int i = 0; i < addingMod.submods.length; i++)
-                      CardOverlay(
-                        paddingValue: 5,
-                        child: Column(
-                          spacing: 5,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            SubmodPreviewBox(
-                                imageFilePaths: addingMod.submods[i]
-                                    .listSync(recursive: addingMod.submods[i] != addingMod.modDir)
-                                    .whereType<File>()
-                                    .where((e) => p.extension(e.path) == '.png' || p.extension(e.path) == '.jpg')
-                                    .map((e) => e.path)
-                                    .toList(),
-                                videoFilePaths: addingMod.submods[i]
-                                    .listSync(recursive: addingMod.submods[i] != addingMod.modDir)
-                                    .whereType<File>()
-                                    .where((e) => p.extension(e.path) == '.mp4' || p.extension(e.path) == '.webm')
-                                    .map((e) => e.path)
-                                    .toList(),
-                                isNew: false),
-                            Text(addingMod.submodNames[i], textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
-                            Row(
-                              spacing: 5,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Expanded(
-                                  child: ModManTooltip(
-                                    message: addingMod.submods[i].listSync().whereType<File>().where((e) => p.extension(e.path) == '').map((e) => p.basename(e.path)).join('\n'),
-                                    child: InfoBox(
-                                      info: appText.dText(
-                                          addingMod.submods[i].listSync().whereType<File>().where((e) => p.extension(e.path) == '').length > 1 ? appText.numFiles : appText.numFile,
-                                          addingMod.submods[i]
-                                              .listSync(recursive: addingMod.submods.indexWhere((e) => e.parent == addingMod.submods[i]) != -1)
-                                              .whereType<File>()
-                                              .where((e) => p.extension(e.path) == '')
-                                              .length
-                                              .toString()),
-                                      borderHighlight: false,
-                                    ),
+                                    onPressed: () async {
+                                      final newName = await renamePopup(context, '$mainModDirPath${p.separator}Misc', addingMod.associatedItems[0].getName());
+                                      if (newName != null) {
+                                        addingMod.associatedItems[0] = ItemData(
+                                          '',
+                                          '',
+                                          '',
+                                          ['Misc'],
+                                          'Misc',
+                                          '',
+                                          13,
+                                          '',
+                                          Map.fromEntries([MapEntry('Japanese Name', newName), MapEntry('English Name', newName)]),
+                                        );
+                                        setState(() {});
+                                      }
+                                    },
+                                    icon: const Icon(Icons.edit),
+                                    visualDensity: VisualDensity.adaptivePlatformDensity,
                                   ),
                                 ),
-                                IconButton(
-                                    onPressed: addingMod.submods[i] != addingMod.modDir
-                                        ? () async {
-                                            final newName = await renamePopup(context, p.dirname(addingMod.submods[i].path), p.basename(addingMod.submods[i].path));
-                                            if (newName != null) {
-                                              String newPath = p.dirname(addingMod.submods[i].path) + p.separator + newName;
-                                              await io.copyPath(addingMod.submods[i].path, newPath);
-                                              await addingMod.submods[i].delete(recursive: true);
-                                              addingMod = await modAddRenameRefresh(addingMod.modDir, addingMod);
-                                              modAddingList[curIndex] = addingMod;
-                                              setState(() {});
-                                            }
-                                          }
-                                        : null,
-                                    icon: const Icon(Icons.edit),
-                                    visualDensity: VisualDensity.adaptivePlatformDensity),
-                                IconButton(
-                                    onPressed: addingMod.submods.length > 1 && addingMod.submodAddingStates.where((e) => e == true).length > 1 || !addingMod.submodAddingStates[i]
-                                        ? () => setState(() => addingMod.submodAddingStates[i] ? addingMod.submodAddingStates[i] = false : addingMod.submodAddingStates[i] = true)
-                                        : null,
-                                    icon: Icon(addingMod.submodAddingStates[i] ? Icons.check_box_outlined : Icons.check_box_outline_blank,
-                                        color: addingMod.submodAddingStates[i] ? Colors.green : Colors.red),
-                                    visualDensity: VisualDensity.adaptivePlatformDensity),
                               ],
                             ),
                           ],
                         ),
-                      )
-                  ]))
+                      ),
+                    ],
+                  ),
+                  const VertDivider(),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                      child: ScrollbarTheme(
+                        data: ScrollbarThemeData(
+                          trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                          thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                        ),
+                        child: ResponsiveGridList(
+                          minItemWidth: 300,
+                          verticalGridMargin: 0,
+                          horizontalGridSpacing: 5,
+                          verticalGridSpacing: 5,
+                          children: [
+                            for (int i = 0; i < addingMod.submods.length; i++)
+                              CardOverlay(
+                                paddingValue: 5,
+                                child: Column(
+                                  spacing: 5,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SubmodPreviewBox(
+                                      imageFilePaths: addingMod.submods[i]
+                                          .listSync(recursive: addingMod.submods[i] != addingMod.modDir)
+                                          .whereType<File>()
+                                          .where((e) => p.extension(e.path) == '.png' || p.extension(e.path) == '.jpg')
+                                          .map((e) => e.path)
+                                          .toList(),
+                                      videoFilePaths: addingMod.submods[i]
+                                          .listSync(recursive: addingMod.submods[i] != addingMod.modDir)
+                                          .whereType<File>()
+                                          .where((e) => p.extension(e.path) == '.mp4' || p.extension(e.path) == '.webm')
+                                          .map((e) => e.path)
+                                          .toList(),
+                                      isNew: false,
+                                    ),
+                                    Text(addingMod.submodNames[i], textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
+                                    Row(
+                                      spacing: 5,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Expanded(
+                                          child: ModManTooltip(
+                                            message: addingMod.submods[i].listSync().whereType<File>().where((e) => p.extension(e.path) == '').map((e) => p.basename(e.path)).join('\n'),
+                                            child: InfoBox(
+                                              info: appText.dText(
+                                                addingMod.submods[i].listSync().whereType<File>().where((e) => p.extension(e.path) == '').length > 1 ? appText.numFiles : appText.numFile,
+                                                addingMod.submods[i]
+                                                    .listSync(recursive: addingMod.submods.indexWhere((e) => e.parent == addingMod.submods[i]) != -1)
+                                                    .whereType<File>()
+                                                    .where((e) => p.extension(e.path) == '')
+                                                    .length
+                                                    .toString(),
+                                              ),
+                                              borderHighlight: false,
+                                            ),
+                                          ),
+                                        ),
+                                        IconButton(
+                                          onPressed: addingMod.submods[i] != addingMod.modDir
+                                              ? () async {
+                                                  final newName = await renamePopup(context, p.dirname(addingMod.submods[i].path), p.basename(addingMod.submods[i].path));
+                                                  if (newName != null) {
+                                                    String newPath = p.dirname(addingMod.submods[i].path) + p.separator + newName;
+                                                    await io.copyPath(addingMod.submods[i].path, newPath);
+                                                    await addingMod.submods[i].delete(recursive: true);
+                                                    addingMod = await modAddRenameRefresh(addingMod.modDir, addingMod);
+                                                    modAddingList[curIndex] = addingMod;
+                                                    setState(() {});
+                                                  }
+                                                }
+                                              : null,
+                                          icon: const Icon(Icons.edit),
+                                          visualDensity: VisualDensity.adaptivePlatformDensity,
+                                        ),
+                                        IconButton(
+                                          onPressed: addingMod.submods.length > 1 && addingMod.submodAddingStates.where((e) => e == true).length > 1 || !addingMod.submodAddingStates[i]
+                                              ? () => setState(() => addingMod.submodAddingStates[i] ? addingMod.submodAddingStates[i] = false : addingMod.submodAddingStates[i] = true)
+                                              : null,
+                                          icon: Icon(
+                                            addingMod.submodAddingStates[i] ? Icons.check_box_outlined : Icons.check_box_outline_blank,
+                                            color: addingMod.submodAddingStates[i] ? Colors.green : Colors.red,
+                                          ),
+                                          visualDensity: VisualDensity.adaptivePlatformDensity,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -181,19 +219,22 @@ Future<AddingMod?> variantsEditPopup(context, AddingMod addingMod, int curIndex)
                 overflowSpacing: 5,
                 children: [
                   OutlinedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(addingMod);
-                      },
-                      child: Text(appText.returns)),
+                    onPressed: () {
+                      Navigator.of(context).pop(addingMod);
+                    },
+                    child: Text(appText.returns),
+                  ),
                   // OutlinedButton(
                   //     onPressed: () {
                   //       Navigator.of(context).pop(null);
                   //     },
                   //     child: Text(appText.returns))
                 ],
-              )
+              ),
             ],
           );
-        });
-      });
+        },
+      );
+    },
+  );
 }

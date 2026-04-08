@@ -47,6 +47,7 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
     }
     return LayoutBuilder(
       builder: (context, constraints) {
+        double buttonWidth = scrollbarsAlwaysVisible.watch(context) ? constraints.maxWidth - 15 : constraints.maxWidth;
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,273 +68,294 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
             ),
             const HoriDivider(),
             Expanded(
-              child: SingleChildScrollView(
-                physics: const SuperRangeMaintainingScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 5,
-                  children: [
-                    // Player Item Database
-                    SettingsHeader(icon: Icons.dataset_outlined, text: appText.playerItemDatabase),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15),
-                      child: Text(
-                        appText.dText(appText.latestVersionNumber, '${remotePlayerDataVersion.$1} - ${remotePlayerDataVersion.$2.split(': ').last}'),
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15),
-                      child: Text(appText.dText(appText.localVersionNumber, localPlayerDataVersion.toString()), style: Theme.of(context).textTheme.bodyMedium),
-                    ),
-                    // Profile
-                    SettingsHeader(icon: modManCurActiveProfile == 1 ? Icons.filter_1 : Icons.filter_2, text: appText.profiles),
-                    AnimatedHorizontalToggleLayout(
-                      taps: [appText.profile1, appText.profile2],
-                      initialIndex: modManCurActiveProfile == 1 ? 0 : 1,
-                      width: constraints.maxWidth,
-                      onChange: (currentIndex, targetIndex) async {
-                        final prefs = await SharedPreferences.getInstance();
-                        targetIndex == 0 ? modManCurActiveProfile = 1 : modManCurActiveProfile = 2;
-                        prefs.setInt('modManCurActiveProfile', modManCurActiveProfile);
-                        pso2binDirPath = modManCurActiveProfile == 1 ? prefs.getString('pso2binDirPath') ?? '' : prefs.getString('pso2binDirPath_profile2') ?? '';
-                        reloadButtonVisible = true;
-                        setState(() {});
-                      },
-                    ),
-                    Visibility(
-                      visible: reloadButtonVisible,
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed: () async {
-                            reloadButtonVisible = false;
-                            // pso2RegionVersion.value = await pso2RegionCheck();
-                            pageIndex = 6;
-                            curPage.value = appPages[pageIndex];
-                          },
-                          child: Text(appText.reload),
-                        ),
-                      ),
-                    ),
-                    // Language
-                    SettingsHeader(icon: Icons.language, text: appText.uiLanguage),
-                    AnimatedHorizontalToggleLayout(
-                      taps: appLocales.map((e) => e.language).toList(),
-                      initialIndex: appLocales.indexWhere((e) => e.isActive),
-                      width: constraints.maxWidth,
-                      onChange: (currentIndex, targetIndex) async {
-                        for (var e in appLocales) {
-                          e.isActive = false;
-                        }
-                        appLocales[targetIndex].isActive = true;
-                        appLocales[targetIndex].saveSettings(appLocales);
-                        appText = AppText.fromJson(jsonDecode(File(appLocales[targetIndex].translationFilePath).readAsStringSync()));
-                        final prefs = await SharedPreferences.getInstance();
-                        activeUILanguage = appLocales[targetIndex].language;
-                        prefs.setString('activeUILanguage', activeUILanguage);
-                        settingChangeStatus.value = 'Changed UI langage to ${appLocales[targetIndex].language}';
-                      },
-                    ),
-                    // Item name language
-                    SettingsHeader(icon: Icons.language, text: appText.itemNameLanguage),
-                    AnimatedHorizontalToggleLayout(
-                      taps: const ['EN', 'JP'],
-                      initialIndex: itemNameLanguage == ItemNameLanguage.en ? 0 : 1,
-                      width: constraints.maxWidth,
-                      onChange: (currentIndex, targetIndex) async {
-                        final prefs = await SharedPreferences.getInstance();
-                        targetIndex == 0 ? itemNameLanguage = ItemNameLanguage.en : itemNameLanguage = ItemNameLanguage.jp;
-                        prefs.setString('itemNameLanguage', itemNameLanguage.value);
-                      },
-                    ),
-                    // v2 Homepage
-                    SettingsHeader(icon: Icons.view_sidebar, text: appText.homepageStyle),
-                    AnimatedHorizontalToggleLayout(
-                      taps: [appText.legacy, appText.xnew],
-                      initialIndex: v2Homepage.value ? 0 : 1,
-                      width: constraints.maxWidth,
-                      onChange: (currentIndex, targetIndex) async {
-                        final prefs = await SharedPreferences.getInstance();
-                        targetIndex == 0 ? v2Homepage.value = true : v2Homepage.value = false;
-                        prefs.setBool('v2Homepage', v2Homepage.value);
-                      },
-                    ),
-                    // v2 Homepage Applied list hide
-                    Visibility(
-                      visible: v2Homepage.watch(context),
-                      child: SettingsHeader(icon: Icons.highlight_alt_outlined, text: appText.hideAppliedList),
-                    ),
-                    Visibility(
-                      visible: v2Homepage.watch(context),
-                      child: AnimatedHorizontalToggleLayout(
-                        taps: [appText.show, appText.hide],
-                        initialIndex: showAppliedListV2.value ? 0 : 1,
-                        width: constraints.maxWidth,
-                        onChange: (currentIndex, targetIndex) async {
-                          final prefs = await SharedPreferences.getInstance();
-                          targetIndex == 0 ? showAppliedListV2.value = true : showAppliedListV2.value = false;
-                          prefs.setBool('showAppliedListV2', showAppliedListV2.value);
-                        },
-                      ),
-                    ),
-                    // Default Homepage
-                    SettingsHeader(icon: Icons.home, text: appText.defaultHomepage),
-                    AnimatedHorizontalToggleLayout(
-                      taps: [appText.itemList, appText.modList, appText.modSets],
-                      initialIndex: defaultHomepageIndex,
-                      width: constraints.maxWidth,
-                      onChange: (currentIndex, targetIndex) async {
-                        final prefs = await SharedPreferences.getInstance();
-                        defaultHomepageIndex = targetIndex;
-                        prefs.setInt('defaultHomepageIndex', defaultHomepageIndex);
-                      },
-                    ),
-                    // Side menu
-                    SettingsHeader(icon: Icons.view_sidebar, text: appText.sideBar),
-                    AnimatedHorizontalToggleLayout(
-                      taps: [appText.minimal, appText.alwaysExpanded],
-                      initialIndex: sideMenuAlwaysExpanded ? 1 : 0,
-                      width: constraints.maxWidth,
-                      onChange: (currentIndex, targetIndex) async {
-                        final prefs = await SharedPreferences.getInstance();
-                        targetIndex == 1 ? sideMenuAlwaysExpanded = true : sideMenuAlwaysExpanded = false;
-                        sideMenuAlwaysExpanded ? sideBarCollapse.value = false : sideBarCollapse.value = true;
-                        prefs.setBool('sideMenuAlwaysExpanded', sideMenuAlwaysExpanded);
-                      },
-                    ),
-                    // Item icon slides
-                    SettingsHeader(icon: Icons.slow_motion_video, text: appText.itemIconSlides),
-                    AnimatedHorizontalToggleLayout(
-                      taps: [appText.on, appText.off],
-                      initialIndex: itemIconSlides.watch(context) ? 0 : 1,
-                      width: constraints.maxWidth,
-                      onChange: (currentIndex, targetIndex) async {
-                        final prefs = await SharedPreferences.getInstance();
-                        targetIndex == 0 ? itemIconSlides.value = true : itemIconSlides.value = false;
-                        prefs.setBool('itemIconSlides', itemIconSlides.value);
-                      },
-                    ),
-                    // Item Icons Refresh
-                    SettingsHeader(icon: Icons.replay_circle_filled_sharp, text: appText.refreshItemIcon),
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton(
-                        onPressed: () async {
-                          await itemIconsRefreshPopup();
-                        },
-                        child: Text(appText.refresh),
-                      ),
-                    ),
-                    // Hide empty cate
-                    SettingsHeader(icon: Icons.hide_source, text: appText.hideEmptyCategories),
-                    AnimatedHorizontalToggleLayout(
-                      taps: [appText.on, appText.off],
-                      initialIndex: hideEmptyCategories ? 0 : 1,
-                      width: constraints.maxWidth,
-                      onChange: (currentIndex, targetIndex) async {
-                        final prefs = await SharedPreferences.getInstance();
-                        targetIndex == 0 ? hideEmptyCategories = true : hideEmptyCategories = false;
-                        prefs.setBool('hideEmptyCategories', hideEmptyCategories);
-                      },
-                    ),
-                    // Screensaver
-                    SettingsHeader(icon: Icons.photo_size_select_large_rounded, text: appText.hideUIWhenAppUnfocused),
-                    AnimatedHorizontalToggleLayout(
-                      taps: [appText.on, appText.off],
-                      initialIndex: hideUIWhenAppUnfocused ? 0 : 1,
-                      width: constraints.maxWidth,
-                      onChange: (currentIndex, targetIndex) async {
-                        final prefs = await SharedPreferences.getInstance();
-                        targetIndex == 0 ? hideUIWhenAppUnfocused = true : hideUIWhenAppUnfocused = false;
-                        prefs.setBool('hideUIWhenAppUnfocused', hideUIWhenAppUnfocused);
-                      },
-                    ),
-                    Row(
-                      spacing: 2.5,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(width: 5),
-                        Text(appText.startAfter, style: Theme.of(context).textTheme.labelMedium),
-                        Expanded(
-                          child: SliderTheme(
-                            data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.onDrag),
-                            child: Slider(
-                              value: hideUIInitDelaySeconds.toDouble(),
-                              min: 0,
-                              max: 250,
-                              label: appText.dText(appText.intervalNumSecond, hideUIInitDelaySeconds.toString()),
-                              onChanged: (value) async {
-                                final prefs = await SharedPreferences.getInstance();
-                                hideUIInitDelaySeconds = value.toInt();
-                                prefs.setInt('hideUIInitDelaySeconds', hideUIInitDelaySeconds);
-                                setState(() {});
-                              },
-                            ),
-                          ),
-                        ),
-                        InfoBox(info: appText.dText(appText.intervalNumSecond, hideUIInitDelaySeconds.toString()), borderHighlight: false),
-                      ],
-                    ),
-                    // Use alt file picker
-                    SettingsHeader(icon: Icons.file_open, text: appText.useAlternateFilePicker),
-                    AnimatedHorizontalToggleLayout(
-                      taps: [appText.on, appText.off],
-                      initialIndex: useAltFilePicker ? 0 : 1,
-                      width: constraints.maxWidth,
-                      onChange: (currentIndex, targetIndex) async {
-                        final prefs = await SharedPreferences.getInstance();
-                        targetIndex == 0 ? useAltFilePicker = true : useAltFilePicker = false;
-                        prefs.setBool('useAltFilePicker', useAltFilePicker);
-                      },
-                    ),
-                    // Main paths reselect
-                    SettingsHeader(icon: Icons.folder, text: appText.mainPaths),
-                    Column(
+              child: ScrollbarTheme(
+                data: ScrollbarThemeData(
+                  trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                  thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                ),
+                child: SingleChildScrollView(
+                  physics: const SuperRangeMaintainingScrollPhysics(),
+                  child: Padding(
+                    padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 5,
-                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        ModManTooltip(
-                          message: appText.dText(appText.currentPathFolder, pso2binDirPath),
+                        // Player Item Database
+                        SettingsHeader(icon: Icons.dataset_outlined, text: appText.playerItemDatabase),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: Text(
+                            appText.dText(appText.latestVersionNumber, '${remotePlayerDataVersion.$1} - ${remotePlayerDataVersion.$2.split(': ').last}'),
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: Text(appText.dText(appText.localVersionNumber, localPlayerDataVersion.toString()), style: Theme.of(context).textTheme.bodyMedium),
+                        ),
+                        // Profile
+                        SettingsHeader(icon: modManCurActiveProfile == 1 ? Icons.filter_1 : Icons.filter_2, text: appText.profiles),
+                        AnimatedHorizontalToggleLayout(
+                          taps: [appText.profile1, appText.profile2],
+                          initialIndex: modManCurActiveProfile == 1 ? 0 : 1,
+                          width: buttonWidth,
+                          onChange: (currentIndex, targetIndex) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            targetIndex == 0 ? modManCurActiveProfile = 1 : modManCurActiveProfile = 2;
+                            prefs.setInt('modManCurActiveProfile', modManCurActiveProfile);
+                            pso2binDirPath = modManCurActiveProfile == 1 ? prefs.getString('pso2binDirPath') ?? '' : prefs.getString('pso2binDirPath_profile2') ?? '';
+                            reloadButtonVisible = true;
+                            setState(() {});
+                          },
+                        ),
+                        Visibility(
+                          visible: reloadButtonVisible,
                           child: SizedBox(
                             width: double.infinity,
                             child: OutlinedButton(
                               onPressed: () async {
-                                final result = await repathConfirmPopup(context, true, pso2binDirPath);
-                                if (result) {
-                                  final prefs = await SharedPreferences.getInstance();
-                                  pso2binDirPath = '';
-                                  modManCurActiveProfile == 1 ? prefs.setString('pso2binDirPath', pso2binDirPath) : prefs.setString('pso2binDirPath_profile2', pso2binDirPath);
-                                  pageIndex = 6;
-                                  curPage.value = appPages[pageIndex];
-                                }
+                                reloadButtonVisible = false;
+                                // pso2RegionVersion.value = await pso2RegionCheck();
+                                pageIndex = 6;
+                                curPage.value = appPages[pageIndex];
                               },
-                              child: Text(appText.selectPso2BinFolder),
+                              child: Text(appText.reload),
                             ),
                           ),
                         ),
-                        ModManTooltip(
-                          message: appText.dText(appText.currentPathFolder, mainDataDirPath),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: OutlinedButton(
-                              onPressed: () async {
-                                final result = await repathConfirmPopup(context, false, mainDataDirPath);
-                                if (result) {
-                                  final prefs = await SharedPreferences.getInstance();
-                                  mainDataDirPath = '';
-                                  prefs.setString('mainDataDirPath', mainDataDirPath);
-                                  pageIndex = 6;
-                                  curPage.value = appPages[pageIndex];
-                                }
-                              },
-                              child: Text(appText.selectModManagerDataFolder),
-                            ),
+                        // Language
+                        SettingsHeader(icon: Icons.language, text: appText.uiLanguage),
+                        AnimatedHorizontalToggleLayout(
+                          taps: appLocales.map((e) => e.language).toList(),
+                          initialIndex: appLocales.indexWhere((e) => e.isActive),
+                          width: buttonWidth,
+                          onChange: (currentIndex, targetIndex) async {
+                            for (var e in appLocales) {
+                              e.isActive = false;
+                            }
+                            appLocales[targetIndex].isActive = true;
+                            appLocales[targetIndex].saveSettings(appLocales);
+                            appText = AppText.fromJson(jsonDecode(File(appLocales[targetIndex].translationFilePath).readAsStringSync()));
+                            final prefs = await SharedPreferences.getInstance();
+                            activeUILanguage = appLocales[targetIndex].language;
+                            prefs.setString('activeUILanguage', activeUILanguage);
+                            settingChangeStatus.value = 'Changed UI langage to ${appLocales[targetIndex].language}';
+                          },
+                        ),
+                        // Item name language
+                        SettingsHeader(icon: Icons.language, text: appText.itemNameLanguage),
+                        AnimatedHorizontalToggleLayout(
+                          taps: const ['EN', 'JP'],
+                          initialIndex: itemNameLanguage == ItemNameLanguage.en ? 0 : 1,
+                          width: buttonWidth,
+                          onChange: (currentIndex, targetIndex) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            targetIndex == 0 ? itemNameLanguage = ItemNameLanguage.en : itemNameLanguage = ItemNameLanguage.jp;
+                            prefs.setString('itemNameLanguage', itemNameLanguage.value);
+                          },
+                        ),
+                        // v2 Homepage
+                        SettingsHeader(icon: Icons.view_sidebar, text: appText.homepageStyle),
+                        AnimatedHorizontalToggleLayout(
+                          taps: [appText.legacy, appText.xnew],
+                          initialIndex: v2Homepage.value ? 0 : 1,
+                          width: buttonWidth,
+                          onChange: (currentIndex, targetIndex) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            targetIndex == 0 ? v2Homepage.value = true : v2Homepage.value = false;
+                            prefs.setBool('v2Homepage', v2Homepage.value);
+                          },
+                        ),
+                        // v2 Homepage Applied list hide
+                        Visibility(
+                          visible: v2Homepage.watch(context),
+                          child: SettingsHeader(icon: Icons.highlight_alt_outlined, text: appText.hideAppliedList),
+                        ),
+                        Visibility(
+                          visible: v2Homepage.watch(context),
+                          child: AnimatedHorizontalToggleLayout(
+                            taps: [appText.show, appText.hide],
+                            initialIndex: showAppliedListV2.value ? 0 : 1,
+                            width: buttonWidth,
+                            onChange: (currentIndex, targetIndex) async {
+                              final prefs = await SharedPreferences.getInstance();
+                              targetIndex == 0 ? showAppliedListV2.value = true : showAppliedListV2.value = false;
+                              prefs.setBool('showAppliedListV2', showAppliedListV2.value);
+                            },
                           ),
+                        ),
+                        // Default Homepage
+                        SettingsHeader(icon: Icons.home, text: appText.defaultHomepage),
+                        AnimatedHorizontalToggleLayout(
+                          taps: [appText.itemList, appText.modList, appText.modSets],
+                          initialIndex: defaultHomepageIndex,
+                          width: buttonWidth,
+                          onChange: (currentIndex, targetIndex) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            defaultHomepageIndex = targetIndex;
+                            prefs.setInt('defaultHomepageIndex', defaultHomepageIndex);
+                          },
+                        ),
+                        // Side menu
+                        SettingsHeader(icon: Icons.view_sidebar, text: appText.sideBar),
+                        AnimatedHorizontalToggleLayout(
+                          taps: [appText.minimal, appText.alwaysExpanded],
+                          initialIndex: sideMenuAlwaysExpanded ? 1 : 0,
+                          width: buttonWidth,
+                          onChange: (currentIndex, targetIndex) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            targetIndex == 1 ? sideMenuAlwaysExpanded = true : sideMenuAlwaysExpanded = false;
+                            sideMenuAlwaysExpanded ? sideBarCollapse.value = false : sideBarCollapse.value = true;
+                            prefs.setBool('sideMenuAlwaysExpanded', sideMenuAlwaysExpanded);
+                          },
+                        ),
+                        // Item icon slides
+                        SettingsHeader(icon: Icons.slow_motion_video, text: appText.itemIconSlides),
+                        AnimatedHorizontalToggleLayout(
+                          taps: [appText.on, appText.off],
+                          initialIndex: itemIconSlides.watch(context) ? 0 : 1,
+                          width: buttonWidth,
+                          onChange: (currentIndex, targetIndex) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            targetIndex == 0 ? itemIconSlides.value = true : itemIconSlides.value = false;
+                            prefs.setBool('itemIconSlides', itemIconSlides.value);
+                          },
+                        ),
+                        // Item Icons Refresh
+                        SettingsHeader(icon: Icons.replay_circle_filled_sharp, text: appText.refreshItemIcon),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton(
+                            onPressed: () async {
+                              await itemIconsRefreshPopup();
+                            },
+                            child: Text(appText.refresh),
+                          ),
+                        ),
+                        // Scrollbars always visible
+                        SettingsHeader(icon: Icons.swipe_up_sharp, text: appText.scrollbarsAlwaysVisible),
+                        AnimatedHorizontalToggleLayout(
+                          taps: [appText.on, appText.off],
+                          initialIndex: scrollbarsAlwaysVisible.value ? 0 : 1,
+                          width: buttonWidth,
+                          onChange: (currentIndex, targetIndex) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            targetIndex == 0 ? scrollbarsAlwaysVisible.value = true : scrollbarsAlwaysVisible.value = false;
+                            prefs.setBool('scrollbarsAlwaysVisible', scrollbarsAlwaysVisible.value);
+                          },
+                        ),
+                        // Hide empty cate
+                        SettingsHeader(icon: Icons.hide_source, text: appText.hideEmptyCategories),
+                        AnimatedHorizontalToggleLayout(
+                          taps: [appText.on, appText.off],
+                          initialIndex: hideEmptyCategories ? 0 : 1,
+                          width: buttonWidth,
+                          onChange: (currentIndex, targetIndex) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            targetIndex == 0 ? hideEmptyCategories = true : hideEmptyCategories = false;
+                            prefs.setBool('hideEmptyCategories', hideEmptyCategories);
+                          },
+                        ),
+                        // Screensaver
+                        SettingsHeader(icon: Icons.photo_size_select_large_rounded, text: appText.hideUIWhenAppUnfocused),
+                        AnimatedHorizontalToggleLayout(
+                          taps: [appText.on, appText.off],
+                          initialIndex: hideUIWhenAppUnfocused ? 0 : 1,
+                          width: buttonWidth,
+                          onChange: (currentIndex, targetIndex) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            targetIndex == 0 ? hideUIWhenAppUnfocused = true : hideUIWhenAppUnfocused = false;
+                            prefs.setBool('hideUIWhenAppUnfocused', hideUIWhenAppUnfocused);
+                          },
+                        ),
+                        Row(
+                          spacing: 2.5,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(width: 5),
+                            Text(appText.startAfter, style: Theme.of(context).textTheme.labelMedium),
+                            Expanded(
+                              child: SliderTheme(
+                                data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.onDrag),
+                                child: Slider(
+                                  value: hideUIInitDelaySeconds.toDouble(),
+                                  min: 0,
+                                  max: 250,
+                                  label: appText.dText(appText.intervalNumSecond, hideUIInitDelaySeconds.toString()),
+                                  onChanged: (value) async {
+                                    final prefs = await SharedPreferences.getInstance();
+                                    hideUIInitDelaySeconds = value.toInt();
+                                    prefs.setInt('hideUIInitDelaySeconds', hideUIInitDelaySeconds);
+                                    setState(() {});
+                                  },
+                                ),
+                              ),
+                            ),
+                            InfoBox(info: appText.dText(appText.intervalNumSecond, hideUIInitDelaySeconds.toString()), borderHighlight: false),
+                          ],
+                        ),
+                        // Use alt file picker
+                        SettingsHeader(icon: Icons.file_open, text: appText.useAlternateFilePicker),
+                        AnimatedHorizontalToggleLayout(
+                          taps: [appText.on, appText.off],
+                          initialIndex: useAltFilePicker ? 0 : 1,
+                          width: buttonWidth,
+                          onChange: (currentIndex, targetIndex) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            targetIndex == 0 ? useAltFilePicker = true : useAltFilePicker = false;
+                            prefs.setBool('useAltFilePicker', useAltFilePicker);
+                          },
+                        ),
+                        // Main paths reselect
+                        SettingsHeader(icon: Icons.folder, text: appText.mainPaths),
+                        Column(
+                          spacing: 5,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ModManTooltip(
+                              message: appText.dText(appText.currentPathFolder, pso2binDirPath),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: OutlinedButton(
+                                  onPressed: () async {
+                                    final result = await repathConfirmPopup(context, true, pso2binDirPath);
+                                    if (result) {
+                                      final prefs = await SharedPreferences.getInstance();
+                                      pso2binDirPath = '';
+                                      modManCurActiveProfile == 1 ? prefs.setString('pso2binDirPath', pso2binDirPath) : prefs.setString('pso2binDirPath_profile2', pso2binDirPath);
+                                      pageIndex = 6;
+                                      curPage.value = appPages[pageIndex];
+                                    }
+                                  },
+                                  child: Text(appText.selectPso2BinFolder),
+                                ),
+                              ),
+                            ),
+                            ModManTooltip(
+                              message: appText.dText(appText.currentPathFolder, mainDataDirPath),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: OutlinedButton(
+                                  onPressed: () async {
+                                    final result = await repathConfirmPopup(context, false, mainDataDirPath);
+                                    if (result) {
+                                      final prefs = await SharedPreferences.getInstance();
+                                      mainDataDirPath = '';
+                                      prefs.setString('mainDataDirPath', mainDataDirPath);
+                                      pageIndex = 6;
+                                      curPage.value = appPages[pageIndex];
+                                    }
+                                  },
+                                  child: Text(appText.selectModManagerDataFolder),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),

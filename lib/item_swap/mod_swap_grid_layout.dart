@@ -129,55 +129,63 @@ class _ModSwapGridLayoutState extends State<ModSwapGridLayout> {
         Expanded(
           child: CardOverlay(
             paddingValue: 5,
-            child: SuperListView.builder(
-              physics: const SuperRangeMaintainingScrollPhysics(),
-              controller: widget.scrollController,
-              itemCount: displayingItemData.length,
-              itemBuilder: (context, index) {
-                return ListTileTheme(
-                  data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                  child: ListTile(
-                    minTileHeight: 90,
-                    title: Row(
-                      spacing: 5,
-                      children: [
-                        GenericItemIconBox(iconImagePaths: [displayingItemData[index].iconImagePath], boxSize: const Size(80, 80), isNetwork: true),
-                        Column(
-                          spacing: 5,
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(displayingItemData[index].getName(), style: const TextStyle(fontWeight: FontWeight.w500)),
-                            Visibility(
-                              visible:
-                                  !aqmInjectCategoryDirs.contains(displayingItemData[index].category) && displayingItemData[index].subCategory.isNotEmpty ||
-                                  (displayingItemData[index].category == defaultCategoryDirs[0] && displayingItemData[index].accessoryContainsEffects()),
-                              child: InfoBox(
-                                info: displayingItemData[index].category == defaultCategoryDirs[0] && displayingItemData[index].accessoryContainsEffects()
-                                    ? appText.effect
-                                    : displayingItemData[index].category == defaultCategoryDirs[14]
-                                    ? appText.motionTypeName(displayingItemData[index].subCategory)
-                                    : displayingItemData[index].category == defaultCategoryDirs[17]
-                                    ? appText.weaponTypeName(displayingItemData[index].subCategory.split('* ').last)
-                                    : displayingItemData[index].subCategory,
-                                borderHighlight: false,
+            rightPaddingValue: scrollbarsAlwaysVisible.watch(context) ? 0 : null,
+            child: ScrollbarTheme(
+              data: ScrollbarThemeData(
+                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+              ),
+              child: SuperListView.builder(
+                physics: const SuperRangeMaintainingScrollPhysics(),
+                padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                controller: widget.scrollController,
+                itemCount: displayingItemData.length,
+                itemBuilder: (context, index) {
+                  return ListTileTheme(
+                    data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                    child: ListTile(
+                      minTileHeight: 90,
+                      title: Row(
+                        spacing: 5,
+                        children: [
+                          GenericItemIconBox(iconImagePaths: [displayingItemData[index].iconImagePath], boxSize: const Size(80, 80), isNetwork: true),
+                          Column(
+                            spacing: 5,
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(displayingItemData[index].getName(), style: const TextStyle(fontWeight: FontWeight.w500)),
+                              Visibility(
+                                visible:
+                                    !aqmInjectCategoryDirs.contains(displayingItemData[index].category) && displayingItemData[index].subCategory.isNotEmpty ||
+                                    (displayingItemData[index].category == defaultCategoryDirs[0] && displayingItemData[index].accessoryContainsEffects()),
+                                child: InfoBox(
+                                  info: displayingItemData[index].category == defaultCategoryDirs[0] && displayingItemData[index].accessoryContainsEffects()
+                                      ? appText.effect
+                                      : displayingItemData[index].category == defaultCategoryDirs[14]
+                                      ? appText.motionTypeName(displayingItemData[index].subCategory)
+                                      : displayingItemData[index].category == defaultCategoryDirs[17]
+                                      ? appText.weaponTypeName(displayingItemData[index].subCategory.split('* ').last)
+                                      : displayingItemData[index].subCategory,
+                                  borderHighlight: false,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                        ],
+                      ),
+                      subtitle: widget.selectedItemData.watch(context) == displayingItemData[index]
+                          ? Column(spacing: 5, crossAxisAlignment: CrossAxisAlignment.start, children: displayingItemData[index].getModSwapDetails(widget.submod).map((e) => Text(e)).toList())
+                          : null,
+                      selected: widget.selectedItemData.watch(context) == displayingItemData[index],
+                      enabled: widget.emoteSwapQueue.indexWhere((e) => e.$1 == displayingItemData[index]) == -1,
+                      onTap: () {
+                        widget.selectedItemData.value = displayingItemData[index];
+                      },
                     ),
-                    subtitle: widget.selectedItemData.watch(context) == displayingItemData[index]
-                        ? Column(spacing: 5, crossAxisAlignment: CrossAxisAlignment.start, children: displayingItemData[index].getModSwapDetails(widget.submod).map((e) => Text(e)).toList())
-                        : null,
-                    selected: widget.selectedItemData.watch(context) == displayingItemData[index],
-                    enabled: widget.emoteSwapQueue.indexWhere((e) => e.$1 == displayingItemData[index]) == -1,
-                    onTap: () {
-                      widget.selectedItemData.value = displayingItemData[index];
-                    },
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
         ),

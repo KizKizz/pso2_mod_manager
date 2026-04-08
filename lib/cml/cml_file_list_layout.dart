@@ -230,72 +230,84 @@ class _CmlItemListLayoutState extends State<CmlFileListLayout> {
           Expanded(
             child: CardOverlay(
               paddingValue: 5,
-              child: SuperListView.builder(
-                physics: const SuperRangeMaintainingScrollPhysics(),
-                controller: widget.scrollController,
-                itemCount: displayingCmlFiles.length,
-                itemBuilder: (context, index) {
-                  return ListTileTheme(
-                    data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                    child: ListTile(
-                      minTileHeight: 45,
-                      title: Row(
-                        spacing: 5,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Column(
-                            spacing: 5,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [Text(p.basename(displayingCmlFiles[index].path), style: const TextStyle(fontWeight: FontWeight.w500))],
-                          ),
-                        ],
+              rightPaddingValue: scrollbarsAlwaysVisible.watch(context) ? 0 : null,
+              child: ScrollbarTheme(
+                data: ScrollbarThemeData(
+                  trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                  thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                ),
+                child: SuperListView.builder(
+                  physics: const SuperRangeMaintainingScrollPhysics(),
+                  padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                  controller: widget.scrollController,
+                  itemCount: displayingCmlFiles.length,
+                  itemBuilder: (context, index) {
+                    return ListTileTheme(
+                      data: ListTileThemeData(
+                        minVerticalPadding: 0,
+                        contentPadding: EdgeInsets.all(5),
+                        selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
                       ),
-                      trailing: Row(
-                        spacing: 5,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton.outlined(
-                            visualDensity: VisualDensity.adaptivePlatformDensity,
-                            onPressed: () async {
-                              final newName = await renamePopup(context, p.dirname(displayingCmlFiles[index].path), p.basenameWithoutExtension(displayingCmlFiles[index].path));
-                              if (newName != null) {
-                                final oldName = p.basename(displayingCmlFiles[index].path);
-                                final renamedFile = await displayingCmlFiles[index].rename(
-                                  p.dirname(displayingCmlFiles[index].path) + p.separator + newName + p.extension(displayingCmlFiles[index].path),
-                                );
-                                for (var item in masterCMLItemList.where((e) => e.isReplaced)) {
-                                  if (oldName == item.replacedCmlFileName) {
-                                    item.replacedCmlFileName = p.basename(renamedFile.path);
+                      child: ListTile(
+                        minTileHeight: 45,
+                        title: Row(
+                          spacing: 5,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Column(
+                              spacing: 5,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [Text(p.basename(displayingCmlFiles[index].path), style: const TextStyle(fontWeight: FontWeight.w500))],
+                            ),
+                          ],
+                        ),
+                        trailing: Row(
+                          spacing: 5,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton.outlined(
+                              visualDensity: VisualDensity.adaptivePlatformDensity,
+                              onPressed: () async {
+                                final newName = await renamePopup(context, p.dirname(displayingCmlFiles[index].path), p.basenameWithoutExtension(displayingCmlFiles[index].path));
+                                if (newName != null) {
+                                  final oldName = p.basename(displayingCmlFiles[index].path);
+                                  final renamedFile = await displayingCmlFiles[index].rename(
+                                    p.dirname(displayingCmlFiles[index].path) + p.separator + newName + p.extension(displayingCmlFiles[index].path),
+                                  );
+                                  for (var item in masterCMLItemList.where((e) => e.isReplaced)) {
+                                    if (oldName == item.replacedCmlFileName) {
+                                      item.replacedCmlFileName = p.basename(renamedFile.path);
+                                    }
+                                    saveMasterCmlItemListToJson();
                                   }
-                                  saveMasterCmlItemListToJson();
+                                  widget.cmlFileList.value = Directory(modCustomCmlsDirPath).listSync(recursive: true).whereType<File>().where((e) => p.extension(e.path) == '.cml').toList();
+                                  mainGridStatus.value = '$oldName.cml has been renamed to $newName';
                                 }
-                                widget.cmlFileList.value = Directory(modCustomCmlsDirPath).listSync(recursive: true).whereType<File>().where((e) => p.extension(e.path) == '.cml').toList();
-                                mainGridStatus.value = '$oldName.cml has been renamed to $newName';
-                              }
-                            },
-                            icon: Icon(Icons.edit),
-                          ),
-                          IconButton.outlined(
-                            visualDensity: VisualDensity.adaptivePlatformDensity,
-                            onPressed: () async {
-                              final delete = await deleteConfirmPopup(context, p.basename(displayingCmlFiles[index].path));
-                              if (delete) {
-                                await displayingCmlFiles[index].delete();
-                                widget.cmlFileList.value.remove(displayingCmlFiles[index]);
-                                setState(() {});
-                              }
-                            },
-                            icon: Icon(Icons.delete_forever_outlined, color: Colors.redAccent),
-                          ),
-                        ],
+                              },
+                              icon: Icon(Icons.edit),
+                            ),
+                            IconButton.outlined(
+                              visualDensity: VisualDensity.adaptivePlatformDensity,
+                              onPressed: () async {
+                                final delete = await deleteConfirmPopup(context, p.basename(displayingCmlFiles[index].path));
+                                if (delete) {
+                                  await displayingCmlFiles[index].delete();
+                                  widget.cmlFileList.value.remove(displayingCmlFiles[index]);
+                                  setState(() {});
+                                }
+                              },
+                              icon: Icon(Icons.delete_forever_outlined, color: Colors.redAccent),
+                            ),
+                          ],
+                        ),
+                        selected: widget.selectedCmlFile.watch(context) == displayingCmlFiles[index],
+                        onTap: () {
+                          widget.selectedCmlFile.value = displayingCmlFiles[index];
+                        },
                       ),
-                      selected: widget.selectedCmlFile.watch(context) == displayingCmlFiles[index],
-                      onTap: () {
-                        widget.selectedCmlFile.value = displayingCmlFiles[index];
-                      },
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
           ),
@@ -304,44 +316,56 @@ class _CmlItemListLayoutState extends State<CmlFileListLayout> {
           Expanded(
             child: CardOverlay(
               paddingValue: 5,
-              child: SuperListView.builder(
-                physics: const SuperRangeMaintainingScrollPhysics(),
-                controller: widget.scrollController,
-                itemCount: displayingCml.length,
-                itemBuilder: (context, index) {
-                  return ListTileTheme(
-                    data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                    child: ListTile(
-                      minTileHeight: 90,
-                      title: Row(
-                        spacing: 5,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          GenericItemIconBox(iconImagePaths: [displayingCml[index].cloudItemIconPath], boxSize: const Size(80, 80), isNetwork: true),
-                          Column(
-                            spacing: 5,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(displayingCml[index].getName(), style: const TextStyle(fontWeight: FontWeight.w500)),
-                              Text('pl_cp_${displayingCml[index].aId}.cml', style: TextStyle(fontSize: 12)),
-                              Visibility(
-                                visible: displayingCml[index].isReplaced,
-                                child: Text(appText.dText(appText.replacedCMLFile, displayingCml[index].replacedCmlFileName), style: Theme.of(context).textTheme.labelMedium),
-                              ),
-                            ],
-                          ),
-                        ],
+              rightPaddingValue: scrollbarsAlwaysVisible.watch(context) ? 0 : null,
+              child: ScrollbarTheme(
+                data: ScrollbarThemeData(
+                  trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                  thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                ),
+                child: SuperListView.builder(
+                  physics: const SuperRangeMaintainingScrollPhysics(),
+                  padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                  controller: widget.scrollController,
+                  itemCount: displayingCml.length,
+                  itemBuilder: (context, index) {
+                    return ListTileTheme(
+                      data: ListTileThemeData(
+                        minVerticalPadding: 0,
+                        contentPadding: EdgeInsets.all(5),
+                        selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
                       ),
-                      enabled: File('${extractedOriginDir.path}${p.separator}pl_cp_${displayingCml[index].aId}.cml').existsSync(),
-                      selected:
-                          widget.selectedCmlFile.watch(context) != null &&
-                          widget.selectedCmlFile.watch(context)!.path == '${extractedOriginDir.path}${p.separator}pl_cp_${displayingCml[index].aId}.cml',
-                      onTap: () {
-                        widget.selectedCmlFile.value = File('${extractedOriginDir.path}${p.separator}pl_cp_${displayingCml[index].aId}.cml');
-                      },
-                    ),
-                  );
-                },
+                      child: ListTile(
+                        minTileHeight: 90,
+                        title: Row(
+                          spacing: 5,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            GenericItemIconBox(iconImagePaths: [displayingCml[index].cloudItemIconPath], boxSize: const Size(80, 80), isNetwork: true),
+                            Column(
+                              spacing: 5,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(displayingCml[index].getName(), style: const TextStyle(fontWeight: FontWeight.w500)),
+                                Text('pl_cp_${displayingCml[index].aId}.cml', style: TextStyle(fontSize: 12)),
+                                // Visibility(
+                                //   visible: displayingCml[index].isReplaced,
+                                //   child: Text(appText.dText(appText.replacedCMLFile, displayingCml[index].replacedCmlFileName), style: Theme.of(context).textTheme.labelMedium),
+                                // ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        enabled: File('${extractedOriginDir.path}${p.separator}pl_cp_${displayingCml[index].aId}.cml').existsSync(),
+                        selected:
+                            widget.selectedCmlFile.watch(context) != null &&
+                            widget.selectedCmlFile.watch(context)!.path == '${extractedOriginDir.path}${p.separator}pl_cp_${displayingCml[index].aId}.cml',
+                        onTap: () {
+                          widget.selectedCmlFile.value = File('${extractedOriginDir.path}${p.separator}pl_cp_${displayingCml[index].aId}.cml');
+                        },
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           ),

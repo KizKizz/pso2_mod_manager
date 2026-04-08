@@ -63,9 +63,9 @@ Future<bool> cmlFileReplacement(Cml cmlItem, File cmlReplacementFile) async {
     if (await Directory(extractedIcePath).exists()) {
       File cmlFile = File('$extractedIcePath${p.separator}pl_cp_${cmlItem.aId}.cml');
       if (await cmlFile.exists()) await cmlFile.delete();
-      File copiedFile = await cmlReplacementFile.copy(p.dirname(cmlFile.path) + p.separator + p.basename(cmlReplacementFile.path));
-      File renamedFile = await copiedFile.rename(cmlFile.path);
-      if (await renamedFile.exists()) {
+      File copiedFile = await cmlReplacementFile.copy(p.dirname(cmlFile.path) + p.separator + p.basename(cmlFile.path));
+      // File renamedFile = await copiedFile.rename(cmlFile.path);
+      if (await copiedFile.exists()) {
         // pack
         await Process.run('$zamboniExePath -c -pack -outdir "$modCMLReplaceTempDirPath${p.separator}replace"',
             ['$modCMLReplaceTempDirPath${p.separator}replace${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}_ext']);

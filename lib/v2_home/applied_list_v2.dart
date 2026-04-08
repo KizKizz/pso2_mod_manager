@@ -39,9 +39,7 @@ class _AppliedListV2State extends State<AppliedListV2> {
         mainGridStatus.watch(context) != mainGridStatus.peek() ||
         modPopupStatus.watch(context) != modPopupStatus.peek() ||
         selectedDisplaySortAppliedList.watch(context) != selectedDisplaySortAppliedList.peek()) {
-      setState(
-        () {},
-      );
+      setState(() {});
     }
 
     int numOfAppliedMods = 0;
@@ -49,8 +47,9 @@ class _AppliedListV2State extends State<AppliedListV2> {
     List<Item> filteredItems = [];
     if (appliedListSearchTextController.text.isEmpty) {
       for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
-        for (var cate in cateType.categories
-            .where((e) => e.getNumOfAppliedItems() > 0 && (selectedAppliedListDisplayCategories.value.contains(e.categoryName) || selectedAppliedListDisplayCategories.value.contains('All')))) {
+        for (var cate in cateType.categories.where(
+          (e) => e.getNumOfAppliedItems() > 0 && (selectedAppliedListDisplayCategories.value.contains(e.categoryName) || selectedAppliedListDisplayCategories.value.contains('All')),
+        )) {
           for (var item in cate.items.where((e) => e.applyStatus)) {
             filteredItems.add(item);
             numOfAppliedMods += item.getNumOfAppliedMods();
@@ -59,8 +58,9 @@ class _AppliedListV2State extends State<AppliedListV2> {
       }
     } else {
       for (var cateType in masterModList.where((e) => e.getNumOfAppliedCates() > 0)) {
-        for (var cate in cateType.categories
-            .where((e) => e.getNumOfAppliedItems() > 0 && (selectedAppliedListDisplayCategories.value.contains(e.categoryName) || selectedAppliedListDisplayCategories.value.contains('All')))) {
+        for (var cate in cateType.categories.where(
+          (e) => e.getNumOfAppliedItems() > 0 && (selectedAppliedListDisplayCategories.value.contains(e.categoryName) || selectedAppliedListDisplayCategories.value.contains('All')),
+        )) {
           for (var item in cate.items.where((e) => e.applyStatus)) {
             if (item.mods.indexWhere((e) => e.applyStatus && e.itemName.toLowerCase().contains(appliedListSearchTextController.text.toLowerCase())) != -1) filteredItems.add(item);
             numOfAppliedMods += item.getNumOfAppliedMods();
@@ -88,28 +88,41 @@ class _AppliedListV2State extends State<AppliedListV2> {
 
     // Sort
     if (selectedDisplaySortAppliedList.value == modSortingSelections[0]) {
-      filteredItems.sort((a, b) => a.favoriteSort().compareTo(b.favoriteSort()) == 0
-          ? a.favoriteSort().compareTo(b.favoriteSort()) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
-          : a.favoriteSort().compareTo(b.favoriteSort()));
+      filteredItems.sort(
+        (a, b) => a.favoriteSort().compareTo(b.favoriteSort()) == 0
+            ? a.favoriteSort().compareTo(b.favoriteSort()) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
+            : a.favoriteSort().compareTo(b.favoriteSort()),
+      );
     } else if (selectedDisplaySortAppliedList.value == modSortingSelections[1]) {
-      filteredItems.sort((a, b) => a.hasPreviewsSort().compareTo(b.hasPreviewsSort()) == 0
-          ? a.hasPreviewsSort().compareTo(b.hasPreviewsSort()) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
-          : a.hasPreviewsSort().compareTo(b.hasPreviewsSort()));
+      filteredItems.sort(
+        (a, b) => a.hasPreviewsSort().compareTo(b.hasPreviewsSort()) == 0
+            ? a.hasPreviewsSort().compareTo(b.hasPreviewsSort()) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
+            : a.hasPreviewsSort().compareTo(b.hasPreviewsSort()),
+      );
     } else if (selectedDisplaySortAppliedList.value == modSortingSelections[2]) {
       filteredItems.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
     } else if (selectedDisplaySortAppliedList.value == modSortingSelections[3]) {
-      filteredItems.sort((a, b) => b.creationDate!.compareTo(a.creationDate!) == 0
-          ? b.creationDate!.compareTo(a.creationDate!) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
-          : b.creationDate!.compareTo(a.creationDate!));
+      filteredItems.sort(
+        (a, b) => b.creationDate!.compareTo(a.creationDate!) == 0
+            ? b.creationDate!.compareTo(a.creationDate!) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
+            : b.creationDate!.compareTo(a.creationDate!),
+      );
     } else if (selectedDisplaySortAppliedList.value == modSortingSelections[4]) {
       filteredItems.sort(
-          (a, b) => b.applyDate.compareTo(a.applyDate) == 0 ? b.applyDate.compareTo(a.applyDate) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()) : b.applyDate.compareTo(a.applyDate));
+        (a, b) => b.applyDate.compareTo(a.applyDate) == 0 ? b.applyDate.compareTo(a.applyDate) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()) : b.applyDate.compareTo(a.applyDate),
+      );
     } else if (selectedDisplaySortAppliedList.value == modSortingSelections[5]) {
-      filteredItems.sort((a, b) =>
-          b.mods.length.compareTo(a.mods.length) == 0 ? b.mods.length.compareTo(a.mods.length) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()) : b.mods.length.compareTo(a.mods.length));
+      filteredItems.sort(
+        (a, b) => b.mods.length.compareTo(a.mods.length) == 0
+            ? b.mods.length.compareTo(a.mods.length) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
+            : b.mods.length.compareTo(a.mods.length),
+      );
     } else if (selectedDisplaySortAppliedList.value == modSortingSelections[6]) {
-      filteredItems.sort((a, b) =>
-          a.mods.length.compareTo(b.mods.length) == 0 ? a.mods.length.compareTo(b.mods.length) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()) : a.mods.length.compareTo(b.mods.length));
+      filteredItems.sort(
+        (a, b) => a.mods.length.compareTo(b.mods.length) == 0
+            ? a.mods.length.compareTo(b.mods.length) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
+            : a.mods.length.compareTo(b.mods.length),
+      );
     }
 
     return Column(
@@ -118,182 +131,236 @@ class _AppliedListV2State extends State<AppliedListV2> {
         SizedBox(
           height: 136,
           child: Card(
-              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
-              color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-              margin: EdgeInsets.zero,
-              elevation: 5,
-              child: Padding(
-                  padding: const EdgeInsets.only(top: 0, bottom: 5, left: 5, right: 5),
-                  child: Column(
-                    spacing: 5,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5),
+              borderRadius: const BorderRadius.all(Radius.circular(5)),
+            ),
+            color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+            margin: EdgeInsets.zero,
+            elevation: 5,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 0, bottom: 5, left: 5, right: 5),
+              child: Column(
+                spacing: 5,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Name
+                  Expanded(child: Text(appText.appliedList, style: Theme.of(context).textTheme.titleMedium)),
+                  // Cate + Sort
+                  Row(
+                    spacing: 2.5,
                     children: [
-                      // Name
-                      Expanded(
-                        child: Text(
-                          appText.appliedList,
-                          style: Theme.of(context).textTheme.titleMedium,
+                      Flexible(
+                        flex: 4,
+                        fit: FlexFit.tight,
+                        child: MultiChoiceSelectButton(
+                          width: double.infinity,
+                          height: 30,
+                          label: appText.view,
+                          selectPopupLabel: appText.view,
+                          availableItemList: categories.where((e) => e.getNumOfAppliedItems() > 0).map((e) => e.categoryName).toList(),
+                          availableItemLabels: categories.where((e) => e.getNumOfAppliedItems() > 0).map((e) => appText.categoryName(e.categoryName)).toList(),
+                          selectedItemsLabel: categories
+                              .where((e) => e.getNumOfAppliedItems() > 0 && selectedAppliedListDisplayCategories.value.contains(e.categoryName))
+                              .map((e) => appText.categoryName(e.categoryName))
+                              .toList(),
+                          selectedItems: selectedAppliedListDisplayCategories,
+                          extraWidgets: categories
+                              .where((e) => e.getNumOfAppliedItems() > 0)
+                              .map((e) => InfoBox(info: appText.dText(e.getNumOfAppliedItems() > 1 ? appText.numItems : appText.numItem, e.getNumOfAppliedItems().toString()), borderHighlight: false))
+                              .toList(),
+                          savePref: () async {
+                            final prefs = await SharedPreferences.getInstance();
+                            prefs.setStringList('selectedAppliedListDisplayCategories', selectedAppliedListDisplayCategories.value);
+                          },
                         ),
                       ),
-                      // Cate + Sort
-                      Row(
-                        spacing: 2.5,
-                        children: [
-                          Flexible(
-                            flex: 4,
-                            fit: FlexFit.tight,
-                            child: MultiChoiceSelectButton(
-                                width: double.infinity,
-                                height: 30,
-                                label: appText.view,
-                                selectPopupLabel: appText.view,
-                                availableItemList: categories.where((e) => e.getNumOfAppliedItems() > 0).map((e) => e.categoryName).toList(),
-                                availableItemLabels: categories.where((e) => e.getNumOfAppliedItems() > 0).map((e) => appText.categoryName(e.categoryName)).toList(),
-                                selectedItemsLabel: categories
-                                    .where((e) => e.getNumOfAppliedItems() > 0 && selectedAppliedListDisplayCategories.value.contains(e.categoryName))
-                                    .map((e) => appText.categoryName(e.categoryName))
-                                    .toList(),
-                                selectedItems: selectedAppliedListDisplayCategories,
-                                extraWidgets: categories
-                                    .where((e) => e.getNumOfAppliedItems() > 0)
-                                    .map((e) =>
-                                        InfoBox(info: appText.dText(e.getNumOfAppliedItems() > 1 ? appText.numItems : appText.numItem, e.getNumOfAppliedItems().toString()), borderHighlight: false))
-                                    .toList(),
-                                savePref: () async {
-                                  final prefs = await SharedPreferences.getInstance();
-                                  prefs.setStringList('selectedAppliedListDisplayCategories', selectedAppliedListDisplayCategories.value);
-                                }),
-                          ),
-                          Flexible(
-                              flex: 5,
-                              fit: FlexFit.tight,
-                              child: SingleChoiceSelectButton(
-                                  width: double.infinity,
-                                  height: 30,
-                                  label: appText.sort,
-                                  selectPopupLabel: appText.sort,
-                                  availableItemList: modSortingSelections,
-                                  availableItemLabels: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
-                                  selectedItemsLabel: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
-                                  selectedItem: selectedDisplaySortAppliedList,
-                                  extraWidgets: [],
-                                  savePref: () async {
-                                    final prefs = await SharedPreferences.getInstance();
-                                    prefs.setString('selectedDisplaySortAppliedList', selectedDisplaySortAppliedList.value);
-                                    scrollController.jumpTo(0);
-                                  })),
-                        ],
+                      Flexible(
+                        flex: 5,
+                        fit: FlexFit.tight,
+                        child: SingleChoiceSelectButton(
+                          width: double.infinity,
+                          height: 30,
+                          label: appText.sort,
+                          selectPopupLabel: appText.sort,
+                          availableItemList: modSortingSelections,
+                          availableItemLabels: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                          selectedItemsLabel: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                          selectedItem: selectedDisplaySortAppliedList,
+                          extraWidgets: [],
+                          savePref: () async {
+                            final prefs = await SharedPreferences.getInstance();
+                            prefs.setString('selectedDisplaySortAppliedList', selectedDisplaySortAppliedList.value);
+                            scrollController.jumpTo(0);
+                          },
+                        ),
                       ),
-                      // Restore + expanse
-                      Row(
-                        spacing: 2.5,
-                        children: [
-                          Expanded(
-                              flex: 2,
-                              child: SizedBox(
-                                height: 30,
-                                child: OutlinedButton(
-                                    style: ButtonStyle(
-                                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                                        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                                    onPressed: numOfAppliedMods > 0 && !saveRestoreAppliedModsActive.watch(context) ? () {} : null,
-                                    onLongPress: numOfAppliedMods > 0 && !saveRestoreAppliedModsActive.watch(context)
-                                        ? () async {
-                                            List<Item> appliedItems = await appliedModsFetch();
-                                            for (var item in appliedItems) {
-                                              for (var mod in item.mods.where((e) => e.applyStatus)) {
-                                                for (var submod in mod.submods.where((e) => e.applyStatus)) {
-                                                  // ignore: use_build_context_synchronously
-                                                  await modToGameData(context, false, item, mod, submod);
-                                                }
-                                              }
-                                            }
-                                          }
-                                        : null,
-                                    child: AutoSizeText(
-                                      appText.dText(numOfAppliedMods > 1 ? appText.holdToRestoreNumAppliedMods : appText.holdToRestoreNumAppliedMod, numOfAppliedMods.toString()),
-                                      textAlign: TextAlign.center,
-                                    )),
-                              )),
-                          SizedBox(
-                              height: 30,
-                              child: ModManTooltip(
-                                message: appText.addAppliedModsToModSets,
-                                child: IconButton.outlined(
-                                    visualDensity: VisualDensity.adaptivePlatformDensity,
-                                    style: ButtonStyle(
-                                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                                        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                                    onPressed: () async {
-                                      int addedCounter = 0;
-                                      final toAddSets = await modsToSetPopup(context);
-                                      List<Item> appliedItems = await appliedModsFetch();
-                                      for (var item in appliedItems) {
-                                        for (var mod in item.mods.where((e) => e.applyStatus)) {
-                                          for (var submod in mod.submods.where((e) => e.applyStatus)) {
-                                            // ignore: use_build_context_synchronously
-                                            final result = await submodsAddToSet(context, item, mod, submod, toAddSets);
-                                            if (result) addedCounter++;
-                                          }
+                    ],
+                  ),
+                  // Restore + expanse
+                  Row(
+                    spacing: 2.5,
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: SizedBox(
+                          height: 30,
+                          child: OutlinedButton(
+                            style: ButtonStyle(
+                              backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                              side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
+                            ),
+                            onPressed: numOfAppliedMods > 0 && !saveRestoreAppliedModsActive.watch(context) ? () {} : null,
+                            onLongPress: numOfAppliedMods > 0 && !saveRestoreAppliedModsActive.watch(context)
+                                ? () async {
+                                    List<Item> appliedItems = await appliedModsFetch();
+                                    for (var item in appliedItems) {
+                                      for (var mod in item.mods.where((e) => e.applyStatus)) {
+                                        for (var submod in mod.submods.where((e) => e.applyStatus)) {
+                                          // ignore: use_build_context_synchronously
+                                          await modToGameData(context, false, item, mod, submod);
                                         }
                                       }
-                                      if (addedCounter > 0) {
-                                        addToSetSuccessNotification(
-                                            appText.dText(addedCounter > 1 ? appText.numMods : appText.numMod, addedCounter.toString()), toAddSets.map((e) => e.setName).toList().join(', '));
-                                      }
-                                    },
-                                    icon: const Icon(
-                                      Icons.my_library_books_outlined,
-                                    )),
-                              )),
-                          SizedBox(
-                              height: 30,
-                              child: ModManTooltip(
-                                message: appText.shareAppliedMods,
-                                child: IconButton.outlined(
-                                    visualDensity: VisualDensity.adaptivePlatformDensity,
-                                    style: ButtonStyle(
-                                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                                        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                                    onPressed: () => modExportSequence(context, ExportType.applied, null, null, null, null),
-                                    icon: const Icon(
-                                      Icons.ios_share,
-                                    )),
-                              )),
-                          // col-ex
-                          SizedBox(
-                            height: 30,
-                            child: IconButton.outlined(
-                                visualDensity: VisualDensity.adaptivePlatformDensity,
-                                style: ButtonStyle(
-                                    backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                                    side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                                onPressed: () async {
-                                  expandAll ? expandAll = false : expandAll = true;
-                                  setState(() {});
-                                },
-                                icon: Icon(
-                                  expandAll == true ? Icons.drag_handle_sharp : Icons.expand_outlined,
-                                )),
+                                    }
+                                  }
+                                : null,
+                            child: AutoSizeText(
+                              appText.dText(numOfAppliedMods > 1 ? appText.holdToRestoreNumAppliedMods : appText.holdToRestoreNumAppliedMod, numOfAppliedMods.toString()),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                        ],
+                        ),
                       ),
-                      // Search box
                       SizedBox(
                         height: 30,
-                        child: Stack(alignment: AlignmentDirectional.centerEnd, children: [
-                          SearchField<Item>(
-                            itemHeight: 90,
-                            searchInputDecoration: SearchInputDecoration(
-                                filled: true,
-                                fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-                                isDense: true,
-                                contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
-                                cursorHeight: 15,
-                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
-                                cursorColor: Theme.of(context).colorScheme.inverseSurface,
-                                hintText: appText.search),
-                            suggestions: filteredItems
+                        child: ModManTooltip(
+                          message: appText.addAppliedModsToModSets,
+                          child: IconButton.outlined(
+                            visualDensity: VisualDensity.adaptivePlatformDensity,
+                            style: ButtonStyle(
+                              backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                              side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
+                            ),
+                            onPressed: () async {
+                              int addedCounter = 0;
+                              final toAddSets = await modsToSetPopup(context);
+                              List<Item> appliedItems = await appliedModsFetch();
+                              for (var item in appliedItems) {
+                                for (var mod in item.mods.where((e) => e.applyStatus)) {
+                                  for (var submod in mod.submods.where((e) => e.applyStatus)) {
+                                    // ignore: use_build_context_synchronously
+                                    final result = await submodsAddToSet(context, item, mod, submod, toAddSets);
+                                    if (result) addedCounter++;
+                                  }
+                                }
+                              }
+                              if (addedCounter > 0) {
+                                addToSetSuccessNotification(
+                                  appText.dText(addedCounter > 1 ? appText.numMods : appText.numMod, addedCounter.toString()),
+                                  toAddSets.map((e) => e.setName).toList().join(', '),
+                                );
+                              }
+                            },
+                            icon: const Icon(Icons.my_library_books_outlined),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                        child: ModManTooltip(
+                          message: appText.shareAppliedMods,
+                          child: IconButton.outlined(
+                            visualDensity: VisualDensity.adaptivePlatformDensity,
+                            style: ButtonStyle(
+                              backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                              side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
+                            ),
+                            onPressed: () => modExportSequence(context, ExportType.applied, null, null, null, null),
+                            icon: const Icon(Icons.ios_share),
+                          ),
+                        ),
+                      ),
+                      // col-ex
+                      SizedBox(
+                        height: 30,
+                        child: IconButton.outlined(
+                          visualDensity: VisualDensity.adaptivePlatformDensity,
+                          style: ButtonStyle(
+                            backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                            side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
+                          ),
+                          onPressed: () async {
+                            expandAll ? expandAll = false : expandAll = true;
+                            setState(() {});
+                          },
+                          icon: Icon(expandAll == true ? Icons.drag_handle_sharp : Icons.expand_outlined),
+                        ),
+                      ),
+                    ],
+                  ),
+                  // Search box
+                  SizedBox(
+                    height: 30,
+                    child: Stack(
+                      alignment: AlignmentDirectional.centerEnd,
+                      children: [
+                        SearchField<Item>(
+                          itemHeight: 90,
+                          searchInputDecoration: SearchInputDecoration(
+                            filled: true,
+                            fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                            isDense: true,
+                            contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
+                            cursorHeight: 15,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25),
+                              borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface),
+                            ),
+                            cursorColor: Theme.of(context).colorScheme.inverseSurface,
+                            hintText: appText.search,
+                          ),
+                          suggestions: filteredItems
+                              .map(
+                                (e) => SearchFieldListItem<Item>(
+                                  e.itemName,
+                                  item: e,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      spacing: 5,
+                                      children: [
+                                        SizedBox(width: 75, height: 75, child: ItemIconBox(item: e, showSubCategory: true)),
+                                        Column(
+                                          spacing: 5,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(e.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                                            Row(
+                                              spacing: 5,
+                                              children: [
+                                                InfoBox(info: appText.dText(e.mods.length > 1 ? appText.numMods : appText.numMod, e.mods.length.toString()), borderHighlight: false),
+                                                InfoBox(info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedMods().toString()), borderHighlight: e.applyStatus),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                          controller: appliedListSearchTextController,
+                          onSuggestionTap: (p0) {
+                            appliedListSearchTextController.text = p0.searchKey;
+                            setState(() {});
+                          },
+                          onSearchTextChanged: (p0) {
+                            setState(() {});
+                            return filteredItems
                                 .map(
                                   (e) => SearchFieldListItem<Item>(
                                     e.itemName,
@@ -305,13 +372,7 @@ class _AppliedListV2State extends State<AppliedListV2> {
                                         mainAxisSize: MainAxisSize.min,
                                         spacing: 5,
                                         children: [
-                                          SizedBox(
-                                              width: 75,
-                                              height: 75,
-                                              child: ItemIconBox(
-                                                item: e,
-                                                showSubCategory: true,
-                                              )),
+                                          SizedBox(width: 75, height: 75, child: ItemIconBox(item: e, showSubCategory: true)),
                                           Column(
                                             spacing: 5,
                                             mainAxisAlignment: MainAxisAlignment.center,
@@ -321,107 +382,62 @@ class _AppliedListV2State extends State<AppliedListV2> {
                                               Row(
                                                 spacing: 5,
                                                 children: [
-                                                  InfoBox(
-                                                    info: appText.dText(e.mods.length > 1 ? appText.numMods : appText.numMod, e.mods.length.toString()),
-                                                    borderHighlight: false,
-                                                  ),
-                                                  InfoBox(
-                                                    info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedMods().toString()),
-                                                    borderHighlight: e.applyStatus,
-                                                  ),
+                                                  InfoBox(info: appText.dText(e.mods.length > 1 ? appText.numMods : appText.numMod, e.mods.length.toString()), borderHighlight: false),
+                                                  InfoBox(info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedMods().toString()), borderHighlight: e.applyStatus),
                                                 ],
-                                              )
+                                              ),
                                             ],
-                                          )
+                                          ),
                                         ],
                                       ),
                                     ),
                                   ),
                                 )
-                                .toList(),
-                            controller: appliedListSearchTextController,
-                            onSuggestionTap: (p0) {
-                              appliedListSearchTextController.text = p0.searchKey;
-                              setState(() {});
-                            },
-                            onSearchTextChanged: (p0) {
-                              setState(() {});
-                              return filteredItems
-                                  .map(
-                                    (e) => SearchFieldListItem<Item>(
-                                      e.itemName,
-                                      item: e,
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          mainAxisSize: MainAxisSize.min,
-                                          spacing: 5,
-                                          children: [
-                                            SizedBox(
-                                                width: 75,
-                                                height: 75,
-                                                child: ItemIconBox(
-                                                  item: e,
-                                                  showSubCategory: true,
-                                                )),
-                                            Column(
-                                              spacing: 5,
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(e.getDisplayName(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
-                                                Row(
-                                                  spacing: 5,
-                                                  children: [
-                                                    InfoBox(
-                                                      info: appText.dText(e.mods.length > 1 ? appText.numMods : appText.numMod, e.mods.length.toString()),
-                                                      borderHighlight: false,
-                                                    ),
-                                                    InfoBox(
-                                                      info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedMods().toString()),
-                                                      borderHighlight: e.applyStatus,
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                  .toList();
-                            },
-                          ),
-                          Visibility(
-                            visible: appliedListSearchTextController.value.text.isNotEmpty,
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 2),
-                              child: IconButton(
-                                  visualDensity: VisualDensity.adaptivePlatformDensity,
-                                  onPressed: appliedListSearchTextController.value.text.isNotEmpty
-                                      ? () {
-                                          appliedListSearchTextController.clear();
-                                          setState(() {});
-                                        }
-                                      : null,
-                                  icon: const Icon(Icons.close)),
+                                .toList();
+                          },
+                        ),
+                        Visibility(
+                          visible: appliedListSearchTextController.value.text.isNotEmpty,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 2),
+                            child: IconButton(
+                              visualDensity: VisualDensity.adaptivePlatformDensity,
+                              onPressed: appliedListSearchTextController.value.text.isNotEmpty
+                                  ? () {
+                                      appliedListSearchTextController.clear();
+                                      setState(() {});
+                                    }
+                                  : null,
+                              icon: const Icon(Icons.close),
                             ),
-                          )
-                        ]),
-                      ),
-                    ],
-                  ))),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
         // Main list
         Expanded(
-          child: CustomScrollView(
-            controller: scrollController,
-            // physics: const RangeMaintainingScrollPhysics()  ,
-            slivers: filteredItems.map((e) => AppliedModV2Layout(item: e, searchString: appliedListSearchTextController.text, expandAll: expandAll, scrollController: scrollController)).toList(),
+          child: ScrollbarTheme(
+            data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context))),
+            child: CustomScrollView(
+              controller: scrollController,
+              // physics: const RangeMaintainingScrollPhysics()  ,
+              slivers: filteredItems
+                  .map(
+                    (e) => SliverPadding(
+                      padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                      sliver: AppliedModV2Layout(item: e, searchString: appliedListSearchTextController.text, expandAll: expandAll, scrollController: scrollController),
+                    ),
+                  )
+                  .toList(),
+            ),
           ),
-        )
+        ),
       ],
     );
   }

@@ -43,66 +43,74 @@ class _CmlItemListLayoutState extends State<CmlItemListLayout> {
       children: [
         SizedBox(
           height: 30,
-          child: Stack(alignment: AlignmentDirectional.centerEnd, children: [
-            SearchField<Cml>(
-              itemHeight: 90,
-              searchInputDecoration: SearchInputDecoration(
+          child: Stack(
+            alignment: AlignmentDirectional.centerEnd,
+            children: [
+              SearchField<Cml>(
+                itemHeight: 90,
+                searchInputDecoration: SearchInputDecoration(
                   filled: true,
                   fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
                   isDense: true,
                   contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                   cursorHeight: 15,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25),
+                    borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface),
+                  ),
                   cursorColor: Theme.of(context).colorScheme.primary,
-                  hintText: appText.search),
-              suggestions: displayingCml
-                  .map(
-                    (e) => SearchFieldListItem(
-                      e.getName(),
-                      item: e,
-                      child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
-                          child: Row(
-                            spacing: 5,
-                            children: [
-                              GenericItemIconBox(iconImagePaths: [e.cloudItemIconPath], boxSize: const Size(70, 70), isNetwork: true),
-                              Text(e.getName())
-                            ],
-                          )),
-                    ),
-                  )
-                  .toList(),
-              controller: injectedItemSearchTextController,
-              onSuggestionTap: (p0) {
-                injectedItemSearchTextController.text = p0.searchKey;
-                setState(() {});
-              },
-              onSearchTextChanged: (p0) {
-                setState(() {});
-                return displayingCml
+                  hintText: appText.search,
+                ),
+                suggestions: displayingCml
                     .map(
                       (e) => SearchFieldListItem(
                         e.getName(),
                         item: e,
                         child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: Row(
+                            spacing: 5,
+                            children: [
+                              GenericItemIconBox(iconImagePaths: [e.cloudItemIconPath], boxSize: const Size(70, 70), isNetwork: true),
+                              Text(e.getName()),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList(),
+                controller: injectedItemSearchTextController,
+                onSuggestionTap: (p0) {
+                  injectedItemSearchTextController.text = p0.searchKey;
+                  setState(() {});
+                },
+                onSearchTextChanged: (p0) {
+                  setState(() {});
+                  return displayingCml
+                      .map(
+                        (e) => SearchFieldListItem(
+                          e.getName(),
+                          item: e,
+                          child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 5),
                             child: Row(
                               spacing: 5,
                               children: [
                                 GenericItemIconBox(iconImagePaths: [e.cloudItemIconPath], boxSize: const Size(70, 70), isNetwork: true),
-                                Text(e.getName())
+                                Text(e.getName()),
                               ],
-                            )),
-                      ),
-                    )
-                    .toList();
-              },
-            ),
-            Visibility(
-              visible: injectedItemSearchTextController.value.text.isNotEmpty,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 2),
-                child: IconButton(
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList();
+                },
+              ),
+              Visibility(
+                visible: injectedItemSearchTextController.value.text.isNotEmpty,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 2),
+                  child: IconButton(
                     visualDensity: VisualDensity.adaptivePlatformDensity,
                     onPressed: injectedItemSearchTextController.value.text.isNotEmpty
                         ? () {
@@ -110,71 +118,86 @@ class _CmlItemListLayoutState extends State<CmlItemListLayout> {
                             setState(() {});
                           }
                         : null,
-                    icon: const Icon(Icons.close)),
+                    icon: const Icon(Icons.close),
+                  ),
+                ),
               ),
-            )
-          ]),
+            ],
+          ),
         ),
         Expanded(
-            child: CardOverlay(
-                paddingValue: 5,
-                child: SuperListView.builder(
-                  physics: const SuperRangeMaintainingScrollPhysics(),
-                  controller: widget.scrollController,
-                  itemCount: displayingCml.length,
-                  itemBuilder: (context, index) {
-                    return ListTileTheme(
-                      data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                      child: ListTile(
-                        minTileHeight: 90,
-                        title: Row(
-                          spacing: 5,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            GenericItemIconBox(iconImagePaths: [displayingCml[index].cloudItemIconPath], boxSize: const Size(80, 80), isNetwork: true),
-                            Column(
-                              spacing: 5,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  displayingCml[index].getName(),
-                                  style: const TextStyle(fontWeight: FontWeight.w500),
-                                ),
-                                Text('ID: ${displayingCml[index].aId}', style: TextStyle(fontSize: 12)),
-                                Visibility(
-                                    visible: displayingCml[index].isReplaced,
-                                    child: Text(appText.dText(appText.replacedCMLFile, displayingCml[index].replacedCmlFileName), style: Theme.of(context).textTheme.labelMedium))
-                              ],
-                            ),
-                          ],
-                        ),
-                        trailing: Row(
-                          spacing: 5,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            OutlinedButton(
-                              onPressed: widget.selectedCmlFile.watch(context) != null && widget.selectedCmlFile.watch(context)!.existsSync()
-                                  ? () async {
-                                      await cmlReplaceWorkingPopup(context, false, displayingCml[index], widget.selectedCmlFile.value!);
-                                      setState(() {});
-                                    }
-                                  : null,
-                              child: Text(appText.replace),
-                            ),
-                            OutlinedButton(
-                                onPressed: displayingCml[index].isReplaced
-                                    ? () async {
-                                        await cmlReplaceWorkingPopup(context, true, displayingCml[index], null);
-                                        setState(() {});
-                                      }
-                                    : null,
-                                child: Text(appText.restore)),
-                          ],
-                        ),
+          child: CardOverlay(
+            paddingValue: 5,
+            rightPaddingValue: scrollbarsAlwaysVisible.watch(context) ? 0 : null,
+            child: ScrollbarTheme(
+              data: ScrollbarThemeData(
+                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+              ),
+              child: SuperListView.builder(
+                physics: const SuperRangeMaintainingScrollPhysics(),
+                padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                controller: widget.scrollController,
+                itemCount: displayingCml.length,
+                itemBuilder: (context, index) {
+                  return ListTileTheme(
+                    data: ListTileThemeData(
+                      minVerticalPadding: 0,
+                      contentPadding: EdgeInsets.all(5),
+                      selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                    ),
+                    child: ListTile(
+                      minTileHeight: 90,
+                      title: Row(
+                        spacing: 5,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          GenericItemIconBox(iconImagePaths: [displayingCml[index].cloudItemIconPath], boxSize: const Size(80, 80), isNetwork: true),
+                          Column(
+                            spacing: 5,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(displayingCml[index].getName(), style: const TextStyle(fontWeight: FontWeight.w500)),
+                              Text('ID: ${displayingCml[index].aId}', style: TextStyle(fontSize: 12)),
+                              Visibility(
+                                visible: displayingCml[index].isReplaced,
+                                child: Text(appText.dText(appText.replacedCMLFile, displayingCml[index].replacedCmlFileName), style: Theme.of(context).textTheme.labelMedium),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                    );
-                  },
-                )))
+                      trailing: Row(
+                        spacing: 5,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          OutlinedButton(
+                            onPressed: widget.selectedCmlFile.watch(context) != null && widget.selectedCmlFile.watch(context)!.existsSync()
+                                ? () async {
+                                    await cmlReplaceWorkingPopup(context, false, displayingCml[index], widget.selectedCmlFile.value!);
+                                    setState(() {});
+                                  }
+                                : null,
+                            child: Text(appText.replace),
+                          ),
+                          OutlinedButton(
+                            onPressed: displayingCml[index].isReplaced
+                                ? () async {
+                                    await cmlReplaceWorkingPopup(context, true, displayingCml[index], null);
+                                    setState(() {});
+                                  }
+                                : null,
+                            child: Text(appText.restore),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }

@@ -534,7 +534,8 @@ AppText _$AppTextFromJson(Map<String, dynamic> json) => AppText()
   ..hideAppliedList = json['hideAppliedList'] as String
   ..extras = json['extras'] as String
   ..gameDataIntegrityCheck = json['gameDataIntegrityCheck'] as String
-  ..uiTooltipOpacity = json['uiTooltipOpacity'] as String;
+  ..uiTooltipOpacity = json['uiTooltipOpacity'] as String
+  ..scrollbarsAlwaysVisible = json['scrollbarsAlwaysVisible'] as String;
 
 Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
   'dfCastParts': instance.dfCastParts,
@@ -1048,4 +1049,5 @@ Map<String, dynamic> _$AppTextToJson(AppText instance) => <String, dynamic>{
   'extras': instance.extras,
   'gameDataIntegrityCheck': instance.gameDataIntegrityCheck,
   'uiTooltipOpacity': instance.uiTooltipOpacity,
+  'scrollbarsAlwaysVisible': instance.scrollbarsAlwaysVisible,
 };

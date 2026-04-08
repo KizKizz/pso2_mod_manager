@@ -11,6 +11,7 @@ import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_add/mod_add_popup.dart';
 import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
+import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
@@ -25,12 +26,16 @@ Future<void> emoteQueueSwapWorkingPopup(context, bool isVanillaSwap, List<(ItemD
   int swappedCount = 0;
 
   await showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(builder: (dialogContext, setState) {
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (dialogContext, setState) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: const BorderRadius.all(Radius.circular(5))),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: Theme.of(context).colorScheme.outline),
+              borderRadius: const BorderRadius.all(Radius.circular(5)),
+            ),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
             insetPadding: const EdgeInsets.all(5),
             contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
@@ -44,79 +49,97 @@ Future<void> emoteQueueSwapWorkingPopup(context, bool isVanillaSwap, List<(ItemD
                   overflowAlignment: OverflowBarAlignment.center,
                   children: [
                     CardOverlay(
-                        paddingValue: 10,
-                        child: Column(
-                          spacing: 5,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            GenericItemIconBox(iconImagePaths: [emoteSwapQueue[curPairIndex].$1.iconImagePath], boxSize: const Size(100, 100), isNetwork: true),
-                            Text(appText.categoryName(emoteSwapQueue[curPairIndex].$1.category), style: Theme.of(context).textTheme.titleMedium),
-                            Text(emoteSwapQueue[curPairIndex].$1.getName(), style: Theme.of(context).textTheme.titleLarge),
-                            SingleChildScrollView(
+                      paddingValue: 10,
+                      child: Column(
+                        spacing: 5,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          GenericItemIconBox(iconImagePaths: [emoteSwapQueue[curPairIndex].$1.iconImagePath], boxSize: const Size(100, 100), isNetwork: true),
+                          Text(appText.categoryName(emoteSwapQueue[curPairIndex].$1.category), style: Theme.of(context).textTheme.titleMedium),
+                          Text(emoteSwapQueue[curPairIndex].$1.getName(), style: Theme.of(context).textTheme.titleLarge),
+                          ScrollbarTheme(
+                            data: ScrollbarThemeData(
+                              trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                              thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                            ),
+                            child: SingleChildScrollView(
                               physics: const SuperRangeMaintainingScrollPhysics(),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: emoteSwapQueue[curPairIndex].$1.getDetails().map((e) => Text(e)).toList(),
+                              child: Padding(
+                                padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: emoteSwapQueue[curPairIndex].$1.getDetails().map((e) => Text(e)).toList(),
+                                ),
                               ),
-                            )
-                          ],
-                        )),
-                    Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: LoadingAnimationWidget.twoRotatingArc(
-                        color: Theme.of(context).colorScheme.primary,
-                        size: 30,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.all(5),
+                      child: LoadingAnimationWidget.twoRotatingArc(color: Theme.of(context).colorScheme.primary, size: 30),
+                    ),
                     CardOverlay(
-                        paddingValue: 10,
-                        child: Column(
-                          spacing: 5,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            GenericItemIconBox(iconImagePaths: [emoteSwapQueue[curPairIndex].$2.iconImagePath], boxSize: const Size(100, 100), isNetwork: true),
-                            Text(appText.categoryName(emoteSwapQueue[curPairIndex].$2.category), style: Theme.of(context).textTheme.titleMedium),
-                            Text(emoteSwapQueue[curPairIndex].$2.getName(), style: Theme.of(context).textTheme.titleLarge),
-                            SingleChildScrollView(
+                      paddingValue: 10,
+                      child: Column(
+                        spacing: 5,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          GenericItemIconBox(iconImagePaths: [emoteSwapQueue[curPairIndex].$2.iconImagePath], boxSize: const Size(100, 100), isNetwork: true),
+                          Text(appText.categoryName(emoteSwapQueue[curPairIndex].$2.category), style: Theme.of(context).textTheme.titleMedium),
+                          Text(emoteSwapQueue[curPairIndex].$2.getName(), style: Theme.of(context).textTheme.titleLarge),
+                          ScrollbarTheme(
+                            data: ScrollbarThemeData(
+                              trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                              thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                            ),
+                            child: SingleChildScrollView(
                               physics: const SuperRangeMaintainingScrollPhysics(),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: emoteSwapQueue[curPairIndex].$2.getDetails().map((e) => Text(e)).toList(),
+                              child: Padding(
+                                padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: emoteSwapQueue[curPairIndex].$2.getDetails().map((e) => Text(e)).toList(),
+                                ),
                               ),
-                            )
-                          ],
-                        ))
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
                 const Icon(Icons.arrow_downward_rounded, size: 30),
                 CardOverlay(
-                    paddingValue: 10,
-                    child: Column(
-                      spacing: 5,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        GenericItemIconBox(iconImagePaths: [emoteSwapQueue[curPairIndex].$1.iconImagePath], boxSize: const Size(100, 100), isNetwork: true),
-                        Text(appText.categoryName(emoteSwapQueue[curPairIndex].$2.category), style: Theme.of(context).textTheme.titleMedium),
-                        Text(emoteSwapQueue[curPairIndex].$2.getName(), style: Theme.of(context).textTheme.titleLarge),
-                        Visibility(
-                          visible: !isVanillaSwap,
-                          child: Text(lItemSubmodGet(emoteSwapQueue[curPairIndex].$1).submodName, style: Theme.of(context).textTheme.labelLarge),
-                        )
-                        // SingleChildScrollView(
-                        //   physics: const SuperRangeMaintainingScrollPhysics(),
-                        //   child: Column(
-                        //     mainAxisAlignment: MainAxisAlignment.start,
-                        //     crossAxisAlignment: CrossAxisAlignment.start,
-                        //     mainAxisSize: MainAxisSize.min,
-                        //     children: rItemData.getDetails().map((e) => Text(e)).toList(),
-                        //   ),
-                        // )
-                      ],
-                    ))
+                  paddingValue: 10,
+                  child: Column(
+                    spacing: 5,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      GenericItemIconBox(iconImagePaths: [emoteSwapQueue[curPairIndex].$1.iconImagePath], boxSize: const Size(100, 100), isNetwork: true),
+                      Text(appText.categoryName(emoteSwapQueue[curPairIndex].$2.category), style: Theme.of(context).textTheme.titleMedium),
+                      Text(emoteSwapQueue[curPairIndex].$2.getName(), style: Theme.of(context).textTheme.titleLarge),
+                      Visibility(
+                        visible: !isVanillaSwap,
+                        child: Text(lItemSubmodGet(emoteSwapQueue[curPairIndex].$1).submodName, style: Theme.of(context).textTheme.labelLarge),
+                      ),
+                      // SingleChildScrollView(
+                      //   physics: const SuperRangeMaintainingScrollPhysics(),
+                      //   child: Column(
+                      //     mainAxisAlignment: MainAxisAlignment.start,
+                      //     crossAxisAlignment: CrossAxisAlignment.start,
+                      //     mainAxisSize: MainAxisSize.min,
+                      //     children: rItemData.getDetails().map((e) => Text(e)).toList(),
+                      //   ),
+                      // )
+                    ],
+                  ),
+                ),
               ],
             ),
             actionsPadding: const EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),
@@ -134,63 +157,68 @@ Future<void> emoteQueueSwapWorkingPopup(context, bool isVanillaSwap, List<(ItemD
                       Visibility(
                         visible: swapOutputDir.existsSync() && swappedCount == emoteSwapQueue.length,
                         child: OutlinedButton(
-                            onPressed: () async {
-                              launchUrlString(swapOutputDir.parent.path);
-                            },
-                            child: Text(appText.openInFileExplorer)),
+                          onPressed: () async {
+                            launchUrlString(swapOutputDir.parent.path);
+                          },
+                          child: Text(appText.openInFileExplorer),
+                        ),
                       ),
                       Visibility(
                         visible: swapOutputDir.existsSync() && swappedCount == emoteSwapQueue.length,
                         child: OutlinedButton(
-                            onPressed: () async {
-                              await modAddPopup(context, swapOutputDirPaths);
-                            },
-                            child: Text(appText.addToModManager)),
+                          onPressed: () async {
+                            await modAddPopup(context, swapOutputDirPaths);
+                          },
+                          child: Text(appText.addToModManager),
+                        ),
                       ),
                       Visibility(
                         visible: !swapOutputDir.existsSync(),
                         child: OutlinedButton(
-                            onPressed: itemSwapWorkingStatus.watch(context).isEmpty
-                                ? () async {
-                                    // Clean and create temp dirs
-                                    await modSwapTempDirsRemove();
-                                    await modSwapTempDirsCreate();
-                                    swapOutputDir = Directory('');
-                                    for (var pair in emoteSwapQueue) {
-                                      swapOutputDir = await modSwapEmotes(
-                                          // ignore: use_build_context_synchronously
-                                          context,
-                                          isVanillaSwap,
-                                          mod,
-                                          isVanillaSwap ? lItemSubmodGet(pair.$1) : submod,
-                                          pair.$2.getName(),
-                                          pair.$1.getIceDetails(),
-                                          pair.$2.getIceDetails(),
-                                          itemCrossSwap);
-                                      if (!swapOutputDirPaths.contains(swapOutputDir.path)) swapOutputDirPaths.add(swapOutputDir.path);
-                                      if (curPairIndex < emoteSwapQueue.length - 1) curPairIndex++;
-                                      swappedCount++;
-                                      setState(
-                                        () {},
-                                      );
-                                      await Future.delayed(Duration(milliseconds: 10));
-                                    }
+                          onPressed: itemSwapWorkingStatus.watch(context).isEmpty
+                              ? () async {
+                                  // Clean and create temp dirs
+                                  await modSwapTempDirsRemove();
+                                  await modSwapTempDirsCreate();
+                                  swapOutputDir = Directory('');
+                                  for (var pair in emoteSwapQueue) {
+                                    swapOutputDir = await modSwapEmotes(
+                                      // ignore: use_build_context_synchronously
+                                      context,
+                                      isVanillaSwap,
+                                      mod,
+                                      isVanillaSwap ? lItemSubmodGet(pair.$1) : submod,
+                                      pair.$2.getName(),
+                                      pair.$1.getIceDetails(),
+                                      pair.$2.getIceDetails(),
+                                      itemCrossSwap,
+                                    );
+                                    if (!swapOutputDirPaths.contains(swapOutputDir.path)) swapOutputDirPaths.add(swapOutputDir.path);
+                                    if (curPairIndex < emoteSwapQueue.length - 1) curPairIndex++;
+                                    swappedCount++;
+                                    setState(() {});
+                                    await Future.delayed(Duration(milliseconds: 10));
                                   }
-                                : null,
-                            child: Text(appText.swap)),
+                                }
+                              : null,
+                          child: Text(appText.swap),
+                        ),
                       ),
                       OutlinedButton(
-                          onPressed: () {
-                            itemSwapWorkingStatus.value = '';
-                            Navigator.of(context).pop();
-                          },
-                          child: Text(appText.returns))
+                        onPressed: () {
+                          itemSwapWorkingStatus.value = '';
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(appText.returns),
+                      ),
                     ],
-                  )
+                  ),
                 ],
-              )
+              ),
             ],
           );
-        });
-      });
+        },
+      );
+    },
+  );
 }

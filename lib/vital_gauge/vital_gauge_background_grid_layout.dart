@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/vital_gauge/vital_gauge_background_tile.dart';
 import 'package:pso2_mod_manager/vital_gauge/vital_gauge_class.dart';
+import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 class VitalGaugeBackgroundGridLayout extends StatefulWidget {
@@ -19,14 +21,17 @@ class _VitalGaugeBackgroundGridLayoutState extends State<VitalGaugeBackgroundGri
   Widget build(BuildContext context) {
     return CardOverlay(
       paddingValue: 5,
-      child: SuperListView.separated(
-        physics: const SuperRangeMaintainingScrollPhysics(),
-        itemCount: widget.backgrounds.length,
-        itemBuilder: (context, index) {
-          return VitalGaugeBackgroundTile(vitalGaugeBackgroundList: widget.backgrounds, background: widget.backgrounds[index], showButtons: widget.showButtons,);
-        },
-        separatorBuilder: (BuildContext context, int index) => const SizedBox(
-          height: 5,
+      rightPaddingValue: scrollbarsAlwaysVisible.watch(context) ? 0 : null,
+      child: ScrollbarTheme(
+        data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context))),
+        child: SuperListView.separated(
+          physics: const SuperRangeMaintainingScrollPhysics(),
+          padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+          itemCount: widget.backgrounds.length,
+          itemBuilder: (context, index) {
+            return VitalGaugeBackgroundTile(vitalGaugeBackgroundList: widget.backgrounds, background: widget.backgrounds[index], showButtons: widget.showButtons);
+          },
+          separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 5),
         ),
       ),
     );

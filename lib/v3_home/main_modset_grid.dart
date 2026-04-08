@@ -39,9 +39,7 @@ class _MainModSetGridState extends State<MainModSetGrid> {
     if (selectedDisplaySortModSet.watch(context) != selectedDisplaySortModSet.peek() ||
         modSetRefreshSignal.watch(context) != modSetRefreshSignal.peek() ||
         mainGridStatus.watch(context) != mainGridStatus.peek()) {
-      setState(
-        () {},
-      );
+      setState(() {});
     }
 
     List<ModSet> displayingModSets = [];
@@ -53,30 +51,41 @@ class _MainModSetGridState extends State<MainModSetGrid> {
 
     // Sort
     if (selectedDisplaySortModSet.value == modSortingSelections[0]) {
-      displayingModSets.sort((a, b) => a.favoriteSort().compareTo(b.favoriteSort()) == 0
-          ? a.favoriteSort().compareTo(b.favoriteSort()) + a.setName.toLowerCase().compareTo(b.setName.toLowerCase())
-          : a.favoriteSort().compareTo(b.favoriteSort()));
+      displayingModSets.sort(
+        (a, b) => a.favoriteSort().compareTo(b.favoriteSort()) == 0
+            ? a.favoriteSort().compareTo(b.favoriteSort()) + a.setName.toLowerCase().compareTo(b.setName.toLowerCase())
+            : a.favoriteSort().compareTo(b.favoriteSort()),
+      );
     } else if (selectedDisplaySortModSet.value == modSortingSelections[1]) {
-      displayingModSets.sort((a, b) => a.hasPreviewsSort().compareTo(b.hasPreviewsSort()) == 0
-          ? a.hasPreviewsSort().compareTo(b.hasPreviewsSort()) + a.setName.toLowerCase().compareTo(b.setName.toLowerCase())
-          : a.hasPreviewsSort().compareTo(b.hasPreviewsSort()));
+      displayingModSets.sort(
+        (a, b) => a.hasPreviewsSort().compareTo(b.hasPreviewsSort()) == 0
+            ? a.hasPreviewsSort().compareTo(b.hasPreviewsSort()) + a.setName.toLowerCase().compareTo(b.setName.toLowerCase())
+            : a.hasPreviewsSort().compareTo(b.hasPreviewsSort()),
+      );
     } else if (selectedDisplaySortModSet.value == modSortingSelections[2]) {
       displayingModSets.sort((a, b) => a.setName.toLowerCase().compareTo(b.setName.toLowerCase()));
     } else if (selectedDisplaySortModSet.value == modSortingSelections[3]) {
       displayingModSets.sort(
-          (a, b) => b.addedDate.compareTo(a.addedDate) == 0 ? b.addedDate.compareTo(a.addedDate) + a.setName.toLowerCase().compareTo(b.setName.toLowerCase()) : b.addedDate.compareTo(a.addedDate));
+        (a, b) => b.addedDate.compareTo(a.addedDate) == 0 ? b.addedDate.compareTo(a.addedDate) + a.setName.toLowerCase().compareTo(b.setName.toLowerCase()) : b.addedDate.compareTo(a.addedDate),
+      );
     } else if (selectedDisplaySortModSet.value == modSortingSelections[4]) {
-      displayingModSets.sort((a, b) => b.appliedDate!.compareTo(a.appliedDate!) == 0
-          ? b.appliedDate!.compareTo(a.appliedDate!) + a.setName.toLowerCase().compareTo(b.setName.toLowerCase())
-          : b.appliedDate!.compareTo(a.appliedDate!));
+      displayingModSets.sort(
+        (a, b) => b.appliedDate!.compareTo(a.appliedDate!) == 0
+            ? b.appliedDate!.compareTo(a.appliedDate!) + a.setName.toLowerCase().compareTo(b.setName.toLowerCase())
+            : b.appliedDate!.compareTo(a.appliedDate!),
+      );
     } else if (selectedDisplaySortModSet.value == modSortingSelections[5]) {
-      displayingModSets.sort((a, b) => b.setItems.length.compareTo(a.setItems.length) == 0
-          ? b.setItems.length.compareTo(a.setItems.length) + a.setName.toLowerCase().compareTo(b.setName.toLowerCase())
-          : b.setItems.length.compareTo(a.setItems.length));
+      displayingModSets.sort(
+        (a, b) => b.setItems.length.compareTo(a.setItems.length) == 0
+            ? b.setItems.length.compareTo(a.setItems.length) + a.setName.toLowerCase().compareTo(b.setName.toLowerCase())
+            : b.setItems.length.compareTo(a.setItems.length),
+      );
     } else if (selectedDisplaySortModSet.value == modSortingSelections[6]) {
-      displayingModSets.sort((a, b) => a.setItems.length.compareTo(b.setItems.length) == 0
-          ? a.setItems.length.compareTo(b.setItems.length) + a.setName.toLowerCase().compareTo(b.setName.toLowerCase())
-          : a.setItems.length.compareTo(b.setItems.length));
+      displayingModSets.sort(
+        (a, b) => a.setItems.length.compareTo(b.setItems.length) == 0
+            ? a.setItems.length.compareTo(b.setItems.length) + a.setName.toLowerCase().compareTo(b.setName.toLowerCase())
+            : a.setItems.length.compareTo(b.setItems.length),
+      );
     }
 
     return AnimatedOpacity(
@@ -90,91 +99,107 @@ class _MainModSetGridState extends State<MainModSetGrid> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                  flex: 1,
-                  child: SizedBox(
-                    height: 30,
-                    child: OutlinedButton(
-                        style: ButtonStyle(
-                            backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                            side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                        onPressed: () async {
-                          await newModSetCreate(context);
-                          setState(() {});
-                        },
-                        child: Text(appText.addNewSet)),
-                  )),
+                flex: 1,
+                child: SizedBox(
+                  height: 30,
+                  child: OutlinedButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                      side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
+                    ),
+                    onPressed: () async {
+                      await newModSetCreate(context);
+                      setState(() {});
+                    },
+                    child: Text(appText.addNewSet),
+                  ),
+                ),
+              ),
               SingleChoiceSelectButton(
-                  width: 250,
-                  height: 30,
-                  label: appText.types,
-                  selectPopupLabel: appText.types,
-                  availableItemList: modSortingSelections,
-                  availableItemLabels: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
-                  selectedItemsLabel: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
-                  selectedItem: selectedDisplaySortModSet,
-                  extraWidgets: [],
-                  savePref: () async {
-                    final prefs = await SharedPreferences.getInstance();
-                    prefs.setString('selectedDisplaySortModSet', selectedDisplaySortModSet.value);
-                    controller.jumpTo(0);
-                  }),
+                width: 250,
+                height: 30,
+                label: appText.types,
+                selectPopupLabel: appText.types,
+                availableItemList: modSortingSelections,
+                availableItemLabels: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                selectedItemsLabel: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                selectedItem: selectedDisplaySortModSet,
+                extraWidgets: [],
+                savePref: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  prefs.setString('selectedDisplaySortModSet', selectedDisplaySortModSet.value);
+                  controller.jumpTo(0);
+                },
+              ),
               MultiChoiceSelectButton(
-                  width: 250,
-                  height: 30,
-                  label: appText.view,
-                  selectPopupLabel: appText.view,
-                  availableItemList: masterModSetList.map((e) => e.setName).toList(),
-                  availableItemLabels: [],
-                  selectedItemsLabel: masterModSetList.where((e) => selectedDisplayModSets.value.contains(e.setName)).map((e) => e.setName).toList(),
-                  selectedItems: selectedDisplayModSets,
-                  extraWidgets: masterModSetList
-                      .map((e) => Row(
-                            spacing: 5,
-                            children: [
-                              InfoBox(info: appText.dText(e.setItems.length > 1 ? appText.numItems : appText.numItem, e.setItems.length.toString()), borderHighlight: false),
-                              InfoBox(info: appText.dText(appText.numCurrentlyApplied, e.setItems.where((e) => e.applyStatus).length.toString()), borderHighlight: false)
-                            ],
-                          ))
-                      .toList(),
-                  savePref: () async {
-                    controller.jumpTo(0);
-                  }),
+                width: 250,
+                height: 30,
+                label: appText.view,
+                selectPopupLabel: appText.view,
+                availableItemList: masterModSetList.map((e) => e.setName).toList(),
+                availableItemLabels: [],
+                selectedItemsLabel: masterModSetList.where((e) => selectedDisplayModSets.value.contains(e.setName)).map((e) => e.setName).toList(),
+                selectedItems: selectedDisplayModSets,
+                extraWidgets: masterModSetList
+                    .map(
+                      (e) => Row(
+                        spacing: 5,
+                        children: [
+                          InfoBox(info: appText.dText(e.setItems.length > 1 ? appText.numItems : appText.numItem, e.setItems.length.toString()), borderHighlight: false),
+                          InfoBox(info: appText.dText(appText.numCurrentlyApplied, e.setItems.where((e) => e.applyStatus).length.toString()), borderHighlight: false),
+                        ],
+                      ),
+                    )
+                    .toList(),
+                savePref: () async {
+                  controller.jumpTo(0);
+                },
+              ),
               SizedBox(
                 height: 30,
                 child: IconButton.outlined(
-                    visualDensity: VisualDensity.adaptivePlatformDensity,
-                    style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                    onPressed: () async {
-                      if (displayingModSets.indexWhere((e) => e.expanded) != -1) {
-                        for (var set in displayingModSets.where((e) => e.expanded)) {
-                          set.expanded = false;
-                        }
-                      } else {
-                        for (var set in displayingModSets.where((e) => !e.expanded)) {
-                          set.expanded = true;
-                        }
+                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                    side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
+                  ),
+                  onPressed: () async {
+                    if (displayingModSets.indexWhere((e) => e.expanded) != -1) {
+                      for (var set in displayingModSets.where((e) => e.expanded)) {
+                        set.expanded = false;
                       }
-                      setState(() {});
-                      saveMasterModSetListToJson();
-                    },
-                    icon: Icon(
-                      displayingModSets.indexWhere((e) => e.expanded) != -1 ? Icons.drag_handle_sharp : Icons.expand_outlined,
-                    )),
+                    } else {
+                      for (var set in displayingModSets.where((e) => !e.expanded)) {
+                        set.expanded = true;
+                      }
+                    }
+                    setState(() {});
+                    saveMasterModSetListToJson();
+                  },
+                  icon: Icon(displayingModSets.indexWhere((e) => e.expanded) != -1 ? Icons.drag_handle_sharp : Icons.expand_outlined),
+                ),
               ),
             ],
           ),
           Expanded(
+            child: ScrollbarTheme(
+              data: ScrollbarThemeData(
+                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+              ),
               child: CustomScrollView(
-            controller: controller,
-            slivers: displayingModSets
-                .map((e) => ModSetGridLayout(
-                      modSet: e,
-                      scrollController: controller,
-                    ))
-                .toList(),
-          ))
+                controller: controller,
+                slivers: displayingModSets
+                    .map(
+                      (e) => SliverPadding(
+                        padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                        sliver: ModSetGridLayout(modSet: e, scrollController: controller),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
+          ),
         ],
       ),
     );

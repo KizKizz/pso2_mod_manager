@@ -37,9 +37,7 @@ class _MainModGridState extends State<MainModGrid> {
   Widget build(BuildContext context) {
     // Refresh
     if (selectedDisplaySort.watch(context) != selectedDisplaySort.peek() || mainGridStatus.watch(context) != mainGridStatus.peek()) {
-      setState(
-        () {},
-      );
+      setState(() {});
     }
 
     // Suggestions
@@ -100,71 +98,25 @@ class _MainModGridState extends State<MainModGrid> {
                 flex: 4,
                 child: SizedBox(
                   height: 30,
-                  child: Stack(alignment: AlignmentDirectional.centerEnd, children: [
-                    SearchField<Mod>(
-                      itemHeight: 90,
-                      searchInputDecoration: SearchInputDecoration(
+                  child: Stack(
+                    alignment: AlignmentDirectional.centerEnd,
+                    children: [
+                      SearchField<Mod>(
+                        itemHeight: 90,
+                        searchInputDecoration: SearchInputDecoration(
                           filled: true,
                           fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
                           isDense: true,
                           contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                           cursorHeight: 15,
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface),
+                          ),
                           cursorColor: Theme.of(context).colorScheme.inverseSurface,
-                          hintText: appText.search),
-                      suggestions: filteredMods
-                          .map(
-                            (e) => SearchFieldListItem<Mod>(
-                              e.modName,
-                              item: e,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 5),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  spacing: 5,
-                                  children: [
-                                    SizedBox(
-                                      width: 75,
-                                      height: 75,
-                                      child: SubmodPreviewBox(imageFilePaths: e.previewImages, videoFilePaths: e.previewVideos, isNew: false),
-                                    ),
-                                    Column(
-                                      spacing: 5,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(e.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
-                                        Row(
-                                          spacing: 5,
-                                          children: [
-                                            InfoBox(
-                                              info: appText.dText(e.submods.length > 1 ? appText.numVariants : appText.numVariant, e.submods.length.toString()),
-                                              borderHighlight: false,
-                                            ),
-                                            InfoBox(
-                                              info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedSubmods().toString()),
-                                              borderHighlight: e.applyStatus,
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          )
-                          .toList(),
-                      controller: searchTextController,
-                      onSuggestionTap: (p0) {
-                        searchTextController.text = p0.searchKey;
-                        setState(() {});
-                      },
-                      onSearchTextChanged: (p0) {
-                        setState(() {});
-                        return filteredMods
+                          hintText: appText.search,
+                        ),
+                        suggestions: filteredMods
                             .map(
                               (e) => SearchFieldListItem<Mod>(
                                 e.modName,
@@ -191,31 +143,71 @@ class _MainModGridState extends State<MainModGrid> {
                                           Row(
                                             spacing: 5,
                                             children: [
-                                              InfoBox(
-                                                info: appText.dText(e.submods.length > 1 ? appText.numVariants : appText.numVariant, e.submods.length.toString()),
-                                                borderHighlight: false,
-                                              ),
-                                              InfoBox(
-                                                info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedSubmods().toString()),
-                                                borderHighlight: e.applyStatus,
-                                              ),
+                                              InfoBox(info: appText.dText(e.submods.length > 1 ? appText.numVariants : appText.numVariant, e.submods.length.toString()), borderHighlight: false),
+                                              InfoBox(info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedSubmods().toString()), borderHighlight: e.applyStatus),
                                             ],
-                                          )
+                                          ),
                                         ],
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),
                               ),
                             )
-                            .toList();
-                      },
-                    ),
-                    Visibility(
-                      visible: searchTextController.value.text.isNotEmpty,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 2),
-                        child: IconButton(
+                            .toList(),
+                        controller: searchTextController,
+                        onSuggestionTap: (p0) {
+                          searchTextController.text = p0.searchKey;
+                          setState(() {});
+                        },
+                        onSearchTextChanged: (p0) {
+                          setState(() {});
+                          return filteredMods
+                              .map(
+                                (e) => SearchFieldListItem<Mod>(
+                                  e.modName,
+                                  item: e,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      spacing: 5,
+                                      children: [
+                                        SizedBox(
+                                          width: 75,
+                                          height: 75,
+                                          child: SubmodPreviewBox(imageFilePaths: e.previewImages, videoFilePaths: e.previewVideos, isNew: false),
+                                        ),
+                                        Column(
+                                          spacing: 5,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(e.modName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                                            Row(
+                                              spacing: 5,
+                                              children: [
+                                                InfoBox(info: appText.dText(e.submods.length > 1 ? appText.numVariants : appText.numVariant, e.submods.length.toString()), borderHighlight: false),
+                                                InfoBox(info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedSubmods().toString()), borderHighlight: e.applyStatus),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList();
+                        },
+                      ),
+                      Visibility(
+                        visible: searchTextController.value.text.isNotEmpty,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 2),
+                          child: IconButton(
                             visualDensity: VisualDensity.adaptivePlatformDensity,
                             onPressed: searchTextController.value.text.isNotEmpty
                                 ? () {
@@ -223,27 +215,30 @@ class _MainModGridState extends State<MainModGrid> {
                                     setState(() {});
                                   }
                                 : null,
-                            icon: const Icon(Icons.close)),
+                            icon: const Icon(Icons.close),
+                          ),
+                        ),
                       ),
-                    )
-                  ]),
+                    ],
+                  ),
                 ),
               ),
               SingleChoiceSelectButton(
-                  width: 250,
-                  height: 30,
-                  label: appText.sort,
-                  selectPopupLabel: appText.sort,
-                  availableItemList: modSortingSelections,
-                  availableItemLabels: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
-                  selectedItemsLabel: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
-                  selectedItem: selectedDisplaySort,
-                  extraWidgets: [],
-                  savePref: () async {
-                    final prefs = await SharedPreferences.getInstance();
-                    prefs.setString('selectedDisplaySort', selectedDisplaySort.value);
-                    controller.jumpTo(0);
-                  }),
+                width: 250,
+                height: 30,
+                label: appText.sort,
+                selectPopupLabel: appText.sort,
+                availableItemList: modSortingSelections,
+                availableItemLabels: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                selectedItemsLabel: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                selectedItem: selectedDisplaySort,
+                extraWidgets: [],
+                savePref: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  prefs.setString('selectedDisplaySort', selectedDisplaySort.value);
+                  controller.jumpTo(0);
+                },
+              ),
               MultiChoiceSelectButton(
                 width: 200,
                 height: 30,
@@ -254,15 +249,17 @@ class _MainModGridState extends State<MainModGrid> {
                 selectedItemsLabel: selectedModDisplayCategories.value.map((e) => appText.categoryName(e)).toList(),
                 selectedItems: selectedModDisplayCategories,
                 extraWidgets: categories
-                    .map((e) => Row(
-                          spacing: 5,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            InfoBox(info: appText.dText(e.getNumOfMods() > 1 ? appText.numMods : appText.numMod, e.getNumOfMods().toString()), borderHighlight: false),
-                            InfoBox(info: appText.dText(e.getNumOfModVariants() > 1 ? appText.numVariants : appText.numVariant, e.getNumOfModVariants().toString()), borderHighlight: false),
-                            InfoBox(info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedItems().toString()), borderHighlight: false)
-                          ],
-                        ))
+                    .map(
+                      (e) => Row(
+                        spacing: 5,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          InfoBox(info: appText.dText(e.getNumOfMods() > 1 ? appText.numMods : appText.numMod, e.getNumOfMods().toString()), borderHighlight: false),
+                          InfoBox(info: appText.dText(e.getNumOfModVariants() > 1 ? appText.numVariants : appText.numVariant, e.getNumOfModVariants().toString()), borderHighlight: false),
+                          InfoBox(info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedItems().toString()), borderHighlight: false),
+                        ],
+                      ),
+                    )
                     .toList(),
                 savePref: () async {
                   final prefs = await SharedPreferences.getInstance();
@@ -272,39 +269,48 @@ class _MainModGridState extends State<MainModGrid> {
               SizedBox(
                 height: 30,
                 child: IconButton.outlined(
-                    visualDensity: VisualDensity.adaptivePlatformDensity,
-                    style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                    onPressed: () async {
-                      if (categories.indexWhere((e) => e.visible) != -1) {
-                        for (var cate in categories) {
-                          cate.visible = false;
-                        }
-                      } else {
-                        for (var cate in categories) {
-                          cate.visible = true;
-                        }
+                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                    side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
+                  ),
+                  onPressed: () async {
+                    if (categories.indexWhere((e) => e.visible) != -1) {
+                      for (var cate in categories) {
+                        cate.visible = false;
                       }
-                      setState(() {});
-                      saveMasterModListToJson();
-                    },
-                    icon: Icon(
-                      categories.indexWhere((e) => e.visible) != -1 ? Icons.drag_handle_sharp : Icons.expand_outlined,
-                    )),
+                    } else {
+                      for (var cate in categories) {
+                        cate.visible = true;
+                      }
+                    }
+                    setState(() {});
+                    saveMasterModListToJson();
+                  },
+                  icon: Icon(categories.indexWhere((e) => e.visible) != -1 ? Icons.drag_handle_sharp : Icons.expand_outlined),
+                ),
               ),
             ],
           ),
           Expanded(
+            child: ScrollbarTheme(
+              data: ScrollbarThemeData(
+                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+              ),
               child: CustomScrollView(
-                  controller: controller,
-                  slivers: displayingCategories
-                      .map((e) => CateModGridLayout(
-                            itemCate: e,
-                            searchString: searchTextController.value.text,
-                            scrollController: controller,
-                          ))
-                      .toList()))
+                controller: controller,
+                slivers: displayingCategories
+                    .map(
+                      (e) => SliverPadding(
+                        padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                        sliver: CateModGridLayout(itemCate: e, searchString: searchTextController.value.text, scrollController: controller),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
+          ),
         ],
       ),
     );
