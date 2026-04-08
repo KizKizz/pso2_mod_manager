@@ -13,7 +13,7 @@ Check back for latest releases
 
 # Features
 
-- Available in English, Japanese and Chinese (by [augurz](https://github.com/augurz))
+- Available in English, Japanese, Chinese (by [augurz](https://github.com/augurz)), and Korean (by [gesori-pro](https://github.com/gesori-pro))
 - Auto replace checksum on startup and when applying mods
 - Auto sort and categorize mods by associated items upon adding
 - Mods can be added to Mod Sets to be applied together
