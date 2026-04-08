@@ -530,7 +530,8 @@ class AppText {
       hideAppliedList = 'Hide Applied List',
       extras = 'Extras',
       gameDataIntegrityCheck = 'Game Data Integrity Check',
-      uiTooltipOpacity = 'UI Tooltip Opacity';
+      uiTooltipOpacity = 'UI Tooltip Opacity',
+      scrollbarsAlwaysVisible = 'Scrollbars Always Visible';
 
   factory AppText.fromJson(Map<String, dynamic> json) => _$AppTextFromJson(json);
   Map<String, dynamic> toJson() => _$AppTextToJson(this);

@@ -55,7 +55,7 @@ String pso2binDirPath = '';
 String mainDataDirPath = '';
 String verTwoMainDataDirPath = '';
 bool useAltFilePicker = false;
-bool scrollbarsAlwaysVisible = false;
+Signal<bool> scrollbarsAlwaysVisible = Signal(false);
 
 // Auto features
 bool autoBoundingRadiusRemoval = false;
@@ -225,5 +225,5 @@ Future<void> prefsLoad() async {
   useAltFilePicker = prefs.getBool('useAltFilePicker') ?? false;
 
   // Scrollbars always visible
-  scrollbarsAlwaysVisible = prefs.getBool('scrollbarsAlwaysVisible') ?? false;
+  scrollbarsAlwaysVisible.value = prefs.getBool('scrollbarsAlwaysVisible') ?? false;
 }

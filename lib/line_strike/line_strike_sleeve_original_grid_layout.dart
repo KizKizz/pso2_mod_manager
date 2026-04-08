@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_sleeve_class.dart';
 import 'package:pso2_mod_manager/line_strike/line_strike_sleeve_original_tile.dart';
+import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
+import 'package:signals/signals_flutter.dart';
 
 class LineStrikeSleeveOriginalGridLayout extends StatefulWidget {
   const LineStrikeSleeveOriginalGridLayout({super.key, required this.sleeves, required this.rScrollController});
@@ -18,14 +20,21 @@ class _LineStrikeSleeveOriginalGridLayoutState extends State<LineStrikeSleeveOri
   @override
   Widget build(BuildContext context) {
     return Expanded(
-        child: CardOverlay(
-            paddingValue: 5,
-            child: ResponsiveGridList(
-                listViewBuilderOptions: ListViewBuilderOptions(controller: widget.rScrollController),
-                minItemWidth: 250,
-                // verticalGridMargin: 5,
-                horizontalGridSpacing: 5,
-                verticalGridSpacing: 5,
-                children: [for (int i = 0; i < widget.sleeves.length; i++) LineStrikeSleeveOriginalTile(sleeve: widget.sleeves[i], lineStrikeSleeveList: widget.sleeves)])));
+      child: CardOverlay(
+        paddingValue: 5,
+        rightPaddingValue: scrollbarsAlwaysVisible.watch(context) ? 0 : null,
+        child: ScrollbarTheme(
+          data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context))),
+          child: ResponsiveGridList(
+            listViewBuilderOptions: ListViewBuilderOptions(controller: widget.rScrollController),
+            minItemWidth: 250,
+            // verticalGridMargin: 5,
+            horizontalGridSpacing: 5,
+            verticalGridSpacing: 5,
+            children: [for (int i = 0; i < widget.sleeves.length; i++) LineStrikeSleeveOriginalTile(sleeve: widget.sleeves[i], lineStrikeSleeveList: widget.sleeves)],
+          ),
+        ),
+      ),
+    );
   }
 }

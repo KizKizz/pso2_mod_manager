@@ -37,9 +37,7 @@ class _MainItemGridState extends State<MainItemGrid> {
   Widget build(BuildContext context) {
     // Refresh
     if (selectedDisplaySort.watch(context) != selectedDisplaySort.peek() || mainGridStatus.watch(context) != mainGridStatus.peek()) {
-      setState(
-        () {},
-      );
+      setState(() {});
     }
 
     // Suggestions
@@ -85,30 +83,41 @@ class _MainItemGridState extends State<MainItemGrid> {
     // Sort
     for (var category in displayingCategories) {
       if (selectedDisplaySort.value == modSortingSelections[0]) {
-        category.items.sort((a, b) => a.favoriteSort().compareTo(b.favoriteSort()) == 0
-            ? a.favoriteSort().compareTo(b.favoriteSort()) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
-            : a.favoriteSort().compareTo(b.favoriteSort()));
+        category.items.sort(
+          (a, b) => a.favoriteSort().compareTo(b.favoriteSort()) == 0
+              ? a.favoriteSort().compareTo(b.favoriteSort()) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
+              : a.favoriteSort().compareTo(b.favoriteSort()),
+        );
       } else if (selectedDisplaySort.value == modSortingSelections[1]) {
-        category.items.sort((a, b) => a.hasPreviewsSort().compareTo(b.hasPreviewsSort()) == 0
-            ? a.hasPreviewsSort().compareTo(b.hasPreviewsSort()) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
-            : a.hasPreviewsSort().compareTo(b.hasPreviewsSort()));
+        category.items.sort(
+          (a, b) => a.hasPreviewsSort().compareTo(b.hasPreviewsSort()) == 0
+              ? a.hasPreviewsSort().compareTo(b.hasPreviewsSort()) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
+              : a.hasPreviewsSort().compareTo(b.hasPreviewsSort()),
+        );
       } else if (selectedDisplaySort.value == modSortingSelections[2]) {
         category.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
       } else if (selectedDisplaySort.value == modSortingSelections[3]) {
-        category.items.sort((a, b) => b.creationDate!.compareTo(a.creationDate!) == 0
-            ? b.creationDate!.compareTo(a.creationDate!) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
-            : b.creationDate!.compareTo(a.creationDate!));
+        category.items.sort(
+          (a, b) => b.creationDate!.compareTo(a.creationDate!) == 0
+              ? b.creationDate!.compareTo(a.creationDate!) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
+              : b.creationDate!.compareTo(a.creationDate!),
+        );
       } else if (selectedDisplaySort.value == modSortingSelections[4]) {
         category.items.sort(
-            (a, b) => b.applyDate.compareTo(a.applyDate) == 0 ? b.applyDate.compareTo(a.applyDate) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()) : b.applyDate.compareTo(a.applyDate));
+          (a, b) => b.applyDate.compareTo(a.applyDate) == 0 ? b.applyDate.compareTo(a.applyDate) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()) : b.applyDate.compareTo(a.applyDate),
+        );
       } else if (selectedDisplaySort.value == modSortingSelections[5]) {
-        category.items.sort((a, b) => b.mods.length.compareTo(a.mods.length) == 0
-            ? b.mods.length.compareTo(a.mods.length) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
-            : b.mods.length.compareTo(a.mods.length));
+        category.items.sort(
+          (a, b) => b.mods.length.compareTo(a.mods.length) == 0
+              ? b.mods.length.compareTo(a.mods.length) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
+              : b.mods.length.compareTo(a.mods.length),
+        );
       } else if (selectedDisplaySort.value == modSortingSelections[6]) {
-        category.items.sort((a, b) => a.mods.length.compareTo(b.mods.length) == 0
-            ? a.mods.length.compareTo(b.mods.length) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
-            : a.mods.length.compareTo(b.mods.length));
+        category.items.sort(
+          (a, b) => a.mods.length.compareTo(b.mods.length) == 0
+              ? a.mods.length.compareTo(b.mods.length) + a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase())
+              : a.mods.length.compareTo(b.mods.length),
+        );
       }
     }
 
@@ -126,72 +135,25 @@ class _MainItemGridState extends State<MainItemGrid> {
                 flex: 4,
                 child: SizedBox(
                   height: 30,
-                  child: Stack(alignment: AlignmentDirectional.centerEnd, children: [
-                    SearchField<Item>(
-                      itemHeight: 90,
-                      searchInputDecoration: SearchInputDecoration(
+                  child: Stack(
+                    alignment: AlignmentDirectional.centerEnd,
+                    children: [
+                      SearchField<Item>(
+                        itemHeight: 90,
+                        searchInputDecoration: SearchInputDecoration(
                           filled: true,
                           fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
                           isDense: true,
                           contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                           cursorHeight: 15,
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface),
+                          ),
                           cursorColor: Theme.of(context).colorScheme.inverseSurface,
-                          hintText: appText.search),
-                      suggestions: filteredItems
-                          .map(
-                            (e) => SearchFieldListItem<Item>(
-                              e.itemName,
-                              item: e,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 5),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  spacing: 5,
-                                  children: [
-                                    SizedBox(
-                                        width: 75,
-                                        height: 75,
-                                        child: ItemIconBox(
-                                          item: e,
-                                          showSubCategory: true,
-                                        )),
-                                    Column(
-                                      spacing: 5,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(e.itemName.replaceFirst('_', '/').trim(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
-                                        Row(
-                                          spacing: 5,
-                                          children: [
-                                            InfoBox(
-                                              info: appText.dText(e.mods.length > 1 ? appText.numMods : appText.numMod, e.mods.length.toString()),
-                                              borderHighlight: false,
-                                            ),
-                                            InfoBox(
-                                              info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedMods().toString()),
-                                              borderHighlight: e.applyStatus,
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          )
-                          .toList(),
-                      controller: searchTextController,
-                      onSuggestionTap: (p0) {
-                        searchTextController.text = p0.searchKey;
-                        setState(() {});
-                      },
-                      onSearchTextChanged: (p0) {
-                        setState(() {});
-                        return filteredItems
+                          hintText: appText.search,
+                        ),
+                        suggestions: filteredItems
                             .map(
                               (e) => SearchFieldListItem<Item>(
                                 e.itemName,
@@ -203,13 +165,7 @@ class _MainItemGridState extends State<MainItemGrid> {
                                     mainAxisSize: MainAxisSize.min,
                                     spacing: 5,
                                     children: [
-                                      SizedBox(
-                                          width: 75,
-                                          height: 75,
-                                          child: ItemIconBox(
-                                            item: e,
-                                            showSubCategory: true,
-                                          )),
+                                      SizedBox(width: 75, height: 75, child: ItemIconBox(item: e, showSubCategory: true)),
                                       Column(
                                         spacing: 5,
                                         mainAxisAlignment: MainAxisAlignment.center,
@@ -219,31 +175,66 @@ class _MainItemGridState extends State<MainItemGrid> {
                                           Row(
                                             spacing: 5,
                                             children: [
-                                              InfoBox(
-                                                info: appText.dText(e.mods.length > 1 ? appText.numMods : appText.numMod, e.mods.length.toString()),
-                                                borderHighlight: false,
-                                              ),
-                                              InfoBox(
-                                                info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedMods().toString()),
-                                                borderHighlight: e.applyStatus,
-                                              ),
+                                              InfoBox(info: appText.dText(e.mods.length > 1 ? appText.numMods : appText.numMod, e.mods.length.toString()), borderHighlight: false),
+                                              InfoBox(info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedMods().toString()), borderHighlight: e.applyStatus),
                                             ],
-                                          )
+                                          ),
                                         ],
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),
                               ),
                             )
-                            .toList();
-                      },
-                    ),
-                    Visibility(
-                      visible: searchTextController.value.text.isNotEmpty,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 2),
-                        child: IconButton(
+                            .toList(),
+                        controller: searchTextController,
+                        onSuggestionTap: (p0) {
+                          searchTextController.text = p0.searchKey;
+                          setState(() {});
+                        },
+                        onSearchTextChanged: (p0) {
+                          setState(() {});
+                          return filteredItems
+                              .map(
+                                (e) => SearchFieldListItem<Item>(
+                                  e.itemName,
+                                  item: e,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      spacing: 5,
+                                      children: [
+                                        SizedBox(width: 75, height: 75, child: ItemIconBox(item: e, showSubCategory: true)),
+                                        Column(
+                                          spacing: 5,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(e.itemName.replaceFirst('_', '/').trim(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                                            Row(
+                                              spacing: 5,
+                                              children: [
+                                                InfoBox(info: appText.dText(e.mods.length > 1 ? appText.numMods : appText.numMod, e.mods.length.toString()), borderHighlight: false),
+                                                InfoBox(info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedMods().toString()), borderHighlight: e.applyStatus),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList();
+                        },
+                      ),
+                      Visibility(
+                        visible: searchTextController.value.text.isNotEmpty,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 2),
+                          child: IconButton(
                             visualDensity: VisualDensity.adaptivePlatformDensity,
                             onPressed: searchTextController.value.text.isNotEmpty
                                 ? () {
@@ -251,27 +242,30 @@ class _MainItemGridState extends State<MainItemGrid> {
                                     setState(() {});
                                   }
                                 : null,
-                            icon: const Icon(Icons.close)),
+                            icon: const Icon(Icons.close),
+                          ),
+                        ),
                       ),
-                    )
-                  ]),
+                    ],
+                  ),
                 ),
               ),
               SingleChoiceSelectButton(
-                  width: 250,
-                  height: 30,
-                  label: appText.sort,
-                  selectPopupLabel: appText.sort,
-                  availableItemList: modSortingSelections,
-                  availableItemLabels: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
-                  selectedItemsLabel: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
-                  selectedItem: selectedDisplaySort,
-                  extraWidgets: [],
-                  savePref: () async {
-                    final prefs = await SharedPreferences.getInstance();
-                    prefs.setString('selectedDisplaySort', selectedDisplaySort.value);
-                    controller.jumpTo(0);
-                  }),
+                width: 250,
+                height: 30,
+                label: appText.sort,
+                selectPopupLabel: appText.sort,
+                availableItemList: modSortingSelections,
+                availableItemLabels: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                selectedItemsLabel: modSortingSelections.map((e) => appText.sortingTypeName(e)).toList(),
+                selectedItem: selectedDisplaySort,
+                extraWidgets: [],
+                savePref: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  prefs.setString('selectedDisplaySort', selectedDisplaySort.value);
+                  controller.jumpTo(0);
+                },
+              ),
               MultiChoiceSelectButton(
                 width: 200,
                 height: 30,
@@ -282,16 +276,19 @@ class _MainItemGridState extends State<MainItemGrid> {
                 selectedItemsLabel: selectedDisplayCategories.value.map((e) => appText.categoryName(e)).toList(),
                 selectedItems: selectedDisplayCategories,
                 extraWidgets: categories
-                    .map((e) => Row(
-                          spacing: 5,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            InfoBox(
-                                info: e.items.length > 1 ? appText.dText(appText.numItems, e.items.length.toString()) : appText.dText(appText.numItem, e.items.length.toString()),
-                                borderHighlight: false),
-                            InfoBox(info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedItems().toString()), borderHighlight: false)
-                          ],
-                        ))
+                    .map(
+                      (e) => Row(
+                        spacing: 5,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          InfoBox(
+                            info: e.items.length > 1 ? appText.dText(appText.numItems, e.items.length.toString()) : appText.dText(appText.numItem, e.items.length.toString()),
+                            borderHighlight: false,
+                          ),
+                          InfoBox(info: appText.dText(appText.numCurrentlyApplied, e.getNumOfAppliedItems().toString()), borderHighlight: false),
+                        ],
+                      ),
+                    )
                     .toList(),
                 savePref: () async {
                   final prefs = await SharedPreferences.getInstance();
@@ -301,40 +298,48 @@ class _MainItemGridState extends State<MainItemGrid> {
               SizedBox(
                 height: 30,
                 child: IconButton.outlined(
-                    visualDensity: VisualDensity.adaptivePlatformDensity,
-                    style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                    onPressed: () async {
-                      if (categories.indexWhere((e) => e.visible) != -1) {
-                        for (var cate in categories) {
-                          cate.visible = false;
-                        }
-                      } else {
-                        for (var cate in categories) {
-                          cate.visible = true;
-                        }
+                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                    side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
+                  ),
+                  onPressed: () async {
+                    if (categories.indexWhere((e) => e.visible) != -1) {
+                      for (var cate in categories) {
+                        cate.visible = false;
                       }
-                      setState(() {});
-                      saveMasterModListToJson();
-                    },
-                    icon: Icon(
-                      categories.indexWhere((e) => e.visible) != -1 ? Icons.drag_handle_sharp : Icons.expand_outlined,
-                    )),
+                    } else {
+                      for (var cate in categories) {
+                        cate.visible = true;
+                      }
+                    }
+                    setState(() {});
+                    saveMasterModListToJson();
+                  },
+                  icon: Icon(categories.indexWhere((e) => e.visible) != -1 ? Icons.drag_handle_sharp : Icons.expand_outlined),
+                ),
               ),
             ],
           ),
           Expanded(
+            child: ScrollbarTheme(
+              data: ScrollbarThemeData(
+                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+              ),
               child: CustomScrollView(
-            controller: controller,
-            slivers: displayingCategories
-                .map((e) => CateItemGridLayout(
-                      itemCate: e,
-                      searchString: searchTextController.value.text,
-                      scrollController: controller,
-                    ))
-                .toList(),
-          ))
+                controller: controller,
+                slivers: displayingCategories
+                    .map(
+                      (e) => SliverPadding(
+                        padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                        sliver: CateItemGridLayout(itemCate: e, searchString: searchTextController.value.text, scrollController: controller),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
+          ),
         ],
       ),
     );
