@@ -397,7 +397,7 @@ class _CmlItemListLayoutState extends State<CmlFileListLayout> {
                   onPressed: () async {
                     List<XFile> files = [];
                     if (useAltFilePicker) {
-                      FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['cml']);
+                      FilePickerResult? result = await FilePicker.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['cml']);
                       if (result != null) files = result.xFiles;
                     } else {
                       const XTypeGroup aqmTypeGroup = XTypeGroup(label: 'CML', extensions: <String>['cml']);

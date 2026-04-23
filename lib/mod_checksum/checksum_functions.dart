@@ -30,7 +30,7 @@ Future<bool> checksumFileFetch() async {
 Future<void> checksumFileSelect() async {
   XFile? checksumFile;
   if (useAltFilePicker) {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.any);
+    FilePickerResult? result = await FilePicker.pickFiles(type: FileType.any);
     if (result != null) checksumFile = result.xFiles.single;
   } else {
     checksumFile = await openFile();

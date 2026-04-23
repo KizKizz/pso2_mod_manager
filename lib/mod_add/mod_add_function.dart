@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:archive/archive_io.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:path/path.dart' as p;
 import 'package:io/io.dart' as io;
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
@@ -143,6 +144,9 @@ Future<List<AddingMod>> modAddSort() async {
     List<ItemData> associatedItems = [];
     List<File> previewImages = [];
     List<File> previewVideos = [];
+    List<File> previewVideoThumbs = [];
+    List<File> allSubDirsPreviewImages = [];
+    List<File> allSubDirsPreviewVideos = [];
     List<MapEntry<String, List<String>>> sameItemIceNames = [];
     ItemData unknownItem = ItemData('', '', '', ['Misc'], 'Misc', '', 13, '', Map.fromEntries([MapEntry('Japanese Name', appText.unknownItem), MapEntry('English Name', appText.unknownItem)]));
     // mod dir
@@ -157,6 +161,16 @@ Future<List<AddingMod>> modAddSort() async {
     }
     previewImages.addAll(modDirFiles.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png'));
     previewVideos.addAll(modDirFiles.where((e) => p.extension(e.path) == '.webm' || p.extension(e.path) == '.mp4'));
+    if (previewVideos.isNotEmpty) {
+      for (var element in previewVideos) {
+        if (!await File('${p.withoutExtension(element.path)}.jpg').exists()) {
+          final result = await getVideoThumbnail(element.path);
+          if (result && File('${p.withoutExtension(element.path)}.jpg').existsSync()) {
+            previewVideoThumbs.add(File('${p.withoutExtension(element.path)}.jpg'));
+          }
+        }
+      }
+    }
     // sub dirs
     for (var subdir in modDir.listSync(recursive: true).whereType<Directory>().toSet()) {
       List<File> files = subdir.listSync(recursive: true).whereType<File>().toList();
@@ -167,34 +181,32 @@ Future<List<AddingMod>> modAddSort() async {
         if (associatedItems.isEmpty && !associatedItems.contains(unknownItem)) {
           associatedItems.add(unknownItem);
         }
-        final previewImageFiles = files.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png');
-        final previewVideoFiles = files.where((e) => p.extension(e.path) == '.webm' || p.extension(e.path) == '.mp4');
-        previewImages.addAll(previewImageFiles);
-        previewVideos.addAll(previewVideoFiles);
-        if (previewImageFiles.isEmpty) {
-          for (var file in modDirFiles.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png')) {
+
+        final subDirPreviewImages = files.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png');
+        final subDirPreviewVideos = files.where((e) => p.extension(e.path) == '.webm' || p.extension(e.path) == '.mp4');
+        if (subDirPreviewVideos.isEmpty && subDirPreviewVideos.isEmpty) {
+          for (var file in previewImages) {
             await file.copy(file.path.replaceFirst(file.parent.path, subdir.path));
           }
-        }
-        if (previewVideoFiles.isEmpty) {
-          for (var file in modDirFiles.where((e) => p.extension(e.path) == '.webm' || p.extension(e.path) == '.mp4')) {
-            final copiedPreviewVid = await file.copy(file.path.replaceFirst(file.parent.path, subdir.path));
-            if (!await File('${p.withoutExtension(copiedPreviewVid.path)}.jpg').exists()) {
-              final previewThumbnailData = await getVideoThumbnail(copiedPreviewVid.path);
-              if (previewThumbnailData != null) {
-                await File('${p.withoutExtension(copiedPreviewVid.path)}.jpg').writeAsBytes(previewThumbnailData);
+          for (var file in previewVideos) {
+            await file.copy(file.path.replaceFirst(file.parent.path, subdir.path));
+          }
+          for (var file in previewVideoThumbs) {
+            await file.copy(file.path.replaceFirst(file.parent.path, subdir.path));
+          }
+        } else {
+          if (subDirPreviewVideos.isNotEmpty) {
+            for (var file in subDirPreviewVideos) {
+              if (!await File('${p.withoutExtension(file.path)}.jpg').exists()) {
+                final result = await getVideoThumbnail(file.path);
+                if (result && File('${p.withoutExtension(file.path)}.jpg').existsSync()) {
+                  await File('${p.withoutExtension(file.path)}.jpg').copy('${p.withoutExtension(file.path)}.jpg'.replaceFirst(subdir.path, file.parent.path));
+                }
               }
             }
+            allSubDirsPreviewVideos.addAll(subDirPreviewVideos);
           }
-        }
-      }
-    }
-
-    for (var element in previewVideos) {
-      if (!await File('${p.withoutExtension(element.path)}.jpg').exists()) {
-        final previewThumbnailData = await getVideoThumbnail(element.path);
-        if (previewThumbnailData != null) {
-          await File('${p.withoutExtension(element.path)}.jpg').writeAsBytes(previewThumbnailData);
+          if (subDirPreviewImages.isNotEmpty) allSubDirsPreviewImages.addAll(subDirPreviewImages);
         }
       }
     }

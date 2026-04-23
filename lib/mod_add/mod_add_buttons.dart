@@ -40,7 +40,7 @@ class _ModAddDragDropButtonsState extends State<ModAddDragDropButtons> {
               onPressed: () async {
                 List<XFile> selectedFiles = [];
                 if (useAltFilePicker) {
-                  FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['7z', 'zip', 'rar', 'pmm']);
+                  FilePickerResult? result = await FilePicker.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['7z', 'zip', 'rar', 'pmm']);
                   if (result != null) selectedFiles = result.xFiles;
                 } else {
                   XTypeGroup archiveTypeGroup = XTypeGroup(label: appText.archives, extensions: widget.dragDropFileTypes);
@@ -63,7 +63,7 @@ class _ModAddDragDropButtonsState extends State<ModAddDragDropButtons> {
                 onPressed: () async {
                   List<String?> selectedDirPaths = [];
                   if (useAltFilePicker) {
-                    final path = await FilePicker.platform.getDirectoryPath();
+                    final path = await FilePicker.getDirectoryPath();
                     if (path != null) selectedDirPaths = [path];
                   } else {
                     selectedDirPaths = await getDirectoryPaths(confirmButtonText: appText.add);
