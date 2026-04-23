@@ -62,7 +62,7 @@ class _MainVitalGaugeGridState extends State<MainVitalGaugeGrid> {
                     onPressed: () async {
                       XFile? selectedImageFile;
                       if (useAltFilePicker) {
-                        FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['jpg', 'png']);
+                        FilePickerResult? result = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['jpg', 'png']);
                         if (result != null) selectedImageFile = result.xFiles.single;
                       } else {
                         XTypeGroup typeGroup = XTypeGroup(label: appText.images, extensions: const <String>['jpg', 'png']);

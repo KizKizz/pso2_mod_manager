@@ -171,7 +171,7 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
                             onPressed: () async {
                               List<XFile> files = [];
                               if (useAltFilePicker) {
-                                FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['aqm']);
+                                FilePickerResult? result = await FilePicker.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['aqm']);
                                 if (result != null) files = result.xFiles;
                               } else {
                                 const XTypeGroup aqmTypeGroup = XTypeGroup(label: 'AQM', extensions: <String>['aqm']);

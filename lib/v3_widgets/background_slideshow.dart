@@ -200,7 +200,7 @@ class _BackgroundSlideshowState extends State<BackgroundSlideshow> {
                     onPressed: () async {
                       List<XFile> selectedFiles = [];
                       if (useAltFilePicker) {
-                        FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['jpg', 'jpeg', 'png']);
+                        FilePickerResult? result = await FilePicker.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['jpg', 'jpeg', 'png']);
                         if (result != null) selectedFiles = result.xFiles;
                       } else {
                         const XTypeGroup jpgsTypeGroup = XTypeGroup(label: 'Images', extensions: <String>['jpg', 'jpeg', 'png']);

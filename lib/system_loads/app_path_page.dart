@@ -81,7 +81,7 @@ class _AppPathPageState extends State<AppPathPage> {
                               onPressed: () async {
                                 String? directoryPath;
                                 if (useAltFilePicker) {
-                                  directoryPath = await FilePicker.platform.getDirectoryPath();
+                                  directoryPath = await FilePicker.getDirectoryPath();
                                 } else {
                                   directoryPath = await getDirectoryPath();
                                 }
@@ -121,7 +121,7 @@ class _AppPathPageState extends State<AppPathPage> {
                               onPressed: () async {
                                 String? directoryPath;
                                 if (useAltFilePicker) {
-                                  directoryPath = await FilePicker.platform.getDirectoryPath();
+                                  directoryPath = await FilePicker.getDirectoryPath();
                                 } else {
                                   directoryPath = await getDirectoryPath();
                                 }
