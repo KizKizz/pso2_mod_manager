@@ -41,7 +41,7 @@ Future<void> modSwapAllWorkingPopup(context, bool isVanillaSwap, ItemData lItemD
               await modSwapTempDirsRemove();
               await modSwapTempDirsCreate();
               if (submod.category == defaultCategoryDirs[0]) {
-                swapOutputDir = await modSwapAccessories(context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), rItemData.getItemID());
+                swapOutputDir = await modSwapAccessories(context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), rItemData.getItemID(), lItemData.iconImagePath);
               } else if (submod.category == defaultCategoryDirs[14] || submod.category == defaultCategoryDirs[7]) {
                 swapOutputDir = await modSwapEmotes(context, isVanillaSwap, mod, submod, rItemData.getName(), lItemData.getIceDetails(), rItemData.getIceDetails(), itemCrossSwap);
               } else {
@@ -56,6 +56,7 @@ Future<void> modSwapAllWorkingPopup(context, bool isVanillaSwap, ItemData lItemD
                   lItemData.getItemID(),
                   rItemData.getItemID(),
                   itemCrossSwap,
+                  lItemData.iconImagePath
                 );
               }
               if (swapOutputDir.existsSync()) {

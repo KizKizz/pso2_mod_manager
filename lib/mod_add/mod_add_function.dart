@@ -152,7 +152,13 @@ Future<List<AddingMod>> modAddSort() async {
     // mod dir
     List<File> modDirFiles = modDir.listSync().whereType<File>().toList();
     if (modDirFiles.isNotEmpty && modDirFiles.indexWhere((e) => p.extension(e.path) == '' && p.basenameWithoutExtension(e.path).length > 29) != -1) {
-      submods.add(modDir);
+      Directory newSubmodDir = Directory(modDir.path + p.separator + p.basename(modDir.path));
+      if (!newSubmodDir.existsSync()) await newSubmodDir.create(recursive: true);
+      for (var file in modDirFiles) {
+        await file.copy(newSubmodDir.path + p.separator + p.basename(file.path));
+        if (p.extension(file.path) == '') await file.delete();
+      }
+      submods.add(newSubmodDir);
       // submodNames.add(p.basename(modDir.path));
       associatedItems.addAll(await matchItemData(associatedItems, sameItemIceNames, modDirFiles.where((e) => p.extension(e.path) == '').map((e) => e.path).toList()));
       if (associatedItems.isEmpty) {
@@ -235,6 +241,32 @@ Future<List<AddingMod>> modAddSort() async {
           .whereType<Directory>()
           .where((e) => e.existsSync() && e.listSync().whereType<File>().where((i) => p.extension(i.path) == '').isNotEmpty)
           .toList();
+
+      // Rename duplicates
+      String newItemDirDestPath = aItem.category == defaultCategoryDirs[1] && aItem.getName().split(' ').last == '[Se]'
+          ? mainModDirPath + p.separator + defaultCategoryDirs[16] + p.separator + aItem.getName().replaceAll(RegExp(charToReplace), '_')
+          : mainModDirPath + p.separator + aItem.category + p.separator + aItem.getName().replaceAll(RegExp(charToReplace), '_');
+      String existingModDirPath = newItemDirDestPath + p.separator + p.basename(newModDir.path);
+      for (var submodDir in newItemSubmodDirs) {
+        String existingSubmodDirPath = existingModDirPath + p.separator + p.basename(submodDir.path);
+        while (Directory(existingSubmodDirPath).existsSync() && p.basename(submodDir.path) == p.basename(existingSubmodDirPath)) {
+          String tempSubmodDirPath = p.dirname(submodDir.path) + p.separator + p.basename(existingSubmodDirPath);
+          if (Directory(tempSubmodDirPath).existsSync()) {
+            String newSubmodDirPath = tempSubmodDirPath.renameDuplicate();
+            existingSubmodDirPath = p.dirname(existingSubmodDirPath) + p.separator + p.basename(newSubmodDirPath);
+          }
+        }
+        if (p.basename(submodDir.path) != p.basename(existingSubmodDirPath)) {
+          await io.copyPath(submodDir.path, p.dirname(submodDir.path) + p.separator + p.basename(existingSubmodDirPath));
+          if (submodDir.existsSync()) await submodDir.delete(recursive: true);
+          newItemSubmodDirs = newModDir
+              .listSync(recursive: true)
+              .whereType<Directory>()
+              .where((e) => e.existsSync() && e.listSync().whereType<File>().where((i) => p.extension(i.path) == '').isNotEmpty)
+              .toList();
+        }
+      }
+
       submodNames = newItemSubmodDirs.map((e) => e.path.replaceFirst(newModDir.path + p.separator, '').trim().replaceAll(p.separator, ' > ')).toList();
       if (newModDir.listSync().whereType<File>().where((i) => p.extension(i.path) == '').isNotEmpty) {
         newItemSubmodDirs.insert(0, newModDir);
@@ -254,27 +286,6 @@ Future<List<AddingMod>> modAddSort() async {
         previewVideos.map((e) => File(e.path.replaceFirst(modDir.path, newModDir.path))).toList(),
         DateTime.now(),
       );
-
-      // Rename duplicates
-      String newItemDirDestPath = aItem.category == defaultCategoryDirs[1] && aItem.getName().split(' ').last == '[Se]'
-          ? mainModDirPath + p.separator + defaultCategoryDirs[16] + p.separator + aItem.getName().replaceAll(RegExp(charToReplace), '_')
-          : mainModDirPath + p.separator + aItem.category + p.separator + aItem.getName().replaceAll(RegExp(charToReplace), '_');
-      String existingModDirPath = newItemDirDestPath + p.separator + p.basename(newModDir.path);
-      while (Directory(existingModDirPath).existsSync()) {
-        if (Directory(newModDir.path.replaceFirst(p.dirname(newModDir.path), newItemDirDestPath)).existsSync()) {
-          String newModDirPath = newModDir.path.renameDuplicate();
-          existingModDirPath = newModDirPath.replaceFirst(
-            modAddTempSortedDirPath,
-            aItem.category == defaultCategoryDirs[1] && aItem.getName().split(' ').last == '[Se]'
-                ? mainModDirPath + p.separator + defaultCategoryDirs[16]
-                : mainModDirPath + p.separator + aItem.category,
-          );
-          await io.copyPath(newModDir.path, newModDirPath);
-          if (newModDir.existsSync()) await newModDir.delete(recursive: true);
-          newAddingModItem = await modAddRenameRefresh(Directory(newModDirPath), newAddingModItem);
-          newModDir = newAddingModItem.modDir;
-        }
-      }
 
       addingModList.add(newAddingModItem);
     }

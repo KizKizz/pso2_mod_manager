@@ -29,10 +29,11 @@ void quickSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, Item
   bool taskWorking = false;
 
   showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(builder: (dialogContext, setState) {
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (dialogContext, setState) {
           if (!taskWorking) {
             WidgetsBinding.instance.addPostFrameCallback((_) async {
               taskWorking = true;
@@ -41,12 +42,33 @@ void quickSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, Item
               await modSwapTempDirsRemove();
               await modSwapTempDirsCreate();
               if (submod.category == defaultCategoryDirs[0]) {
-                swapOutputDir = await modSwapAccessories(context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), rItemData.getItemID());
+                swapOutputDir = await modSwapAccessories(
+                  context,
+                  isVanillaSwap,
+                  mod,
+                  submod,
+                  lItemData.getIceDetails(),
+                  rItemData.getIceDetails(),
+                  rItemData.getName(),
+                  rItemData.getItemID(),
+                  lItemData.iconImagePath,
+                );
               } else if (submod.category == defaultCategoryDirs[14] || submod.category == defaultCategoryDirs[7]) {
                 swapOutputDir = await modSwapEmotes(context, isVanillaSwap, mod, submod, rItemData.getName(), lItemData.getIceDetails(), rItemData.getIceDetails(), ItemCrossSwap.none);
               } else {
-                swapOutputDir =
-                    await modSwapGeneral(context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), lItemData.getItemID(), rItemData.getItemID(), ItemCrossSwap.none);
+                swapOutputDir = await modSwapGeneral(
+                  context,
+                  isVanillaSwap,
+                  mod,
+                  submod,
+                  lItemData.getIceDetails(),
+                  rItemData.getIceDetails(),
+                  rItemData.getName(),
+                  lItemData.getItemID(),
+                  rItemData.getItemID(),
+                  ItemCrossSwap.none,
+                  lItemData.iconImagePath
+                );
               }
               if (swapOutputDir.existsSync()) {
                 // Add to mod manager
@@ -67,7 +89,10 @@ void quickSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, Item
             });
           }
           return AlertDialog(
-            shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: const BorderRadius.all(Radius.circular(5))),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: Theme.of(context).colorScheme.outline),
+              borderRadius: const BorderRadius.all(Radius.circular(5)),
+            ),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
             insetPadding: const EdgeInsets.all(5),
             contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
@@ -81,84 +106,80 @@ void quickSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, Item
                   overflowAlignment: OverflowBarAlignment.center,
                   children: [
                     CardOverlay(
-                        paddingValue: 10,
-                        child: Column(
-                          spacing: 5,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            GenericItemIconBox(iconImagePaths: [lItemData.iconImagePath], boxSize: const Size(100, 100), isNetwork: true),
-                            Text(appText.categoryName(lItemData.category), style: Theme.of(context).textTheme.titleMedium),
-                            Text(lItemData.getName(), style: Theme.of(context).textTheme.titleLarge),
-                            SingleChildScrollView(
-                              physics: const SuperRangeMaintainingScrollPhysics(),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: lItemData.getDetails().map((e) => Text(e)).toList(),
-                              ),
-                            )
-                          ],
-                        )),
-                    Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: LoadingAnimationWidget.twoRotatingArc(
-                        color: Theme.of(context).colorScheme.primary,
-                        size: 30,
+                      paddingValue: 10,
+                      child: Column(
+                        spacing: 5,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          GenericItemIconBox(iconImagePaths: [lItemData.iconImagePath], boxSize: const Size(100, 100), isNetwork: true),
+                          Text(appText.categoryName(lItemData.category), style: Theme.of(context).textTheme.titleMedium),
+                          Text(lItemData.getName(), style: Theme.of(context).textTheme.titleLarge),
+                          SingleChildScrollView(
+                            physics: const SuperRangeMaintainingScrollPhysics(),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: lItemData.getDetails().map((e) => Text(e)).toList(),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.all(5),
+                      child: LoadingAnimationWidget.twoRotatingArc(color: Theme.of(context).colorScheme.primary, size: 30),
+                    ),
                     CardOverlay(
-                        paddingValue: 10,
-                        child: Column(
-                          spacing: 5,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            GenericItemIconBox(iconImagePaths: [rItemData.iconImagePath], boxSize: const Size(100, 100), isNetwork: true),
-                            Text(appText.categoryName(rItemData.category), style: Theme.of(context).textTheme.titleMedium),
-                            Text(rItemData.getName(), style: Theme.of(context).textTheme.titleLarge),
-                            SingleChildScrollView(
-                              physics: const SuperRangeMaintainingScrollPhysics(),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: rItemData.getDetails().map((e) => Text(e)).toList(),
-                              ),
-                            )
-                          ],
-                        ))
+                      paddingValue: 10,
+                      child: Column(
+                        spacing: 5,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          GenericItemIconBox(iconImagePaths: [rItemData.iconImagePath], boxSize: const Size(100, 100), isNetwork: true),
+                          Text(appText.categoryName(rItemData.category), style: Theme.of(context).textTheme.titleMedium),
+                          Text(rItemData.getName(), style: Theme.of(context).textTheme.titleLarge),
+                          SingleChildScrollView(
+                            physics: const SuperRangeMaintainingScrollPhysics(),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: rItemData.getDetails().map((e) => Text(e)).toList(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
                 const Icon(Icons.arrow_downward_rounded, size: 30),
                 CardOverlay(
-                    paddingValue: 10,
-                    child: Column(
-                      spacing: 5,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        GenericItemIconBox(iconImagePaths: [lItemData.iconImagePath], boxSize: const Size(100, 100), isNetwork: true),
-                        Text(appText.categoryName(rItemData.category), style: Theme.of(context).textTheme.titleMedium),
-                        Text(rItemData.getName(), style: Theme.of(context).textTheme.titleLarge),
-                        Visibility(
-                          visible: !isVanillaSwap,
-                          child: Text(submod.submodName, style: Theme.of(context).textTheme.labelLarge),
-                        )
-                      ],
-                    ))
+                  paddingValue: 10,
+                  child: Column(
+                    spacing: 5,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      GenericItemIconBox(iconImagePaths: [lItemData.iconImagePath], boxSize: const Size(100, 100), isNetwork: true),
+                      Text(appText.categoryName(rItemData.category), style: Theme.of(context).textTheme.titleMedium),
+                      Text(rItemData.getName(), style: Theme.of(context).textTheme.titleLarge),
+                      Visibility(
+                        visible: !isVanillaSwap,
+                        child: Text(submod.submodName, style: Theme.of(context).textTheme.labelLarge),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
             actionsPadding: const EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),
             actions: [
               const HoriDivider(),
-              Row(
-                spacing: 5,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(itemSwapWorkingStatus.watch(context)),
-                ],
-              )
+              Row(spacing: 5, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [Text(itemSwapWorkingStatus.watch(context))]),
             ],
           );
-        });
-      });
+        },
+      );
+    },
+  );
 }
