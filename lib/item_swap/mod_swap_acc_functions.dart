@@ -12,6 +12,7 @@ import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/v3_functions/original_ice_download.dart';
 import 'package:pso2_mod_manager/v3_home/main_item_swap_grid.dart';
+import 'package:http/http.dart' as http;
 
 Future<Directory> modSwapAccessories(
   context,
@@ -22,6 +23,7 @@ Future<Directory> modSwapAccessories(
   List<String> rItemAvailableIces,
   String rItemName,
   String rItemID,
+  String lItemIconWebLink,
 ) async {
   // Clean and create temp dirs
   // await modSwapTempDirsRemove();
@@ -30,6 +32,17 @@ Future<Directory> modSwapAccessories(
   String tempSubmodPathF = Uri.file('$modSwapTempLItemDirPath/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath();
   String tempSubmodPathT = Uri.file('$modSwapTempRItemDirPath/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath();
   List<List<String>> iceSwappingList = [];
+  // Pack Path
+  rItemName = rItemName.replaceAll(RegExp(charToReplace), '_').trim();
+  String packDirPath = '';
+  if (fromSubmod.modName == fromSubmod.submodName) {
+    packDirPath = Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath();
+  } else {
+    packDirPath = Uri.file(
+      '$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName}/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}',
+    ).toFilePath();
+  }
+  Directory(packDirPath).createSync(recursive: true);
 
   rItemAvailableIces.removeWhere((element) => element.split(': ').last.isEmpty);
   rItemAvailableIces.isEmpty ? itemSwapWorkingStatus.value = appText.noMatchingFilesBetweenItemsToSwap : appText.sortingFileData;
@@ -67,13 +80,7 @@ Future<Directory> modSwapAccessories(
     //copy or download files to temp fromitem dir
     File? lItemIceFileInTemp;
     if (isVanillaItemSwap) {
-      //get ice path
-      // final matchedlItemData = oItemData.firstWhere(
-      //   (e) => p.basenameWithoutExtension(e.path) == lItemIceName,
-      //   orElse: () => OfficialIceFile('', '', 0, ''),
-      // );
       lItemIceFileInTemp = await originalIceDownload(lItemIceName, modSwapTempLItemDirPath, itemSwapWorkingStatus);
-      // await modSwapOriginalFileDownload(matchedlItemData.path, matchedlItemData.server, modSwapTempLItemDirPath);
     } else {
       int modFileIndexF = fromSubmod.modFiles.indexWhere((element) => element.modFileName == lItemIceName);
       if (modFileIndexF != -1) {
@@ -307,17 +314,6 @@ Future<Directory> modSwapAccessories(
       }
     }
 
-    //pack
-    rItemName = rItemName.replaceAll(RegExp(charToReplace), '_').trim();
-    String packDirPath = '';
-    if (fromSubmod.modName == fromSubmod.submodName) {
-      packDirPath = Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath();
-    } else {
-      packDirPath = Uri.file(
-        '$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName}/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}',
-      ).toFilePath();
-    }
-    Directory(packDirPath).createSync(recursive: true);
     if (Platform.isLinux) {
       await Process.run('wine $zamboniExePath -c -pack -outdir "$packDirPath"', [Uri.file('$tempSubmodPathF/${lItemIceName}_ext').toFilePath()]);
     } else {
@@ -326,52 +322,61 @@ Future<Directory> modSwapAccessories(
     if (File(Uri.file('$tempSubmodPathF/${lItemIceName}_ext.ice').toFilePath()).existsSync()) {
       File(Uri.file('$tempSubmodPathF/${lItemIceName}_ext.ice').toFilePath()).renameSync(Uri.file('$packDirPath/$rItemIceName').toFilePath());
     }
-    //mod previews
-    //image
-    for (var imagePath in fromMod.previewImages) {
-      if (Directory(
-        Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath(),
-      ).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(imagePath)).isEmpty) {
-        File(imagePath).copySync(Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}/${p.basename(imagePath)}').toFilePath());
-      }
+  }
+
+  // Mod previews
+  // image
+  for (var imagePath in fromMod.previewImages) {
+    if (Directory(
+      Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath(),
+    ).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(imagePath)).isEmpty) {
+      File(imagePath).copySync(Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}/${p.basename(imagePath)}').toFilePath());
     }
-    //video
-    for (var videoPath in fromMod.previewVideos) {
-      if (Directory(
-        Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath(),
-      ).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(videoPath)).isEmpty) {
-        File(videoPath).copySync(Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}/${p.basename(videoPath)}').toFilePath());
-      }
+  }
+  // video
+  for (var videoPath in fromMod.previewVideos) {
+    if (Directory(
+      Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath(),
+    ).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(videoPath)).isEmpty) {
+      File(videoPath).copySync(Uri.file('$modSwapTempOutputDirPath/$rItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}/${p.basename(videoPath)}').toFilePath());
     }
-    //submod previews
-    //image
-    for (var imagePath in fromSubmod.previewImages) {
+  }
+  // Submod previews
+  // image
+  for (var imagePath in fromSubmod.previewImages) {
+    if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(imagePath)).isEmpty) {
+      File(imagePath).copySync(Uri.file('$packDirPath/${p.basename(imagePath)}').toFilePath());
+    }
+  }
+  // video
+  for (var videoPath in fromSubmod.previewVideos) {
+    if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(videoPath)).isEmpty) {
+      File(videoPath).copySync(Uri.file('$packDirPath/${p.basename(videoPath)}').toFilePath());
+    }
+  }
+  // Modfile previews
+  // image
+  for (var imagePaths in fromSubmod.modFiles.map((e) => e.previewImages!).toList()) {
+    for (var imagePath in imagePaths) {
       if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(imagePath)).isEmpty) {
         File(imagePath).copySync(Uri.file('$packDirPath/${p.basename(imagePath)}').toFilePath());
       }
     }
-    //video
-    for (var videoPath in fromSubmod.previewVideos) {
+  }
+  // video
+  for (var videoPaths in fromSubmod.modFiles.map((e) => e.previewVideos!).toList()) {
+    for (var videoPath in videoPaths) {
       if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(videoPath)).isEmpty) {
         File(videoPath).copySync(Uri.file('$packDirPath/${p.basename(videoPath)}').toFilePath());
       }
     }
-    //modfile previews
-    //image
-    for (var imagePaths in fromSubmod.modFiles.map((e) => e.previewImages!).toList()) {
-      for (var imagePath in imagePaths) {
-        if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(imagePath)).isEmpty) {
-          File(imagePath).copySync(Uri.file('$packDirPath/${p.basename(imagePath)}').toFilePath());
-        }
-      }
-    }
-    //video
-    for (var videoPaths in fromSubmod.modFiles.map((e) => e.previewVideos!).toList()) {
-      for (var videoPath in videoPaths) {
-        if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(videoPath)).isEmpty) {
-          File(videoPath).copySync(Uri.file('$packDirPath/${p.basename(videoPath)}').toFilePath());
-        }
-      }
+  }
+  // Vanilla swap preview
+  if (isVanillaItemSwap && lItemIconWebLink.isNotEmpty) {
+    final response = await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2ngs_file_downloader/main$lItemIconWebLink'));
+    if (response.statusCode == 200) {
+      File newIconImageFile = File(packDirPath + p.separator + p.basename(lItemIconWebLink));
+      await newIconImageFile.writeAsBytes(response.bodyBytes);
     }
   }
 

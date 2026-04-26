@@ -205,6 +205,7 @@ Future<void> itemSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemDat
                                         rItemData.getIceDetails(),
                                         rItemData.getName(),
                                         rItemData.getItemID(),
+                                        lItemData.iconImagePath
                                       );
                                     } else if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[14] || selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7]) {
                                       swapOutputDir = await modSwapEmotes(
@@ -229,6 +230,7 @@ Future<void> itemSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemDat
                                         lItemData.getItemID(),
                                         rItemData.getItemID(),
                                         itemCrossSwap,
+                                        lItemData.iconImagePath
                                       );
                                     }
                                   } else {
@@ -242,6 +244,7 @@ Future<void> itemSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemDat
                                         rItemData.getIceDetails(),
                                         rItemData.getName(),
                                         rItemData.getItemID(),
+                                        lItemData.iconImagePath
                                       );
                                     } else if (submod.category == defaultCategoryDirs[14] || submod.category == defaultCategoryDirs[7]) {
                                       swapOutputDir = await modSwapEmotes(
@@ -266,6 +269,7 @@ Future<void> itemSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemDat
                                         lItemData.getItemID(),
                                         rItemData.getItemID(),
                                         itemCrossSwap,
+                                        lItemData.iconImagePath
                                       );
                                     }
                                   }

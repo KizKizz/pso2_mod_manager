@@ -307,35 +307,6 @@ Future<void> modSwapTempDirsRemove() async {
   }
 }
 
-// Future<File?> modSwapOriginalFileDownload_(String networkFilePath, String server, String saveLocation) async {
-//   if (networkFilePath.isNotEmpty) {
-//     final serverURLs = [segaPatchServerURL, segaMasterServerURL, segaPatchServerBackupURL, segaMasterServerBackupURL];
-//     for (var url in serverURLs) {
-//       final task = DownloadTask(
-//           url: '$url$networkFilePath',
-//           filename: p.basenameWithoutExtension(networkFilePath),
-//           headers: {"User-Agent": "AQUA_HTTP"},
-//           baseDirectory: BaseDirectory.root,
-//           directory: saveLocation,
-//           updates: Updates.statusAndProgress,
-//           allowPause: false);
-
-//       final result = await FileDownloader().download(task,
-//           onProgress: (progress) => itemSwapWorkingStatus.value = '${appText.dText(appText.downloadingFileName, p.basenameWithoutExtension(networkFilePath))} [ ${(progress * 100).round()}% ]');
-
-//       switch (result.status) {
-//         case TaskStatus.complete:
-//           itemSwapWorkingStatus.value = appText.fileDownloadSuccessful;
-//           return File(saveLocation + p.separator + p.basenameWithoutExtension(networkFilePath));
-//         default:
-//           itemSwapWorkingStatus.value = appText.fileDownloadFailed;
-//       }
-//     }
-//   }
-
-//   return null;
-// }
-
 SubMod lItemSubmodGet(ItemData lItemData) {
   List<ModFile> modFileList = [];
   String fromItemNameSwap = '${lItemData.getName().replaceAll('/', '_')}_${appText.swap}';
