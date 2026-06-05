@@ -21,31 +21,41 @@ import 'package:pso2_mod_manager/v3_functions/video_thumbnail_fetch.dart';
 List<Item> modSetItemsFromMasterList = [];
 
 Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
-  // ogModFilesLoader();
-
   List<CategoryType> structureFromJson = [];
   List<CategoryType> cateTypes = [];
   modSetItemsFromMasterList = [];
   masterUnappliedItemList = [];
-  // bool isEmptyCatesHide = false;
-
-  // Load item data
-  // gItemData = await loadItemData();
 
   //Load list from json
   String modSettingsFromJson = await File(mainModListJsonPath).readAsString();
   if (modSettingsFromJson.isNotEmpty) {
     var jsonData = await jsonDecode(modSettingsFromJson);
-    for (var type in jsonData) {
-      structureFromJson.add(CategoryType.fromJson(type));
+    if (reload) {
+      for (var type in jsonData) {
+        structureFromJson.add(CategoryType.fromJson(type));
+      }
+    } else {
+      modLoadingStatus.value = '';
+      await Future.delayed(const Duration(microseconds: 1000));
+      for (Map<String, dynamic> cateTypeData in jsonData) {
+        CategoryType cateType = CategoryType.fromJson(cateTypeData);
+        modLoadingStatus.value = cateType.groupName;
+        await Future.delayed(const Duration(microseconds: 1000));
+        cateTypes.add(cateType);
+      }
+
+      //Sort types position
+      cateTypes.sort(((a, b) => a.position.compareTo(b.position)));
+
+      return cateTypes;
     }
   }
+
   //firts launch, empty json
   //Create categories
   final categoryDirsinMods = Directory(mainModDirPath).listSync(recursive: false).whereType<Directory>();
   List<String> layerWearsGroup = ['Basewears', 'Innerwears', 'Outerwears', 'Setwears'];
   List<String> castPartsGroup = ['Cast Arm Parts', 'Cast Body Parts', 'Cast Leg Parts'];
-  //List<Category> categories = [];
 
   for (var dir in categoryDirsinMods) {
     //Default Group categories
@@ -207,16 +217,16 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
                           modFile.setNames = curJsonModFilesList[modFileIndex].setNames;
 
                           // Check applied mods for changes
-                          if (modFile.applyStatus) {
-                            for (var path in modFile.ogLocations) {
-                              modFile.ogMd5s.clear();
-                              modFile.ogMd5s.add(await File(path).getMd5Hash());
-                              if (modFile.md5.isEmpty) modFile.md5 = await File(modFile.location).getMd5Hash();
-                              if (!masterUnappliedItemList.contains(item) && modFile.ogMd5s.first != modFile.md5) {
-                                masterUnappliedItemList.add(item);
-                              }
-                            }
-                          }
+                          // if (modFile.applyStatus) {
+                          //   for (var path in modFile.ogLocations) {
+                          //     modFile.ogMd5s.clear();
+                          //     modFile.ogMd5s.add(await File(path).getMd5Hash());
+                          //     if (modFile.md5.isEmpty) modFile.md5 = await File(modFile.location).getMd5Hash();
+                          //     if (!masterUnappliedItemList.contains(item) && modFile.ogMd5s.first != modFile.md5) {
+                          //       masterUnappliedItemList.add(item);
+                          //     }
+                          //   }
+                          // }
                         } else {
                           modFile.isNew = true;
                           submod.isNew = true;
@@ -281,11 +291,6 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
 
   //Sort types position
   cateTypes.sort(((a, b) => a.position.compareTo(b.position)));
-
-  //Save to json
-  // cateTypes.map((cateType) => cateType.toJson()).toList();
-  // const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-  // File(mainModListJsonPath).writeAsStringSync(encoder.convert(cateTypes));
 
   //Get hidden catetypes and cates
   // if (isEmptyCatesHide) {

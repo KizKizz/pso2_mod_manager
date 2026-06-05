@@ -12,7 +12,8 @@ import 'package:signals/signals_flutter.dart';
 Signal<String> modLoadingStatus = Signal('');
 
 class AppModLoadPage extends StatefulWidget {
-  const AppModLoadPage({super.key});
+  const AppModLoadPage({super.key, this.isModReload});
+  final bool? isModReload;
 
   @override
   State<AppModLoadPage> createState() => _AppModLoadPageState();
@@ -22,49 +23,41 @@ class _AppModLoadPageState extends State<AppModLoadPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: modFileStructureLoader(context, false),
+      future: modFileStructureLoader(context, widget.isModReload ?? false),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return Center(
-              child: Column(
-            spacing: 5,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CardOverlay(
-                paddingValue: 15,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    LoadingAnimationWidget.staggeredDotsWave(
-                      color: Theme.of(context).colorScheme.primary,
-                      size: 100,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Text(
-                        appText.loadingModFiles,
-                        style: Theme.of(context).textTheme.bodyLarge,
+            child: Column(
+              spacing: 5,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CardOverlay(
+                  paddingValue: 15,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      LoadingAnimationWidget.staggeredDotsWave(color: Theme.of(context).colorScheme.primary, size: 100),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Text(appText.loadingModFiles, style: Theme.of(context).textTheme.bodyLarge),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              ConstrainedBox(
+                ConstrainedBox(
                   constraints: const BoxConstraints(minWidth: 350),
                   child: CardOverlay(
                     paddingValue: 15,
-                    child: Text(
-                      modLoadingStatus.watch(context),
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ))
-            ],
-          ));
+                    child: Text(modLoadingStatus.watch(context), textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
+                  ),
+                ),
+              ],
+            ),
+          );
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-          return FutureBuilderError(loadingText: appText.loadingModFiles, snapshotError: snapshot.error.toString(), isPopup: false, showContButton: true,);
+          return FutureBuilderError(loadingText: appText.loadingModFiles, snapshotError: snapshot.error.toString(), isPopup: false, showContButton: true);
         } else {
           masterModList = snapshot.data;
           saveMasterModListToJson();

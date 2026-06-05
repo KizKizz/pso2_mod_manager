@@ -7,6 +7,7 @@ import 'package:pso2_mod_manager/mod_apply/save_restore_function.dart';
 import 'package:pso2_mod_manager/mod_apply/save_restore_popup.dart';
 import 'package:pso2_mod_manager/settings/other_settings.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/system_loads/app_mod_load_page.dart';
 import 'package:pso2_mod_manager/v2_home/homepage_v2.dart';
 import 'package:pso2_mod_manager/v3_widgets/jp_game_start_btn.dart';
 import 'package:pso2_mod_manager/mod_checksum/checksum_indicator.dart';
@@ -117,7 +118,7 @@ class _AppTitleBarState extends State<AppTitleBar> {
                         onPressed: () async {
                           selectedItemV2.value = null;
                           pageIndex = 6;
-                          curPage.value = appPages[pageIndex];
+                          curPage.value = AppModLoadPage(isModReload: true);
                         },
                         child: const Icon(Icons.refresh, size: 18),
                       ),
