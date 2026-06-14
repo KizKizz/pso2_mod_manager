@@ -166,7 +166,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                 child: const BackgroundSlideshow(
                   isMini: false,
                 )),
-            curPage.watch(context)
+            SignalBuilder(builder: (context) => curPage.value)
           ],
         ));
   }

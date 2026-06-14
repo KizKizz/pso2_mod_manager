@@ -381,7 +381,7 @@ class _ModSetCardLayoutState extends State<ModSetCardLayout> {
                                 setState(() {});
                               }
                             : null,
-                        child: Text(widget.activeSubmod.applyStatus ? appText.restore : appText.apply))),
+                        child: Text(widget.activeSubmod.applyStatus ? appText.remove : appText.apply))),
 
                 // Quick swap Menu
                 QuickSwapMenu(item: widget.item, mod: widget.activeMod, submod: widget.activeSubmod),

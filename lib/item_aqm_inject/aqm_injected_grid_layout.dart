@@ -302,7 +302,7 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                           }
                                           saveMasterAqmInjectListToJson();
                                         },
-                                        child: Text(appText.restoreAll),
+                                        child: Text(appText.removeAll),
                                       ),
                                     ),
                                   ],

@@ -283,7 +283,8 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                           }
                         : null,
                     child: AutoSizeText(
-                      appText.dText(numOfAppliedMods > 1 ? appText.holdToRestoreNumAppliedMods : appText.holdToRestoreNumAppliedMod, numOfAppliedMods.toString()),
+                      // appText.dText(numOfAppliedMods > 1 ? appText.holdToRestoreNumAppliedMods : appText.holdToRestoreNumAppliedMod, numOfAppliedMods.toString()),
+                      appText.holdToRemoveAllMods,
                       textAlign: TextAlign.center,
                     ),
                   ),

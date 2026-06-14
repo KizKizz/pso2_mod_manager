@@ -187,7 +187,7 @@ class _CmlItemListLayoutState extends State<CmlItemListLayout> {
                                     setState(() {});
                                   }
                                 : null,
-                            child: Text(appText.restore),
+                            child: Text(appText.remove),
                           ),
                         ],
                       ),

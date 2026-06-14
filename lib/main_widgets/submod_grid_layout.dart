@@ -201,7 +201,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                               }
                             }
                           : null,
-                      child: Text(widget.submod.applyStatus ? appText.restore : appText.apply),
+                      child: Text(widget.submod.applyStatus ? appText.remove : appText.apply),
                     ),
                   ),
                   Visibility(

@@ -67,7 +67,7 @@ class _LineStrikeSleeveOriginalTileState extends State<LineStrikeSleeveOriginalT
                                 result ? restoreSuccessNotification(widget.sleeve.iceDdsName) : restoreFailedNotification(widget.sleeve.iceDdsName);
                               }
                             },
-                            child: Text(appText.restore)),
+                            child: Text(appText.remove)),
                       ]),
                     ),
                   ],

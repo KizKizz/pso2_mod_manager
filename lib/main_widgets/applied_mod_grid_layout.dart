@@ -190,7 +190,7 @@ class _ModCardLayoutState extends State<ModCardLayout> {
                           await modToGameData(context, false, widget.item, widget.mod, widget.submod);
                         }
                       : null,
-                  child: Text(appText.restore),
+                  child: Text(appText.remove),
                 ),
               ),
               // Quick swap Menu

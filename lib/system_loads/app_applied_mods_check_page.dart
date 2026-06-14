@@ -125,7 +125,7 @@ class _AppAppliedModsLoadPageState extends State<AppAppliedModsLoadPage> {
                               pageIndex++;
                               curPage.value = appPages[pageIndex];
                             },
-                            child: Text(appText.restoreAll),
+                            child: Text(appText.removeAll),
                           ),
                           OutlinedButton(
                             onPressed: () {

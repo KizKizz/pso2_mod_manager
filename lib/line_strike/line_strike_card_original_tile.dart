@@ -69,7 +69,7 @@ class _LineStrikeCardOriginalTileState extends State<LineStrikeCardOriginalTile>
                                 result ? restoreSuccessNotification(widget.card.cardZeroDdsName) : restoreFailedNotification(widget.card.cardZeroDdsName);
                               }
                             },
-                            child: Text(appText.restore)),
+                            child: Text(appText.remove)),
                         ModManTooltip(
                             message: appText.exportToPngImage,
                             child: IconButton.filled(

@@ -225,7 +225,8 @@ class _AppliedListV2State extends State<AppliedListV2> {
                                   }
                                 : null,
                             child: AutoSizeText(
-                              appText.dText(numOfAppliedMods > 1 ? appText.holdToRestoreNumAppliedMods : appText.holdToRestoreNumAppliedMod, numOfAppliedMods.toString()),
+                              // appText.dText(numOfAppliedMods > 1 ? appText.holdToRestoreNumAppliedMods : appText.holdToRestoreNumAppliedMod, numOfAppliedMods.toString()),
+                              appText.holdToRemoveAllMods,
                               textAlign: TextAlign.center,
                             ),
                           ),

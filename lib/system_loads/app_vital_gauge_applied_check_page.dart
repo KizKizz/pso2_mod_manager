@@ -61,86 +61,88 @@ class _AppVitalGaugeAppliedCheckPageState extends State<AppVitalGaugeAppliedChec
             curPage.value = appPages[pageIndex];
             return const SizedBox();
           } else {
-            return SizedBox(
-              width: MediaQuery.of(context).size.width * 0.4,
-              height: MediaQuery.of(context).size.height,
-              child: Padding(
-                padding: const EdgeInsets.all(5),
-                child: CardOverlay(
-                    paddingValue: 10,
-                    child: Column(
-                      spacing: 10,
-                      children: [
-                        Center(
-                          child: Text(
-                            appText.restoredVitalGauges,
-                            style: Theme.of(context).textTheme.headlineMedium,
+            return Center(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.4,
+                height: MediaQuery.of(context).size.height,
+                child: Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: CardOverlay(
+                      paddingValue: 10,
+                      child: Column(
+                        spacing: 10,
+                        children: [
+                          Center(
+                            child: Text(
+                              appText.restoredVitalGauges,
+                              style: Theme.of(context).textTheme.headlineMedium,
+                            ),
                           ),
-                        ),
-                        const Divider(
-                          height: 0,
-                          thickness: 1.5,
-                          indent: 10,
-                          endIndent: 10,
-                        ),
-                        Text(appText.restoredVitalGaugeInfo),
-                        Expanded(
-                          child: VitalGaugeBackgroundGridLayout(backgrounds: unappliedVitalGaugeList, showButtons: false),
-                        ),
-                        const Divider(
-                          height: 0,
-                          thickness: 1.5,
-                          indent: 10,
-                          endIndent: 10,
-                        ),
-                        OverflowBar(
-                          spacing: 5,
-                          overflowSpacing: 5,
-                          alignment: MainAxisAlignment.end,
-                          children: [
-                            OutlinedButton(
-                                onPressed: () async {
-                                  for (var vitalGauge in unappliedVitalGaugeList) {
-                                    final result = await vitalGaugeApplyPopup(context, vitalGauge.replacedImagePath, vitalGauge);
-                                    if (result) {
-                                      vitalGauge.replacedImagePath = vitalGauge.replacedImagePath;
-                                      vitalGauge.replacedImageName = vitalGauge.replacedImageName;
-                                      vitalGauge.isReplaced = true;
-                                      saveMasterVitalGaugeToJson(masterVitalGaugeBackgroundList);
-                                      setState(() {});
+                          const Divider(
+                            height: 0,
+                            thickness: 1.5,
+                            indent: 10,
+                            endIndent: 10,
+                          ),
+                          Text(appText.restoredVitalGaugeInfo),
+                          Expanded(
+                            child: VitalGaugeBackgroundGridLayout(backgrounds: unappliedVitalGaugeList, showButtons: false),
+                          ),
+                          const Divider(
+                            height: 0,
+                            thickness: 1.5,
+                            indent: 10,
+                            endIndent: 10,
+                          ),
+                          OverflowBar(
+                            spacing: 5,
+                            overflowSpacing: 5,
+                            alignment: MainAxisAlignment.end,
+                            children: [
+                              OutlinedButton(
+                                  onPressed: () async {
+                                    for (var vitalGauge in unappliedVitalGaugeList) {
+                                      final result = await vitalGaugeApplyPopup(context, vitalGauge.replacedImagePath, vitalGauge);
+                                      if (result) {
+                                        vitalGauge.replacedImagePath = vitalGauge.replacedImagePath;
+                                        vitalGauge.replacedImageName = vitalGauge.replacedImageName;
+                                        vitalGauge.isReplaced = true;
+                                        saveMasterVitalGaugeToJson(masterVitalGaugeBackgroundList);
+                                        setState(() {});
+                                      }
                                     }
-                                  }
-                                  pageIndex++;
-                                  curPage.value = appPages[pageIndex];
-                                },
-                                child: Text(appText.reApplyAll)),
-                            OutlinedButton(
-                                onPressed: () async {
-                                  for (var vitalGauge in unappliedVitalGaugeList) {
-                                    bool result = await vitalGaugeRestorePopup(context, vitalGauge);
-                                    if (result) {
-                                      vitalGauge.replacedMd5 = '';
-                                      vitalGauge.replacedImagePath = '';
-                                      vitalGauge.replacedImageName = '';
-                                      vitalGauge.isReplaced = false;
-                                      saveMasterVitalGaugeToJson(masterVitalGaugeBackgroundList);
-                                      setState(() {});
+                                    pageIndex++;
+                                    curPage.value = appPages[pageIndex];
+                                  },
+                                  child: Text(appText.reApplyAll)),
+                              OutlinedButton(
+                                  onPressed: () async {
+                                    for (var vitalGauge in unappliedVitalGaugeList) {
+                                      bool result = await vitalGaugeRestorePopup(context, vitalGauge);
+                                      if (result) {
+                                        vitalGauge.replacedMd5 = '';
+                                        vitalGauge.replacedImagePath = '';
+                                        vitalGauge.replacedImageName = '';
+                                        vitalGauge.isReplaced = false;
+                                        saveMasterVitalGaugeToJson(masterVitalGaugeBackgroundList);
+                                        setState(() {});
+                                      }
                                     }
-                                  }
-                                  pageIndex++;
-                                  curPage.value = appPages[pageIndex];
-                                },
-                                child: Text(appText.removeAll)),
-                                OutlinedButton(
-                                onPressed: () {
-                                  pageIndex++;
-                                  curPage.value = appPages[pageIndex];
-                                },
-                                child: Text(appText.skip)),
-                          ],
-                        )
-                      ],
-                    )),
+                                    pageIndex++;
+                                    curPage.value = appPages[pageIndex];
+                                  },
+                                  child: Text(appText.removeAll)),
+                                  OutlinedButton(
+                                  onPressed: () {
+                                    pageIndex++;
+                                    curPage.value = appPages[pageIndex];
+                                  },
+                                  child: Text(appText.skip)),
+                            ],
+                          )
+                        ],
+                      )),
+                ),
               ),
             );
           }

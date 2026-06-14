@@ -38,7 +38,7 @@ List<Widget> homepageWidgets = [
   const MainItemAqmInjectGrid(),
   const MainCmlReplaceGrid(),
   const MainVitalGaugeGrid(),
-  const MainLineStrikeGrid()
+  const MainLineStrikeGrid(),
 ];
 List<Widget> homepageV2Widgets = [
   const HomepageV2(),
@@ -49,7 +49,7 @@ List<Widget> homepageV2Widgets = [
   const MainItemAqmInjectGrid(),
   const MainCmlReplaceGrid(),
   const MainVitalGaugeGrid(),
-  const MainLineStrikeGrid()
+  const MainLineStrikeGrid(),
 ];
 List<Widget> homepageFooterWidgets = [const ModAdd(isPopup: false), const Settings(), const HelpPageGrid()];
 
@@ -63,10 +63,10 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   @override
   void initState() {
-    footerSideMenuController.changePage(-1);
+    footerSideMenuController.goTo(-1);
     sideMenuAlwaysExpanded ? sideBarCollapse.value = false : sideBarCollapse.value = true;
     // if (!v2Homepage.value)
-    mainSideMenuController.changePage(defaultHomepageIndex);
+    mainSideMenuController.goTo(defaultHomepageIndex);
     homepageCurrentWidget.value = v2Homepage.value && defaultHomepageIndex == 0 ? homepageV2Widgets.first : homepageWidgets[defaultHomepageIndex];
     if (Directory('${Directory.current.path}${p.separator}appUpdate').existsSync()) {
       Directory('${Directory.current.path}${p.separator}appUpdate').deleteSync(recursive: true);
@@ -87,9 +87,7 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     // Refresh
     if (settingChangeStatus.watch(context) != settingChangeStatus.peek() || v2Homepage.watch(context) != v2Homepage.peek()) {
-      setState(
-        () {},
-      );
+      setState(() {});
     }
     List<String> homepageWidgetNames = [
       appText.itemList,
@@ -100,7 +98,7 @@ class _HomepageState extends State<Homepage> {
       appText.aqmInject,
       appText.cmlReplace,
       appText.vitalGauge,
-      appText.lineStrike
+      appText.lineStrike,
     ];
     List<Icon> homepageWidgetIcons = [
       const Icon(Icons.list_alt),
@@ -111,7 +109,7 @@ class _HomepageState extends State<Homepage> {
       const Icon(Icons.auto_fix_high),
       const Icon(Icons.accessibility_new_outlined),
       const Icon(Icons.calendar_view_day_rounded),
-      const Icon(Icons.view_carousel_outlined)
+      const Icon(Icons.view_carousel_outlined),
     ];
     List<String> homepageV2WidgetNames = showAppliedListV2.watch(context)
         ? [appText.itemList, appText.modList, appText.modSets, appText.itemSwap, appText.aqmInject, appText.cmlReplace, appText.vitalGauge, appText.lineStrike]
@@ -126,7 +124,7 @@ class _HomepageState extends State<Homepage> {
             const Icon(Icons.auto_fix_high),
             const Icon(Icons.accessibility_new_outlined),
             const Icon(Icons.calendar_view_day_rounded),
-            const Icon(Icons.view_carousel_outlined)
+            const Icon(Icons.view_carousel_outlined),
           ]
         : homepageWidgetIcons;
     if (showAppliedListV2.value) {
@@ -139,7 +137,7 @@ class _HomepageState extends State<Homepage> {
         const MainItemAqmInjectGrid(),
         const MainCmlReplaceGrid(),
         const MainVitalGaugeGrid(),
-        const MainLineStrikeGrid()
+        const MainLineStrikeGrid(),
       ];
     } else {
       homepageV2Widgets = [
@@ -151,7 +149,7 @@ class _HomepageState extends State<Homepage> {
         const MainItemAqmInjectGrid(),
         const MainCmlReplaceGrid(),
         const MainVitalGaugeGrid(),
-        const MainLineStrikeGrid()
+        const MainLineStrikeGrid(),
       ];
     }
 
@@ -166,152 +164,154 @@ class _HomepageState extends State<Homepage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
-              padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
-              child: SizedBox(
-                  width: sideBarCollapse.watch(context) ? 60 : 140,
-                  child: CardOverlay(
-                      paddingValue: 0,
+            padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
+            child: SizedBox(
+              width: sideBarCollapse.watch(context) ? 60 : 140,
+              child: CardOverlay(
+                paddingValue: 0,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10, left: 2),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        spacing: 5,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10, left: 2),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              spacing: 5,
-                              children: [
-                                Icon(modManCurActiveProfile == 1 ? Icons.filter_1 : Icons.filter_2),
-                                // AutoSizeText(appText.dText(appText.profileNum, modManCurActiveProfile.toString()), textAlign: TextAlign.center),
-                              ],
-                            ),
-                          ),
-                          // top
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height - 291,
-                            child: SideMenu(
-                              style: SideMenuStyle(
-                                displayMode: sideBarCollapse.watch(context) ? SideMenuDisplayMode.compact : SideMenuDisplayMode.open,
-                                openSideMenuWidth: 140,
-                                compactSideMenuWidth: 60,
-                                hoverColor: Theme.of(context).hoverColor,
-                                selectedColor: Theme.of(context).colorScheme.primaryContainer,
-                                selectedIconColor: Theme.of(context).iconTheme.color,
-                                unselectedIconColor: Theme.of(context).iconTheme.color,
-                                selectedTitleTextStyle: Theme.of(context).textTheme.labelLarge,
-                                unselectedTitleTextStyle: Theme.of(context).textTheme.labelLarge,
-                                iconSize: 20,
-                                itemBorderRadius: const BorderRadius.all(
-                                  Radius.circular(5.0),
-                                ),
-                                showTooltip: false,
-                                showHamburger: false,
-                                itemHeight: 40.0,
-                                itemInnerSpacing: 6.7,
-                                itemOuterPadding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5),
-
-                                // Additional properties for expandable items
-                                selectedTitleTextStyleExpandable: Theme.of(context).textTheme.labelLarge,
-                                unselectedTitleTextStyleExpandable: Theme.of(context).textTheme.labelLarge,
-                                selectedIconColorExpandable: Theme.of(context).iconTheme.color,
-                                unselectedIconColorExpandable: Theme.of(context).iconTheme.color,
-                                arrowCollapse: Colors.blueGrey,
-                                arrowOpen: Colors.lightBlueAccent,
-                              ),
-                              controller: mainSideMenuController,
-                              title: const Divider(thickness: 1, height: 5, indent: 5, endIndent: 5),
-                              items: v2Homepage.watch(context)
-                                  ? [
-                                      for (int i = 0; i < homepageV2Widgets.length; i++)
-                                        SideMenuItem(
-                                          icon: homepageV2WidgetIcons[i],
-                                          title: homepageV2WidgetNames[i],
-                                          onTap: (index, sideMenuController) {
-                                            homepageCurrentWidget.value = homepageV2Widgets[i];
-                                            footerSideMenuController.changePage(-1);
-                                            mainSideMenuController.changePage(index);
-                                          },
-                                        ),
-                                    ]
-                                  : [
-                                      for (int i = 0; i < homepageWidgets.length; i++)
-                                        SideMenuItem(
-                                          icon: homepageWidgetIcons[i],
-                                          title: homepageWidgetNames[i],
-                                          onTap: (index, sideMenuController) {
-                                            homepageCurrentWidget.value = homepageWidgets[i];
-                                            footerSideMenuController.changePage(-1);
-                                            mainSideMenuController.changePage(index);
-                                          },
-                                        ),
-                                    ],
-                            ),
-                          ),
-
-                          // bottom
-                          SizedBox(
-                            height: 155,
-                            child: SideMenu(
-                                style: SideMenuStyle(
-                                  displayMode: sideBarCollapse.watch(context) ? SideMenuDisplayMode.compact : SideMenuDisplayMode.open,
-                                  openSideMenuWidth: 140,
-                                  compactSideMenuWidth: 60,
-                                  hoverColor: Theme.of(context).hoverColor,
-                                  selectedColor: Theme.of(context).colorScheme.primaryContainer,
-                                  selectedIconColor: Theme.of(context).iconTheme.color,
-                                  unselectedIconColor: Theme.of(context).iconTheme.color,
-                                  selectedTitleTextStyle: Theme.of(context).textTheme.labelLarge,
-                                  unselectedTitleTextStyle: Theme.of(context).textTheme.labelLarge,
-                                  iconSize: 20,
-                                  itemBorderRadius: const BorderRadius.all(
-                                    Radius.circular(5.0),
-                                  ),
-                                  showTooltip: false,
-                                  showHamburger: false,
-                                  itemHeight: 40.0,
-                                  itemInnerSpacing: 6.7,
-                                  itemOuterPadding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5),
-
-                                  // Additional properties for expandable items
-                                  selectedTitleTextStyleExpandable: Theme.of(context).textTheme.labelLarge,
-                                  unselectedTitleTextStyleExpandable: Theme.of(context).textTheme.labelLarge,
-                                  selectedIconColorExpandable: Theme.of(context).iconTheme.color,
-                                  unselectedIconColorExpandable: Theme.of(context).iconTheme.color,
-                                ),
-                                title: const Divider(thickness: 1, height: 5, indent: 5, endIndent: 5),
-                                items: [
-                                  for (int i = 0; i < homepageFooterWidgets.length; i++)
-                                    SideMenuItem(
-                                      icon: homepageFooterWidgetIcon[i],
-                                      title: homepageFooterWidgetNames[i],
-                                      onTap: (index, sideMenuController) {
-                                        homepageCurrentWidget.value = homepageFooterWidgets[i];
-                                        mainSideMenuController.changePage(-1);
-                                        footerSideMenuController.changePage(index);
-                                      },
-                                    )
-                                ],
-                                controller: footerSideMenuController),
-                          ),
-                          // expand button
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: IconButton(
-                                visualDensity: VisualDensity.adaptivePlatformDensity,
-                                style: ButtonStyle(
-                                    shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                ))),
-                                onPressed: () {
-                                  sideBarCollapse.watch(context) ? sideBarCollapse.value = false : sideBarCollapse.value = true;
-                                  setState(() {});
-                                },
-                                icon: Icon(sideBarCollapse.watch(context) ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new)),
-                          )
+                          Icon(modManCurActiveProfile == 1 ? Icons.filter_1 : Icons.filter_2),
+                          // AutoSizeText(appText.dText(appText.profileNum, modManCurActiveProfile.toString()), textAlign: TextAlign.center),
                         ],
-                      )))),
-          Expanded(child: Padding(padding: const EdgeInsets.only(top: 5.5, bottom: 5, right: 5), child: homepageCurrentWidget.watch(context)))
+                      ),
+                    ),
+                    // top
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height - 291,
+                      child: SideMenu(
+                        theme: SideMenuThemeData(
+                          displayMode: sideBarCollapse.watch(context) ? SideMenuDisplayMode.compact : SideMenuDisplayMode.open,
+                          openWidth: 140,
+                          compactWidth: 60,
+                          hoverColor: Theme.of(context).hoverColor,
+                          selectedColor: Theme.of(context).colorScheme.primaryContainer,
+                          selectedIconColor: Theme.of(context).iconTheme.color,
+                          unselectedIconColor: Theme.of(context).iconTheme.color,
+                          selectedTitleStyle: Theme.of(context).textTheme.labelLarge,
+                          unselectedTitleStyle: Theme.of(context).textTheme.labelLarge,
+                          iconSize: 20,
+                          itemBorderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                          showTooltip: false,
+                          showHamburger: false,
+                          itemHeight: 40.0,
+                          itemInnerSpacing: 6.7,
+                          itemOuterPadding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5),
+
+                          // Additional properties for expandable items
+                          // selectedTitleTextStyleExpandable: Theme.of(context).textTheme.labelLarge,
+                          // unselectedTitleTextStyleExpandable: Theme.of(context).textTheme.labelLarge,
+                          // selectedIconColorExpandable: Theme.of(context).iconTheme.color,
+                          // unselectedIconColorExpandable: Theme.of(context).iconTheme.color,
+                          expansionArrowColor: Colors.blueGrey,
+                          expansionArrowOpenColor: Colors.lightBlueAccent,
+                        ),
+                        controller: mainSideMenuController,
+                        title: const Divider(thickness: 1, height: 5, indent: 5, endIndent: 5),
+                        items: v2Homepage.watch(context)
+                            ? [
+                                for (int i = 0; i < homepageV2Widgets.length; i++)
+                                  SideMenuItem(
+                                    icon: homepageV2WidgetIcons[i],
+                                    title: homepageV2WidgetNames[i],
+                                    onTap: (index, sideMenuController) {
+                                      homepageCurrentWidget.value = homepageV2Widgets[i];
+                                      footerSideMenuController.goTo(-1);
+                                      mainSideMenuController.goTo(index);
+                                    },
+                                  ),
+                              ]
+                            : [
+                                for (int i = 0; i < homepageWidgets.length; i++)
+                                  SideMenuItem(
+                                    icon: homepageWidgetIcons[i],
+                                    title: homepageWidgetNames[i],
+                                    onTap: (index, sideMenuController) {
+                                      homepageCurrentWidget.value = homepageWidgets[i];
+                                      footerSideMenuController.goTo(-1);
+                                      mainSideMenuController.goTo(index);
+                                    },
+                                  ),
+                              ],
+                      ),
+                    ),
+
+                    // bottom
+                    SizedBox(
+                      height: 155,
+                      child: SideMenu(
+                        theme: SideMenuThemeData(
+                          displayMode: sideBarCollapse.watch(context) ? SideMenuDisplayMode.compact : SideMenuDisplayMode.open,
+                          openWidth: 140,
+                          compactWidth: 60,
+                          hoverColor: Theme.of(context).hoverColor,
+                          selectedColor: Theme.of(context).colorScheme.primaryContainer,
+                          selectedIconColor: Theme.of(context).iconTheme.color,
+                          unselectedIconColor: Theme.of(context).iconTheme.color,
+                          selectedTitleStyle: Theme.of(context).textTheme.labelLarge,
+                          unselectedTitleStyle: Theme.of(context).textTheme.labelLarge,
+                          iconSize: 20,
+                          itemBorderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                          showTooltip: false,
+                          showHamburger: false,
+                          itemHeight: 40.0,
+                          itemInnerSpacing: 6.7,
+                          itemOuterPadding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5),
+
+                          // Additional properties for expandable items
+                          // selectedTitleTextStyleExpandable: Theme.of(context).textTheme.labelLarge,
+                          // unselectedTitleTextStyleExpandable: Theme.of(context).textTheme.labelLarge,
+                          // selectedIconColorExpandable: Theme.of(context).iconTheme.color,
+                          // unselectedIconColorExpandable: Theme.of(context).iconTheme.color,
+                          expansionArrowColor: Colors.blueGrey,
+                          expansionArrowOpenColor: Colors.lightBlueAccent,
+                        ),
+                        title: const Divider(thickness: 1, height: 5, indent: 5, endIndent: 5),
+                        items: [
+                          for (int i = 0; i < homepageFooterWidgets.length; i++)
+                            SideMenuItem(
+                              icon: homepageFooterWidgetIcon[i],
+                              title: homepageFooterWidgetNames[i],
+                              onTap: (index, sideMenuController) {
+                                homepageCurrentWidget.value = homepageFooterWidgets[i];
+                                mainSideMenuController.goTo(-1);
+                                footerSideMenuController.goTo(index);
+                              },
+                            ),
+                        ],
+                        controller: footerSideMenuController,
+                      ),
+                    ),
+                    // expand button
+                    Padding(
+                      padding: const EdgeInsets.all(5),
+                      child: IconButton(
+                        visualDensity: VisualDensity.adaptivePlatformDensity,
+                        style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+                        onPressed: () {
+                          sideBarCollapse.watch(context) ? sideBarCollapse.value = false : sideBarCollapse.value = true;
+                          setState(() {});
+                        },
+                        icon: Icon(sideBarCollapse.watch(context) ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Padding(padding: const EdgeInsets.only(top: 5.5, bottom: 5, right: 5), child: homepageCurrentWidget.watch(context)),
+          ),
         ],
       ),
     );

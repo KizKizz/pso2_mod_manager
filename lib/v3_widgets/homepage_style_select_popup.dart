@@ -113,11 +113,11 @@ void homepageStyleSelectPopup(context) {
                         if (legacyStyleSelected) {
                           v2Homepage.value = true;
                           prefs.setBool('v2Homepage', v2Homepage.value);
-                          if (mainSideMenuController.currentPage == 0) homepageCurrentWidget.value = homepageV2Widgets[0];
+                          if (mainSideMenuController.currentIndex == 0) homepageCurrentWidget.value = homepageV2Widgets[0];
                         } else {
                           v2Homepage.value = false;
                           prefs.setBool('v2Homepage', v2Homepage.value);
-                          if (mainSideMenuController.currentPage == 0) homepageCurrentWidget.value = homepageWidgets[0];
+                          if (mainSideMenuController.currentIndex == 0) homepageCurrentWidget.value = homepageWidgets[0];
                         }
                         // ignore: use_build_context_synchronously
                         Navigator.of(context).pop();

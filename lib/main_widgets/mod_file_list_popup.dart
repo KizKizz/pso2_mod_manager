@@ -71,7 +71,7 @@ Future<void> modFileListPopup(context, Item item, Mod mod, SubMod submod) async 
                                             );
                                           }
                                         : null,
-                                    child: Text(submod.modFiles[index].applyStatus ? appText.restore : appText.apply)),
+                                    child: Text(submod.modFiles[index].applyStatus ? appText.remove : appText.apply)),
                               )),
                     ),
                   )

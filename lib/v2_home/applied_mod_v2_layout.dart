@@ -224,7 +224,7 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                                                             }
                                                           }
                                                         : null,
-                                                    child: Text(appText.restore)),
+                                                    child: Text(appText.remove)),
                                               ),
                                             ),
                                           )
