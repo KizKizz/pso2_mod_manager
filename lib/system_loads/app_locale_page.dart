@@ -39,31 +39,22 @@ class _LocalePageState extends State<LocalePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    LoadingAnimationWidget.staggeredDotsWave(
-                      color: Theme.of(context).colorScheme.primary,
-                      size: 100,
-                    ),
+                    LoadingAnimationWidget.staggeredDotsWave(color: Theme.of(context).colorScheme.primary, size: 100),
                     Padding(
                       padding: const EdgeInsets.only(top: 10),
-                      child: Text(
-                        appText.loadingUILanguage,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
+                      child: Text(appText.loadingUILanguage, style: Theme.of(context).textTheme.bodyLarge),
                     ),
                   ],
                 ),
               ),
             );
           } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-            return FutureBuilderError(
-              loadingText: appText.loadingUILanguage,
-              snapshotError: snapshot.error.toString(),
-              isPopup: false,
-              showContButton: true,
-            );
+            return FutureBuilderError(loadingText: appText.loadingUILanguage, snapshotError: snapshot.error.toString(), isPopup: false, showContButton: true);
           } else {
             pageIndex++;
-            curPage.value = appPages[pageIndex];
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              curPage.value = appPages[pageIndex];
+            });
             return const SizedBox();
           }
         },
@@ -96,10 +87,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
       children: [
         Padding(
           padding: const EdgeInsets.only(bottom: 5),
-          child: Text(
-            appText.selectUILanguage,
-            style: Theme.of(context).textTheme.labelLarge,
-          ),
+          child: Text(appText.selectUILanguage, style: Theme.of(context).textTheme.labelLarge),
         ),
         AnimatedHorizontalToggleLayout(
           taps: locales.map((e) => e.language).toList(),
@@ -121,10 +109,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
 
         Padding(
           padding: const EdgeInsets.only(top: 15, bottom: 5),
-          child: Text(
-            appText.selectItemNameLanguage,
-            style: Theme.of(context).textTheme.labelLarge,
-          ),
+          child: Text(appText.selectItemNameLanguage, style: Theme.of(context).textTheme.labelLarge),
         ),
         AnimatedHorizontalToggleLayout(
           taps: const ['EN', 'JP'],
@@ -139,15 +124,16 @@ class _LanguageSelectorState extends State<LanguageSelector> {
 
         const SizedBox(width: 150, child: Divider(height: 30, thickness: 2)),
         ElevatedButton(
-            onPressed: () async {
-              // final prefs = await SharedPreferences.getInstance();
-              // firstBootUp = false;
-              // prefs.setBool('firstBootUp', firstBootUp);
-              AppLocale().saveSettings(locales);
-              pageIndex++;
-              curPage.value = appPages[pageIndex];
-            },
-            child: Text(appText.cont)),
+          onPressed: () async {
+            // final prefs = await SharedPreferences.getInstance();
+            // firstBootUp = false;
+            // prefs.setBool('firstBootUp', firstBootUp);
+            AppLocale().saveSettings(locales);
+            pageIndex++;
+            curPage.value = appPages[pageIndex];
+          },
+          child: Text(appText.cont),
+        ),
       ],
     );
   }

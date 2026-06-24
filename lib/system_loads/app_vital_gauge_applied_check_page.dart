@@ -58,7 +58,9 @@ class _AppVitalGaugeAppliedCheckPageState extends State<AppVitalGaugeAppliedChec
           List<VitalGaugeBackground> unappliedVitalGaugeList = snapshot.data;
           if (unappliedVitalGaugeList.isEmpty) {
             pageIndex++;
-            curPage.value = appPages[pageIndex];
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              curPage.value = appPages[pageIndex];
+            });
             return const SizedBox();
           } else {
             return Center(

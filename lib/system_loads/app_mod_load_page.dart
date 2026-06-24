@@ -63,7 +63,9 @@ class _AppModLoadPageState extends State<AppModLoadPage> {
           saveMasterModListToJson();
           profanityRemove();
           pageIndex++;
-          curPage.value = appPages[pageIndex];
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            curPage.value = appPages[pageIndex];
+          });
           return const SizedBox();
         }
       },

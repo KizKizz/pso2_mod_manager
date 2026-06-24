@@ -29,28 +29,24 @@ class _AppAqmItemLoadPageState extends State<AppAqmItemLoadPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  LoadingAnimationWidget.staggeredDotsWave(
-                    color: Theme.of(context).colorScheme.primary,
-                    size: 100,
-                  ),
+                  LoadingAnimationWidget.staggeredDotsWave(color: Theme.of(context).colorScheme.primary, size: 100),
                   Padding(
                     padding: const EdgeInsets.only(top: 10),
-                    child: Text(
-                      appText.loadingAqmInjectedItems,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
+                    child: Text(appText.loadingAqmInjectedItems, style: Theme.of(context).textTheme.bodyLarge),
                   ),
                 ],
               ),
             ),
           );
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-          return FutureBuilderError(loadingText: appText.loadingAqmInjectedItems, snapshotError: snapshot.error.toString(), isPopup: false, showContButton: true,);
+          return FutureBuilderError(loadingText: appText.loadingAqmInjectedItems, snapshotError: snapshot.error.toString(), isPopup: false, showContButton: true);
         } else {
           masterAqmInjectedItemList = snapshot.data;
           saveMasterAqmInjectListToJson();
           pageIndex++;
-          curPage.value = appPages[pageIndex];
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            curPage.value = appPages[pageIndex];
+          });
           return const SizedBox();
         }
       },

@@ -197,7 +197,9 @@ class _AppPathPageState extends State<AppPathPage> {
           } else {
             createMainDirs();
             pageIndex++;
-            curPage.value = appPages[pageIndex];
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              curPage.value = appPages[pageIndex];
+            });
             return const SizedBox();
           }
         }

@@ -26,51 +26,45 @@ class _AppModSetLoadPageState extends State<AppModSetLoadPage> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return Center(
-              child: Column(
-            spacing: 5,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CardOverlay(
-                paddingValue: 15,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    LoadingAnimationWidget.staggeredDotsWave(
-                      color: Theme.of(context).colorScheme.primary,
-                      size: 100,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Text(
-                        appText.loadingModSets,
-                        style: Theme.of(context).textTheme.bodyLarge,
+            child: Column(
+              spacing: 5,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CardOverlay(
+                  paddingValue: 15,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      LoadingAnimationWidget.staggeredDotsWave(color: Theme.of(context).colorScheme.primary, size: 100),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Text(appText.loadingModSets, style: Theme.of(context).textTheme.bodyLarge),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              ConstrainedBox(
+                ConstrainedBox(
                   constraints: const BoxConstraints(minWidth: 350),
                   child: CardOverlay(
                     paddingValue: 15,
-                    child: Text(
-                      modsetLoadingStatus.watch(context),
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ))
-            ],
-          ));
+                    child: Text(modsetLoadingStatus.watch(context), textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
+                  ),
+                ),
+              ],
+            ),
+          );
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-          return FutureBuilderError(loadingText: appText.loadingModSets, snapshotError: snapshot.error.toString(), isPopup: false, showContButton: true,);
+          return FutureBuilderError(loadingText: appText.loadingModSets, snapshotError: snapshot.error.toString(), isPopup: false, showContButton: true);
         } else {
           masterModSetList = snapshot.data;
           saveMasterModSetListToJson();
           saveMasterModListToJson();
           pageIndex++;
-          curPage.value = appPages[pageIndex];
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            curPage.value = appPages[pageIndex];
+          });
           return const SizedBox();
         }
       },

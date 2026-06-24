@@ -29,23 +29,17 @@ class _OfficialDataFetchPageState extends State<OfficialDataFetchPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  LoadingAnimationWidget.staggeredDotsWave(
-                    color: Theme.of(context).colorScheme.primary,
-                    size: 100,
-                  ),
+                  LoadingAnimationWidget.staggeredDotsWave(color: Theme.of(context).colorScheme.primary, size: 100),
                   Padding(
                     padding: const EdgeInsets.only(top: 10),
-                    child: Text(
-                      appText.fetchingDataFromSegaServers,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
+                    child: Text(appText.fetchingDataFromSegaServers, style: Theme.of(context).textTheme.bodyLarge),
                   ),
                 ],
               ),
             ),
           );
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-          return FutureBuilderError(loadingText: appText.fetchingDataFromSegaServers, snapshotError: snapshot.error.toString(), isPopup: false, showContButton: true,);
+          return FutureBuilderError(loadingText: appText.fetchingDataFromSegaServers, snapshotError: snapshot.error.toString(), isPopup: false, showContButton: true);
         } else {
           oItemData = snapshot.data.$1;
           oItemDataNA = snapshot.data.$2;
@@ -54,7 +48,9 @@ class _OfficialDataFetchPageState extends State<OfficialDataFetchPage> {
           segaPatchServerURL = snapshot.data.$5;
           segaPatchServerBackupURL = snapshot.data.$6;
           pageIndex++;
-          curPage.value = appPages[pageIndex];
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            curPage.value = appPages[pageIndex];
+          });
           return const SizedBox();
         }
       },

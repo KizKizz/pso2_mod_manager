@@ -53,7 +53,7 @@ List<Widget> homepageV2Widgets = [
 ];
 List<Widget> homepageFooterWidgets = [const ModAdd(isPopup: false), const Settings(), const HelpPageGrid()];
 
-class Homepage extends StatefulWidget {
+class Homepage extends SignalStatefulWidget {
   const Homepage({super.key});
 
   @override
@@ -86,7 +86,7 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (settingChangeStatus.watch(context) != settingChangeStatus.peek() || v2Homepage.watch(context) != v2Homepage.peek()) {
+    if (settingChangeStatus.value != settingChangeStatus.peek() || v2Homepage.value != v2Homepage.peek()) {
       setState(() {});
     }
     List<String> homepageWidgetNames = [
@@ -111,10 +111,10 @@ class _HomepageState extends State<Homepage> {
       const Icon(Icons.calendar_view_day_rounded),
       const Icon(Icons.view_carousel_outlined),
     ];
-    List<String> homepageV2WidgetNames = showAppliedListV2.watch(context)
+    List<String> homepageV2WidgetNames = showAppliedListV2.value
         ? [appText.itemList, appText.modList, appText.modSets, appText.itemSwap, appText.aqmInject, appText.cmlReplace, appText.vitalGauge, appText.lineStrike]
         : homepageWidgetNames;
-    List<Icon> homepageV2WidgetIcons = showAppliedListV2.watch(context)
+    List<Icon> homepageV2WidgetIcons = showAppliedListV2.value
         ? [
             const Icon(Icons.list_alt),
             const Icon(Icons.grid_view),
@@ -166,7 +166,7 @@ class _HomepageState extends State<Homepage> {
           Padding(
             padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
             child: SizedBox(
-              width: sideBarCollapse.watch(context) ? 60 : 140,
+              width: sideBarCollapse.value ? 60 : 140,
               child: CardOverlay(
                 paddingValue: 0,
                 child: Column(
@@ -190,7 +190,7 @@ class _HomepageState extends State<Homepage> {
                       height: MediaQuery.of(context).size.height - 291,
                       child: SideMenu(
                         theme: SideMenuThemeData(
-                          displayMode: sideBarCollapse.watch(context) ? SideMenuDisplayMode.compact : SideMenuDisplayMode.open,
+                          displayMode: sideBarCollapse.value ? SideMenuDisplayMode.compact : SideMenuDisplayMode.open,
                           openWidth: 140,
                           compactWidth: 60,
                           hoverColor: Theme.of(context).hoverColor,
@@ -206,6 +206,7 @@ class _HomepageState extends State<Homepage> {
                           itemHeight: 40.0,
                           itemInnerSpacing: 6.7,
                           itemOuterPadding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5),
+                          backgroundColor: Colors.transparent,
 
                           // Additional properties for expandable items
                           // selectedTitleTextStyleExpandable: Theme.of(context).textTheme.labelLarge,
@@ -217,7 +218,7 @@ class _HomepageState extends State<Homepage> {
                         ),
                         controller: mainSideMenuController,
                         title: const Divider(thickness: 1, height: 5, indent: 5, endIndent: 5),
-                        items: v2Homepage.watch(context)
+                        items: v2Homepage.value
                             ? [
                                 for (int i = 0; i < homepageV2Widgets.length; i++)
                                   SideMenuItem(
@@ -250,7 +251,7 @@ class _HomepageState extends State<Homepage> {
                       height: 155,
                       child: SideMenu(
                         theme: SideMenuThemeData(
-                          displayMode: sideBarCollapse.watch(context) ? SideMenuDisplayMode.compact : SideMenuDisplayMode.open,
+                          displayMode: sideBarCollapse.value ? SideMenuDisplayMode.compact : SideMenuDisplayMode.open,
                           openWidth: 140,
                           compactWidth: 60,
                           hoverColor: Theme.of(context).hoverColor,
@@ -266,6 +267,7 @@ class _HomepageState extends State<Homepage> {
                           itemHeight: 40.0,
                           itemInnerSpacing: 6.7,
                           itemOuterPadding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5),
+                          backgroundColor: Colors.transparent,
 
                           // Additional properties for expandable items
                           // selectedTitleTextStyleExpandable: Theme.of(context).textTheme.labelLarge,
@@ -298,10 +300,10 @@ class _HomepageState extends State<Homepage> {
                         visualDensity: VisualDensity.adaptivePlatformDensity,
                         style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
                         onPressed: () {
-                          sideBarCollapse.watch(context) ? sideBarCollapse.value = false : sideBarCollapse.value = true;
+                          sideBarCollapse.value ? sideBarCollapse.value = false : sideBarCollapse.value = true;
                           setState(() {});
                         },
-                        icon: Icon(sideBarCollapse.watch(context) ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new),
+                        icon: Icon(sideBarCollapse.value ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new),
                       ),
                     ),
                   ],
@@ -310,7 +312,7 @@ class _HomepageState extends State<Homepage> {
             ),
           ),
           Expanded(
-            child: Padding(padding: const EdgeInsets.only(top: 5.5, bottom: 5, right: 5), child: homepageCurrentWidget.watch(context)),
+            child: Padding(padding: const EdgeInsets.only(top: 5.5, bottom: 5, right: 5), child: homepageCurrentWidget.value),
           ),
         ],
       ),

@@ -113,7 +113,7 @@ Future<void> _multiChoiceSelectPopup(
               side: BorderSide(color: Theme.of(context).colorScheme.outline),
               borderRadius: const BorderRadius.all(Radius.circular(5)),
             ),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.value),
             insetPadding: const EdgeInsets.all(5),
             titlePadding: const EdgeInsets.only(top: 5),
             title: Column(
@@ -285,7 +285,7 @@ Future<void> _singleChoiceSelectPopup(
               side: BorderSide(color: Theme.of(context).colorScheme.outline),
               borderRadius: const BorderRadius.all(Radius.circular(5)),
             ),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.value),
             insetPadding: const EdgeInsets.all(5),
             titlePadding: const EdgeInsets.only(top: 5),
             title: Column(

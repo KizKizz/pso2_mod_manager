@@ -29,27 +29,24 @@ class _AppGitHubAccessPageState extends State<AppGitHubAccessPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  LoadingAnimationWidget.staggeredDotsWave(
-                    color: Theme.of(context).colorScheme.primary,
-                    size: 100,
-                  ),
+                  LoadingAnimationWidget.staggeredDotsWave(color: Theme.of(context).colorScheme.primary, size: 100),
                   Padding(
                     padding: const EdgeInsets.only(top: 10),
-                    child: Text(
-                      appText.checkingGitHubAccess,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
+                    child: Text(appText.checkingGitHubAccess, style: Theme.of(context).textTheme.bodyLarge),
                   ),
                 ],
               ),
             ),
           );
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-          return FutureBuilderError(loadingText: appText.checkingGitHubAccess, snapshotError: snapshot.error.toString(), isPopup: false, showContButton: true,);
+          return FutureBuilderError(loadingText: appText.checkingGitHubAccess, snapshotError: snapshot.error.toString(), isPopup: false, showContButton: true);
         } else {
           offlineMode = snapshot.data;
           pageIndex++;
-          curPage.value = appPages[pageIndex];
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            curPage.value = appPages[pageIndex];
+          });
+
           return const SizedBox();
         }
       },

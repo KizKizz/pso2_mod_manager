@@ -69,7 +69,9 @@ class _AppAppliedModsLoadPageState extends State<AppAppliedModsLoadPage> {
           if (masterUnappliedItemList.isEmpty) {
             saveMasterModListToJson();
             pageIndex++;
-            curPage.value = appPages[pageIndex];
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              curPage.value = appPages[pageIndex];
+            });
             return const SizedBox();
           } else {
             return SizedBox(

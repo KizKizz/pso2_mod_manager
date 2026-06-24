@@ -114,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
   @override
   Future<void> onWindowBlur() async {
-    if (appLoadingFinished.watch(context) && hideUIWhenAppUnfocused) {
+    if (appLoadingFinished.value && hideUIWhenAppUnfocused) {
       await Future.delayed(Duration(seconds: hideUIInitDelaySeconds));
       if (!await windowManager.isFocused()) {
         showMessageOnInactiveOverlay.value = false;
@@ -125,7 +125,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
   @override
   Future<void> onWindowFocus() async {
-    if (appLoadingFinished.watch(context) && hideUIWhenAppUnfocused) {
+    if (appLoadingFinished.value && hideUIWhenAppUnfocused) {
       if (await windowManager.isFocused()) {
         showMessageOnInactiveOverlay.value = true;
       } else {
@@ -151,7 +151,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (settingChangeStatus.watch(context) != settingChangeStatus.peek()) {
+    if (settingChangeStatus.value != settingChangeStatus.peek()) {
       setState(
         () {},
       );
@@ -162,7 +162,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         body: Stack(
           children: [
             Visibility(
-                visible: backgroundImageFiles.watch(context).isNotEmpty && !hideAppBackgroundSlides.watch(context),
+                visible: backgroundImageFiles.value.isNotEmpty && !hideAppBackgroundSlides.value,
                 child: const BackgroundSlideshow(
                   isMini: false,
                 )),
