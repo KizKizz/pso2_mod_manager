@@ -35,282 +35,287 @@ Future<void> checkGameFilesPopup(context, bool checkAll) async {
   Signal<String> gameDataCheckStatus = Signal('');
 
   await showDialog(
-      barrierDismissible: false,
-      barrierColor: Colors.transparent,
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(builder: (dialogContext, setState) {
-          return AlertDialog(
-            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
-            insetPadding: EdgeInsets.zero,
-            titlePadding: EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
-            title: Text(appText.gameDataIntegrityCheck),
-            contentPadding: const EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 10),
-            content: fileScanProgress == FileScanProgress.waiting
-                ? Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: CardOverlay(
-                        paddingValue: 5,
-                        child: Column(
-                          spacing: 10,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(appText.selectAScanType, style: Theme.of(context).textTheme.titleSmall),
-                            AnimatedHorizontalToggleLayout(
-                              taps: [appText.all, appText.appliedFilesOnly, 'win32', 'win32reboot'],
-                              initialIndex: checkAll ? 0 : 1,
-                              width: 600,
-                              onChange: (currentIndex, targetIndex) async {
-                                targetIndex == 0
-                                    ? fileScanType = FileScanType.all
-                                    : targetIndex == 1
-                                        ? fileScanType = FileScanType.modifiedOnly
-                                        : targetIndex == 2
-                                            ? fileScanType = FileScanType.win32
-                                            : fileScanType = FileScanType.win32reboot;
-                              },
-                            ),
-                          ],
-                        )))
-                : SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    child: Column(
-                      children: [
-                        HoriDivider(),
-                        Expanded(
-                          child: Row(
+    barrierDismissible: false,
+    barrierColor: Colors.transparent,
+    context: context,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (dialogContext, setState) {
+          return SignalBuilder(
+            builder: (context) {
+              return AlertDialog(
+                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.value),
+                insetPadding: EdgeInsets.zero,
+                titlePadding: EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
+                title: Text(appText.gameDataIntegrityCheck),
+                contentPadding: const EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 10),
+                content: fileScanProgress == FileScanProgress.waiting
+                    ? Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: CardOverlay(
+                          paddingValue: 5,
+                          child: Column(
+                            spacing: 10,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              Expanded(
-                                child: Column(
-                                  spacing: 10,
-                                  children: [
-                                    Text(appText.checkedFiles, style: Theme.of(context).textTheme.headlineSmall),
-                                    Expanded(
-                                        child: CustomScrollView(physics: const SuperRangeMaintainingScrollPhysics(), controller: leftScrollController, slivers: [
-                                      SuperSliverList.separated(
-                                        itemCount: checkedFiles.length,
-                                        itemBuilder: (context, index) {
-                                          return CardOverlay(
-                                              paddingValue: 0,
-                                              child: ListTile(
-                                                  title: Text(
-                                                    p.withoutExtension(checkedFiles[index].path),
-                                                    overflow: TextOverflow.ellipsis,
-                                                  ),
-                                                  subtitle: Text(
-                                                    checkedFiles[index].md5,
-                                                    overflow: TextOverflow.ellipsis,
-                                                  )));
-                                        },
-                                        separatorBuilder: (BuildContext context, int index) {
-                                          return SizedBox(height: 2.5);
-                                        },
-                                      )
-                                    ])),
-                                  ],
-                                ),
-                              ),
-                              VerticalDivider(),
-                              Expanded(
-                                child: Column(
-                                  spacing: 10,
-                                  children: [
-                                    Row(
-                                      spacing: 5,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Visibility(
-                                            visible: missingFiles.length - downloadedIndex.length > 0,
-                                            child: Text(
-                                              (missingFiles.length - downloadedIndex.length).toString(),
-                                              style: Theme.of(context).textTheme.headlineSmall,
-                                            )),
-                                        Text(
-                                          appText.unmatchedMissingFiles,
-                                          style: Theme.of(context).textTheme.headlineSmall,
-                                        ),
-                                      ],
-                                    ),
-                                    Expanded(
-                                        child: CustomScrollView(physics: const SuperRangeMaintainingScrollPhysics(), controller: rightScrollController, slivers: [
-                                      SuperSliverList.separated(
-                                        itemCount: missingFiles.length,
-                                        itemBuilder: (context, index) {
-                                          return CardOverlay(
-                                              paddingValue: 0,
-                                              child: CheckboxListTile(
-                                                title: Text(
-                                                  p.withoutExtension(missingFiles[index].path),
-                                                  overflow: TextOverflow.ellipsis,
-                                                ),
-                                                subtitle: Text(
-                                                  missingFiles[index].md5,
-                                                  overflow: TextOverflow.ellipsis,
-                                                ),
-                                                controlAffinity: ListTileControlAffinity.leading,
-                                                value: downloadedIndex.contains(index),
-                                                onChanged: (bool? value) {},
-                                              ));
-                                        },
-                                        separatorBuilder: (BuildContext context, int index) {
-                                          return SizedBox(height: 2.5);
-                                        },
-                                      )
-                                    ]))
-                                  ],
-                                ),
+                              Text(appText.selectAScanType, style: Theme.of(context).textTheme.titleSmall),
+                              AnimatedHorizontalToggleLayout(
+                                taps: [appText.all, appText.appliedFilesOnly, 'win32', 'win32reboot'],
+                                initialIndex: checkAll ? 0 : 1,
+                                width: 600,
+                                onChange: (currentIndex, targetIndex) async {
+                                  targetIndex == 0
+                                      ? fileScanType = FileScanType.all
+                                      : targetIndex == 1
+                                      ? fileScanType = FileScanType.modifiedOnly
+                                      : targetIndex == 2
+                                      ? fileScanType = FileScanType.win32
+                                      : fileScanType = FileScanType.win32reboot;
+                                },
                               ),
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 5),
-                          child: SizedBox(
-                              width: double.infinity,
-                              height: 40,
-                              child: Stack(
-                                alignment: AlignmentDirectional.center,
+                      )
+                    : SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        child: Column(
+                          children: [
+                            HoriDivider(),
+                            Expanded(
+                              child: Row(
                                 children: [
-                                  CardOverlay(
-                                    paddingValue: 0,
-                                    child: LinearProgressIndicator(
-                                      backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-                                      color: Theme.of(context).colorScheme.onPrimary,
-                                      minHeight: 40,
-                                      value: totalFilesToCheck > 0 ? totalChecked / totalFilesToCheck : 0.0,
-                                      borderRadius: BorderRadius.circular(10),
+                                  Expanded(
+                                    child: Column(
+                                      spacing: 10,
+                                      children: [
+                                        Text(appText.checkedFiles, style: Theme.of(context).textTheme.headlineSmall),
+                                        Expanded(
+                                          child: CustomScrollView(
+                                            physics: const SuperRangeMaintainingScrollPhysics(),
+                                            controller: leftScrollController,
+                                            slivers: [
+                                              SuperSliverList.separated(
+                                                itemCount: checkedFiles.length,
+                                                itemBuilder: (context, index) {
+                                                  return CardOverlay(
+                                                    paddingValue: 0,
+                                                    child: ListTile(
+                                                      title: Text(p.withoutExtension(checkedFiles[index].path), overflow: TextOverflow.ellipsis),
+                                                      subtitle: Text(checkedFiles[index].md5, overflow: TextOverflow.ellipsis),
+                                                    ),
+                                                  );
+                                                },
+                                                separatorBuilder: (BuildContext context, int index) {
+                                                  return SizedBox(height: 2.5);
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  Visibility(
-                                      visible: gameDataCheckStatus.watch(context).isEmpty,
+                                  VerticalDivider(),
+                                  Expanded(
+                                    child: Column(
+                                      spacing: 10,
+                                      children: [
+                                        Row(
+                                          spacing: 5,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Visibility(
+                                              visible: missingFiles.length - downloadedIndex.length > 0,
+                                              child: Text((missingFiles.length - downloadedIndex.length).toString(), style: Theme.of(context).textTheme.headlineSmall),
+                                            ),
+                                            Text(appText.unmatchedMissingFiles, style: Theme.of(context).textTheme.headlineSmall),
+                                          ],
+                                        ),
+                                        Expanded(
+                                          child: CustomScrollView(
+                                            physics: const SuperRangeMaintainingScrollPhysics(),
+                                            controller: rightScrollController,
+                                            slivers: [
+                                              SuperSliverList.separated(
+                                                itemCount: missingFiles.length,
+                                                itemBuilder: (context, index) {
+                                                  return CardOverlay(
+                                                    paddingValue: 0,
+                                                    child: CheckboxListTile(
+                                                      title: Text(p.withoutExtension(missingFiles[index].path), overflow: TextOverflow.ellipsis),
+                                                      subtitle: Text(missingFiles[index].md5, overflow: TextOverflow.ellipsis),
+                                                      controlAffinity: ListTileControlAffinity.leading,
+                                                      value: downloadedIndex.contains(index),
+                                                      onChanged: (bool? value) {},
+                                                    ),
+                                                  );
+                                                },
+                                                separatorBuilder: (BuildContext context, int index) {
+                                                  return SizedBox(height: 2.5);
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 5),
+                              child: SizedBox(
+                                width: double.infinity,
+                                height: 40,
+                                child: Stack(
+                                  alignment: AlignmentDirectional.center,
+                                  children: [
+                                    CardOverlay(
+                                      paddingValue: 0,
+                                      child: LinearProgressIndicator(
+                                        backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
+                                        color: Theme.of(context).colorScheme.onPrimary,
+                                        minHeight: 40,
+                                        value: totalFilesToCheck > 0 ? totalChecked / totalFilesToCheck : 0.0,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                    Visibility(
+                                      visible: gameDataCheckStatus.value.isEmpty,
                                       child: Row(
                                         spacing: 5,
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Text(fileScanType == FileScanType.win32reboot
-                                              ? 'win32reboot'
-                                              : fileScanType == FileScanType.modifiedOnly
-                                                  ? appText.appliedFilesOnly
-                                                  : fileScanType == FileScanType.win32
-                                                      ? 'win32'
-                                                      : appText.all),
+                                          Text(
+                                            fileScanType == FileScanType.win32reboot
+                                                ? 'win32reboot'
+                                                : fileScanType == FileScanType.modifiedOnly
+                                                ? appText.appliedFilesOnly
+                                                : fileScanType == FileScanType.win32
+                                                ? 'win32'
+                                                : appText.all,
+                                          ),
                                           Text(' - '),
-                                          Text('$totalChecked / ${appText.dText(appText.numFiles, totalFilesToCheck.toString())}')
+                                          Text('$totalChecked / ${appText.dText(appText.numFiles, totalFilesToCheck.toString())}'),
                                         ],
-                                      )),
-                                  Visibility(visible: gameDataCheckStatus.watch(context).isNotEmpty, child: Text(gameDataCheckStatus.watch(context)))
-                                ],
-                              )),
+                                      ),
+                                    ),
+                                    Visibility(visible: gameDataCheckStatus.value.isNotEmpty, child: Text(gameDataCheckStatus.value)),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            HoriDivider(),
+                          ],
                         ),
-                        HoriDivider()
-                      ],
-                    ),
-                  ),
-            actionsPadding: EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),
-            actions: [
-              Visibility(
-                visible: !refresh && totalChecked < totalFilesToCheck || fileScanProgress == FileScanProgress.waiting,
-                child: OutlinedButton(
-                    onPressed: () async {
-                      if (fileScanProgress == FileScanProgress.waiting || fileScanProgress == FileScanProgress.paused) {
-                        fileScanProgress = FileScanProgress.idle;
-                        setState(
-                          () {},
-                        );
-                      }
-                      if (fileScanProgress == FileScanProgress.started) {
-                        fileScanProgress = FileScanProgress.paused;
-                        setState(
-                          () {},
-                        );
-                      }
-
-                      final filesToScan = fileScanType == FileScanType.win32
-                          ? oItemData.where((e) => e.path.contains('data/win32/')).toList()
-                          : fileScanType == FileScanType.win32reboot
-                              ? oItemData.where((e) => e.path.contains('data/win32reboot/')).toList()
-                              : fileScanType == FileScanType.modifiedOnly
-                                  ? oItemData.where((e) => modifiedIceList.contains(p.basenameWithoutExtension(e.path))).toList()
-                                  : oItemData.where((e) => e.path.contains('data/')).toList();
-                      totalFilesToCheck = filesToScan.length;
-                      if (fileScanProgress == FileScanProgress.idle) {
-                        fileScanProgress = FileScanProgress.started;
-                        for (var data in filesToScan.getRange(totalChecked, filesToScan.length)) {
-                          totalChecked++;
-                          final gameFilePath = File(pso2binDirPath + p.separator + p.withoutExtension(data.path));
-                          if (gameFilePath.existsSync()) {
-                            final fileHash = await gameFilePath.getMd5Hash();
-                            checkedFiles.insert(0, data);
-                            if (fileHash != data.md5.toLowerCase()) missingFiles.insert(0, data);
-                          } else {
-                            missingFiles.insert(0, data);
-                          }
-                          if (fileScanProgress == FileScanProgress.paused || fileScanProgress == FileScanProgress.idle || totalChecked == 10000) {
-                            break;
-                          }
-                          if (context.mounted) setState(() {});
-                        }
-                        if (totalChecked == filesToScan.length) {
+                      ),
+                actionsPadding: EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),
+                actions: [
+                  Visibility(
+                    visible: !refresh && totalChecked < totalFilesToCheck || fileScanProgress == FileScanProgress.waiting,
+                    child: OutlinedButton(
+                      onPressed: () async {
+                        if (fileScanProgress == FileScanProgress.waiting || fileScanProgress == FileScanProgress.paused) {
                           fileScanProgress = FileScanProgress.idle;
-                          setState(
-                            () {},
-                          );
+                          setState(() {});
                         }
-                        // Download Files
-                        if (missingFiles.isNotEmpty) {
-                          for (var data in missingFiles) {
-                            if (context.mounted) {
-                              int index = missingFiles.indexOf(data);
-                              File? downloadedFile = await originalIceDownload(data.path, pso2binDirPath + p.separator + p.dirname(data.path), gameDataCheckStatus);
-                              if (downloadedFile != null && !downloadedIndex.contains(index)) {
-                                downloadedIndex.add(index);
-                                setState(
-                                  () {},
-                                );
+                        if (fileScanProgress == FileScanProgress.started) {
+                          fileScanProgress = FileScanProgress.paused;
+                          setState(() {});
+                        }
+
+                        final filesToScan = fileScanType == FileScanType.win32
+                            ? oItemData.where((e) => e.path.contains('data/win32/')).toList()
+                            : fileScanType == FileScanType.win32reboot
+                            ? oItemData.where((e) => e.path.contains('data/win32reboot/')).toList()
+                            : fileScanType == FileScanType.modifiedOnly
+                            ? oItemData.where((e) => modifiedIceList.contains(p.basenameWithoutExtension(e.path))).toList()
+                            : oItemData.where((e) => e.path.contains('data/')).toList();
+                        totalFilesToCheck = filesToScan.length;
+                        if (fileScanProgress == FileScanProgress.idle) {
+                          fileScanProgress = FileScanProgress.started;
+                          for (var data in filesToScan.getRange(totalChecked, filesToScan.length)) {
+                            totalChecked++;
+                            final gameFilePath = File(pso2binDirPath + p.separator + p.withoutExtension(data.path));
+                            if (gameFilePath.existsSync()) {
+                              final fileHash = await gameFilePath.getMd5Hash();
+                              checkedFiles.insert(0, data);
+                              if (fileHash != data.md5.toLowerCase()) missingFiles.insert(0, data);
+                            } else {
+                              missingFiles.insert(0, data);
+                            }
+                            if (fileScanProgress == FileScanProgress.paused || fileScanProgress == FileScanProgress.idle || totalChecked == 10000) {
+                              break;
+                            }
+                            if (context.mounted) setState(() {});
+                          }
+                          if (totalChecked == filesToScan.length) {
+                            fileScanProgress = FileScanProgress.idle;
+                            setState(() {});
+                          }
+                          // Download Files
+                          if (missingFiles.isNotEmpty) {
+                            for (var data in missingFiles) {
+                              if (context.mounted) {
+                                int index = missingFiles.indexOf(data);
+                                File? downloadedFile = await originalIceDownload(data.path, pso2binDirPath + p.separator + p.dirname(data.path), gameDataCheckStatus);
+                                if (downloadedFile != null && !downloadedIndex.contains(index)) {
+                                  downloadedIndex.add(index);
+                                  setState(() {});
+                                }
                               }
                             }
+                            // Refresh Mod Manager
+                            gameDataCheckStatus.value = '';
+                            await checksumToGameData();
+                            refresh = true;
                           }
-                          // Refresh Mod Manager
-                          gameDataCheckStatus.value = '';
-                          await checksumToGameData();
-                          refresh = true;
                         }
-                      }
-                      if (context.mounted) setState(() {});
-                    },
-                    child: Text(fileScanProgress == FileScanProgress.started
-                        ? appText.pause
-                        : fileScanProgress == FileScanProgress.paused
+                        if (context.mounted) setState(() {});
+                      },
+                      child: Text(
+                        fileScanProgress == FileScanProgress.started
+                            ? appText.pause
+                            : fileScanProgress == FileScanProgress.paused
                             ? appText.resume
-                            : appText.start)),
-              ),
-              OutlinedButton(
-                  onPressed: () async {
-                    if (fileScanProgress == FileScanProgress.paused) {
-                      fileScanProgress = FileScanProgress.idle;
-                      setState(
-                        () {},
-                      );
-                    } else if (refresh) {
-                      Navigator.of(context).pop();
-                      await Future.delayed(Duration(milliseconds: 50));
-                      selectedItemV2.value = null;
-                      pageIndex = 6;
-                      curPage.value = appPages[pageIndex];
-                    } else {
-                      Navigator.of(context).pop();
-                    }
-                  },
-                  child: Text(fileScanProgress == FileScanProgress.paused
-                      ? appText.cancel
-                      : refresh
+                            : appText.start,
+                      ),
+                    ),
+                  ),
+                  OutlinedButton(
+                    onPressed: () async {
+                      if (fileScanProgress == FileScanProgress.paused) {
+                        fileScanProgress = FileScanProgress.idle;
+                        setState(() {});
+                      } else if (refresh) {
+                        Navigator.of(context).pop();
+                        await Future.delayed(Duration(milliseconds: 50));
+                        selectedItemV2.value = null;
+                        pageIndex = 6;
+                        curPage.value = appPages[pageIndex];
+                      } else {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: Text(
+                      fileScanProgress == FileScanProgress.paused
+                          ? appText.cancel
+                          : refresh
                           ? appText.refreshModManager
-                          : appText.returns))
-            ],
+                          : appText.returns,
+                    ),
+                  ),
+                ],
+              );
+            },
           );
-        });
-      });
+        },
+      );
+    },
+  );
 }

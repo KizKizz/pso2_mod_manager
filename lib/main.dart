@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
@@ -55,7 +56,7 @@ Future<void> main(List<String> args) async {
     if (windowMaximizedState.value) windowManager.maximize();
   });
 
-  runApp(const MyApp());
+  runApp(Platform.isWindows ? ExcludeSemantics(child: const MyApp()) : const MyApp());
 }
 
 class MyApp extends StatelessWidget {

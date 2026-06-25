@@ -5,7 +5,6 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/settings/other_settings.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
-import 'package:signals/signals_flutter.dart';
 
 class CustomMaterialColor {
   final int r;

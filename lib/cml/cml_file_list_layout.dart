@@ -23,7 +23,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 bool showPremadeCmls = false;
 
-class CmlFileListLayout extends StatefulWidget {
+class CmlFileListLayout extends SignalStatefulWidget {
   const CmlFileListLayout({super.key, required this.cmlFileList, required this.cmlItemList, required this.scrollController, required this.selectedCmlFile});
 
   final Signal<List<File>> cmlFileList;
@@ -41,7 +41,7 @@ class _CmlItemListLayoutState extends State<CmlFileListLayout> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (modAqmInjectingRefresh.watch(context) != modAqmInjectingRefresh.peek()) setState(() {});
+    if (modAqmInjectingRefresh.value != modAqmInjectingRefresh.peek()) setState(() {});
     List<Cml> displayingCml = [];
     Directory extractedOriginDir = Directory('$modCMLReplaceTempDirPath${p.separator}original${p.separator}${p.basenameWithoutExtension(makerIceFile.path)}_ext${p.separator}group1');
 
@@ -74,7 +74,7 @@ class _CmlItemListLayoutState extends State<CmlFileListLayout> {
                   itemHeight: 45,
                   searchInputDecoration: SearchInputDecoration(
                     filled: true,
-                    fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                    fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
                     isDense: true,
                     contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                     cursorHeight: 15,
@@ -149,7 +149,7 @@ class _CmlItemListLayoutState extends State<CmlFileListLayout> {
                   itemHeight: 90,
                   searchInputDecoration: SearchInputDecoration(
                     filled: true,
-                    fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                    fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
                     isDense: true,
                     contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                     cursorHeight: 15,
@@ -230,15 +230,15 @@ class _CmlItemListLayoutState extends State<CmlFileListLayout> {
           Expanded(
             child: CardOverlay(
               paddingValue: 5,
-              rightPaddingValue: scrollbarsAlwaysVisible.watch(context) ? 0 : null,
+              rightPaddingValue: scrollbarsAlwaysVisible.value ? 0 : null,
               child: ScrollbarTheme(
                 data: ScrollbarThemeData(
-                  trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-                  thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                  trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
+                  thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
                 ),
                 child: SuperListView.builder(
                   physics: const SuperRangeMaintainingScrollPhysics(),
-                  padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                  padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
                   controller: widget.scrollController,
                   itemCount: displayingCmlFiles.length,
                   itemBuilder: (context, index) {
@@ -246,7 +246,7 @@ class _CmlItemListLayoutState extends State<CmlFileListLayout> {
                       data: ListTileThemeData(
                         minVerticalPadding: 0,
                         contentPadding: EdgeInsets.all(5),
-                        selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                        selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
                       ),
                       child: ListTile(
                         minTileHeight: 45,
@@ -300,7 +300,7 @@ class _CmlItemListLayoutState extends State<CmlFileListLayout> {
                             ),
                           ],
                         ),
-                        selected: widget.selectedCmlFile.watch(context) == displayingCmlFiles[index],
+                        selected: widget.selectedCmlFile.value == displayingCmlFiles[index],
                         onTap: () {
                           widget.selectedCmlFile.value = displayingCmlFiles[index];
                         },
@@ -316,15 +316,15 @@ class _CmlItemListLayoutState extends State<CmlFileListLayout> {
           Expanded(
             child: CardOverlay(
               paddingValue: 5,
-              rightPaddingValue: scrollbarsAlwaysVisible.watch(context) ? 0 : null,
+              rightPaddingValue: scrollbarsAlwaysVisible.value ? 0 : null,
               child: ScrollbarTheme(
                 data: ScrollbarThemeData(
-                  trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-                  thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                  trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
+                  thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
                 ),
                 child: SuperListView.builder(
                   physics: const SuperRangeMaintainingScrollPhysics(),
-                  padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                  padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
                   controller: widget.scrollController,
                   itemCount: displayingCml.length,
                   itemBuilder: (context, index) {
@@ -332,7 +332,7 @@ class _CmlItemListLayoutState extends State<CmlFileListLayout> {
                       data: ListTileThemeData(
                         minVerticalPadding: 0,
                         contentPadding: EdgeInsets.all(5),
-                        selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                        selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
                       ),
                       child: ListTile(
                         minTileHeight: 90,
@@ -357,8 +357,8 @@ class _CmlItemListLayoutState extends State<CmlFileListLayout> {
                         ),
                         enabled: File('${extractedOriginDir.path}${p.separator}pl_cp_${displayingCml[index].aId}.cml').existsSync(),
                         selected:
-                            widget.selectedCmlFile.watch(context) != null &&
-                            widget.selectedCmlFile.watch(context)!.path == '${extractedOriginDir.path}${p.separator}pl_cp_${displayingCml[index].aId}.cml',
+                            widget.selectedCmlFile.value != null &&
+                            widget.selectedCmlFile.value!.path == '${extractedOriginDir.path}${p.separator}pl_cp_${displayingCml[index].aId}.cml',
                         onTap: () {
                           widget.selectedCmlFile.value = File('${extractedOriginDir.path}${p.separator}pl_cp_${displayingCml[index].aId}.cml');
                         },
@@ -397,7 +397,7 @@ class _CmlItemListLayoutState extends State<CmlFileListLayout> {
                   onPressed: () async {
                     List<XFile> files = [];
                     if (useAltFilePicker) {
-                      FilePickerResult? result = await FilePicker.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['cml']);
+                      FilePickerResult? result = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['cml']);
                       if (result != null) files = result.xFiles;
                     } else {
                       const XTypeGroup aqmTypeGroup = XTypeGroup(label: 'CML', extensions: <String>['cml']);

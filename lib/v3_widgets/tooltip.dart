@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
-import 'package:signals/signals_flutter.dart';
 
 class ModManTooltip extends StatelessWidget {
   const ModManTooltip({super.key, required this.message, required this.child});
@@ -15,7 +14,7 @@ class ModManTooltip extends StatelessWidget {
       constraints: BoxConstraints(minHeight: 25),
       textStyle: const TextStyle(fontSize: 14),
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiTooltipBackgroundColorAlpha.watch(context)),
+        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiTooltipBackgroundColorAlpha.value),
         border: Border.all(color: Theme.of(context).colorScheme.outline, width: 1),
         borderRadius: const BorderRadius.all(Radius.circular(5)),
       ),

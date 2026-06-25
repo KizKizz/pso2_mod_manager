@@ -14,7 +14,7 @@ import 'package:path/path.dart' as p;
 Future<void> cmlReplaceWorkingPopup(context, bool isRestoring, Cml cmlItem, File? cmlReplacementFile) async {
   bool? taskFinished;
   final Future future = isRestoring ? cmFileRestore(cmlItem) : cmlFileReplacement(cmlItem, cmlReplacementFile!);
-  
+
   Future<void> popupDismiss() async {
     await Future.delayed(Duration.zero);
     if (taskFinished != null && taskFinished == true) {
@@ -24,20 +24,21 @@ Future<void> cmlReplaceWorkingPopup(context, bool isRestoring, Cml cmlItem, File
   }
 
   await showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(builder: (dialogContext, setState) {
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (dialogContext, setState) {
           return AlertDialog(
-              backgroundColor: Colors.transparent,
-              insetPadding: const EdgeInsets.all(5),
-              contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
-              content: FutureBuilder(
-                future: future,
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.connectionState != ConnectionState.done) {
-                    return Center(
-                        child: Column(
+            backgroundColor: Colors.transparent,
+            insetPadding: const EdgeInsets.all(5),
+            contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
+            content: FutureBuilder(
+              future: future,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState != ConnectionState.done) {
+                  return Center(
+                    child: Column(
                       spacing: 5,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -48,56 +49,49 @@ Future<void> cmlReplaceWorkingPopup(context, bool isRestoring, Cml cmlItem, File
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              LoadingAnimationWidget.staggeredDotsWave(
-                                color: Theme.of(context).colorScheme.primary,
-                                size: 100,
-                              ),
+                              LoadingAnimationWidget.staggeredDotsWave(color: Theme.of(context).colorScheme.primary, size: 100),
                               Padding(
                                 padding: const EdgeInsets.only(top: 10),
-                                child: Text(
-                                  appText.dText(appText.editingMod, cmlItem.getName()),
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
+                                child: Text(appText.dText(appText.editingMod, cmlItem.getName()), style: Theme.of(context).textTheme.bodyLarge),
                               ),
                             ],
                           ),
                         ),
                         ConstrainedBox(
-                            constraints: const BoxConstraints(minWidth: 350),
-                            child: CardOverlay(
-                              paddingValue: 15,
-                              child: Text(
-                                modApplyStatus.watch(context),
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                            ))
+                          constraints: const BoxConstraints(minWidth: 350),
+                          child: CardOverlay(
+                            paddingValue: 15,
+                            child: SignalBuilder(
+                              builder: (context) => Text(modApplyStatus.value, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
+                            ),
+                          ),
+                        ),
                       ],
-                    ));
-                  } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                    return FutureBuilderError(
-                      loadingText: appText.dText(appText.editingMod, cmlItem.getName()),
-                      snapshotError: snapshot.error.toString(),
-                      isPopup: true, showContButton: false,
-                    );
-                  } else {
-                    bool result = snapshot.data;
-                    if (!isRestoring && result) {
-                      cmlItem.isReplaced = true;
-                      cmlItem.replacedCmlFileName = p.basename(cmlReplacementFile!.path);
-                      saveMasterCmlItemListToJson();
-                    }
-                    if (isRestoring && result) {
-                      cmlItem.isReplaced = false;
-                      cmlItem.replacedCmlFileName = '';
-                      saveMasterCmlItemListToJson();
-                    }
-                    taskFinished ??= true;
-                    popupDismiss();
-                    return const SizedBox();
+                    ),
+                  );
+                } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
+                  return FutureBuilderError(loadingText: appText.dText(appText.editingMod, cmlItem.getName()), snapshotError: snapshot.error.toString(), isPopup: true, showContButton: false);
+                } else {
+                  bool result = snapshot.data;
+                  if (!isRestoring && result) {
+                    cmlItem.isReplaced = true;
+                    cmlItem.replacedCmlFileName = p.basename(cmlReplacementFile!.path);
+                    saveMasterCmlItemListToJson();
                   }
-                },
-              ));
-        });
-      });
+                  if (isRestoring && result) {
+                    cmlItem.isReplaced = false;
+                    cmlItem.replacedCmlFileName = '';
+                    saveMasterCmlItemListToJson();
+                  }
+                  taskFinished ??= true;
+                  popupDismiss();
+                  return const SizedBox();
+                }
+              },
+            ),
+          );
+        },
+      );
+    },
+  );
 }

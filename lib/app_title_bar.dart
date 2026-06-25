@@ -109,28 +109,28 @@ class _AppTitleBarState extends State<AppTitleBar> {
                   //           ),
                   //           label: Text(showPreviewBox.value ? appText.hidePreview : appText.showPreview)),
                   //     )),
-                  SizedBox(
-                    height: 20,
-                    child: ModManTooltip(
+                  ModManTooltip(
                       message: appText.refresh,
-                      child: OutlinedButton(
-                        style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
-                        onPressed: () async {
-                          selectedItemV2.value = null;
-                          pageIndex = 6;
-                          curPage.value = AppModLoadPage(isModReload: true);
-                        },
-                        child: const Icon(Icons.refresh, size: 18),
+                      child: SizedBox(
+                        height: 20,
+                        child: OutlinedButton(
+                          style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+                          onPressed: () async {
+                            selectedItemV2.value = null;
+                            pageIndex = 6;
+                            curPage.value = AppModLoadPage(isModReload: true);
+                          },
+                          child: const Icon(Icons.refresh, size: 18),
+                        ),
                       ),
                     ),
-                  ),
 
                   SizedBox(
                     height: 20,
-                    child: ModManTooltip(
-                      message: saveRestoreAppliedModsActive.value
-                          ? '${appText.reApplyAllSavedMods}\n${appText.quickSaveRestoreModsInfo}'
-                          : '${appText.saveAndRestoreAllAppliedMods}\n${appText.quickSaveRestoreModsInfo}',
+                    // child: ModManTooltip(
+                    //   message: saveRestoreAppliedModsActive.value
+                    //       ? '${appText.reApplyAllSavedMods}\n${appText.quickSaveRestoreModsInfo}'
+                    //       : '${appText.saveAndRestoreAllAppliedMods}\n${appText.quickSaveRestoreModsInfo}',
                       child: OutlinedButton(
                         style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
                         onPressed: () async {
@@ -140,7 +140,7 @@ class _AppTitleBarState extends State<AppTitleBar> {
                         child: Icon(saveRestoreAppliedModsActive.value ? Icons.save_alt : Icons.save, size: 18),
                       ),
                     ),
-                  ),
+                  // ),
 
                   SizedBox(
                     height: 20,

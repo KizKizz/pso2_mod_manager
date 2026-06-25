@@ -14,7 +14,7 @@ import 'package:searchfield/searchfield.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
-class ItemSwapAllGridLayout extends StatefulWidget {
+class ItemSwapAllGridLayout extends SignalStatefulWidget {
   const ItemSwapAllGridLayout({super.key, required this.itemDataList, required this.scrollController, required this.selectedItemData, required this.refresh});
 
   final List<ItemData> itemDataList;
@@ -51,7 +51,7 @@ class _ItemSwapAllGridLayoutState extends State<ItemSwapAllGridLayout> {
                 itemHeight: 90,
                 searchInputDecoration: SearchInputDecoration(
                   filled: true,
-                  fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                  fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
                   isDense: true,
                   contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                   cursorHeight: 15,
@@ -113,20 +113,20 @@ class _ItemSwapAllGridLayoutState extends State<ItemSwapAllGridLayout> {
         Expanded(
           child: CardOverlay(
             paddingValue: 5,
-            rightPaddingValue: scrollbarsAlwaysVisible.watch(context) ? 0 : null,
+            rightPaddingValue: scrollbarsAlwaysVisible.value ? 0 : null,
             child: ScrollbarTheme(
               data: ScrollbarThemeData(
-                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
+                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
               ),
               child: SuperListView.builder(
                 physics: const SuperRangeMaintainingScrollPhysics(),
-                padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
                 controller: widget.scrollController,
                 itemCount: displayingItemData.length,
                 itemBuilder: (context, index) {
                   return ListTileTheme(
-                    data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                    data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                     child: ListTile(
                       minTileHeight: 90,
                       title: Row(
@@ -141,18 +141,18 @@ class _ItemSwapAllGridLayoutState extends State<ItemSwapAllGridLayout> {
                       subtitle: selectedItemData == displayingItemData[index]
                           ? Column(spacing: 5, crossAxisAlignment: CrossAxisAlignment.start, children: displayingItemData[index].getDetails().map((e) => Text(e)).toList())
                           : null,
-                      selected: widget.selectedItemData.watch(context).contains(displayingItemData[index]),
-                      onTap: !widget.selectedItemData.watch(context).contains(displayingItemData[index])
+                      selected: widget.selectedItemData.value.contains(displayingItemData[index]),
+                      onTap: !widget.selectedItemData.value.contains(displayingItemData[index])
                           ? () {
                               selectedItemData = displayingItemData[index];
                               setState(() {});
                             }
                           : null,
                       trailing: OutlinedButton(
-                        onPressed: !widget.selectedItemData.watch(context).contains(displayingItemData[index])
+                        onPressed: !widget.selectedItemData.value.contains(displayingItemData[index])
                             ? () {
                                 selectedItemData = null;
-                                widget.selectedItemData.watch(context).add(displayingItemData[index]);
+                                widget.selectedItemData.value.add(displayingItemData[index]);
                                 widget.refresh();
                                 setState(() {});
                               }
@@ -190,9 +190,9 @@ class _ItemSwapAllSelectedGridLayout extends State<ItemSwapAllSelectedGridLayout
   Widget build(BuildContext context) {
     List<ItemData> displayingItemData = [];
     if (itemSwapAllSearchTextController.value.text.isEmpty) {
-      displayingItemData = widget.itemDataList.watch(context);
+      displayingItemData = widget.itemDataList.value;
     } else {
-      displayingItemData = widget.itemDataList.watch(context).where((e) => e.getName().toLowerCase().contains(itemSwapAllSearchTextController.value.text.toLowerCase())).toList();
+      displayingItemData = widget.itemDataList.value.where((e) => e.getName().toLowerCase().contains(itemSwapAllSearchTextController.value.text.toLowerCase())).toList();
     }
 
     return Column(
@@ -207,7 +207,7 @@ class _ItemSwapAllSelectedGridLayout extends State<ItemSwapAllSelectedGridLayout
                 itemHeight: 90,
                 searchInputDecoration: SearchInputDecoration(
                   filled: true,
-                  fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                  fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
                   isDense: true,
                   contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                   cursorHeight: 15,
@@ -286,20 +286,20 @@ class _ItemSwapAllSelectedGridLayout extends State<ItemSwapAllSelectedGridLayout
         Expanded(
           child: CardOverlay(
             paddingValue: 5,
-            rightPaddingValue: scrollbarsAlwaysVisible.watch(context) ? 0 : null,
+            rightPaddingValue: scrollbarsAlwaysVisible.value ? 0 : null,
             child: ScrollbarTheme(
               data: ScrollbarThemeData(
-                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
+                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
               ),
               child: SuperListView.builder(
                 physics: const SuperRangeMaintainingScrollPhysics(),
-                padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
                 controller: widget.scrollController,
                 itemCount: displayingItemData.length,
                 itemBuilder: (context, index) {
                   return ListTileTheme(
-                    data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                    data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                     child: ListTile(
                       minTileHeight: 90,
                       title: Row(
@@ -314,18 +314,18 @@ class _ItemSwapAllSelectedGridLayout extends State<ItemSwapAllSelectedGridLayout
                       subtitle: selectedItemData == displayingItemData[index]
                           ? Column(spacing: 5, crossAxisAlignment: CrossAxisAlignment.start, children: displayingItemData[index].getDetails().map((e) => Text(e)).toList())
                           : null,
-                      selected: widget.itemDataList.watch(context).contains(displayingItemData[index]),
-                      onTap: !widget.itemDataList.watch(context).contains(displayingItemData[index])
+                      selected: widget.itemDataList.value.contains(displayingItemData[index]),
+                      onTap: !widget.itemDataList.value.contains(displayingItemData[index])
                           ? () {
                               selectedItemData = displayingItemData[index];
                               setState(() {});
                             }
                           : null,
                       trailing: OutlinedButton(
-                        onPressed: widget.itemDataList.watch(context).contains(displayingItemData[index])
+                        onPressed: widget.itemDataList.value.contains(displayingItemData[index])
                             ? () {
                                 selectedItemData = null;
-                                widget.itemDataList.watch(context).remove(displayingItemData[index]);
+                                widget.itemDataList.value.remove(displayingItemData[index]);
                                 widget.refresh();
                                 setState(() {});
                               }
@@ -379,7 +379,7 @@ class _ItemSwapAllSubmodGridLayout extends State<ItemSwapAllSubmodGridLayout> {
               side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5),
               borderRadius: const BorderRadius.all(Radius.circular(5)),
             ),
-            color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+            color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
             margin: EdgeInsets.zero,
             elevation: 5,
             child: Padding(
@@ -434,7 +434,7 @@ class _ItemSwapAllSubmodGridLayout extends State<ItemSwapAllSubmodGridLayout> {
                 itemHeight: 90,
                 searchInputDecoration: SearchInputDecoration(
                   filled: true,
-                  fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                  fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
                   isDense: true,
                   contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                   cursorHeight: 15,
@@ -525,16 +525,16 @@ class _ItemSwapAllSubmodGridLayout extends State<ItemSwapAllSubmodGridLayout> {
         Expanded(
           child: CardOverlay(
             paddingValue: 5,
-            rightPaddingValue: scrollbarsAlwaysVisible.watch(context) ? 0 : null,
+            rightPaddingValue: scrollbarsAlwaysVisible.value ? 0 : null,
             child: ScrollbarTheme(
               data: ScrollbarThemeData(
-                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
+                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
               ),
               child: SuperListView.separated(
                 separatorBuilder: (context, index) => const SizedBox(height: 5),
                 physics: const SuperRangeMaintainingScrollPhysics(),
-                padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
                 controller: widget.scrollController,
                 itemCount: displayingSubmods.length,
                 itemBuilder: (context, index) {
@@ -545,7 +545,7 @@ class _ItemSwapAllSubmodGridLayout extends State<ItemSwapAllSubmodGridLayout> {
                         side: BorderSide(color: Colors.transparent, width: 1),
                         borderRadius: BorderRadius.all(Radius.circular(0)),
                       ),
-                      color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                      color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
                       margin: EdgeInsets.zero,
                       elevation: 5,
                       child: Padding(
@@ -623,7 +623,7 @@ class _ItemSwapAllSubmodGridLayout extends State<ItemSwapAllSubmodGridLayout> {
                                       : widget.selectedSubmods.value.add(displayingSubmods[index]);
                                   setState(() {});
                                 },
-                                child: Text(widget.selectedSubmods.watch(context).contains(displayingSubmods[index]) ? appText.remove : appText.select),
+                                child: Text(widget.selectedSubmods.value.contains(displayingSubmods[index]) ? appText.remove : appText.select),
                               ),
                             ),
                           ],
