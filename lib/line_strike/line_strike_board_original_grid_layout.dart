@@ -20,18 +20,20 @@ class _LineStrikeBoardOriginalGridLayoutState extends State<LineStrikeBoardOrigi
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: CardOverlay(
-        paddingValue: 5,
-        rightPaddingValue: scrollbarsAlwaysVisible.watch(context) ? 0 : null,
-        child: ScrollbarTheme(
-          data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context))),
-          child: ResponsiveGridList(
-            listViewBuilderOptions: ListViewBuilderOptions(controller: widget.rScrollController),
-            minItemWidth: 350,
-            // verticalGridMargin: 5,
-            horizontalGridSpacing: 5,
-            verticalGridSpacing: 5,
-            children: [for (int i = 0; i < widget.boards.length; i++) LineStrikeBoardOriginalTile(board: widget.boards[i], lineStrikeBoardList: widget.boards)],
+      child: SignalBuilder(
+        builder: (context) =>  CardOverlay(
+          paddingValue: 5,
+          rightPaddingValue: scrollbarsAlwaysVisible.value ? 0 : null,
+          child: ScrollbarTheme(
+            data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value)),
+            child: ResponsiveGridList(
+              listViewBuilderOptions: ListViewBuilderOptions(controller: widget.rScrollController),
+              minItemWidth: 350,
+              // verticalGridMargin: 5,
+              horizontalGridSpacing: 5,
+              verticalGridSpacing: 5,
+              children: [for (int i = 0; i < widget.boards.length; i++) LineStrikeBoardOriginalTile(board: widget.boards[i], lineStrikeBoardList: widget.boards)],
+            ),
           ),
         ),
       ),
