@@ -16,7 +16,7 @@ import 'package:searchfield/searchfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 
-class ModViewListV2 extends StatefulWidget {
+class ModViewListV2 extends SignalStatefulWidget {
   const ModViewListV2({super.key, required this.item});
 
   final Item? item;
@@ -35,10 +35,10 @@ class _ModViewListV2State extends State<ModViewListV2> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (selectedDisplaySortModView.watch(context) != selectedDisplaySortModView.peek() ||
-        modApplyStatus.watch(context) != modApplyStatus.peek() ||
-        modPopupStatus.watch(context) != modPopupStatus.peek() ||
-        mainGridStatus.watch(context) != mainGridStatus.peek()) {
+    if (selectedDisplaySortModView.value != selectedDisplaySortModView.peek() ||
+        modApplyStatus.value != modApplyStatus.peek() ||
+        modPopupStatus.value != modPopupStatus.peek() ||
+        mainGridStatus.value != mainGridStatus.peek()) {
       setState(() {});
     }
 
@@ -110,7 +110,7 @@ class _ModViewListV2State extends State<ModViewListV2> {
             side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5),
             borderRadius: const BorderRadius.all(Radius.circular(5)),
           ),
-          color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+          color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
           margin: EdgeInsets.zero,
           elevation: 5,
           child: Padding(
@@ -132,7 +132,7 @@ class _ModViewListV2State extends State<ModViewListV2> {
                 side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5),
                 borderRadius: const BorderRadius.all(Radius.circular(5)),
               ),
-              color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+              color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
               margin: EdgeInsets.zero,
               elevation: 5,
               child: Padding(
@@ -223,7 +223,7 @@ class _ModViewListV2State extends State<ModViewListV2> {
                                       child: IconButton.outlined(
                                         visualDensity: VisualDensity.adaptivePlatformDensity,
                                         style: ButtonStyle(
-                                          backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                                          backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                                           side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                                         ),
                                         onPressed: () async {
@@ -263,7 +263,7 @@ class _ModViewListV2State extends State<ModViewListV2> {
                                   itemHeight: 90,
                                   searchInputDecoration: SearchInputDecoration(
                                     filled: true,
-                                    fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                                    fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
                                     isDense: true,
                                     contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                                     cursorHeight: 15,
@@ -403,17 +403,14 @@ class _ModViewListV2State extends State<ModViewListV2> {
           // Main list
           Expanded(
             child: ScrollbarTheme(
-              data: ScrollbarThemeData(
-                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-              ),
+              data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value)),
               child: CustomScrollView(
                 controller: scrollController,
                 // physics: const SuperRangeMaintainingScrollPhysics(),
                 slivers: filteredMods
                     .map(
                       (e) => SliverPadding(
-                        padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                        padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
                         sliver: ModViewV2Layout(
                           item: widget.item!,
                           mod: e,

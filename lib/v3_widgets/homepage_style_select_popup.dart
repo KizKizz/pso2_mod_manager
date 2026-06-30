@@ -5,7 +5,6 @@ import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/homepage.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:signals/signals_flutter.dart';
 
 void homepageStyleSelectPopup(context) {
   bool legacyStyleSelected = v2Homepage.value;
@@ -18,7 +17,7 @@ void homepageStyleSelectPopup(context) {
         return StatefulBuilder(builder: (dialogContext, setState) {
           return AlertDialog(
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: const BorderRadius.all(Radius.circular(5))),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.value),
             insetPadding: const EdgeInsets.all(5),
             titlePadding: const EdgeInsets.only(top: 5),
             title: Column(children: [
@@ -47,7 +46,7 @@ void homepageStyleSelectPopup(context) {
                               shape: RoundedRectangleBorder(
                                   side: BorderSide(color: legacyStyleSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.outline, width: 1.5),
                                   borderRadius: const BorderRadius.all(Radius.circular(5))),
-                              color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                              color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
                               margin: EdgeInsets.zero,
                               child: InkWell(
                                 onTap: () {
@@ -75,7 +74,7 @@ void homepageStyleSelectPopup(context) {
                               shape: RoundedRectangleBorder(
                                   side: BorderSide(color: !legacyStyleSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.outline, width: 1.5),
                                   borderRadius: const BorderRadius.all(Radius.circular(5))),
-                              color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                              color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
                               margin: EdgeInsets.zero,
                               child: InkWell(
                                 onTap: () {

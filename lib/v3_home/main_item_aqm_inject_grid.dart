@@ -16,7 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:path/path.dart' as p;
 
-class MainItemAqmInjectGrid extends StatefulWidget {
+class MainItemAqmInjectGrid extends SignalStatefulWidget {
   const MainItemAqmInjectGrid({super.key});
 
   @override
@@ -49,17 +49,17 @@ class _MainItemAqmInjectGridState extends State<MainItemAqmInjectGrid> {
 
     // Sort item data
     displayingItems = pItemData
-        .where((e) => showNoNameItems.watch(context) || (!showNoNameItems.watch(context) && e.getName().isNotEmpty))
+        .where((e) => showNoNameItems.value || (!showNoNameItems.value && e.getName().isNotEmpty))
         .where(
-          (e) => selectedAqmInjectCategory.watch(context) == defaultCategoryDirs[1]
+          (e) => selectedAqmInjectCategory.value == defaultCategoryDirs[1]
               ? e.subCategory == 'Basewear'
-              : selectedAqmInjectCategory.watch(context) == defaultCategoryDirs[16]
+              : selectedAqmInjectCategory.value == defaultCategoryDirs[16]
               ? e.subCategory == 'Setwear'
-              : selectedAqmInjectCategory.watch(context) == defaultCategoryDirs[14]
-              ? e.category == selectedAqmInjectCategory.watch(context) && (e.subCategory == selectedItemSwapMotionType.watch(context) || selectedItemSwapMotionType.watch(context) == 'All')
-              : e.category == selectedAqmInjectCategory.watch(context),
+              : selectedAqmInjectCategory.value == defaultCategoryDirs[14]
+              ? e.category == selectedAqmInjectCategory.value && (e.subCategory == selectedItemSwapMotionType.value || selectedItemSwapMotionType.value == 'All')
+              : e.category == selectedAqmInjectCategory.value,
         )
-        .where((e) => selectedItemSwapTypeCategory.watch(context) == 'Both' || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.watch(context).toLowerCase())
+        .where((e) => selectedItemSwapTypeCategory.value == 'Both' || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.value.toLowerCase())
         .toList();
     displayingItems.sort((a, b) => a.getName().compareTo(b.getName()));
 
@@ -78,13 +78,13 @@ class _MainItemAqmInjectGridState extends State<MainItemAqmInjectGrid> {
                   height: 30,
                   child: OutlinedButton(
                     style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                       side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                     ),
                     onPressed: () {
-                      showNoNameItems.watch(context) ? showNoNameItems.value = false : showNoNameItems.value = true;
+                      showNoNameItems.value ? showNoNameItems.value = false : showNoNameItems.value = true;
                     },
-                    child: Text(showNoNameItems.watch(context) ? appText.hideNoNameItems : appText.showNoNameItems),
+                    child: Text(showNoNameItems.value ? appText.hideNoNameItems : appText.showNoNameItems),
                   ),
                 ),
               ),
@@ -151,7 +151,7 @@ class _MainItemAqmInjectGridState extends State<MainItemAqmInjectGrid> {
                 onPressed: () async {
                   List<XFile> files = [];
                   if (useAltFilePicker) {
-                    FilePickerResult? result = await FilePicker.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['aqm']);
+                    FilePickerResult? result = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['aqm']);
                     if (result != null) files = result.xFiles;
                   } else {
                     const XTypeGroup aqmTypeGroup = XTypeGroup(label: 'AQM', extensions: <String>['aqm']);

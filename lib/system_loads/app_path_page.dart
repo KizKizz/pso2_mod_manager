@@ -160,27 +160,27 @@ class _AppPathPageState extends State<AppPathPage> {
                       spacing: 10,
                       runSpacing: 10,
                       children: [
-                        ElevatedButton(
-                          onPressed:
-                              (pso2binPathSelected.watch(context) && mainDirPathSelected.watch(context)) ||
-                                  (!pso2bin && mainDir && pso2binPathSelected.watch(context)) ||
-                                  (pso2bin && !mainDir && mainDirPathSelected.watch(context))
-                              ? () async {
-                                  final prefs = await SharedPreferences.getInstance();
-                                  if (pso2binPathText.text.isNotEmpty) {
-                                    pso2binDirPath = pso2binPathText.text;
-                                    modManCurActiveProfile == 1 ? prefs.setString('pso2binDirPath', pso2binDirPath) : prefs.setString('pso2binDirPath_profile2', pso2binDirPath);
+                        SignalBuilder(
+                          builder: (context) => ElevatedButton(
+                            onPressed:
+                                (pso2binPathSelected.value && mainDirPathSelected.value) || (!pso2bin && mainDir && pso2binPathSelected.value) || (pso2bin && !mainDir && mainDirPathSelected.value)
+                                ? () async {
+                                    final prefs = await SharedPreferences.getInstance();
+                                    if (pso2binPathText.text.isNotEmpty) {
+                                      pso2binDirPath = pso2binPathText.text;
+                                      modManCurActiveProfile == 1 ? prefs.setString('pso2binDirPath', pso2binDirPath) : prefs.setString('pso2binDirPath_profile2', pso2binDirPath);
+                                    }
+                                    if (mainDirPathText.text.isNotEmpty) {
+                                      mainDataDirPath = mainDirPathText.text;
+                                      prefs.setString('mainDataDirPath', mainDataDirPath);
+                                    }
+                                    createMainDirs();
+                                    pageIndex++;
+                                    curPage.value = appPages[pageIndex];
                                   }
-                                  if (mainDirPathText.text.isNotEmpty) {
-                                    mainDataDirPath = mainDirPathText.text;
-                                    prefs.setString('mainDataDirPath', mainDataDirPath);
-                                  }
-                                  createMainDirs();
-                                  pageIndex++;
-                                  curPage.value = appPages[pageIndex];
-                                }
-                              : null,
-                          child: Text(appText.save),
+                                : null,
+                            child: Text(appText.save),
+                          ),
                         ),
                         ElevatedButton(
                           onPressed: () {

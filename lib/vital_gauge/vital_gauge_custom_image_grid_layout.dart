@@ -22,29 +22,31 @@ class _VitalGaugeCustomImageGridLayoutState extends State<VitalGaugeCustomImageG
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: CardOverlay(
-        paddingValue: 5,
-        rightPaddingValue: scrollbarsAlwaysVisible.watch(context) ? 0 : null,
-        child: ScrollbarTheme(
-          data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context))),
-          child: SuperListView.separated(
-            physics: const SuperRangeMaintainingScrollPhysics(),
-            padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
-            itemCount: widget.customImageFiles.length,
-            itemBuilder: (context, index) {
-              return VitalGaugeCustomImageTile(
-                customImageFile: widget.customImageFiles[index],
-                onDeleteButtonPress: () async {
-                  final result = await deleteConfirmPopup(context, p.basename(widget.customImageFiles[index].path));
-                  if (result) {
-                    await File(widget.customImageFiles[index].path).delete();
-                    widget.customImageFiles.remove(widget.customImageFiles[index]);
-                    setState(() {});
-                  }
-                },
-              );
-            },
-            separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 5),
+      child: SignalBuilder(
+        builder: (context) => CardOverlay(
+          paddingValue: 5,
+          rightPaddingValue: scrollbarsAlwaysVisible.value ? 0 : null,
+          child: ScrollbarTheme(
+            data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value)),
+            child: SuperListView.separated(
+              physics: const SuperRangeMaintainingScrollPhysics(),
+              padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
+              itemCount: widget.customImageFiles.length,
+              itemBuilder: (context, index) {
+                return VitalGaugeCustomImageTile(
+                  customImageFile: widget.customImageFiles[index],
+                  onDeleteButtonPress: () async {
+                    final result = await deleteConfirmPopup(context, p.basename(widget.customImageFiles[index].path));
+                    if (result) {
+                      await File(widget.customImageFiles[index].path).delete();
+                      widget.customImageFiles.remove(widget.customImageFiles[index]);
+                      setState(() {});
+                    }
+                  },
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 5),
+            ),
           ),
         ),
       ),

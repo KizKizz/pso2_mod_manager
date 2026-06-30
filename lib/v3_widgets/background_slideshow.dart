@@ -14,7 +14,7 @@ import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 
-class BackgroundSlideshow extends StatefulWidget {
+class BackgroundSlideshow extends SignalStatefulWidget {
   const BackgroundSlideshow({super.key, required this.isMini});
 
   final bool isMini;
@@ -30,19 +30,19 @@ class _BackgroundSlideshowState extends State<BackgroundSlideshow> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (settingChangeStatus.watch(context) != settingChangeStatus.peek()) {
+    if (settingChangeStatus.value != settingChangeStatus.peek()) {
       setState(() {});
     }
     if (!widget.isMini) {
       return FlutterCarousel(
         options: FlutterCarouselOptions(
-          autoPlay: backgroundImageFiles.watch(context).length > 1 ? true : false,
-          autoPlayInterval: Duration(seconds: backgroundImageSlideInterval.watch(context)),
+          autoPlay: backgroundImageFiles.value.length > 1 ? true : false,
+          autoPlayInterval: Duration(seconds: backgroundImageSlideInterval.value),
           disableCenter: true,
           viewportFraction: 1.0,
           height: double.infinity,
           floatingIndicator: true,
-          enableInfiniteScroll: backgroundImageFiles.watch(context).length > 1 ? true : false,
+          enableInfiniteScroll: backgroundImageFiles.value.length > 1 ? true : false,
           indicatorMargin: 2,
           showIndicator: false,
           slideIndicator: CircularWaveSlideIndicator(
@@ -54,7 +54,7 @@ class _BackgroundSlideshowState extends State<BackgroundSlideshow> {
             ),
           ),
         ),
-        items: backgroundImageFiles.watch(context).map((e) => Image.file(e, width: double.infinity, height: double.infinity, filterQuality: FilterQuality.medium, fit: BoxFit.cover)).toList(),
+        items: backgroundImageFiles.value.map((e) => Image.file(e, width: double.infinity, height: double.infinity, filterQuality: FilterQuality.medium, fit: BoxFit.cover)).toList(),
       );
     } else {
       return Column(
@@ -66,11 +66,11 @@ class _BackgroundSlideshowState extends State<BackgroundSlideshow> {
                 side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5),
                 borderRadius: const BorderRadius.all(Radius.circular(0)),
               ),
-              color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+              color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
               margin: EdgeInsets.zero,
               elevation: 5,
               child: Visibility(
-                visible: backgroundImageFiles.watch(context).isNotEmpty,
+                visible: backgroundImageFiles.value.isNotEmpty,
                 child: Column(
                   spacing: 5,
                   children: [
@@ -86,7 +86,7 @@ class _BackgroundSlideshowState extends State<BackgroundSlideshow> {
                             viewportFraction: 1.0,
                             height: MediaQuery.of(context).size.height * 0.3,
                             floatingIndicator: true,
-                            enableInfiniteScroll: backgroundImageFiles.watch(context).length > 1 ? true : false,
+                            enableInfiniteScroll: backgroundImageFiles.value.length > 1 ? true : false,
                             indicatorMargin: 2,
                             slideIndicator: CircularWaveSlideIndicator(
                               slideIndicatorOptions: SlideIndicatorOptions(
@@ -98,10 +98,10 @@ class _BackgroundSlideshowState extends State<BackgroundSlideshow> {
                             ),
                             onPageChanged: (index, reason) => currentFileIndex = index,
                           ),
-                          items: backgroundImageFiles.watch(context).map((e) => Image.file(e, fit: BoxFit.cover)).toList(),
+                          items: backgroundImageFiles.value.map((e) => Image.file(e, fit: BoxFit.cover)).toList(),
                         ),
                         Visibility(
-                          visible: backgroundImageFiles.watch(context).isNotEmpty,
+                          visible: backgroundImageFiles.value.isNotEmpty,
                           child: Padding(
                             padding: const EdgeInsets.all(3),
                             child: OutlinedButton.icon(
@@ -134,7 +134,7 @@ class _BackgroundSlideshowState extends State<BackgroundSlideshow> {
                   alignment: WrapAlignment.spaceBetween,
                   children: [
                     OutlinedButton(
-                      onPressed: backgroundImageFiles.watch(context).length > 1
+                      onPressed: backgroundImageFiles.value.length > 1
                           ? () {
                               controller.previousPage();
                             }
@@ -142,7 +142,7 @@ class _BackgroundSlideshowState extends State<BackgroundSlideshow> {
                       child: const Icon(Icons.arrow_back_ios_rounded),
                     ),
                     OutlinedButton(
-                      onPressed: backgroundImageFiles.watch(context).length > 1
+                      onPressed: backgroundImageFiles.value.length > 1
                           ? () {
                               controller.nextPage();
                             }
@@ -165,7 +165,7 @@ class _BackgroundSlideshowState extends State<BackgroundSlideshow> {
                         }
                         prefs.setBool('hideAppBackgroundSlides', hideAppBackgroundSlides.value);
                       },
-                      child: Text(hideAppBackgroundSlides.watch(context) ? appText.show : appText.hide),
+                      child: Text(hideAppBackgroundSlides.value ? appText.show : appText.hide),
                     ),
                   ],
                 ),
@@ -179,7 +179,7 @@ class _BackgroundSlideshowState extends State<BackgroundSlideshow> {
                       child: SliderTheme(
                         data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay, showValueIndicator: ShowValueIndicator.onDrag),
                         child: Slider(
-                          value: backgroundImageSlideInterval.watch(context).toDouble(),
+                          value: backgroundImageSlideInterval.value.toDouble(),
                           min: 1,
                           max: 120,
                           label: appText.dText(appText.intervalNumSecond, backgroundImageSlideInterval.value.toString()),
@@ -200,7 +200,7 @@ class _BackgroundSlideshowState extends State<BackgroundSlideshow> {
                     onPressed: () async {
                       List<XFile> selectedFiles = [];
                       if (useAltFilePicker) {
-                        FilePickerResult? result = await FilePicker.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['jpg', 'jpeg', 'png']);
+                        FilePickerResult? result = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['jpg', 'jpeg', 'png']);
                         if (result != null) selectedFiles = result.xFiles;
                       } else {
                         const XTypeGroup jpgsTypeGroup = XTypeGroup(label: 'Images', extensions: <String>['jpg', 'jpeg', 'png']);

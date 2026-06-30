@@ -21,7 +21,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
-class AppSettingsLayout extends StatefulWidget {
+class AppSettingsLayout extends SignalStatefulWidget {
   const AppSettingsLayout({super.key});
 
   @override
@@ -42,12 +42,12 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (settingChangeStatus.watch(context) != settingChangeStatus.peek()) {
+    if (settingChangeStatus.value != settingChangeStatus.peek()) {
       setState(() {});
     }
     return LayoutBuilder(
       builder: (context, constraints) {
-        double buttonWidth = scrollbarsAlwaysVisible.watch(context) ? constraints.maxWidth - 15 : constraints.maxWidth;
+        double buttonWidth = scrollbarsAlwaysVisible.value ? constraints.maxWidth - 15 : constraints.maxWidth;
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,14 +69,11 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
             const HoriDivider(),
             Expanded(
               child: ScrollbarTheme(
-                data: ScrollbarThemeData(
-                  trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-                  thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-                ),
+                data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value)),
                 child: SingleChildScrollView(
                   physics: const SuperRangeMaintainingScrollPhysics(),
                   child: Padding(
-                    padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                    padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 5,
@@ -169,11 +166,11 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                         ),
                         // v2 Homepage Applied list hide
                         Visibility(
-                          visible: v2Homepage.watch(context),
+                          visible: v2Homepage.value,
                           child: SettingsHeader(icon: Icons.highlight_alt_outlined, text: appText.hideAppliedList),
                         ),
                         Visibility(
-                          visible: v2Homepage.watch(context),
+                          visible: v2Homepage.value,
                           child: AnimatedHorizontalToggleLayout(
                             taps: [appText.show, appText.hide],
                             initialIndex: showAppliedListV2.value ? 0 : 1,
@@ -214,7 +211,7 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                         SettingsHeader(icon: Icons.slow_motion_video, text: appText.itemIconSlides),
                         AnimatedHorizontalToggleLayout(
                           taps: [appText.on, appText.off],
-                          initialIndex: itemIconSlides.watch(context) ? 0 : 1,
+                          initialIndex: itemIconSlides.value ? 0 : 1,
                           width: buttonWidth,
                           onChange: (currentIndex, targetIndex) async {
                             final prefs = await SharedPreferences.getInstance();

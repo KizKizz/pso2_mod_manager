@@ -9,7 +9,7 @@ import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:path/path.dart' as p;
 
-class MainCmlReplaceGrid extends StatefulWidget {
+class MainCmlReplaceGrid extends SignalStatefulWidget {
   const MainCmlReplaceGrid({super.key});
 
   @override
@@ -37,7 +37,7 @@ class _MainCmlReplaceGridState extends State<MainCmlReplaceGrid> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (mainGridStatus.watch(context) != mainGridStatus.peek()) {
+    if (mainGridStatus.value != mainGridStatus.peek()) {
       setState(
         () {},
       );

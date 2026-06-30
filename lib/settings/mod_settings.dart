@@ -22,7 +22,7 @@ import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:path/path.dart' as p;
 import 'package:url_launcher/url_launcher_string.dart';
 
-class ModSettingsLayout extends StatefulWidget {
+class ModSettingsLayout extends SignalStatefulWidget {
   const ModSettingsLayout({super.key});
 
   @override
@@ -41,12 +41,12 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (settingChangeStatus.watch(context) != settingChangeStatus.peek()) {
+    if (settingChangeStatus.value != settingChangeStatus.peek()) {
       setState(() {});
     }
     return LayoutBuilder(
       builder: (context, constraints) {
-        double buttonWidth = scrollbarsAlwaysVisible.watch(context) ? constraints.maxWidth - 15 : constraints.maxWidth;
+        double buttonWidth = scrollbarsAlwaysVisible.value ? constraints.maxWidth - 15 : constraints.maxWidth;
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,14 +55,11 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
             const HoriDivider(),
             Expanded(
               child: ScrollbarTheme(
-                data: ScrollbarThemeData(
-                  trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-                  thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-                ),
+                data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value)),
                 child: SingleChildScrollView(
                   physics: const SuperRangeMaintainingScrollPhysics(),
                   child: Padding(
-                    padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                    padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
                     child: Column(
                       spacing: 5,
                       children: [
@@ -171,7 +168,7 @@ class _ModSettingsLayoutState extends State<ModSettingsLayout> {
                             onPressed: () async {
                               List<XFile> files = [];
                               if (useAltFilePicker) {
-                                FilePickerResult? result = await FilePicker.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['aqm']);
+                                FilePickerResult? result = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['aqm']);
                                 if (result != null) files = result.xFiles;
                               } else {
                                 const XTypeGroup aqmTypeGroup = XTypeGroup(label: 'AQM', extensions: <String>['aqm']);

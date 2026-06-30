@@ -13,7 +13,7 @@ import 'package:searchfield/searchfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 
-class MainModGrid extends StatefulWidget {
+class MainModGrid extends SignalStatefulWidget {
   const MainModGrid({super.key});
 
   @override
@@ -36,7 +36,7 @@ class _MainModGridState extends State<MainModGrid> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (selectedDisplaySort.watch(context) != selectedDisplaySort.peek() || mainGridStatus.watch(context) != mainGridStatus.peek()) {
+    if (selectedDisplaySort.value != selectedDisplaySort.peek() || mainGridStatus.value != mainGridStatus.peek()) {
       setState(() {});
     }
 
@@ -44,7 +44,7 @@ class _MainModGridState extends State<MainModGrid> {
     List<Mod> filteredMods = [];
     if (searchTextController.value.text.isEmpty) {
       for (var cateType in masterModList) {
-        for (var cate in cateType.categories.where((e) => selectedModDisplayCategories.watch(context).contains(e.categoryName) || selectedModDisplayCategories.watch(context).contains('All'))) {
+        for (var cate in cateType.categories.where((e) => selectedModDisplayCategories.value.contains(e.categoryName) || selectedModDisplayCategories.value.contains('All'))) {
           for (var item in cate.items) {
             filteredMods.addAll(item.mods);
           }
@@ -52,7 +52,7 @@ class _MainModGridState extends State<MainModGrid> {
       }
     } else {
       for (var cateType in masterModList) {
-        for (var cate in cateType.categories.where((e) => selectedModDisplayCategories.watch(context).contains(e.categoryName) || selectedModDisplayCategories.watch(context).contains('All'))) {
+        for (var cate in cateType.categories.where((e) => selectedModDisplayCategories.value.contains(e.categoryName) || selectedModDisplayCategories.value.contains('All'))) {
           for (var item in cate.items) {
             filteredMods.addAll(item.mods.where((e) => e.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase())));
           }
@@ -81,7 +81,7 @@ class _MainModGridState extends State<MainModGrid> {
     if (selectedModDisplayCategories.value.contains('All')) {
       displayingCategories = categories;
     } else {
-      displayingCategories = categories.where((e) => selectedModDisplayCategories.watch(context).contains(e.categoryName)).toList();
+      displayingCategories = categories.where((e) => selectedModDisplayCategories.value.contains(e.categoryName)).toList();
     }
 
     return AnimatedOpacity(
@@ -105,7 +105,7 @@ class _MainModGridState extends State<MainModGrid> {
                         itemHeight: 90,
                         searchInputDecoration: SearchInputDecoration(
                           filled: true,
-                          fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                          fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
                           isDense: true,
                           contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                           cursorHeight: 15,
@@ -271,7 +271,7 @@ class _MainModGridState extends State<MainModGrid> {
                 child: IconButton.outlined(
                   visualDensity: VisualDensity.adaptivePlatformDensity,
                   style: ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                    backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                     side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                   ),
                   onPressed: () async {
@@ -295,15 +295,15 @@ class _MainModGridState extends State<MainModGrid> {
           Expanded(
             child: ScrollbarTheme(
               data: ScrollbarThemeData(
-                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
+                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
               ),
               child: CustomScrollView(
                 controller: controller,
                 slivers: displayingCategories
                     .map(
                       (e) => SliverPadding(
-                        padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                        padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
                         sliver: CateModGridLayout(itemCate: e, searchString: searchTextController.value.text, scrollController: controller),
                       ),
                     )

@@ -14,7 +14,7 @@ import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-class CategoryItemLayout extends StatefulWidget {
+class CategoryItemLayout extends SignalStatefulWidget {
   const CategoryItemLayout({super.key, required this.category, required this.searchString, required this.scrollController});
 
   final Category category;
@@ -77,8 +77,8 @@ class _CategoryItemLayoutState extends State<CategoryItemLayout> {
                 child: Card(
                     shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
                     color: !status.isPinned
-                        ? Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))
-                        : Theme.of(context).colorScheme.secondaryContainer.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                        ? Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)
+                        : Theme.of(context).colorScheme.secondaryContainer.withAlpha(uiBackgroundColorAlpha.value),
                     margin: EdgeInsets.zero,
                     elevation: 5,
                     child: Padding(
@@ -143,9 +143,9 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
         onTap: () => widget.onSelected(),
         child: Card(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-            color: selectedItemV2.watch(context) != null && selectedItemV2.watch(context) == widget.item
+            color: selectedItemV2.value != null && selectedItemV2.value == widget.item
                 ? Theme.of(context).listTileTheme.selectedColor
-                : Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                : Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
             margin: EdgeInsets.zero,
             elevation: 5,
             child: Padding(
@@ -210,7 +210,7 @@ class _ItemCardLayoutState extends State<ItemCardLayout> {
                         child: IconButton.outlined(
                             visualDensity: VisualDensity.adaptivePlatformDensity,
                             style: ButtonStyle(
-                                // backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                                // backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                                 side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
                             onPressed: () async {
                               launchUrlString(widget.item.location);

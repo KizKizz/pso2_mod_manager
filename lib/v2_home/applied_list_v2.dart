@@ -20,7 +20,7 @@ import 'package:searchfield/searchfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 
-class AppliedListV2 extends StatefulWidget {
+class AppliedListV2 extends SignalStatefulWidget {
   const AppliedListV2({super.key});
 
   @override
@@ -35,10 +35,10 @@ class _AppliedListV2State extends State<AppliedListV2> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (modApplyStatus.watch(context) != modApplyStatus.peek() ||
-        mainGridStatus.watch(context) != mainGridStatus.peek() ||
-        modPopupStatus.watch(context) != modPopupStatus.peek() ||
-        selectedDisplaySortAppliedList.watch(context) != selectedDisplaySortAppliedList.peek()) {
+    if (modApplyStatus.value != modApplyStatus.peek() ||
+        mainGridStatus.value != mainGridStatus.peek() ||
+        modPopupStatus.value != modPopupStatus.peek() ||
+        selectedDisplaySortAppliedList.value != selectedDisplaySortAppliedList.peek()) {
       setState(() {});
     }
 
@@ -135,7 +135,7 @@ class _AppliedListV2State extends State<AppliedListV2> {
               side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5),
               borderRadius: const BorderRadius.all(Radius.circular(5)),
             ),
-            color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+            color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
             margin: EdgeInsets.zero,
             elevation: 5,
             child: Padding(
@@ -207,11 +207,11 @@ class _AppliedListV2State extends State<AppliedListV2> {
                           height: 30,
                           child: OutlinedButton(
                             style: ButtonStyle(
-                              backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                              backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                               side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                             ),
-                            onPressed: numOfAppliedMods > 0 && !saveRestoreAppliedModsActive.watch(context) ? () {} : null,
-                            onLongPress: numOfAppliedMods > 0 && !saveRestoreAppliedModsActive.watch(context)
+                            onPressed: numOfAppliedMods > 0 && !saveRestoreAppliedModsActive.value ? () {} : null,
+                            onLongPress: numOfAppliedMods > 0 && !saveRestoreAppliedModsActive.value
                                 ? () async {
                                     List<Item> appliedItems = await appliedModsFetch();
                                     for (var item in appliedItems) {
@@ -239,7 +239,7 @@ class _AppliedListV2State extends State<AppliedListV2> {
                           child: IconButton.outlined(
                             visualDensity: VisualDensity.adaptivePlatformDensity,
                             style: ButtonStyle(
-                              backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                              backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                               side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                             ),
                             onPressed: () async {
@@ -273,7 +273,7 @@ class _AppliedListV2State extends State<AppliedListV2> {
                           child: IconButton.outlined(
                             visualDensity: VisualDensity.adaptivePlatformDensity,
                             style: ButtonStyle(
-                              backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                              backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                               side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                             ),
                             onPressed: () => modExportSequence(context, ExportType.applied, null, null, null, null),
@@ -287,7 +287,7 @@ class _AppliedListV2State extends State<AppliedListV2> {
                         child: IconButton.outlined(
                           visualDensity: VisualDensity.adaptivePlatformDensity,
                           style: ButtonStyle(
-                            backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                            backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                             side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                           ),
                           onPressed: () async {
@@ -309,7 +309,7 @@ class _AppliedListV2State extends State<AppliedListV2> {
                           itemHeight: 90,
                           searchInputDecoration: SearchInputDecoration(
                             filled: true,
-                            fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                            fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
                             isDense: true,
                             contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                             cursorHeight: 15,
@@ -424,14 +424,14 @@ class _AppliedListV2State extends State<AppliedListV2> {
         // Main list
         Expanded(
           child: ScrollbarTheme(
-            data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context))),
+            data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value)),
             child: CustomScrollView(
               controller: scrollController,
               // physics: const RangeMaintainingScrollPhysics()  ,
               slivers: filteredItems
                   .map(
                     (e) => SliverPadding(
-                      padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                      padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
                       sliver: AppliedModV2Layout(item: e, searchString: appliedListSearchTextController.text, expandAll: expandAll, scrollController: scrollController),
                     ),
                   )

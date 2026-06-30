@@ -15,10 +15,11 @@ import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 bool replaceLQTexturesWithHQ = false;
+
 // bool emoteToIdleMotion = false;
 // bool idleMotionToEmote = false;
 
-class MainItemSwapGrid extends StatefulWidget {
+class MainItemSwapGrid extends SignalStatefulWidget {
   const MainItemSwapGrid({super.key});
 
   @override
@@ -54,26 +55,26 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
   @override
   Widget build(BuildContext context) {
     displayingItems = pItemData
-        .where((e) => showNoNameItems.watch(context) || (!showNoNameItems.watch(context) && e.getName().isNotEmpty))
+        .where((e) => showNoNameItems.value || (!showNoNameItems.value && e.getName().isNotEmpty))
         .where(
-          (e) => selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[1]
+          (e) => selectedDisplayItemSwapCategory.value == defaultCategoryDirs[1]
               ? e.subCategory == 'Basewear'
-              : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[16]
+              : selectedDisplayItemSwapCategory.value == defaultCategoryDirs[16]
               ? e.subCategory == 'Setwear'
-              : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[14]
-              ? e.category == selectedDisplayItemSwapCategory.watch(context) && (e.subCategory == selectedItemSwapMotionType.watch(context) || selectedItemSwapMotionType.watch(context) == 'All')
-              : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[17]
-              ? e.category == defaultCategoryDirs[17] && (e.subCategory.contains(selectedWeaponType.watch(context)) || selectedWeaponType.watch(context) == 'All')
-              : e.category == selectedDisplayItemSwapCategory.watch(context),
+              : selectedDisplayItemSwapCategory.value == defaultCategoryDirs[14]
+              ? e.category == selectedDisplayItemSwapCategory.value && (e.subCategory == selectedItemSwapMotionType.value || selectedItemSwapMotionType.value == 'All')
+              : selectedDisplayItemSwapCategory.value == defaultCategoryDirs[17]
+              ? e.category == defaultCategoryDirs[17] && (e.subCategory.contains(selectedWeaponType.value) || selectedWeaponType.value == 'All')
+              : e.category == selectedDisplayItemSwapCategory.value,
         )
-        .where((e) => selectedItemSwapTypeCategory.watch(context) == 'Both' || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.watch(context).toLowerCase())
+        .where((e) => selectedItemSwapTypeCategory.value == 'Both' || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.value.toLowerCase())
         .toList();
     displayingItems.sort((a, b) => a.getName().compareTo(b.getName()));
 
     // Extra item data
-    if (extraCategory.isNotEmpty && extraCategory == selectedDisplayItemSwapCategory.watch(context)) {
+    if (extraCategory.isNotEmpty && extraCategory == selectedDisplayItemSwapCategory.value) {
       rDisplayingItemsExtra = pItemData
-          .where((e) => showNoNameItems.watch(context) || (!showNoNameItems.watch(context) && e.getName().isNotEmpty))
+          .where((e) => showNoNameItems.value || (!showNoNameItems.value && e.getName().isNotEmpty))
           .where(
             (e) => extraCategory == defaultCategoryDirs[7]
                 ? (e.category == defaultCategoryDirs[14] && e.subCategory == 'Standby Motion')
@@ -89,7 +90,7 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                 ? e.category == defaultCategoryDirs[7]
                 : true,
           )
-          .where((e) => selectedItemSwapTypeCategory.watch(context) == 'Both' || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.watch(context).toLowerCase())
+          .where((e) => selectedItemSwapTypeCategory.value == 'Both' || e.itemType.toLowerCase().split(' | ').first == selectedItemSwapTypeCategory.value.toLowerCase())
           .toList();
       rDisplayingItemsExtra.sort((a, b) => a.getName().compareTo(b.getName()));
     } else {
@@ -97,15 +98,9 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
       rDisplayingItemsExtra = [];
     }
 
-    if (lSelectedItemData.watch(context) != null &&
-        lSelectedItemData.watch(context)!.category == defaultCategoryDirs[0] &&
-        lSelectedItemData.watch(context)!.accessoryContainsEffects() &&
-        !showEffectOnlyAccsSignal) {
+    if (lSelectedItemData.value != null && lSelectedItemData.value!.category == defaultCategoryDirs[0] && lSelectedItemData.value!.accessoryContainsEffects() && !showEffectOnlyAccsSignal) {
       showEffectOnlyAccs = true;
-    } else if (lSelectedItemData.watch(context) != null &&
-        lSelectedItemData.watch(context)!.category == defaultCategoryDirs[0] &&
-        !lSelectedItemData.watch(context)!.accessoryContainsEffects() &&
-        !showEffectOnlyAccsSignal) {
+    } else if (lSelectedItemData.value != null && lSelectedItemData.value!.category == defaultCategoryDirs[0] && !lSelectedItemData.value!.accessoryContainsEffects() && !showEffectOnlyAccsSignal) {
       showEffectOnlyAccs = false;
     } else if (showEffectOnlyAccsSignal) {
       showEffectOnlyAccsSignal = false;
@@ -125,17 +120,17 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                   height: 30,
                   child: OutlinedButton(
                     style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                       side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                     ),
                     onPressed: () {
-                      showNoNameItems.watch(context) ? showNoNameItems.value = false : showNoNameItems.value = true;
+                      showNoNameItems.value ? showNoNameItems.value = false : showNoNameItems.value = true;
                     },
-                    child: Text(showNoNameItems.watch(context) ? appText.hideNoNameItems : appText.showNoNameItems),
+                    child: Text(showNoNameItems.value ? appText.hideNoNameItems : appText.showNoNameItems),
                   ),
                 ),
               ),
-              if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[14])
+              if (selectedDisplayItemSwapCategory.value == defaultCategoryDirs[14])
                 Expanded(
                   child: SingleChoiceSelectButton(
                     width: double.infinity,
@@ -153,7 +148,7 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                     },
                   ),
                 ),
-              if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[17])
+              if (selectedDisplayItemSwapCategory.value == defaultCategoryDirs[17])
                 Expanded(
                   child: SingleChoiceSelectButton(
                     width: double.infinity,
@@ -284,7 +279,7 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                                   data: ListTileThemeData(
                                     visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
                                     minVerticalPadding: 1,
-                                    selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                                    selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
                                   ),
                                   child: ListTile(
                                     title: Row(
@@ -370,7 +365,7 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                     child: Text(appText.replaceLQTexturesWithHQ),
                   ),
 
-                  if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[0])
+                  if (selectedDisplayItemSwapCategory.value == defaultCategoryDirs[0])
                     ElevatedButton(
                       onPressed: () {
                         showEffectOnlyAccsSignal = true;
@@ -380,18 +375,18 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                       child: Text(showEffectOnlyAccs ? appText.showAll : appText.showEffectAccessories),
                     ),
 
-                  if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[1] ||
-                      selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[2] ||
-                      selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7] ||
-                      selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[11] ||
-                      selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[14] && lSelectedItemData.value != null && lSelectedItemData.value!.subCategory == 'Standby Motion' ||
-                      selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[16])
+                  if (selectedDisplayItemSwapCategory.value == defaultCategoryDirs[1] ||
+                      selectedDisplayItemSwapCategory.value == defaultCategoryDirs[2] ||
+                      selectedDisplayItemSwapCategory.value == defaultCategoryDirs[7] ||
+                      selectedDisplayItemSwapCategory.value == defaultCategoryDirs[11] ||
+                      selectedDisplayItemSwapCategory.value == defaultCategoryDirs[14] && lSelectedItemData.value != null && lSelectedItemData.value!.subCategory == 'Standby Motion' ||
+                      selectedDisplayItemSwapCategory.value == defaultCategoryDirs[16])
                     ElevatedButton(
-                      onPressed: selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7] && emoteSwapQueue.isNotEmpty
+                      onPressed: selectedDisplayItemSwapCategory.value == defaultCategoryDirs[7] && emoteSwapQueue.isNotEmpty
                           ? null
                           : () {
                               setState(() {
-                                extraCategory.isEmpty ? extraCategory = selectedDisplayItemSwapCategory.watch(context) : extraCategory = '';
+                                extraCategory.isEmpty ? extraCategory = selectedDisplayItemSwapCategory.value : extraCategory = '';
                                 // extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
                                 // extraCategory == defaultCategoryDirs[14] ? idleMotionToEmote = true : idleMotionToEmote = false;
                                 extraCategory == defaultCategoryDirs[2]
@@ -406,17 +401,17 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                                 rScrollController.jumpTo(0);
                               });
                             },
-                      child: selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[1]
+                      child: selectedDisplayItemSwapCategory.value == defaultCategoryDirs[1]
                           ? Text(extraCategory == defaultCategoryDirs[1] ? appText.swapToBasewears : appText.swapToSetwears)
-                          : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[2]
+                          : selectedDisplayItemSwapCategory.value == defaultCategoryDirs[2]
                           ? Text(extraCategory == defaultCategoryDirs[2] ? appText.swapToBodyPaints : appText.swapToInnerwears)
-                          : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7]
+                          : selectedDisplayItemSwapCategory.value == defaultCategoryDirs[7]
                           ? Text(extraCategory == defaultCategoryDirs[7] ? appText.swapToEmotes : appText.swapToIdleMotions)
-                          : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[11]
+                          : selectedDisplayItemSwapCategory.value == defaultCategoryDirs[11]
                           ? Text(extraCategory == defaultCategoryDirs[11] ? appText.swapToInnerwears : appText.swapToBodyPaints)
-                          : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[14]
+                          : selectedDisplayItemSwapCategory.value == defaultCategoryDirs[14]
                           ? Text(extraCategory == defaultCategoryDirs[14] ? appText.swapToMotions : appText.swapIdleMotionsToEmotes)
-                          : selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[16]
+                          : selectedDisplayItemSwapCategory.value == defaultCategoryDirs[16]
                           ? Text(extraCategory == defaultCategoryDirs[16] ? appText.swapToSetwears : appText.swapToBasewears)
                           : null,
                     ),
@@ -426,7 +421,7 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                 spacing: 5,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7])
+                  if (selectedDisplayItemSwapCategory.value == defaultCategoryDirs[7])
                     ElevatedButton(
                       onPressed: () {
                         showEmoteQueue ? showEmoteQueue = false : showEmoteQueue = true;
@@ -434,7 +429,7 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                       },
                       child: Text(showEmoteQueue ? appText.hideQueue : appText.viewQueue),
                     ),
-                  if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7])
+                  if (selectedDisplayItemSwapCategory.value == defaultCategoryDirs[7])
                     ElevatedButton(
                       onPressed: emoteSwapQueue.isNotEmpty
                           ? () {
@@ -444,9 +439,9 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                           : null,
                       child: Text(appText.clearAll),
                     ),
-                  if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7])
+                  if (selectedDisplayItemSwapCategory.value == defaultCategoryDirs[7])
                     ElevatedButton(
-                      onPressed: lSelectedItemData.watch(context) != null && rSelectedItemData.watch(context) != null
+                      onPressed: lSelectedItemData.value != null && rSelectedItemData.value != null
                           ? () async {
                               if (emoteSwapQueue.indexWhere((e) => e.$1 == lSelectedItemData.value) == -1) {
                                 emoteSwapQueue.add((lSelectedItemData.value!, rSelectedItemData.value!));
@@ -460,7 +455,7 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                           : null,
                       child: Text(appText.addToQueue),
                     ),
-                  if (selectedDisplayItemSwapCategory.watch(context) == defaultCategoryDirs[7])
+                  if (selectedDisplayItemSwapCategory.value == defaultCategoryDirs[7])
                     ElevatedButton(
                       onPressed: emoteSwapQueue.isNotEmpty
                           ? () async {
@@ -472,9 +467,9 @@ class _MainItemSwapGridState extends State<MainItemSwapGrid> {
                           : null,
                       child: Text(appText.next),
                     ),
-                  if (selectedDisplayItemSwapCategory.watch(context) != defaultCategoryDirs[7])
+                  if (selectedDisplayItemSwapCategory.value != defaultCategoryDirs[7])
                     ElevatedButton(
-                      onPressed: lSelectedItemData.watch(context) != null && rSelectedItemData.watch(context) != null
+                      onPressed: lSelectedItemData.value != null && rSelectedItemData.value != null
                           ? () {
                               itemSwapWorkingStatus.value = '';
                               // extraCategory == defaultCategoryDirs[7] ? emoteToIdleMotion = true : emoteToIdleMotion = false;

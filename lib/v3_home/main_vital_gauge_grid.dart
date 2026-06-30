@@ -14,7 +14,7 @@ import 'package:pso2_mod_manager/vital_gauge/vital_gauge_image_crop_popup.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-class MainVitalGaugeGrid extends StatefulWidget {
+class MainVitalGaugeGrid extends SignalStatefulWidget {
   const MainVitalGaugeGrid({super.key});
 
   @override
@@ -56,7 +56,7 @@ class _MainVitalGaugeGridState extends State<MainVitalGaugeGrid> {
                   height: 30,
                   child: OutlinedButton(
                     style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                       side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                     ),
                     onPressed: () async {
@@ -85,7 +85,7 @@ class _MainVitalGaugeGridState extends State<MainVitalGaugeGrid> {
                   height: 30,
                   child: OutlinedButton(
                     style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                       side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                     ),
                     onPressed: () async {
@@ -100,7 +100,7 @@ class _MainVitalGaugeGridState extends State<MainVitalGaugeGrid> {
                   height: 30,
                   child: OutlinedButton(
                     style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                       side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                     ),
                     onPressed: () async {
@@ -116,7 +116,7 @@ class _MainVitalGaugeGridState extends State<MainVitalGaugeGrid> {
                   height: 30,
                   child: OutlinedButton(
                     style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                       side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                     ),
                     onPressed: () async {

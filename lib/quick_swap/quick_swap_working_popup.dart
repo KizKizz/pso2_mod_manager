@@ -67,7 +67,7 @@ void quickSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, Item
                   lItemData.getItemID(),
                   rItemData.getItemID(),
                   ItemCrossSwap.none,
-                  lItemData.iconImagePath
+                  lItemData.iconImagePath,
                 );
               }
               if (swapOutputDir.existsSync()) {
@@ -93,7 +93,7 @@ void quickSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, Item
               side: BorderSide(color: Theme.of(context).colorScheme.outline),
               borderRadius: const BorderRadius.all(Radius.circular(5)),
             ),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.value),
             insetPadding: const EdgeInsets.all(5),
             contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
             content: Column(
@@ -175,7 +175,11 @@ void quickSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemData, Item
             actionsPadding: const EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),
             actions: [
               const HoriDivider(),
-              Row(spacing: 5, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [Text(itemSwapWorkingStatus.watch(context))]),
+              Row(
+                spacing: 5,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [SignalBuilder(builder: (context) => Text(itemSwapWorkingStatus.value))],
+              ),
             ],
           );
         },

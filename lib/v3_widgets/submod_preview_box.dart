@@ -10,7 +10,7 @@ import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:path/path.dart' as p;
 
-class SubmodPreviewBox extends StatefulWidget {
+class SubmodPreviewBox extends SignalStatefulWidget {
   const SubmodPreviewBox({super.key, required this.imageFilePaths, required this.videoFilePaths, required this.isNew});
 
   final List<String> imageFilePaths;
@@ -29,7 +29,7 @@ class _SubmodPreviewBoxState extends State<SubmodPreviewBox> {
 
   @override
   Widget build(BuildContext context) {
-    if (!showPreviewBox.watch(context)) return const SizedBox();
+    if (!showPreviewBox.value) return const SizedBox();
     widget.videoFilePaths.isEmpty ? showPlayButton = false : showPlayButton = true;
     if (widget.videoFilePaths.isEmpty) showVideoBox = false;
     if (showVideoBox && !overrideShow) {
@@ -87,7 +87,7 @@ class _SubmodPreviewBoxState extends State<SubmodPreviewBox> {
                     height: double.infinity,
                     child: Card(
                         shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(0))),
-                        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
                         margin: EdgeInsets.zero,
                         elevation: 5,
                         child: InkWell(
@@ -160,7 +160,7 @@ class _SubmodPreviewBoxState extends State<SubmodPreviewBox> {
   }
 }
 
-class SubmodVideoBox extends StatefulWidget {
+class SubmodVideoBox extends SignalStatefulWidget {
   const SubmodVideoBox({super.key, required this.videoFilePaths, required this.isNew, required this.reloadVideo, required this.videoCompleted});
 
   final List<String> videoFilePaths;
@@ -219,7 +219,7 @@ class _SubmodVideoBoxState extends State<SubmodVideoBox> {
           children: [
             Card(
               shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(0))),
-              color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+              color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
               margin: EdgeInsets.zero,
               elevation: 5,
               child: Video(controller: VideoController(videoPlayer)),
@@ -266,7 +266,7 @@ class _SubmodImageBoxState extends State<SubmodImageBox> {
           children: [
             Card(
                 shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(0))),
-                color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
                 margin: EdgeInsets.zero,
                 elevation: 5,
                 child: Stack(

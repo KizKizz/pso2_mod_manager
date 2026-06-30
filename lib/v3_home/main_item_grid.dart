@@ -13,7 +13,7 @@ import 'package:searchfield/searchfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 
-class MainItemGrid extends StatefulWidget {
+class MainItemGrid extends SignalStatefulWidget {
   const MainItemGrid({super.key});
 
   @override
@@ -36,7 +36,7 @@ class _MainItemGridState extends State<MainItemGrid> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (selectedDisplaySort.watch(context) != selectedDisplaySort.peek() || mainGridStatus.watch(context) != mainGridStatus.peek()) {
+    if (selectedDisplaySort.value != selectedDisplaySort.peek() || mainGridStatus.value != mainGridStatus.peek()) {
       setState(() {});
     }
 
@@ -74,10 +74,10 @@ class _MainItemGridState extends State<MainItemGrid> {
     }
 
     List<Category> displayingCategories = [];
-    if (selectedDisplayCategories.watch(context).contains('All')) {
+    if (selectedDisplayCategories.value.contains('All')) {
       displayingCategories = categories;
     } else {
-      displayingCategories = categories.where((e) => selectedDisplayCategories.watch(context).contains(e.categoryName)).toList();
+      displayingCategories = categories.where((e) => selectedDisplayCategories.value.contains(e.categoryName)).toList();
     }
 
     // Sort
@@ -142,7 +142,7 @@ class _MainItemGridState extends State<MainItemGrid> {
                         itemHeight: 90,
                         searchInputDecoration: SearchInputDecoration(
                           filled: true,
-                          fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                          fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
                           isDense: true,
                           contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                           cursorHeight: 15,
@@ -300,7 +300,7 @@ class _MainItemGridState extends State<MainItemGrid> {
                 child: IconButton.outlined(
                   visualDensity: VisualDensity.adaptivePlatformDensity,
                   style: ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                    backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                     side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                   ),
                   onPressed: () async {
@@ -324,15 +324,15 @@ class _MainItemGridState extends State<MainItemGrid> {
           Expanded(
             child: ScrollbarTheme(
               data: ScrollbarThemeData(
-                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
+                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
               ),
               child: CustomScrollView(
                 controller: controller,
                 slivers: displayingCategories
                     .map(
                       (e) => SliverPadding(
-                        padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                        padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
                         sliver: CateItemGridLayout(itemCate: e, searchString: searchTextController.value.text, scrollController: controller),
                       ),
                     )

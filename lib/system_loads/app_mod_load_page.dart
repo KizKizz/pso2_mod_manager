@@ -50,7 +50,9 @@ class _AppModLoadPageState extends State<AppModLoadPage> {
                   constraints: const BoxConstraints(minWidth: 350),
                   child: CardOverlay(
                     paddingValue: 15,
-                    child: Text(modLoadingStatus.watch(context), textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
+                    child: SignalBuilder(
+                      builder: (context) => Text(modLoadingStatus.value, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
+                    ),
                   ),
                 ),
               ],

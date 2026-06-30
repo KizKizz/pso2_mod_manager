@@ -56,7 +56,9 @@ class _AppAppliedModsLoadPageState extends State<AppAppliedModsLoadPage> {
                   constraints: const BoxConstraints(minWidth: 350),
                   child: CardOverlay(
                     paddingValue: 15,
-                    child: Text(unappliedItemCheckStatus.watch(context), textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
+                    child: SignalBuilder(
+                      builder: (context) => Text(unappliedItemCheckStatus.value, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
+                    ),
                   ),
                 ),
               ],

@@ -9,14 +9,15 @@ import 'package:signals/signals_flutter.dart';
 Future<void> inactiveOverlay(context) async {
   bool isHovering = false;
   await showDialog(
-      barrierDismissible: false,
-      barrierColor: Colors.transparent,
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(builder: (dialogContext, setState) {
+    barrierDismissible: false,
+    barrierColor: Colors.transparent,
+    context: context,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (dialogContext, setState) {
           return AlertDialog(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
             insetPadding: EdgeInsets.zero,
             contentPadding: EdgeInsets.zero,
             content: SizedBox(
@@ -25,41 +26,46 @@ Future<void> inactiveOverlay(context) async {
               child: Scaffold(
                 appBar: const PreferredSize(preferredSize: Size(double.maxFinite, 25), child: AppTitleBar()),
                 body: InkWell(
-                    splashColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    mouseCursor: MouseCursor.defer,
-                    onTap: () => Navigator.of(context).pop(),
-                    onSecondaryTap: () => Navigator.of(context).pop(),
-                    onHover: (value) => setState(() => value ? isHovering = true : isHovering = false),
-                    child: Stack(
-                      alignment: AlignmentDirectional.bottomEnd,
-                      children: [
-                        const BackgroundSlideshow(isMini: false),
-                        Visibility(
-                          visible: showMessageOnInactiveOverlay.watch(context) || isHovering,
+                  splashColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  mouseCursor: MouseCursor.defer,
+                  onTap: () => Navigator.of(context).pop(),
+                  onSecondaryTap: () => Navigator.of(context).pop(),
+                  onHover: (value) => setState(() => value ? isHovering = true : isHovering = false),
+                  child: Stack(
+                    alignment: AlignmentDirectional.bottomEnd,
+                    children: [
+                      const BackgroundSlideshow(isMini: false),
+                      SignalBuilder(
+                        builder: (context) => Visibility(
+                          visible: showMessageOnInactiveOverlay.value || isHovering,
                           child: Padding(
                             padding: const EdgeInsets.all(5),
                             child: Card(
-                                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
-                                color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-                                margin: EdgeInsets.zero,
-                                elevation: 5,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
-                                  child: Text(
-                                    appText.tapToReturn,
-                                    textAlign: TextAlign.center,
-                                    style: Theme.of(context).textTheme.headlineSmall,
-                                  ),
-                                )),
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5),
+                                borderRadius: const BorderRadius.all(Radius.circular(5)),
+                              ),
+                              color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
+                              margin: EdgeInsets.zero,
+                              elevation: 5,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+                                child: Text(appText.tapToReturn, textAlign: TextAlign.center, style: Theme.of(context).textTheme.headlineSmall),
+                              ),
+                            ),
                           ),
-                        )
-                      ],
-                    )),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           );
-        });
-      });
+        },
+      );
+    },
+  );
 }

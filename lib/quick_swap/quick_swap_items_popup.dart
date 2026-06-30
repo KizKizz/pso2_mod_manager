@@ -15,100 +15,110 @@ Future<void> quickSwapItemsPopup(context, String category) async {
   ScrollController rScrollController = ScrollController();
 
   await showDialog(
-      barrierDismissible: false,
-      barrierColor: Colors.transparent,
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(builder: (dialogContext, setState) {
-          displayingItems = pItemData
-              .where((e) =>
-                  e.getName().isNotEmpty &&
-                      (e.category == category ||
-                          (category == defaultCategoryDirs[16] && e.category == defaultCategoryDirs[1]) ||
-                          (category == defaultCategoryDirs[2] && e.category == defaultCategoryDirs[11])) ||
-                  (category == defaultCategoryDirs[11] && e.category == defaultCategoryDirs[2]))
-              .where((e) => selectedQuickSwapTypeCategory.watch(context) == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedQuickSwapTypeCategory.watch(context).toLowerCase())
-              .toList();
+    barrierDismissible: false,
+    barrierColor: Colors.transparent,
+    context: context,
+    builder: (BuildContext context) {
+      return SignalBuilder(
+        builder: (context) => StatefulBuilder(
+          builder: (dialogContext, setState) {
+            displayingItems = pItemData
+                .where(
+                  (e) =>
+                      e.getName().isNotEmpty &&
+                          (e.category == category ||
+                              (category == defaultCategoryDirs[16] && e.category == defaultCategoryDirs[1]) ||
+                              (category == defaultCategoryDirs[2] && e.category == defaultCategoryDirs[11])) ||
+                      (category == defaultCategoryDirs[11] && e.category == defaultCategoryDirs[2]),
+                )
+                .where((e) => selectedQuickSwapTypeCategory.value == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedQuickSwapTypeCategory.value.toLowerCase())
+                .toList();
 
-          selectedItems = masterQuickSwapItemList
-              .where((e) =>
-                  e.getName().isNotEmpty &&
-                      (e.category == category ||
-                          category == defaultCategoryDirs[16] && e.category == defaultCategoryDirs[1] ||
-                          category == defaultCategoryDirs[2] && e.category == defaultCategoryDirs[11]) ||
-                  category == defaultCategoryDirs[11] && e.category == defaultCategoryDirs[2])
-              .toList();
+            selectedItems = masterQuickSwapItemList
+                .where(
+                  (e) =>
+                      e.getName().isNotEmpty &&
+                          (e.category == category ||
+                              category == defaultCategoryDirs[16] && e.category == defaultCategoryDirs[1] ||
+                              category == defaultCategoryDirs[2] && e.category == defaultCategoryDirs[11]) ||
+                      category == defaultCategoryDirs[11] && e.category == defaultCategoryDirs[2],
+                )
+                .toList();
 
-          return AlertDialog(
-            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
-            insetPadding: EdgeInsets.zero,
-            contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
-            content: SizedBox(
+            return AlertDialog(
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.value),
+              insetPadding: EdgeInsets.zero,
+              contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
+              content: SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
                 child: Column(
                   spacing: 5,
                   children: [
                     SingleChoiceSelectButton(
-                        width: double.infinity,
-                        height: 30,
-                        label: appText.types,
-                        selectPopupLabel: appText.types,
-                        availableItemList: itemTypes,
-                        availableItemLabels: itemTypes.map((e) => appText.itemTypeName(e)).toList(),
-                        selectedItemsLabel: itemTypes.map((e) => appText.itemTypeName(e)).toList(),
-                        selectedItem: selectedQuickSwapTypeCategory,
-                        extraWidgets: [],
-                        savePref: () {
-                          lScrollController.jumpTo(0);
-                          rScrollController.jumpTo(0);
-                        }),
+                      width: double.infinity,
+                      height: 30,
+                      label: appText.types,
+                      selectPopupLabel: appText.types,
+                      availableItemList: itemTypes,
+                      availableItemLabels: itemTypes.map((e) => appText.itemTypeName(e)).toList(),
+                      selectedItemsLabel: itemTypes.map((e) => appText.itemTypeName(e)).toList(),
+                      selectedItem: selectedQuickSwapTypeCategory,
+                      extraWidgets: [],
+                      savePref: () {
+                        lScrollController.jumpTo(0);
+                        rScrollController.jumpTo(0);
+                      },
+                    ),
                     Expanded(
                       child: Row(
                         spacing: 5,
                         children: [
                           Expanded(
-                              child: QuickSwapItemGridLayout(
-                            itemDataList: displayingItems,
-                            scrollController: lScrollController,
-                            selectedList: false,
-                            onButtonPress: (selectedItem) {
-                              masterQuickSwapItemList.add(selectedItem);
-                              saveMasterQuickSwapItemListToJson(masterQuickSwapItemList);
-                              setState(
-                                () {},
-                              );
-                            },
-                          )),
+                            child: QuickSwapItemGridLayout(
+                              itemDataList: displayingItems,
+                              scrollController: lScrollController,
+                              selectedList: false,
+                              onButtonPress: (selectedItem) {
+                                masterQuickSwapItemList.add(selectedItem);
+                                saveMasterQuickSwapItemListToJson(masterQuickSwapItemList);
+                                setState(() {});
+                              },
+                            ),
+                          ),
                           Expanded(
-                              child: QuickSwapItemGridLayout(
-                            itemDataList: selectedItems,
-                            scrollController: rScrollController,
-                            selectedList: true,
-                            onButtonPress: (selectedItem) {
-                              masterQuickSwapItemList.removeWhere((e) => e.compare(selectedItem));
-                              saveMasterQuickSwapItemListToJson(masterQuickSwapItemList);
-                              setState(
-                                () {},
-                              );
-                            },
-                          )),
+                            child: QuickSwapItemGridLayout(
+                              itemDataList: selectedItems,
+                              scrollController: rScrollController,
+                              selectedList: true,
+                              onButtonPress: (selectedItem) {
+                                masterQuickSwapItemList.removeWhere((e) => e.compare(selectedItem));
+                                saveMasterQuickSwapItemListToJson(masterQuickSwapItemList);
+                                setState(() {});
+                              },
+                            ),
+                          ),
                         ],
                       ),
                     ),
                   ],
-                )),
-            actionsPadding: const EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),
-            actions: [
-              const HoriDivider(),
-              OutlinedButton(
+                ),
+              ),
+              actionsPadding: const EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),
+              actions: [
+                const HoriDivider(),
+                OutlinedButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text(appText.returns))
-            ],
-          );
-        });
-      });
+                  child: Text(appText.returns),
+                ),
+              ],
+            );
+          },
+        ),
+      );
+    },
+  );
 }

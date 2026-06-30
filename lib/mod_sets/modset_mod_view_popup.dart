@@ -16,29 +16,29 @@ Future<void> modsetModViewPopup(context, Item item, String setName) async {
   int firstModIndex = item.mods.indexWhere((e) => e.setNames.contains(setName));
   Mod? selectedMod = firstModIndex != -1 ? item.mods[firstModIndex] : null;
   await showDialog(
-      barrierDismissible: false,
-      barrierColor: Colors.transparent,
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(builder: (dialogContext, setState) {
-          // Refresh
-          if (modApplyStatus.watch(context) != modApplyStatus.peek() || modPopupStatus.watch(context) != modPopupStatus.peek()) {
-            setState(
-              () {},
-            );
-          }
-          return AlertDialog(
-            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
-            insetPadding: EdgeInsets.zero,
-            contentPadding: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-            content: InkWell(
-              splashColor: Colors.transparent,
-              hoverColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              mouseCursor: MouseCursor.defer,
-              onSecondaryTap: () => Navigator.of(context).pop(),
-              child: SizedBox(
+    barrierDismissible: false,
+    barrierColor: Colors.transparent,
+    context: context,
+    builder: (BuildContext context) {
+      return SignalBuilder(
+        builder: (context) => StatefulBuilder(
+          builder: (dialogContext, setState) {
+            // Refresh
+            if (modApplyStatus.value != modApplyStatus.peek() || modPopupStatus.value != modPopupStatus.peek()) {
+              setState(() {});
+            }
+            return AlertDialog(
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.value),
+              insetPadding: EdgeInsets.zero,
+              contentPadding: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+              content: InkWell(
+                splashColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                mouseCursor: MouseCursor.defer,
+                onSecondaryTap: () => Navigator.of(context).pop(),
+                child: SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
                   child: Column(
@@ -52,45 +52,42 @@ Future<void> modsetModViewPopup(context, Item item, String setName) async {
                               child: Column(
                                 spacing: 5,
                                 children: [
-                                  PopupItemInfo(
-                                    item: item,
-                                    mod: selectedMod,
-                                    showModInfo: false,
-                                    isSingleModView: true,
-                                    onEditing: (bool editingState) {},
-                                  ),
+                                  PopupItemInfo(item: item, mod: selectedMod, showModInfo: false, isSingleModView: true, onEditing: (bool editingState) {}),
                                   const HoriDivider(),
                                   Expanded(
-                                      child: CustomScrollView(physics: const SuperRangeMaintainingScrollPhysics(), slivers: [
-                                    SuperSliverList.builder(
-                                        itemCount: item.mods.where((e) => e.isSet && e.setNames.contains(setName)).length,
-                                        itemBuilder: (context, modIndex) {
-                                          Mod mod = item.mods.where((e) => e.isSet && e.setNames.contains(setName)).toList()[modIndex];
-                                          return PopupListTile(
-                                            item: item,
-                                            mod: mod,
-                                            selectedMod: selectedMod,
-                                            onSelectedMod: () {
-                                              selectedMod = mod;
-                                              setState(
-                                                () {},
-                                              );
-                                            },
-                                            onDelete: () async {
-                                              await modDelete(context, item, mod, false);
-                                              modPopupStatus.value = '[${DateTime.now()}] ${mod.modName} deleted';
-                                              item.isNew = item.getModsIsNewState();
-                                              selectedMod = null;
-                                              if (item.mods.isEmpty) {
-                                                mainGridStatus.value = '[${DateTime.now()}] "${mod.modName}" in "${item.getDisplayName()}" is empty and removed';
-                                                // ignore: use_build_context_synchronously
-                                                Navigator.of(context).pop();
-                                              }
-                                            },
-                                            isInEditingMode: false,
-                                          );
-                                        })
-                                  ]))
+                                    child: CustomScrollView(
+                                      physics: const SuperRangeMaintainingScrollPhysics(),
+                                      slivers: [
+                                        SuperSliverList.builder(
+                                          itemCount: item.mods.where((e) => e.isSet && e.setNames.contains(setName)).length,
+                                          itemBuilder: (context, modIndex) {
+                                            Mod mod = item.mods.where((e) => e.isSet && e.setNames.contains(setName)).toList()[modIndex];
+                                            return PopupListTile(
+                                              item: item,
+                                              mod: mod,
+                                              selectedMod: selectedMod,
+                                              onSelectedMod: () {
+                                                selectedMod = mod;
+                                                setState(() {});
+                                              },
+                                              onDelete: () async {
+                                                await modDelete(context, item, mod, false);
+                                                modPopupStatus.value = '[${DateTime.now()}] ${mod.modName} deleted';
+                                                item.isNew = item.getModsIsNewState();
+                                                selectedMod = null;
+                                                if (item.mods.isEmpty) {
+                                                  mainGridStatus.value = '[${DateTime.now()}] "${mod.modName}" in "${item.getDisplayName()}" is empty and removed';
+                                                  // ignore: use_build_context_synchronously
+                                                  Navigator.of(context).pop();
+                                                }
+                                              },
+                                              isInEditingMode: false,
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -98,12 +95,7 @@ Future<void> modsetModViewPopup(context, Item item, String setName) async {
                             Expanded(
                               flex: 3,
                               child: selectedMod == null
-                                  ? Center(
-                                      child: Text(
-                                        appText.selectAMod,
-                                        style: Theme.of(context).textTheme.headlineSmall,
-                                      ),
-                                    )
+                                  ? Center(child: Text(appText.selectAMod, style: Theme.of(context).textTheme.headlineSmall))
                                   : CustomScrollView(
                                       physics: const SuperRangeMaintainingScrollPhysics(),
                                       slivers: [
@@ -115,7 +107,7 @@ Future<void> modsetModViewPopup(context, Item item, String setName) async {
                                           modSetName: setName,
                                           isPopup: true,
                                           isInEditingMode: false,
-                                        )
+                                        ),
                                       ],
                                     ),
                             ),
@@ -127,11 +119,15 @@ Future<void> modsetModViewPopup(context, Item item, String setName) async {
                         spacing: 5,
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [OutlinedButton(onPressed: () => Navigator.of(context).pop(), child: Text(appText.returns))],
-                      )
+                      ),
                     ],
-                  )),
-            ),
-          );
-        });
-      });
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    },
+  );
 }

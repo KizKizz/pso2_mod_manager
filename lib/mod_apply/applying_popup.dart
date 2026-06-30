@@ -25,20 +25,21 @@ Future<void> applyingPopup(context, bool applying, Item item, Mod mod, SubMod su
   }
 
   await showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(builder: (dialogContext, setState) {
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (dialogContext, setState) {
           return AlertDialog(
-              backgroundColor: Colors.transparent,
-              insetPadding: const EdgeInsets.all(5),
-              contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
-              content: FutureBuilder(
-                future: future,
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.connectionState != ConnectionState.done) {
-                    return Center(
-                        child: Column(
+            backgroundColor: Colors.transparent,
+            insetPadding: const EdgeInsets.all(5),
+            contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
+            content: FutureBuilder(
+              future: future,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState != ConnectionState.done) {
+                  return Center(
+                    child: Column(
                       spacing: 5,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -49,10 +50,7 @@ Future<void> applyingPopup(context, bool applying, Item item, Mod mod, SubMod su
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              LoadingAnimationWidget.staggeredDotsWave(
-                                color: Theme.of(context).colorScheme.primary,
-                                size: 100,
-                              ),
+                              LoadingAnimationWidget.staggeredDotsWave(color: Theme.of(context).colorScheme.primary, size: 100),
                               Padding(
                                 padding: const EdgeInsets.only(top: 10),
                                 child: Text(
@@ -64,30 +62,34 @@ Future<void> applyingPopup(context, bool applying, Item item, Mod mod, SubMod su
                           ),
                         ),
                         ConstrainedBox(
-                            constraints: const BoxConstraints(minWidth: 350),
-                            child: CardOverlay(
-                              paddingValue: 15,
-                              child: Text(
-                                modApplyStatus.watch(context),
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                            ))
+                          constraints: const BoxConstraints(minWidth: 350),
+                          child: CardOverlay(
+                            paddingValue: 15,
+                            child: SignalBuilder(
+                              builder: (context) => Text(modApplyStatus.value, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
+                            ),
+                          ),
+                        ),
                       ],
-                    ));
-                  } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                    return FutureBuilderError(
-                      loadingText: applying ? appText.dText(appText.applyingMod, submod.submodName) : appText.dText(appText.restoringModBackups, submod.submodName),
-                      snapshotError: snapshot.error.toString(),
-                      isPopup: true, showContButton: false,
-                    );
-                  } else {
-                    taskFinished ??= true;
-                    popupDismiss();
-                    return const SizedBox();
-                  }
-                },
-              ));
-        });
-      });
+                    ),
+                  );
+                } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
+                  return FutureBuilderError(
+                    loadingText: applying ? appText.dText(appText.applyingMod, submod.submodName) : appText.dText(appText.restoringModBackups, submod.submodName),
+                    snapshotError: snapshot.error.toString(),
+                    isPopup: true,
+                    showContButton: false,
+                  );
+                } else {
+                  taskFinished ??= true;
+                  popupDismiss();
+                  return const SizedBox();
+                }
+              },
+            ),
+          );
+        },
+      );
+    },
+  );
 }

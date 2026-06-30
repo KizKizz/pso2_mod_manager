@@ -21,7 +21,7 @@ import 'package:pso2_mod_manager/v3_widgets/choice_select_buttons.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-class MainLineStrikeGrid extends StatefulWidget {
+class MainLineStrikeGrid extends SignalStatefulWidget {
   const MainLineStrikeGrid({super.key});
 
   @override
@@ -46,11 +46,11 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
   }
 
   Future<void> customImageFetch() async {
-    if (selectedLineStrikeType.watch(context) == LineStrikeItemType.cards.value) {
+    if (selectedLineStrikeType.value == LineStrikeItemType.cards.value) {
       customBackgroundImages = await customCardImagesFetch();
-    } else if (selectedLineStrikeType.watch(context) == LineStrikeItemType.boards.value) {
+    } else if (selectedLineStrikeType.value == LineStrikeItemType.boards.value) {
       customBackgroundImages = await customBoardImageFetch();
-    } else if (selectedLineStrikeType.watch(context) == LineStrikeItemType.sleeves.value) {
+    } else if (selectedLineStrikeType.value == LineStrikeItemType.sleeves.value) {
       customBackgroundImages = await customSleeveImageFetch();
     }
     setState(() {});
@@ -74,7 +74,7 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
                   height: 30,
                   child: OutlinedButton(
                     style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                       side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                     ),
                     onPressed: () async {
@@ -103,7 +103,7 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
                   height: 30,
                   child: OutlinedButton(
                     style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                       side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                     ),
                     onPressed: () async {
@@ -124,7 +124,7 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
                   height: 30,
                   child: OutlinedButton(
                     style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                       side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                     ),
                     onPressed: () async {
@@ -146,7 +146,7 @@ class _MainVitalGaugeGridState extends State<MainLineStrikeGrid> {
                   height: 30,
                   child: OutlinedButton(
                     style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                       side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                     ),
                     onPressed: () async {

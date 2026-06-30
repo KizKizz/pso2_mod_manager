@@ -10,14 +10,20 @@ class InfoBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-        shape: RoundedRectangleBorder(side: BorderSide(color: borderHighlight? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
-        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+    return SignalBuilder(
+      builder: (context) => Card(
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: borderHighlight ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.outline, width: 1.5),
+          borderRadius: const BorderRadius.all(Radius.circular(5)),
+        ),
+        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
         margin: EdgeInsets.zero,
         elevation: 5,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
-          child: Center(child: Text(info, textAlign: TextAlign.center,)),
-        ));
+          child: Center(child: Text(info, textAlign: TextAlign.center)),
+        ),
+      ),
+    );
   }
 }

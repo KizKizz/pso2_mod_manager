@@ -45,7 +45,9 @@ class _AppLineStrikeAppliedCheckPage extends State<AppLineStrikeAppliedCheckPage
                   constraints: const BoxConstraints(minWidth: 350),
                   child: CardOverlay(
                     paddingValue: 15,
-                    child: Text(lineStrikeStatus.watch(context), textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
+                    child: SignalBuilder(
+                      builder: (context) => Text(lineStrikeStatus.value, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
+                    ),
                   ),
                 ),
               ],

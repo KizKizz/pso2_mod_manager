@@ -25,58 +25,68 @@ class QuickSwapMenu extends StatefulWidget {
 class _QuickSwapMenuState extends State<QuickSwapMenu> {
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton(
+    return SignalBuilder(
+      builder: (context) => PopupMenuButton(
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
+        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.value),
         padding: EdgeInsets.zero,
         menuPadding: EdgeInsets.zero,
         icon: const Icon(Icons.add),
         tooltip: '',
-        enabled: !saveRestoreAppliedModsActive.watch(context),
+        enabled: !saveRestoreAppliedModsActive.value,
         elevation: 5,
         style: ButtonStyle(
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-            shape: WidgetStatePropertyAll(RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1), borderRadius: const BorderRadius.all(Radius.circular(20))))),
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(
+              side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1),
+              borderRadius: const BorderRadius.all(Radius.circular(20)),
+            ),
+          ),
+        ),
         itemBuilder: (BuildContext context) {
           List<ItemData> selectedQuickSwapItems = masterQuickSwapItemList
-              .where((e) =>
-                  e.getName().isNotEmpty &&
-                      (e.category == widget.submod.category ||
-                          widget.submod.category == defaultCategoryDirs[16] && e.category == defaultCategoryDirs[1] ||
-                          widget.submod.category == defaultCategoryDirs[2] && e.category == defaultCategoryDirs[11]) ||
-                  widget.submod.category == defaultCategoryDirs[11] && e.category == defaultCategoryDirs[2])
+              .where(
+                (e) =>
+                    e.getName().isNotEmpty &&
+                        (e.category == widget.submod.category ||
+                            widget.submod.category == defaultCategoryDirs[16] && e.category == defaultCategoryDirs[1] ||
+                            widget.submod.category == defaultCategoryDirs[2] && e.category == defaultCategoryDirs[11]) ||
+                    widget.submod.category == defaultCategoryDirs[11] && e.category == defaultCategoryDirs[2],
+              )
               .toList();
           return [
             for (int i = 0; i < selectedQuickSwapItems.length; i++)
               PopupMenuItem(
-                  enabled: selectedQuickSwapItems[i].getENName() != widget.item.itemName && selectedQuickSwapItems[i].getJPName() != widget.item.itemName,
-                  onTap: () async {
-                    List<ItemData> lItemData =
-                        pItemData.where((e) => e.category == widget.submod.category && widget.submod.getModFileNames().indexWhere((f) => e.getIceDetailsWithoutKeys().contains(f)) != -1).toList();
-                    quickSwapWorkingPopup(context, false, lItemData.first, selectedQuickSwapItems[i], widget.mod, widget.submod);
-                  },
-                  child: Row(
-                    spacing: 10,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 2),
-                        child: GenericItemIconBox(iconImagePaths: [selectedQuickSwapItems[i].iconImagePath], boxSize: const Size(60, 60), isNetwork: true),
-                      ),
-                      Text(selectedQuickSwapItems[i].getName())
-                    ],
-                  )),
-            PopupMenuItem(
+                enabled: selectedQuickSwapItems[i].getENName() != widget.item.itemName && selectedQuickSwapItems[i].getJPName() != widget.item.itemName,
                 onTap: () async {
-                  await quickSwapItemsPopup(context, widget.submod.category);
-                  setState(() {});
+                  List<ItemData> lItemData = pItemData
+                      .where((e) => e.category == widget.submod.category && widget.submod.getModFileNames().indexWhere((f) => e.getIceDetailsWithoutKeys().contains(f)) != -1)
+                      .toList();
+                  quickSwapWorkingPopup(context, false, lItemData.first, selectedQuickSwapItems[i], widget.mod, widget.submod);
                 },
-                child: MenuIconItem(
-                  icon: Icons.add,
-                  text: appText.selecteMoreItems,
-                  enabled: true,
-                )),
+                child: Row(
+                  spacing: 10,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      child: GenericItemIconBox(iconImagePaths: [selectedQuickSwapItems[i].iconImagePath], boxSize: const Size(60, 60), isNetwork: true),
+                    ),
+                    Text(selectedQuickSwapItems[i].getName()),
+                  ],
+                ),
+              ),
+            PopupMenuItem(
+              onTap: () async {
+                await quickSwapItemsPopup(context, widget.submod.category);
+                setState(() {});
+              },
+              child: MenuIconItem(icon: Icons.add, text: appText.selecteMoreItems, enabled: true),
+            ),
           ];
-        });
+        },
+      ),
+    );
   }
 }

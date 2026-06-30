@@ -16,7 +16,7 @@ import 'package:signals/signals_flutter.dart';
 import 'package:path/path.dart' as p;
 import 'package:url_launcher/url_launcher_string.dart';
 
-class DataUpdatePage extends StatefulWidget {
+class DataUpdatePage extends SignalStatefulWidget {
   const DataUpdatePage({super.key});
 
   @override
@@ -120,7 +120,7 @@ class _DataUpdatePageState extends State<DataUpdatePage> {
                       ),
                       Text(desc),
                       Visibility(
-                        visible: downloadStatus.watch(context).isEmpty || downloadStatus.watch(context) == TaskStatus.failed.name || downloadStatus.watch(context) == TaskStatus.canceled.name,
+                        visible: downloadStatus.value.isEmpty || downloadStatus.value == TaskStatus.failed.name || downloadStatus.value == TaskStatus.canceled.name,
                         child: Column(
                           children: [
                             const SizedBox(width: 150, child: Divider(height: 30, thickness: 2)),
@@ -150,7 +150,7 @@ class _DataUpdatePageState extends State<DataUpdatePage> {
                                       itemDataLocalVersionFile.writeAsStringSync(encoder.convert(jsonData));
                                     }
                                   },
-                                  child: Text(downloadStatus.watch(context) == TaskStatus.failed.name ? appText.tryAgain : appText.update),
+                                  child: Text(downloadStatus.value == TaskStatus.failed.name ? appText.tryAgain : appText.update),
                                 ),
                                 ElevatedButton(onPressed: () {}, child: Text(appText.later)),
                               ],
@@ -161,31 +161,31 @@ class _DataUpdatePageState extends State<DataUpdatePage> {
 
                       // Downloading Panel
                       Visibility(
-                        visible: downloadStatus.watch(context).isNotEmpty && downloadStatus.watch(context) != TaskStatus.failed.name && downloadStatus.watch(context) != TaskStatus.canceled.name,
+                        visible: downloadStatus.value.isNotEmpty && downloadStatus.value != TaskStatus.failed.name && downloadStatus.value != TaskStatus.canceled.name,
                         child: Padding(
                           padding: const EdgeInsets.only(top: 15),
                           child: Column(
                             children: [
-                              SizedBox(width: 250, child: LinearProgressIndicator(value: downloadProgress.watch(context))),
-                              Text(downloadStatus.watch(context)),
+                              SizedBox(width: 250, child: LinearProgressIndicator(value: downloadProgress.value)),
+                              Text(downloadStatus.value),
                               Visibility(
-                                visible: downloadStatus.watch(context) != TaskStatus.complete.name,
+                                visible: downloadStatus.value != TaskStatus.complete.name,
                                 child: const SizedBox(width: 150, child: Divider(height: 30, thickness: 2)),
                               ),
                               Visibility(
-                                visible: downloadStatus.watch(context) != TaskStatus.complete.name,
+                                visible: downloadStatus.value != TaskStatus.complete.name,
                                 child: Wrap(
                                   spacing: 10,
                                   children: [
                                     ElevatedButton(
                                       onPressed: () async {
-                                        if (downloadStatus.watch(context) == TaskStatus.paused.name) {
+                                        if (downloadStatus.value == TaskStatus.paused.name) {
                                           await FileDownloader().resume(task);
                                         } else {
                                           await FileDownloader().pause(task);
                                         }
                                       },
-                                      child: Text(downloadStatus.watch(context) == TaskStatus.paused.name ? appText.resume : appText.pause),
+                                      child: Text(downloadStatus.value == TaskStatus.paused.name ? appText.resume : appText.pause),
                                     ),
                                     ElevatedButton(
                                       onPressed: () async {

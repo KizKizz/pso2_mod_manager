@@ -88,7 +88,7 @@ class _SubmodGridLayoutState extends State<SubmodGridLayout> {
   }
 }
 
-class SubmodCardLayout extends StatefulWidget {
+class SubmodCardLayout extends SignalStatefulWidget {
   const SubmodCardLayout({
     super.key,
     required this.item,
@@ -121,7 +121,7 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
       height: 270,
       child: Card(
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
         margin: EdgeInsets.zero,
         elevation: 5,
         child: Padding(
@@ -191,17 +191,19 @@ class _SubmodCardLayoutState extends State<SubmodCardLayout> {
                 spacing: 2.5,
                 children: [
                   Expanded(
-                    child: OutlinedButton(
-                      onPressed: !saveRestoreAppliedModsActive.watch(context)
-                          ? () async {
-                              if (!widget.submod.applyStatus) {
-                                await modToGameData(context, true, widget.item, widget.mod, widget.submod);
-                              } else {
-                                await modToGameData(context, false, widget.item, widget.mod, widget.submod);
+                    child: SignalBuilder(
+                      builder: (context) => OutlinedButton(
+                        onPressed: !saveRestoreAppliedModsActive.value
+                            ? () async {
+                                if (!widget.submod.applyStatus) {
+                                  await modToGameData(context, true, widget.item, widget.mod, widget.submod);
+                                } else {
+                                  await modToGameData(context, false, widget.item, widget.mod, widget.submod);
+                                }
                               }
-                            }
-                          : null,
-                      child: Text(widget.submod.applyStatus ? appText.remove : appText.apply),
+                            : null,
+                        child: Text(widget.submod.applyStatus ? appText.remove : appText.apply),
+                      ),
                     ),
                   ),
                   Visibility(

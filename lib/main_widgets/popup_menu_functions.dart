@@ -159,7 +159,7 @@ Future<void> submodRename(context, Mod mod, SubMod submod) async {
 Future<void> addPreviews(Mod mod, SubMod submod) async {
   List<XFile> files = [];
   if (useAltFilePicker) {
-    FilePickerResult? result = await FilePicker.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['jpg', 'png', 'webm', 'mp4']);
+    FilePickerResult? result = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['jpg', 'png', 'webm', 'mp4']);
     if (result != null) files = result.xFiles;
   } else {
     const XTypeGroup imageTypeGroup = XTypeGroup(label: 'Images', extensions: <String>['jpg', 'png']);

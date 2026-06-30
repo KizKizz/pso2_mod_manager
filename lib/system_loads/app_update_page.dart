@@ -16,7 +16,7 @@ import 'package:signals/signals_flutter.dart';
 import 'package:path/path.dart' as p;
 import 'package:url_launcher/url_launcher_string.dart';
 
-class AppUpdatePage extends StatefulWidget {
+class AppUpdatePage extends SignalStatefulWidget {
   const AppUpdatePage({super.key});
 
   @override
@@ -109,7 +109,7 @@ class _AppUpdatePageState extends State<AppUpdatePage> {
                       SingleChildScrollView(child: Text(remotePatchNotes)),
 
                       Visibility(
-                        visible: downloadStatus.watch(context).isEmpty,
+                        visible: downloadStatus.value.isEmpty,
                         child: Column(
                           children: [
                             const SizedBox(width: 150, child: Divider(height: 30, thickness: 2)),
@@ -145,13 +145,13 @@ class _AppUpdatePageState extends State<AppUpdatePage> {
 
                       // Downloading Panel
                       Visibility(
-                        visible: downloadStatus.watch(context).isNotEmpty,
+                        visible: downloadStatus.value.isNotEmpty,
                         child: Padding(
                           padding: const EdgeInsets.only(top: 15),
                           child: Column(
                             children: [
-                              SizedBox(width: 250, child: LinearProgressIndicator(value: downloadProgress.watch(context))),
-                              Text(downloadStatus.watch(context)),
+                              SizedBox(width: 250, child: LinearProgressIndicator(value: downloadProgress.value)),
+                              Text(downloadStatus.value),
                               const SizedBox(width: 150, child: Divider(height: 30, thickness: 2)),
                               Row(
                                 spacing: 5,
@@ -160,13 +160,13 @@ class _AppUpdatePageState extends State<AppUpdatePage> {
                                 children: [
                                   Visibility(
                                     visible:
-                                        downloadStatus.watch(context) != appText.updaterNotFound &&
-                                        downloadStatus.watch(context) != appText.unableToExtractUpdateData &&
-                                        downloadStatus.watch(context) != appText.unableToUpdate,
+                                        downloadStatus.value != appText.updaterNotFound &&
+                                        downloadStatus.value != appText.unableToExtractUpdateData &&
+                                        downloadStatus.value != appText.unableToUpdate,
                                     child: ElevatedButton(
-                                      onPressed: downloadStatus.watch(context) == appText.extractCompletedReadyToPatch
+                                      onPressed: downloadStatus.value == appText.extractCompletedReadyToPatch
                                           ? () {
-                                              if (downloadStatus.watch(context) == appText.extractCompletedReadyToPatch) {
+                                              if (downloadStatus.value == appText.extractCompletedReadyToPatch) {
                                                 Process.run(updater!.path, ['PSO2NGSModManager', remoteVersion, Directory.current.path]);
                                               }
                                             }
@@ -176,9 +176,9 @@ class _AppUpdatePageState extends State<AppUpdatePage> {
                                   ),
                                   Visibility(
                                     visible:
-                                        downloadStatus.watch(context) == appText.updaterNotFound ||
-                                        downloadStatus.watch(context) == appText.unableToExtractUpdateData ||
-                                        downloadStatus.watch(context) == appText.unableToUpdate,
+                                        downloadStatus.value == appText.updaterNotFound ||
+                                        downloadStatus.value == appText.unableToExtractUpdateData ||
+                                        downloadStatus.value == appText.unableToUpdate,
                                     child: ElevatedButton(
                                       onPressed: () async {
                                         await appUpdateDownload();
@@ -188,9 +188,9 @@ class _AppUpdatePageState extends State<AppUpdatePage> {
                                   ),
                                   Visibility(
                                     visible:
-                                        downloadStatus.watch(context) == appText.updaterNotFound ||
-                                        downloadStatus.watch(context) == appText.unableToExtractUpdateData ||
-                                        downloadStatus.watch(context) == appText.unableToUpdate,
+                                        downloadStatus.value == appText.updaterNotFound ||
+                                        downloadStatus.value == appText.unableToExtractUpdateData ||
+                                        downloadStatus.value == appText.unableToUpdate,
                                     child: ElevatedButton(
                                       onPressed: () {
                                         pageIndex++;
@@ -201,9 +201,9 @@ class _AppUpdatePageState extends State<AppUpdatePage> {
                                   ),
                                   Visibility(
                                     visible:
-                                        downloadStatus.watch(context) == appText.updaterNotFound ||
-                                        downloadStatus.watch(context) == appText.unableToExtractUpdateData ||
-                                        downloadStatus.watch(context) == appText.unableToUpdate,
+                                        downloadStatus.value == appText.updaterNotFound ||
+                                        downloadStatus.value == appText.unableToExtractUpdateData ||
+                                        downloadStatus.value == appText.unableToUpdate,
                                     child: ElevatedButton(
                                       onPressed: () async {
                                         await launchUrlString('https://github.com/KizKizz/pso2_mod_manager/releases');
@@ -214,7 +214,7 @@ class _AppUpdatePageState extends State<AppUpdatePage> {
                                 ],
                               ),
                               // ElevatedButton(
-                              //     onPressed: patchLauncher != null && downloadStatus.watch(context) == appText.extractCompletedReadyToPatch
+                              //     onPressed: patchLauncher != null && downloadStatus.value == appText.extractCompletedReadyToPatch
                               //         ? () {
                               //             // if (patchLauncher != null && patchLauncher!.existsSync()) {
                               //             //   Process.run('"${patchLauncher!.path}"', []);
@@ -223,7 +223,7 @@ class _AppUpdatePageState extends State<AppUpdatePage> {
                               //             // }
                               //           }
                               //         : null,
-                              //     child: Text(patchLauncher != null && downloadStatus.watch(context) == appText.extractCompletedReadyToPatch ? appText.patch : appText.tryAgainLater)),
+                              //     child: Text(patchLauncher != null && downloadStatus.value == appText.extractCompletedReadyToPatch ? appText.patch : appText.tryAgainLater)),
                             ],
                           ),
                         ),

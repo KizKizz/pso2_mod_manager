@@ -11,7 +11,7 @@ import 'package:signals/signals_flutter.dart';
 Signal<Item?> selectedItemV2 = Signal(null);
 Signal<bool> modViewExpandState = Signal(false);
 
-class HomepageV2 extends StatefulWidget {
+class HomepageV2 extends SignalStatefulWidget {
   const HomepageV2({super.key});
 
   @override
@@ -19,15 +19,21 @@ class HomepageV2 extends StatefulWidget {
 }
 
 class _HomepageV2State extends State<HomepageV2> {
-  final MultiSplitViewController multiSplitViewController = MultiSplitViewController(areas: [
-    Area(flex: splitViewFlexValue0, min: 0.75, builder: (context, area) => const ItemListV2()),
-    Area(flex: splitViewFlexValue1, min: 0.9, builder: (context, area) => ModViewListV2(item: selectedItemV2.watch(context))),
-    Area(flex: splitViewFlexValue2, min: 1, builder: (context, area) => const AppliedListV2()),
-  ]);
+  final MultiSplitViewController multiSplitViewController = MultiSplitViewController(
+    areas: [
+      Area(flex: splitViewFlexValue0, min: 0.75, builder: (context, area) => const ItemListV2()),
+      Area(
+        flex: splitViewFlexValue1,
+        min: 0.9,
+        builder: (context, area) => SignalBuilder(builder: (context) => ModViewListV2(item: selectedItemV2.value)),
+      ),
+      Area(flex: splitViewFlexValue2, min: 1, builder: (context, area) => const AppliedListV2()),
+    ],
+  );
 
   @override
   Widget build(BuildContext context) {
-    if (showAppliedListV2.watch(context)) {
+    if (showAppliedListV2.value) {
       if (multiSplitViewController.areasCount == 2) {
         multiSplitViewController.addArea(Area(flex: splitViewFlexValue2, min: 1, builder: (context, area) => const AppliedListV2()));
       }
@@ -68,6 +74,8 @@ class _HomepageV2State extends State<HomepageV2> {
       },
     );
     return MultiSplitViewTheme(
-        data: MultiSplitViewThemeData(dividerPainter: DividerPainters.grooved2(count: 49, highlightedCount: 99, highlightedColor: Theme.of(context).colorScheme.primary)), child: multiSplitView);
+      data: MultiSplitViewThemeData(dividerPainter: DividerPainters.grooved2(count: 49, highlightedCount: 99, highlightedColor: Theme.of(context).colorScheme.primary)),
+      child: multiSplitView,
+    );
   }
 }

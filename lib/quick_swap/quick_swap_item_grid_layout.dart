@@ -44,67 +44,77 @@ class _QuickSwapItemGridLayoutState extends State<QuickSwapItemGridLayout> {
       children: [
         SizedBox(
           height: 30,
-          child: Stack(alignment: AlignmentDirectional.centerEnd, children: [
-            SearchField<ItemData>(
-              itemHeight: 90,
-              searchInputDecoration: SearchInputDecoration(
-                  filled: true,
-                  fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-                  isDense: true,
-                  contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
-                  cursorHeight: 15,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface)),
-                  cursorColor: Theme.of(context).colorScheme.primary,
-                  hintText: appText.search),
-              suggestions: displayingItemData
-                  .map(
-                    (e) => SearchFieldListItem(
-                      e.getName(),
-                      item: e,
-                      child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
-                          child: Row(
-                            spacing: 5,
-                            children: [
-                              GenericItemIconBox(iconImagePaths: [e.iconImagePath], boxSize: const Size(70, 70), isNetwork: true),
-                              Text(e.getName())
-                            ],
-                          )),
+          child: Stack(
+            alignment: AlignmentDirectional.centerEnd,
+            children: [
+              SignalBuilder(
+                builder: (context) => SearchField<ItemData>(
+                  itemHeight: 90,
+                  searchInputDecoration: SearchInputDecoration(
+                    filled: true,
+                    fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
+                    isDense: true,
+                    contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
+                    cursorHeight: 15,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25),
+                      borderSide: BorderSide(color: Theme.of(context).colorScheme.inverseSurface),
                     ),
-                  )
-                  .toList(),
-              controller: quickSwapItemSearchTextController,
-              onSuggestionTap: (p0) {
-                quickSwapItemSearchTextController.text = p0.searchKey;
-                selectedItemData = p0.item;
-                setState(() {});
-              },
-              onSearchTextChanged: (p0) {
-                setState(() {});
-                return displayingItemData
-                    .map(
-                      (e) => SearchFieldListItem(
-                        e.getName(),
-                        item: e,
-                        child: Padding(
+                    cursorColor: Theme.of(context).colorScheme.primary,
+                    hintText: appText.search,
+                  ),
+                  suggestions: displayingItemData
+                      .map(
+                        (e) => SearchFieldListItem(
+                          e.getName(),
+                          item: e,
+                          child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 5),
                             child: Row(
                               spacing: 5,
                               children: [
                                 GenericItemIconBox(iconImagePaths: [e.iconImagePath], boxSize: const Size(70, 70), isNetwork: true),
-                                Text(e.getName())
+                                Text(e.getName()),
                               ],
-                            )),
-                      ),
-                    )
-                    .toList();
-              },
-            ),
-            Visibility(
-              visible: quickSwapItemSearchTextController.value.text.isNotEmpty,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 2),
-                child: IconButton(
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                  controller: quickSwapItemSearchTextController,
+                  onSuggestionTap: (p0) {
+                    quickSwapItemSearchTextController.text = p0.searchKey;
+                    selectedItemData = p0.item;
+                    setState(() {});
+                  },
+                  onSearchTextChanged: (p0) {
+                    setState(() {});
+                    return displayingItemData
+                        .map(
+                          (e) => SearchFieldListItem(
+                            e.getName(),
+                            item: e,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 5),
+                              child: Row(
+                                spacing: 5,
+                                children: [
+                                  GenericItemIconBox(iconImagePaths: [e.iconImagePath], boxSize: const Size(70, 70), isNetwork: true),
+                                  Text(e.getName()),
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList();
+                  },
+                ),
+              ),
+              Visibility(
+                visible: quickSwapItemSearchTextController.value.text.isNotEmpty,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 2),
+                  child: IconButton(
                     visualDensity: VisualDensity.adaptivePlatformDensity,
                     onPressed: quickSwapItemSearchTextController.value.text.isNotEmpty
                         ? () {
@@ -112,60 +122,61 @@ class _QuickSwapItemGridLayoutState extends State<QuickSwapItemGridLayout> {
                             setState(() {});
                           }
                         : null,
-                    icon: const Icon(Icons.close)),
+                    icon: const Icon(Icons.close),
+                  ),
+                ),
               ),
-            )
-          ]),
+            ],
+          ),
         ),
         Expanded(
-            child: CardOverlay(
-                paddingValue: 5,
-                child: SuperListView.builder(
-                  physics: const SuperRangeMaintainingScrollPhysics(),
-                  controller: widget.scrollController,
-                  itemCount: displayingItemData.length,
-                  itemBuilder: (context, index) {
-                    return ListTileTheme(
-                      data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-                      child: ListTile(
-                        minTileHeight: 90,
-                        enabled: !widget.selectedList ? masterQuickSwapItemList.indexWhere((e) => e.getName() == displayingItemData[index].getName()) == -1 : true,
-                        title: Row(
-                          spacing: 5,
-                          children: [
-                            GenericItemIconBox(iconImagePaths: [displayingItemData[index].iconImagePath], boxSize: const Size(80, 80), isNetwork: true),
-                            Text(
-                              displayingItemData[index].getName(),
-                              style: const TextStyle(fontWeight: FontWeight.w500),
-                            )
-                          ],
-                        ),
-                        subtitle: selectedItemData == displayingItemData[index]
-                            ? Column(
-                                spacing: 5,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Column(spacing: 5, crossAxisAlignment: CrossAxisAlignment.start, children: displayingItemData[index].getDetailsForAqmInject().map((e) => Text(e)).toList()),
-                                  const HoriDivider(),
-                                  Row(
-                                    spacing: 5,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      OutlinedButton(onPressed: () => widget.onButtonPress(displayingItemData[index]), child: Text(widget.selectedList ? appText.remove : appText.add)),
-                                    ],
-                                  )
-                                ],
-                              )
-                            : null,
-                        selected: selectedItemData == displayingItemData[index],
-                        onTap: () {
-                          selectedItemData = displayingItemData[index];
-                          setState(() {});
-                        },
+          child: CardOverlay(
+            paddingValue: 5,
+            child: SuperListView.builder(
+              physics: const SuperRangeMaintainingScrollPhysics(),
+              controller: widget.scrollController,
+              itemCount: displayingItemData.length,
+              itemBuilder: (context, index) {
+                return SignalBuilder(
+                  builder: (context) => ListTileTheme(
+                    data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
+                    child: ListTile(
+                      minTileHeight: 90,
+                      enabled: !widget.selectedList ? masterQuickSwapItemList.indexWhere((e) => e.getName() == displayingItemData[index].getName()) == -1 : true,
+                      title: Row(
+                        spacing: 5,
+                        children: [
+                          GenericItemIconBox(iconImagePaths: [displayingItemData[index].iconImagePath], boxSize: const Size(80, 80), isNetwork: true),
+                          Text(displayingItemData[index].getName(), style: const TextStyle(fontWeight: FontWeight.w500)),
+                        ],
                       ),
-                    );
-                  },
-                )))
+                      subtitle: selectedItemData == displayingItemData[index]
+                          ? Column(
+                              spacing: 5,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Column(spacing: 5, crossAxisAlignment: CrossAxisAlignment.start, children: displayingItemData[index].getDetailsForAqmInject().map((e) => Text(e)).toList()),
+                                const HoriDivider(),
+                                Row(
+                                  spacing: 5,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [OutlinedButton(onPressed: () => widget.onButtonPress(displayingItemData[index]), child: Text(widget.selectedList ? appText.remove : appText.add))],
+                                ),
+                              ],
+                            )
+                          : null,
+                      selected: selectedItemData == displayingItemData[index],
+                      onTap: () {
+                        selectedItemData = displayingItemData[index];
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
       ],
     );
   }
