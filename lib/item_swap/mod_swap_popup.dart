@@ -41,9 +41,9 @@ Future<void> modSwapPopup(context, Item item, Mod mod, SubMod submod) async {
     barrierColor: Colors.transparent,
     context: context,
     builder: (BuildContext context) {
-      return SignalBuilder(
-        builder: (context) => StatefulBuilder(
-          builder: (dialogContext, setState) {
+      return StatefulBuilder(
+        builder: (dialogContext, setState) => SignalBuilder(
+          builder: (context) {
             displayingItems = pItemData
                 .where((e) => showNoNameItems.value || (!showNoNameItems.value && e.getName().isNotEmpty))
                 .where(

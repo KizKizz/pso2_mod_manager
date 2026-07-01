@@ -27,25 +27,25 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
     barrierColor: Colors.transparent,
     context: context,
     builder: (BuildContext context) {
-      return SignalBuilder(
-        builder: (context) =>  StatefulBuilder(
-          builder: (dialogContext, setState) {
+      return StatefulBuilder(
+        builder: (dialogContext, setState) => SignalBuilder(
+          builder: (context) {
             // Refresh
             if (modPopupStatus.value != modPopupStatus.peek()) {
               setState(() {});
             }
             if (selectedMod != null && !item.mods.contains(selectedMod)) selectedMod = null;
-        
+
             // Suggestions
             if (submodViewPopupSearchTextController.value.text.isNotEmpty) {
               toShowSubmods = selectedMod != null ? selectedMod!.submods.where((mod) => mod.submodName.toLowerCase().contains(submodViewPopupSearchTextController.text.toLowerCase())).toList() : [];
             } else {
               toShowSubmods = selectedMod != null ? selectedMod!.submods : [];
             }
-        
+
             // Show applied only
             if (showAppliedSubmods) toShowSubmods = selectedMod!.submods.where((e) => e.applyStatus).toList();
-        
+
             // Sort
             if (selectedDisplaySortModView.value == submodSortingSelections[0]) {
               toShowSubmods.sort(
@@ -69,11 +69,12 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
               );
             } else if (selectedDisplaySortModView.value == submodSortingSelections[4]) {
               toShowSubmods.sort(
-                (a, b) =>
-                    b.applyDate.compareTo(a.applyDate) == 0 ? b.applyDate.compareTo(a.applyDate) + a.submodName.toLowerCase().compareTo(b.submodName.toLowerCase()) : b.applyDate.compareTo(a.applyDate),
+                (a, b) => b.applyDate.compareTo(a.applyDate) == 0
+                    ? b.applyDate.compareTo(a.applyDate) + a.submodName.toLowerCase().compareTo(b.submodName.toLowerCase())
+                    : b.applyDate.compareTo(a.applyDate),
               );
             }
-        
+
             return AlertDialog(
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
               backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.value),

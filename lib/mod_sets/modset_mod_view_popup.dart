@@ -20,9 +20,9 @@ Future<void> modsetModViewPopup(context, Item item, String setName) async {
     barrierColor: Colors.transparent,
     context: context,
     builder: (BuildContext context) {
-      return SignalBuilder(
-        builder: (context) => StatefulBuilder(
-          builder: (dialogContext, setState) {
+      return StatefulBuilder(
+        builder: (dialogContext, setState) => SignalBuilder(
+          builder: (context) {
             // Refresh
             if (modApplyStatus.value != modApplyStatus.peek() || modPopupStatus.value != modPopupStatus.peek()) {
               setState(() {});

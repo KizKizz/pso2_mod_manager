@@ -31,9 +31,9 @@ Future<void> itemSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemDat
     barrierDismissible: false,
     context: context,
     builder: (BuildContext context) {
-      return SignalBuilder(
-        builder: (context) => StatefulBuilder(
-          builder: (dialogContext, setState) {
+      return StatefulBuilder(
+        builder: (context, setState) => SignalBuilder(
+          builder: (context) {
             return AlertDialog(
               shape: RoundedRectangleBorder(
                 side: BorderSide(color: Theme.of(context).colorScheme.outline),

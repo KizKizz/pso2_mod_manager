@@ -31,9 +31,9 @@ Future<void> modSwapAllWorkingPopup(context, bool isVanillaSwap, ItemData lItemD
     barrierDismissible: false,
     context: context,
     builder: (BuildContext context) {
-      return SignalBuilder(
-        builder: (context) =>  StatefulBuilder(
-          builder: (dialogContext, setState) {
+      return StatefulBuilder(
+        builder: (dialogContext, setState) => SignalBuilder(
+          builder: (context) {
             if (!taskWorking) {
               WidgetsBinding.instance.addPostFrameCallback((_) async {
                 taskWorking = true;
@@ -42,7 +42,17 @@ Future<void> modSwapAllWorkingPopup(context, bool isVanillaSwap, ItemData lItemD
                 await modSwapTempDirsRemove();
                 await modSwapTempDirsCreate();
                 if (submod.category == defaultCategoryDirs[0]) {
-                  swapOutputDir = await modSwapAccessories(context, isVanillaSwap, mod, submod, lItemData.getIceDetails(), rItemData.getIceDetails(), rItemData.getName(), rItemData.getItemID(), lItemData.iconImagePath);
+                  swapOutputDir = await modSwapAccessories(
+                    context,
+                    isVanillaSwap,
+                    mod,
+                    submod,
+                    lItemData.getIceDetails(),
+                    rItemData.getIceDetails(),
+                    rItemData.getName(),
+                    rItemData.getItemID(),
+                    lItemData.iconImagePath,
+                  );
                 } else if (submod.category == defaultCategoryDirs[14] || submod.category == defaultCategoryDirs[7]) {
                   swapOutputDir = await modSwapEmotes(context, isVanillaSwap, mod, submod, rItemData.getName(), lItemData.getIceDetails(), rItemData.getIceDetails(), itemCrossSwap);
                 } else {
@@ -57,7 +67,7 @@ Future<void> modSwapAllWorkingPopup(context, bool isVanillaSwap, ItemData lItemD
                     lItemData.getItemID(),
                     rItemData.getItemID(),
                     itemCrossSwap,
-                    lItemData.iconImagePath
+                    lItemData.iconImagePath,
                   );
                 }
                 if (swapOutputDir.existsSync()) {
@@ -68,7 +78,7 @@ Future<void> modSwapAllWorkingPopup(context, bool isVanillaSwap, ItemData lItemD
                   modAddingList = await modAddSort();
                   await modAddToMasterList(false, []);
                 }
-        
+
                 mainGridStatus.value = '[${DateTime.now}] "${submod.modName}" is swapped';
                 taskWorking = false;
                 Navigator.of(context).pop();
@@ -101,10 +111,7 @@ Future<void> modSwapAllWorkingPopup(context, bool isVanillaSwap, ItemData lItemD
                             Text(appText.categoryName(lItemData.category), style: Theme.of(context).textTheme.titleMedium),
                             Text(lItemData.getName(), style: Theme.of(context).textTheme.titleLarge),
                             ScrollbarTheme(
-                              data: ScrollbarThemeData(
-                                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
-                                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
-                              ),
+                              data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value)),
                               child: SingleChildScrollView(
                                 physics: const SuperRangeMaintainingScrollPhysics(),
                                 child: Padding(
@@ -135,10 +142,7 @@ Future<void> modSwapAllWorkingPopup(context, bool isVanillaSwap, ItemData lItemD
                             Text(appText.categoryName(rItemData.category), style: Theme.of(context).textTheme.titleMedium),
                             Text(rItemData.getName(), style: Theme.of(context).textTheme.titleLarge),
                             ScrollbarTheme(
-                              data: ScrollbarThemeData(
-                                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
-                                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
-                              ),
+                              data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value)),
                               child: SingleChildScrollView(
                                 physics: const SuperRangeMaintainingScrollPhysics(),
                                 child: Padding(

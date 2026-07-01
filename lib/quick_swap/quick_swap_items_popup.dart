@@ -19,9 +19,9 @@ Future<void> quickSwapItemsPopup(context, String category) async {
     barrierColor: Colors.transparent,
     context: context,
     builder: (BuildContext context) {
-      return SignalBuilder(
-        builder: (context) => StatefulBuilder(
-          builder: (dialogContext, setState) {
+      return StatefulBuilder(
+        builder: (dialogContext, setState) => SignalBuilder(
+          builder: (context) {
             displayingItems = pItemData
                 .where(
                   (e) =>
