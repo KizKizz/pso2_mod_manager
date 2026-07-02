@@ -145,10 +145,7 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
             paddingValue: 5,
             rightPaddingValue: scrollbarsAlwaysVisible.value ? 0 : null,
             child: ScrollbarTheme(
-              data: ScrollbarThemeData(
-                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
-                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
-              ),
+              data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value)),
               child: SuperListView.builder(
                 physics: const SuperRangeMaintainingScrollPhysics(),
                 padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
@@ -313,6 +310,7 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                       selected: widget.selectedAqmInjectedItem.value == displayingAqmInjectedItem[index],
                       onTap: () {
                         widget.selectedAqmInjectedItem.value = displayingAqmInjectedItem[index];
+                        setState(() {});
                       },
                     ),
                   );

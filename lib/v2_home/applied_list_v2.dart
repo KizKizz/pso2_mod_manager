@@ -145,7 +145,13 @@ class _AppliedListV2State extends State<AppliedListV2> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Name
-                  Expanded(child: Text(appText.appliedList, style: Theme.of(context).textTheme.titleMedium)),
+                  Row(
+                    spacing: 5,
+                    children: [
+                      Expanded(child: Text(appText.appliedList, style: Theme.of(context).textTheme.titleMedium)),
+                      Text(appText.dText(numOfAppliedMods > 1 ? appText.numMods : appText.numMod, numOfAppliedMods.toString())),
+                    ],
+                  ),
                   // Cate + Sort
                   Row(
                     spacing: 2.5,

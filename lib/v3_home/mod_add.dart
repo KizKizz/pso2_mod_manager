@@ -35,7 +35,9 @@ class _ModAddState extends State<ModAdd> {
 
   @override
   Widget build(BuildContext context) {
-    if (curModAddDragDropStatus.value == ModAddDragDropState.fileInList) modAddDropBoxShow.value = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (curModAddDragDropStatus.value == ModAddDragDropState.fileInList) modAddDropBoxShow.value = true;
+    });
 
     return Row(
       spacing: 5,

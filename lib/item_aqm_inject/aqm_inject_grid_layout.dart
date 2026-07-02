@@ -160,10 +160,7 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
             paddingValue: 5,
             rightPaddingValue: scrollbarsAlwaysVisible.value ? 0 : null,
             child: ScrollbarTheme(
-              data: ScrollbarThemeData(
-                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
-                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
-              ),
+              data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value)),
               child: SuperListView.builder(
                 physics: const SuperRangeMaintainingScrollPhysics(),
                 padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
@@ -171,197 +168,209 @@ class _AqmInjectGridLayoutState extends State<AqmInjectGridLayout> {
                 itemCount: displayingItemData.length,
                 itemBuilder: (context, index) {
                   return ListTileTheme(
-                    data: ListTileThemeData(
-                      selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
-                    ),
-                    child: ListTile(
-                      minTileHeight: 90,
-                      enabled:
-                          !currentlyAppliedFiles.contains(p.basenameWithoutExtension(displayingItemData[index].getHQIceName())) &&
-                          !currentlyAppliedFiles.contains(p.basenameWithoutExtension(displayingItemData[index].getLQIceName())) &&
-                          masterAqmInjectedItemList.indexWhere((e) => e.getName() == displayingItemData[index].getName()) == -1,
-                      title: Row(
-                        spacing: 5,
-                        children: [
-                          GenericItemIconBox(iconImagePaths: [displayingItemData[index].iconImagePath], boxSize: const Size(80, 80), isNetwork: true),
-                          Text(displayingItemData[index].getName(), style: const TextStyle(fontWeight: FontWeight.w500)),
-                        ],
+                    data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
+                    child: SignalBuilder(
+                      builder: (context) => ListTile(
+                        minTileHeight: 90,
+                        enabled:
+                            !currentlyAppliedFiles.contains(p.basenameWithoutExtension(displayingItemData[index].getHQIceName())) &&
+                            !currentlyAppliedFiles.contains(p.basenameWithoutExtension(displayingItemData[index].getLQIceName())) &&
+                            masterAqmInjectedItemList.indexWhere((e) => e.getName() == displayingItemData[index].getName()) == -1,
+                        title: Row(
+                          spacing: 5,
+                          children: [
+                            GenericItemIconBox(iconImagePaths: [displayingItemData[index].iconImagePath], boxSize: const Size(80, 80), isNetwork: true),
+                            Text(displayingItemData[index].getName(), style: const TextStyle(fontWeight: FontWeight.w500)),
+                          ],
+                        ),
+                        subtitle: widget.selectedItemData.value == displayingItemData[index]
+                            ? Column(
+                                spacing: 5,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Column(spacing: 5, crossAxisAlignment: CrossAxisAlignment.start, children: displayingItemData[index].getDetailsForAqmInject().map((e) => Text(e)).toList()),
+                                  const HoriDivider(),
+                                  OverflowBar(
+                                    spacing: 5,
+                                    overflowSpacing: 5,
+                                    alignment: MainAxisAlignment.end,
+                                    children: [
+                                      OutlinedButton(
+                                        onPressed:
+                                            masterAqmInjectedItemList.indexWhere((e) => e.getName() == displayingItemData[index].getName()) == -1 &&
+                                                selectedCustomAQMFilePath.value.isNotEmpty &&
+                                                File(selectedCustomAQMFilePath.value).existsSync()
+                                            ? () async {
+                                                AqmInjectedItem newItem = AqmInjectedItem(
+                                                  displayingItemData[index].category,
+                                                  displayingItemData[index].getItemIDs().first,
+                                                  displayingItemData[index].getItemIDs().last,
+                                                  displayingItemData[index].iconImagePath,
+                                                  displayingItemData[index].getENNameOriginal(),
+                                                  displayingItemData[index].getJPNameOriginal(),
+                                                  p.withoutExtension(
+                                                    oItemData.firstWhere((e) => e.path.contains(displayingItemData[index].getHQIceName()), orElse: () => OfficialIceFile.empty()).path,
+                                                  ),
+                                                  p.withoutExtension(
+                                                    oItemData.firstWhere((e) => e.path.contains(displayingItemData[index].getLQIceName()), orElse: () => OfficialIceFile.empty()).path,
+                                                  ),
+                                                  p.withoutExtension(
+                                                    oItemData.firstWhere((e) => e.path.contains(displayingItemData[index].getIconIceName()), orElse: () => OfficialIceFile.empty()).path,
+                                                  ),
+                                                  selectedCustomAQMFilePath.value,
+                                                  '',
+                                                  '',
+                                                  false,
+                                                  false,
+                                                  false,
+                                                  false,
+                                                );
+
+                                                bool result = await aqmInjectPopup(
+                                                  context,
+                                                  newItem.injectedAQMFilePath!,
+                                                  newItem.hqIcePath,
+                                                  newItem.lqIcePath,
+                                                  displayingItemData[index].getName(),
+                                                  false,
+                                                  false,
+                                                  false,
+                                                  false,
+                                                  false,
+                                                );
+                                                if (result) {
+                                                  if (replaceItemIconOnApplied && !useLocalBackupOnly) {
+                                                    newItem.isIconReplaced = await markedAqmItemIconApply(newItem.iconIcePath);
+                                                  }
+                                                  newItem.injectedHqIceMd5 = await File(pso2binDirPath + p.separator + newItem.hqIcePath.replaceAll('/', p.separator)).getMd5Hash();
+                                                  newItem.injectedLqIceMd5 = await File(pso2binDirPath + p.separator + newItem.lqIcePath.replaceAll('/', p.separator)).getMd5Hash();
+                                                  newItem.isAqmReplaced = true;
+                                                  newItem.isApplied = true;
+                                                  masterAqmInjectedItemList.add(newItem);
+                                                  modAqmInjectingRefresh.value = 'Injected AQM into ${newItem.getName()}';
+                                                  saveMasterAqmInjectListToJson();
+                                                }
+                                              }
+                                            : null,
+                                        child: Text(appText.injectAQM),
+                                      ),
+                                      OutlinedButton(
+                                        onPressed: masterAqmInjectedItemList.indexWhere((e) => e.getName() == displayingItemData[index].getName()) == -1
+                                            ? () async {
+                                                AqmInjectedItem newItem = AqmInjectedItem(
+                                                  displayingItemData[index].category,
+                                                  displayingItemData[index].getItemIDs().first,
+                                                  displayingItemData[index].getItemIDs().last,
+                                                  displayingItemData[index].iconImagePath,
+                                                  displayingItemData[index].getENNameOriginal(),
+                                                  displayingItemData[index].getJPNameOriginal(),
+                                                  p.withoutExtension(
+                                                    oItemData.firstWhere((e) => e.path.contains(displayingItemData[index].getHQIceName()), orElse: () => OfficialIceFile.empty()).path,
+                                                  ),
+                                                  p.withoutExtension(
+                                                    oItemData.firstWhere((e) => e.path.contains(displayingItemData[index].getLQIceName()), orElse: () => OfficialIceFile.empty()).path,
+                                                  ),
+                                                  p.withoutExtension(
+                                                    oItemData.firstWhere((e) => e.path.contains(displayingItemData[index].getIconIceName()), orElse: () => OfficialIceFile.empty()).path,
+                                                  ),
+                                                  selectedCustomAQMFilePath.value,
+                                                  '',
+                                                  '',
+                                                  false,
+                                                  false,
+                                                  false,
+                                                  false,
+                                                );
+
+                                                bool result = await itemCustomAqmBounding(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName());
+                                                if (result) {
+                                                  newItem.injectedHqIceMd5 = await File(pso2binDirPath + p.separator + newItem.hqIcePath.replaceAll('/', p.separator)).getMd5Hash();
+                                                  newItem.injectedLqIceMd5 = await File(pso2binDirPath + p.separator + newItem.lqIcePath.replaceAll('/', p.separator)).getMd5Hash();
+                                                  newItem.isBoundingRemoved = true;
+                                                  newItem.isApplied = true;
+                                                  masterAqmInjectedItemList.add(newItem);
+                                                  if (replaceItemIconOnApplied && !useLocalBackupOnly) {
+                                                    newItem.isIconReplaced = await markedAqmItemIconApply(newItem.iconIcePath);
+                                                  }
+                                                  modAqmInjectingRefresh.value = 'Removed Bounding from ${newItem.getName()}';
+                                                  saveMasterAqmInjectListToJson();
+                                                }
+                                              }
+                                            : null,
+                                        child: Text(appText.removeBounding),
+                                      ),
+                                      OutlinedButton(
+                                        onPressed:
+                                            masterAqmInjectedItemList.indexWhere((e) => e.getName() == displayingItemData[index].getName()) == -1 &&
+                                                selectedCustomAQMFilePath.value.isNotEmpty &&
+                                                File(selectedCustomAQMFilePath.value).existsSync()
+                                            ? () async {
+                                                AqmInjectedItem newItem = AqmInjectedItem(
+                                                  displayingItemData[index].category,
+                                                  displayingItemData[index].getItemIDs().first,
+                                                  displayingItemData[index].getItemIDs().last,
+                                                  displayingItemData[index].iconImagePath,
+                                                  displayingItemData[index].getENNameOriginal(),
+                                                  displayingItemData[index].getJPNameOriginal(),
+                                                  p.withoutExtension(
+                                                    oItemData.firstWhere((e) => e.path.contains(displayingItemData[index].getHQIceName()), orElse: () => OfficialIceFile.empty()).path,
+                                                  ),
+                                                  p.withoutExtension(
+                                                    oItemData.firstWhere((e) => e.path.contains(displayingItemData[index].getLQIceName()), orElse: () => OfficialIceFile.empty()).path,
+                                                  ),
+                                                  p.withoutExtension(
+                                                    oItemData.firstWhere((e) => e.path.contains(displayingItemData[index].getIconIceName()), orElse: () => OfficialIceFile.empty()).path,
+                                                  ),
+                                                  selectedCustomAQMFilePath.value,
+                                                  '',
+                                                  '',
+                                                  false,
+                                                  false,
+                                                  false,
+                                                  false,
+                                                );
+
+                                                bool aqmResult = await aqmInjectPopup(
+                                                  context,
+                                                  newItem.injectedAQMFilePath!,
+                                                  newItem.hqIcePath,
+                                                  newItem.lqIcePath,
+                                                  displayingItemData[index].getName(),
+                                                  false,
+                                                  false,
+                                                  false,
+                                                  false,
+                                                  false,
+                                                );
+                                                // ignore: use_build_context_synchronously
+                                                bool boundingResult = await itemCustomAqmBounding(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName());
+                                                if (aqmResult || boundingResult) {
+                                                  newItem.injectedHqIceMd5 = await File(pso2binDirPath + p.separator + newItem.hqIcePath.replaceAll('/', p.separator)).getMd5Hash();
+                                                  newItem.injectedLqIceMd5 = await File(pso2binDirPath + p.separator + newItem.lqIcePath.replaceAll('/', p.separator)).getMd5Hash();
+                                                  newItem.isAqmReplaced = aqmResult;
+                                                  newItem.isBoundingRemoved = boundingResult;
+                                                  newItem.isApplied = true;
+                                                  masterAqmInjectedItemList.add(newItem);
+                                                  if (replaceItemIconOnApplied && !useLocalBackupOnly) {
+                                                    newItem.isIconReplaced = await markedAqmItemIconApply(newItem.iconIcePath);
+                                                  }
+                                                  modAqmInjectingRefresh.value = 'Injected AQM and removed Bounding from ${newItem.getName()}';
+                                                  saveMasterAqmInjectListToJson();
+                                                }
+                                              }
+                                            : null,
+                                        child: Text(appText.both),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            : null,
+                        selected: widget.selectedItemData.value == displayingItemData[index],
+                        onTap: () {
+                          widget.selectedItemData.value = displayingItemData[index];
+                        },
                       ),
-                      subtitle: widget.selectedItemData.value == displayingItemData[index]
-                          ? Column(
-                              spacing: 5,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Column(spacing: 5, crossAxisAlignment: CrossAxisAlignment.start, children: displayingItemData[index].getDetailsForAqmInject().map((e) => Text(e)).toList()),
-                                const HoriDivider(),
-                                OverflowBar(
-                                  spacing: 5,
-                                  overflowSpacing: 5,
-                                  alignment: MainAxisAlignment.end,
-                                  children: [
-                                    OutlinedButton(
-                                      onPressed:
-                                          masterAqmInjectedItemList.indexWhere((e) => e.getName() == displayingItemData[index].getName()) == -1 &&
-                                              selectedCustomAQMFilePath.value.isNotEmpty &&
-                                              File(selectedCustomAQMFilePath.value).existsSync()
-                                          ? () async {
-                                              AqmInjectedItem newItem = AqmInjectedItem(
-                                                displayingItemData[index].category,
-                                                displayingItemData[index].getItemIDs().first,
-                                                displayingItemData[index].getItemIDs().last,
-                                                displayingItemData[index].iconImagePath,
-                                                displayingItemData[index].getENNameOriginal(),
-                                                displayingItemData[index].getJPNameOriginal(),
-                                                p.withoutExtension(oItemData.firstWhere((e) => e.path.contains(displayingItemData[index].getHQIceName()), orElse: () => OfficialIceFile.empty()).path),
-                                                p.withoutExtension(oItemData.firstWhere((e) => e.path.contains(displayingItemData[index].getLQIceName()), orElse: () => OfficialIceFile.empty()).path),
-                                                p.withoutExtension(
-                                                  oItemData.firstWhere((e) => e.path.contains(displayingItemData[index].getIconIceName()), orElse: () => OfficialIceFile.empty()).path,
-                                                ),
-                                                selectedCustomAQMFilePath.value,
-                                                '',
-                                                '',
-                                                false,
-                                                false,
-                                                false,
-                                                false,
-                                              );
-
-                                              bool result = await aqmInjectPopup(
-                                                context,
-                                                newItem.injectedAQMFilePath!,
-                                                newItem.hqIcePath,
-                                                newItem.lqIcePath,
-                                                displayingItemData[index].getName(),
-                                                false,
-                                                false,
-                                                false,
-                                                false,
-                                                false,
-                                              );
-                                              if (result) {
-                                                if (replaceItemIconOnApplied && !useLocalBackupOnly) {
-                                                  newItem.isIconReplaced = await markedAqmItemIconApply(newItem.iconIcePath);
-                                                }
-                                                newItem.injectedHqIceMd5 = await File(pso2binDirPath + p.separator + newItem.hqIcePath.replaceAll('/', p.separator)).getMd5Hash();
-                                                newItem.injectedLqIceMd5 = await File(pso2binDirPath + p.separator + newItem.lqIcePath.replaceAll('/', p.separator)).getMd5Hash();
-                                                newItem.isAqmReplaced = true;
-                                                newItem.isApplied = true;
-                                                masterAqmInjectedItemList.add(newItem);
-                                                modAqmInjectingRefresh.value = 'Injected AQM into ${newItem.getName()}';
-                                                saveMasterAqmInjectListToJson();
-                                              }
-                                            }
-                                          : null,
-                                      child: Text(appText.injectAQM),
-                                    ),
-                                    OutlinedButton(
-                                      onPressed: masterAqmInjectedItemList.indexWhere((e) => e.getName() == displayingItemData[index].getName()) == -1
-                                          ? () async {
-                                              AqmInjectedItem newItem = AqmInjectedItem(
-                                                displayingItemData[index].category,
-                                                displayingItemData[index].getItemIDs().first,
-                                                displayingItemData[index].getItemIDs().last,
-                                                displayingItemData[index].iconImagePath,
-                                                displayingItemData[index].getENNameOriginal(),
-                                                displayingItemData[index].getJPNameOriginal(),
-                                                p.withoutExtension(oItemData.firstWhere((e) => e.path.contains(displayingItemData[index].getHQIceName()), orElse: () => OfficialIceFile.empty()).path),
-                                                p.withoutExtension(oItemData.firstWhere((e) => e.path.contains(displayingItemData[index].getLQIceName()), orElse: () => OfficialIceFile.empty()).path),
-                                                p.withoutExtension(
-                                                  oItemData.firstWhere((e) => e.path.contains(displayingItemData[index].getIconIceName()), orElse: () => OfficialIceFile.empty()).path,
-                                                ),
-                                                selectedCustomAQMFilePath.value,
-                                                '',
-                                                '',
-                                                false,
-                                                false,
-                                                false,
-                                                false,
-                                              );
-
-                                              bool result = await itemCustomAqmBounding(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName());
-                                              if (result) {
-                                                newItem.injectedHqIceMd5 = await File(pso2binDirPath + p.separator + newItem.hqIcePath.replaceAll('/', p.separator)).getMd5Hash();
-                                                newItem.injectedLqIceMd5 = await File(pso2binDirPath + p.separator + newItem.lqIcePath.replaceAll('/', p.separator)).getMd5Hash();
-                                                newItem.isBoundingRemoved = true;
-                                                newItem.isApplied = true;
-                                                masterAqmInjectedItemList.add(newItem);
-                                                if (replaceItemIconOnApplied && !useLocalBackupOnly) {
-                                                  newItem.isIconReplaced = await markedAqmItemIconApply(newItem.iconIcePath);
-                                                }
-                                                modAqmInjectingRefresh.value = 'Removed Bounding from ${newItem.getName()}';
-                                                saveMasterAqmInjectListToJson();
-                                              }
-                                            }
-                                          : null,
-                                      child: Text(appText.removeBounding),
-                                    ),
-                                    OutlinedButton(
-                                      onPressed:
-                                          masterAqmInjectedItemList.indexWhere((e) => e.getName() == displayingItemData[index].getName()) == -1 &&
-                                              selectedCustomAQMFilePath.value.isNotEmpty &&
-                                              File(selectedCustomAQMFilePath.value).existsSync()
-                                          ? () async {
-                                              AqmInjectedItem newItem = AqmInjectedItem(
-                                                displayingItemData[index].category,
-                                                displayingItemData[index].getItemIDs().first,
-                                                displayingItemData[index].getItemIDs().last,
-                                                displayingItemData[index].iconImagePath,
-                                                displayingItemData[index].getENNameOriginal(),
-                                                displayingItemData[index].getJPNameOriginal(),
-                                                p.withoutExtension(oItemData.firstWhere((e) => e.path.contains(displayingItemData[index].getHQIceName()), orElse: () => OfficialIceFile.empty()).path),
-                                                p.withoutExtension(oItemData.firstWhere((e) => e.path.contains(displayingItemData[index].getLQIceName()), orElse: () => OfficialIceFile.empty()).path),
-                                                p.withoutExtension(
-                                                  oItemData.firstWhere((e) => e.path.contains(displayingItemData[index].getIconIceName()), orElse: () => OfficialIceFile.empty()).path,
-                                                ),
-                                                selectedCustomAQMFilePath.value,
-                                                '',
-                                                '',
-                                                false,
-                                                false,
-                                                false,
-                                                false,
-                                              );
-
-                                              bool aqmResult = await aqmInjectPopup(
-                                                context,
-                                                newItem.injectedAQMFilePath!,
-                                                newItem.hqIcePath,
-                                                newItem.lqIcePath,
-                                                displayingItemData[index].getName(),
-                                                false,
-                                                false,
-                                                false,
-                                                false,
-                                                false,
-                                              );
-                                              // ignore: use_build_context_synchronously
-                                              bool boundingResult = await itemCustomAqmBounding(context, newItem.hqIcePath, newItem.lqIcePath, displayingItemData[index].getName());
-                                              if (aqmResult || boundingResult) {
-                                                newItem.injectedHqIceMd5 = await File(pso2binDirPath + p.separator + newItem.hqIcePath.replaceAll('/', p.separator)).getMd5Hash();
-                                                newItem.injectedLqIceMd5 = await File(pso2binDirPath + p.separator + newItem.lqIcePath.replaceAll('/', p.separator)).getMd5Hash();
-                                                newItem.isAqmReplaced = aqmResult;
-                                                newItem.isBoundingRemoved = boundingResult;
-                                                newItem.isApplied = true;
-                                                masterAqmInjectedItemList.add(newItem);
-                                                if (replaceItemIconOnApplied && !useLocalBackupOnly) {
-                                                  newItem.isIconReplaced = await markedAqmItemIconApply(newItem.iconIcePath);
-                                                }
-                                                modAqmInjectingRefresh.value = 'Injected AQM and removed Bounding from ${newItem.getName()}';
-                                                saveMasterAqmInjectListToJson();
-                                              }
-                                            }
-                                          : null,
-                                      child: Text(appText.both),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )
-                          : null,
-                      selected: widget.selectedItemData.value == displayingItemData[index],
-                      onTap: () {
-                        widget.selectedItemData.value = displayingItemData[index];
-                      },
                     ),
                   );
                 },

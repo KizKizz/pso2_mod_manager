@@ -130,10 +130,7 @@ class _CmlItemListLayoutState extends State<CmlItemListLayout> {
             paddingValue: 5,
             rightPaddingValue: scrollbarsAlwaysVisible.value ? 0 : null,
             child: ScrollbarTheme(
-              data: ScrollbarThemeData(
-                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
-                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
-              ),
+              data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value)),
               child: SuperListView.builder(
                 physics: const SuperRangeMaintainingScrollPhysics(),
                 padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
@@ -146,50 +143,52 @@ class _CmlItemListLayoutState extends State<CmlItemListLayout> {
                       contentPadding: EdgeInsets.all(5),
                       selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
                     ),
-                    child: ListTile(
-                      minTileHeight: 90,
-                      title: Row(
-                        spacing: 5,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          GenericItemIconBox(iconImagePaths: [displayingCml[index].cloudItemIconPath], boxSize: const Size(80, 80), isNetwork: true),
-                          Column(
-                            spacing: 5,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(displayingCml[index].getName(), style: const TextStyle(fontWeight: FontWeight.w500)),
-                              Text('ID: ${displayingCml[index].aId}', style: TextStyle(fontSize: 12)),
-                              Visibility(
-                                visible: displayingCml[index].isReplaced,
-                                child: Text(appText.dText(appText.replacedCMLFile, displayingCml[index].replacedCmlFileName), style: Theme.of(context).textTheme.labelMedium),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      trailing: Row(
-                        spacing: 5,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          OutlinedButton(
-                            onPressed: widget.selectedCmlFile.value != null && widget.selectedCmlFile.value!.existsSync()
-                                ? () async {
-                                    await cmlReplaceWorkingPopup(context, false, displayingCml[index], widget.selectedCmlFile.value!);
-                                    setState(() {});
-                                  }
-                                : null,
-                            child: Text(appText.replace),
-                          ),
-                          OutlinedButton(
-                            onPressed: displayingCml[index].isReplaced
-                                ? () async {
-                                    await cmlReplaceWorkingPopup(context, true, displayingCml[index], null);
-                                    setState(() {});
-                                  }
-                                : null,
-                            child: Text(appText.remove),
-                          ),
-                        ],
+                    child: SignalBuilder(
+                      builder: (context) => ListTile(
+                        minTileHeight: 90,
+                        title: Row(
+                          spacing: 5,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            GenericItemIconBox(iconImagePaths: [displayingCml[index].cloudItemIconPath], boxSize: const Size(80, 80), isNetwork: true),
+                            Column(
+                              spacing: 5,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(displayingCml[index].getName(), style: const TextStyle(fontWeight: FontWeight.w500)),
+                                Text('ID: ${displayingCml[index].aId}', style: TextStyle(fontSize: 12)),
+                                Visibility(
+                                  visible: displayingCml[index].isReplaced,
+                                  child: Text(appText.dText(appText.replacedCMLFile, displayingCml[index].replacedCmlFileName), style: Theme.of(context).textTheme.labelMedium),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        trailing: Row(
+                          spacing: 5,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            OutlinedButton(
+                              onPressed: widget.selectedCmlFile.value != null && widget.selectedCmlFile.value!.existsSync()
+                                  ? () async {
+                                      await cmlReplaceWorkingPopup(context, false, displayingCml[index], widget.selectedCmlFile.value!);
+                                      setState(() {});
+                                    }
+                                  : null,
+                              child: Text(appText.replace),
+                            ),
+                            OutlinedButton(
+                              onPressed: displayingCml[index].isReplaced
+                                  ? () async {
+                                      await cmlReplaceWorkingPopup(context, true, displayingCml[index], null);
+                                      setState(() {});
+                                    }
+                                  : null,
+                              child: Text(appText.remove),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );

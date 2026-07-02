@@ -31,7 +31,10 @@ class ModAddGrid extends SignalStatefulWidget {
 class _ModAddGridState extends State<ModAddGrid> {
   @override
   Widget build(BuildContext context) {
-    if (curModAddProcessedStatus.value == ModAddProcessedState.waiting) modAddDropBoxShow.value = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (curModAddProcessedStatus.value == ModAddProcessedState.waiting) modAddDropBoxShow.value = true;
+    });
+
     return Stack(
       alignment: AlignmentDirectional.center,
       children: [
@@ -40,10 +43,7 @@ class _ModAddGridState extends State<ModAddGrid> {
           child: Padding(
             padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
             child: ScrollbarTheme(
-              data: ScrollbarThemeData(
-                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
-                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
-              ),
+              data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value)),
               child: ResponsiveGridList(
                 minItemWidth: 375,
                 verticalGridMargin: 0,
@@ -206,10 +206,8 @@ class _ModAddGridState extends State<ModAddGrid> {
                       spacing: 10,
                       children: [
                         if (curModAddProcessedStatus.value == ModAddProcessedState.waiting) LoadingAnimationWidget.staggeredDotsWave(color: Theme.of(context).colorScheme.primary, size: 100),
-                        if (curModAddProcessedStatus.value == ModAddProcessedState.loadingData)
-                          LoadingAnimationWidget.progressiveDots(color: Theme.of(context).colorScheme.primary, size: 100),
-                        if (curModAddProcessedStatus.value == ModAddProcessedState.addingToMasterList)
-                          LoadingAnimationWidget.waveDots(color: Theme.of(context).colorScheme.primary, size: 100),
+                        if (curModAddProcessedStatus.value == ModAddProcessedState.loadingData) LoadingAnimationWidget.progressiveDots(color: Theme.of(context).colorScheme.primary, size: 100),
+                        if (curModAddProcessedStatus.value == ModAddProcessedState.addingToMasterList) LoadingAnimationWidget.waveDots(color: Theme.of(context).colorScheme.primary, size: 100),
                         Text(
                           curModAddProcessedStatus.value == ModAddProcessedState.waiting
                               ? appText.waitingForItems
