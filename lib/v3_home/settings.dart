@@ -7,7 +7,7 @@ import 'package:signals/signals_flutter.dart';
 
 Signal<String> settingChangeStatus = Signal('');
 
-class Settings extends StatefulWidget {
+class Settings extends SignalStatefulWidget {
   const Settings({super.key});
 
   @override

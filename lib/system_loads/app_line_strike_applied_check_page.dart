@@ -22,48 +22,44 @@ class _AppLineStrikeAppliedCheckPage extends State<AppLineStrikeAppliedCheckPage
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return Center(
-              child: Column(
-            spacing: 5,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CardOverlay(
-                paddingValue: 15,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    LoadingAnimationWidget.staggeredDotsWave(
-                      color: Theme.of(context).colorScheme.primary,
-                      size: 100,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Text(
-                        appText.checkingAppliedLineStrikeItems,
-                        style: Theme.of(context).textTheme.bodyLarge,
+            child: Column(
+              spacing: 5,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CardOverlay(
+                  paddingValue: 15,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      LoadingAnimationWidget.staggeredDotsWave(color: Theme.of(context).colorScheme.primary, size: 100),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Text(appText.checkingAppliedLineStrikeItems, style: Theme.of(context).textTheme.bodyLarge),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              ConstrainedBox(
+                ConstrainedBox(
                   constraints: const BoxConstraints(minWidth: 350),
                   child: CardOverlay(
                     paddingValue: 15,
-                    child: Text(
-                      lineStrikeStatus.watch(context),
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyMedium,
+                    child: SignalBuilder(
+                      builder: (context) => Text(lineStrikeStatus.value, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
                     ),
-                  ))
-            ],
-          ));
+                  ),
+                ),
+              ],
+            ),
+          );
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-          return FutureBuilderError(loadingText: appText.checkingAppliedLineStrikeItems, snapshotError: snapshot.error.toString(), isPopup: false, showContButton: true,);
+          return FutureBuilderError(loadingText: appText.checkingAppliedLineStrikeItems, snapshotError: snapshot.error.toString(), isPopup: false, showContButton: true);
         } else {
           pageIndex++;
-          curPage.value = appPages[pageIndex];
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            curPage.value = appPages[pageIndex];
+          });
           return const SizedBox();
         }
       },

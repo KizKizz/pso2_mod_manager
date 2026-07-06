@@ -297,7 +297,8 @@ class AppText {
       localVersionNumber = 'Local Version: %p%',
       showEffectAccessories = 'Show Effect Accessories',
       openInFileExplorerLC = 'Open in File Explorer',
-      useAlternateFilePicker = 'Use Alternate File Picker';
+      useAlternateFilePicker = 'Use Alternate File Picker',
+      holdToRemoveAllMods = 'Hold To Remove All Mods';
 
   // Text Strings
   String loadingUILanguage = 'Loading UI Language',

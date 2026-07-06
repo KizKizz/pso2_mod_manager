@@ -31,36 +31,19 @@ class _PopupItemInfoState extends State<PopupItemInfo> {
     return Column(
       spacing: 5,
       children: [
-        ItemIconBox(
-          item: widget.item,
-          showSubCategory: true,
-        ),
-        Text(
-          appText.categoryName(widget.item.category),
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        Text(
-          widget.item.getDisplayName(),
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
+        ItemIconBox(item: widget.item, showSubCategory: true),
+        Text(appText.categoryName(widget.item.category), style: Theme.of(context).textTheme.titleMedium),
+        Text(widget.item.getDisplayName(), style: Theme.of(context).textTheme.titleLarge),
         Row(
           spacing: widget.showModInfo ? 5 : 0,
           children: [
             Visibility(
               visible: widget.showModInfo,
-              child: Expanded(
-                child: InfoBox(
-                  info: appText.dText(widget.item.mods.length > 1 ? appText.numMods : appText.numMod, widget.item.mods.length.toString()),
-                  borderHighlight: false,
-                ),
-              ),
+              child: Expanded(child: InfoBox(info: appText.dText(widget.item.mods.length > 1 ? appText.numMods : appText.numMod, widget.item.mods.length.toString()), borderHighlight: false)),
             ),
             Expanded(
               flex: 2,
-              child: InfoBox(
-                info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedMods().toString()),
-                borderHighlight: widget.item.applyStatus,
-              ),
+              child: InfoBox(info: appText.dText(appText.numCurrentlyApplied, widget.item.getNumOfAppliedMods().toString()), borderHighlight: widget.item.applyStatus),
             ),
           ],
         ),
@@ -69,16 +52,15 @@ class _PopupItemInfoState extends State<PopupItemInfo> {
           children: [
             if (!itemEditingMode)
               Expanded(
-                  child: OutlinedButton(
-                      style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)))),
-                      onPressed: () => launchUrlString(widget.item.location),
-                      child: Text(appText.openInFileExplorer))),
-            if (itemEditingMode)
-              Expanded(
-                  child: ModBulkDeleteButton(
-                enabled: bulkDeleteMods.isNotEmpty || bulkDeleteSubmods.isNotEmpty,
-                isPopup: true,
-              )),
+                child: SignalBuilder(
+                  builder: (context) => OutlinedButton(
+                    style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value))),
+                    onPressed: () => launchUrlString(widget.item.location),
+                    child: Text(appText.openInFileExplorer),
+                  ),
+                ),
+              ),
+            if (itemEditingMode) Expanded(child: ModBulkDeleteButton(enabled: bulkDeleteMods.isNotEmpty || bulkDeleteSubmods.isNotEmpty, isPopup: true)),
             // edit
             ItemEditButton(
               onPressed: (isEditing) {
@@ -87,12 +69,7 @@ class _PopupItemInfoState extends State<PopupItemInfo> {
                 setState(() {});
               },
             ),
-            ItemMoreFunctionsMenu(
-              item: widget.item,
-              mod: widget.mod,
-              isInsidePopup: true,
-              isSingleModView: widget.isSingleModView,
-            )
+            ItemMoreFunctionsMenu(item: widget.item, mod: widget.mod, isInsidePopup: true, isSingleModView: widget.isSingleModView),
           ],
         ),
       ],

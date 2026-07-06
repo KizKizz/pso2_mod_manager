@@ -3,7 +3,6 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_widgets/animated_hori_toggle_layout.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
-import 'package:signals/signals_flutter.dart';
 
 Future<int> lineStrikeCardElementSelectPopup(context) async {
   int selectedIndex = -1;
@@ -13,7 +12,7 @@ Future<int> lineStrikeCardElementSelectPopup(context) async {
       builder: (context) => StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
                 shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context) + 50),
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value + 50),
                 insetPadding: const EdgeInsets.all(5),
                 titlePadding: const EdgeInsets.only(top: 5),
                 title: Column(children: [

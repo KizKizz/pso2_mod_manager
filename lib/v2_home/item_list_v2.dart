@@ -13,7 +13,7 @@ import 'package:searchfield/searchfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 
-class ItemListV2 extends StatefulWidget {
+class ItemListV2 extends SignalStatefulWidget {
   const ItemListV2({super.key});
 
   @override
@@ -26,10 +26,10 @@ class _ItemListV2State extends State<ItemListV2> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (selectedDisplaySort.watch(context) != selectedDisplaySort.peek() ||
-        modPopupStatus.watch(context) != modPopupStatus.peek() ||
-        modApplyStatus.watch(context) != modApplyStatus.peek() ||
-        mainGridStatus.watch(context) != mainGridStatus.peek()) {
+    if (selectedDisplaySort.value != selectedDisplaySort.peek() ||
+        modPopupStatus.value != modPopupStatus.peek() ||
+        modApplyStatus.value != modApplyStatus.peek() ||
+        mainGridStatus.value != mainGridStatus.peek()) {
       setState(() {});
     }
 
@@ -73,10 +73,10 @@ class _ItemListV2State extends State<ItemListV2> {
     }
 
     List<Category> displayingCategories = [];
-    if (selectedDisplayCategories.watch(context).contains('All')) {
+    if (selectedDisplayCategories.value.contains('All')) {
       displayingCategories = categories;
     } else {
-      displayingCategories = categories.where((e) => selectedDisplayCategories.watch(context).contains(e.categoryName)).toList();
+      displayingCategories = categories.where((e) => selectedDisplayCategories.value.contains(e.categoryName)).toList();
     }
 
     // Sort
@@ -130,7 +130,7 @@ class _ItemListV2State extends State<ItemListV2> {
               side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5),
               borderRadius: const BorderRadius.all(Radius.circular(5)),
             ),
-            color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+            color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
             margin: EdgeInsets.zero,
             elevation: 5,
             child: Padding(
@@ -196,7 +196,7 @@ class _ItemListV2State extends State<ItemListV2> {
                         child: IconButton.outlined(
                           visualDensity: VisualDensity.adaptivePlatformDensity,
                           style: ButtonStyle(
-                            backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                            backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                             side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                           ),
                           onPressed: () async {
@@ -228,7 +228,7 @@ class _ItemListV2State extends State<ItemListV2> {
                           itemHeight: 30,
                           searchInputDecoration: SearchInputDecoration(
                             filled: true,
-                            fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                            fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
                             isDense: true,
                             contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                             cursorHeight: 15,
@@ -430,14 +430,14 @@ class _ItemListV2State extends State<ItemListV2> {
         // Main list
         Expanded(
           child: ScrollbarTheme(
-            data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context))),
+            data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value)),
             child: CustomScrollView(
               controller: scrollController,
               // physics: const RangeMaintainingScrollPhysics()  ,
               slivers: displayingCategories
                   .map(
                     (e) => SliverPadding(
-                      padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                      padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
                       sliver: CategoryItemLayout(category: e, searchString: searchTextController.text, scrollController: scrollController),
                     ),
                   )

@@ -7,7 +7,6 @@ import 'package:pso2_mod_manager/mod_data/mod_class.dart';
 import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v2_home/homepage_v2.dart';
-import 'package:signals/signals_flutter.dart';
 
 List<(Item, Mod)> bulkDeleteMods = [];
 List<(Item, Mod, SubMod)> bulkDeleteSubmods = [];
@@ -27,8 +26,9 @@ class _ModBulkDeleteButtonState extends State<ModBulkDeleteButton> {
   Widget build(BuildContext context) {
     return OutlinedButton(
       style: ButtonStyle(
-          backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
-          side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
+        backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
+        side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
+      ),
       onPressed: widget.enabled ? () async {} : null,
       onLongPress: () async {
         for (var element in bulkDeleteSubmods) {
@@ -60,10 +60,7 @@ class _ModBulkDeleteButtonState extends State<ModBulkDeleteButton> {
           }
         }
       },
-      child: Text(
-        appText.holdToDeleteSelected,
-        style: TextStyle(color: widget.enabled ? Colors.redAccent : Theme.of(context).disabledColor),
-      ),
+      child: Text(appText.holdToDeleteSelected, style: TextStyle(color: widget.enabled ? Colors.redAccent : Theme.of(context).disabledColor)),
     );
   }
 }

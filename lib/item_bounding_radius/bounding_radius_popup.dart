@@ -61,7 +61,9 @@ Future<void> boundingRadiusPopup(context, SubMod submod) async {
                           constraints: const BoxConstraints(minWidth: 350),
                           child: CardOverlay(
                             paddingValue: 15,
-                            child: Text(modRemovingBoundingStatus.watch(context), textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
+                            child: SignalBuilder(
+                              builder: (context) => Text(modRemovingBoundingStatus.value, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
+                            ),
                           ),
                         ),
                       ],

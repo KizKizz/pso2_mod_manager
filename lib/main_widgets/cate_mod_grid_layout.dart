@@ -17,7 +17,7 @@ import 'package:pso2_mod_manager/main_widgets/submod_view_popup.dart';
 import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:signals/signals_flutter.dart';
 
-class CateModGridLayout extends StatefulWidget {
+class CateModGridLayout extends SignalStatefulWidget {
   const CateModGridLayout({super.key, required this.itemCate, required this.searchString, required this.scrollController});
 
   final Category itemCate;
@@ -32,7 +32,7 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (mainGridStatus.watch(context) != mainGridStatus.peek()) {
+    if (mainGridStatus.value != mainGridStatus.peek()) {
       setState(() {});
     }
     // Get ext
@@ -120,8 +120,8 @@ class _CateModGridLayoutState extends State<CateModGridLayout> {
               borderRadius: const BorderRadius.all(Radius.circular(5)),
             ),
             color: !status.isPinned
-                ? Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))
-                : Theme.of(context).colorScheme.secondaryContainer.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                ? Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)
+                : Theme.of(context).colorScheme.secondaryContainer.withAlpha(uiBackgroundColorAlpha.value),
             margin: EdgeInsets.zero,
             elevation: 5,
             child: Padding(
@@ -179,10 +179,10 @@ class _ModCardLayoutState extends State<ModCardLayout> {
         if (mounted) setState(() {});
       },
       borderRadius: const BorderRadius.all(Radius.circular(5)),
-      hoverColor: Theme.of(context).colorScheme.onPrimary.withAlpha(uiBackgroundColorAlpha.watch(context)),
+      hoverColor: Theme.of(context).colorScheme.onPrimary.withAlpha(uiBackgroundColorAlpha.value),
       child: Card(
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
         margin: EdgeInsets.zero,
         elevation: 2.5,
         child: Padding(

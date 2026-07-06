@@ -23,31 +23,33 @@ class _LineStrikeSleeveCustomImageGridLayoutState extends State<LineStrikesSleev
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: CardOverlay(
-        paddingValue: 5,
-        rightPaddingValue: scrollbarsAlwaysVisible.watch(context) ? 0 : null,
-        child: ScrollbarTheme(
-          data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context))),
-          child: ResponsiveGridList(
-            listViewBuilderOptions: ListViewBuilderOptions(controller: widget.lScrollController),
-            minItemWidth: 150,
-            // verticalGridMargin: 5,
-            horizontalGridSpacing: 5,
-            verticalGridSpacing: 5,
-            children: [
-              for (int i = 0; i < widget.customImageFiles.length; i++)
-                LineStrikeSleeveCustomImageTile(
-                  customImageFile: widget.customImageFiles[i],
-                  onDeleteButtonPress: () async {
-                    bool result = await deleteConfirmPopup(context, p.basename(widget.customImageFiles[i].path));
-                    if (result) {
-                      await widget.customImageFiles[i].delete();
-                      widget.customImageFiles.remove(widget.customImageFiles[i]);
-                      setState(() {});
-                    }
-                  },
-                ),
-            ],
+      child: SignalBuilder(
+        builder: (context) =>  CardOverlay(
+          paddingValue: 5,
+          rightPaddingValue: scrollbarsAlwaysVisible.value ? 0 : null,
+          child: ScrollbarTheme(
+            data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value)),
+            child: ResponsiveGridList(
+              listViewBuilderOptions: ListViewBuilderOptions(controller: widget.lScrollController),
+              minItemWidth: 150,
+              // verticalGridMargin: 5,
+              horizontalGridSpacing: 5,
+              verticalGridSpacing: 5,
+              children: [
+                for (int i = 0; i < widget.customImageFiles.length; i++)
+                  LineStrikeSleeveCustomImageTile(
+                    customImageFile: widget.customImageFiles[i],
+                    onDeleteButtonPress: () async {
+                      bool result = await deleteConfirmPopup(context, p.basename(widget.customImageFiles[i].path));
+                      if (result) {
+                        await widget.customImageFiles[i].delete();
+                        widget.customImageFiles.remove(widget.customImageFiles[i]);
+                        setState(() {});
+                      }
+                    },
+                  ),
+              ],
+            ),
           ),
         ),
       ),

@@ -17,7 +17,7 @@ import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:path/path.dart' as p;
 
-class OtherSettingsLayout extends StatefulWidget {
+class OtherSettingsLayout extends SignalStatefulWidget {
   const OtherSettingsLayout({super.key});
 
   @override
@@ -28,12 +28,12 @@ class _OtherSettingsLayoutState extends State<OtherSettingsLayout> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (settingChangeStatus.watch(context) != settingChangeStatus.peek()) {
+    if (settingChangeStatus.value != settingChangeStatus.peek()) {
       setState(() {});
     }
     return LayoutBuilder(
       builder: (context, constraints) {
-        double buttonWidth = scrollbarsAlwaysVisible.watch(context) ? constraints.maxWidth - 15 : constraints.maxWidth;
+        double buttonWidth = scrollbarsAlwaysVisible.value ? constraints.maxWidth - 15 : constraints.maxWidth;
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,13 +43,13 @@ class _OtherSettingsLayoutState extends State<OtherSettingsLayout> {
             Expanded(
               child: ScrollbarTheme(
                 data: ScrollbarThemeData(
-                  trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-                  thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                  trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
+                  thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
                 ),
                 child: SingleChildScrollView(
                   physics: const SuperRangeMaintainingScrollPhysics(),
                   child: Padding(
-                    padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                    padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
                     child: Column(
                       spacing: 5,
                       children: [

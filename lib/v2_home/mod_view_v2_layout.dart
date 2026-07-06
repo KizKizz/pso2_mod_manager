@@ -16,7 +16,7 @@ import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
-class ModViewV2Layout extends StatefulWidget {
+class ModViewV2Layout extends SignalStatefulWidget {
   const ModViewV2Layout({super.key, required this.item, required this.mod, required this.searchString, required this.expandAll, required this.isInEditingMode, required this.scrollController});
 
   final Item item;
@@ -35,7 +35,7 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
 
   @override
   Widget build(BuildContext context) {
-    if (!modViewExpandState.watch(context)) {
+    if (!modViewExpandState.value) {
       expanded = false;
     }
     // prep data
@@ -115,8 +115,8 @@ class _ModViewV2LayoutState extends State<ModViewV2Layout> {
                   child: Card(
                       shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
                       color: !status.isPinned
-                          ? Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))
-                          : Theme.of(context).colorScheme.secondaryContainer.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                          ? Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)
+                          : Theme.of(context).colorScheme.secondaryContainer.withAlpha(uiBackgroundColorAlpha.value),
                       margin: EdgeInsets.zero,
                       elevation: 5,
                       child: Padding(

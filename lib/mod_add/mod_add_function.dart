@@ -986,7 +986,7 @@ Future<String> modAdderNewModSetDialog(context) async {
             side: BorderSide(color: Theme.of(context).primaryColorLight),
             borderRadius: const BorderRadius.all(Radius.circular(5)),
           ),
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
           titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
           // title: Text(curLangText!.uiCreateASetForImportedMods, style: const TextStyle(fontWeight: FontWeight.w700)),
           contentPadding: const EdgeInsets.only(left: 16, right: 16),

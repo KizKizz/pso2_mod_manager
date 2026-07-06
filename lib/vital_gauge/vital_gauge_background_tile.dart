@@ -72,7 +72,7 @@ class _VitalGaugeBackgroundTileState extends State<VitalGaugeBackgroundTile> {
                                     setState(() {});
                                   }
                                 },
-                                child: Text(appText.restore)),
+                                child: Text(appText.remove)),
                           ),
                         )
                       ],

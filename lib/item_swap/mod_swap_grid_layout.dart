@@ -11,7 +11,7 @@ import 'package:searchfield/searchfield.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
-class ModSwapGridLayout extends StatefulWidget {
+class ModSwapGridLayout extends SignalStatefulWidget {
   const ModSwapGridLayout({super.key, required this.itemDataList, required this.submod, required this.scrollController, required this.selectedItemData, required this.emoteSwapQueue});
 
   final List<ItemData> itemDataList;
@@ -50,7 +50,7 @@ class _ModSwapGridLayoutState extends State<ModSwapGridLayout> {
                 itemHeight: 90,
                 searchInputDecoration: SearchInputDecoration(
                   filled: true,
-                  fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                  fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
                   isDense: true,
                   contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                   cursorHeight: 15,
@@ -129,20 +129,20 @@ class _ModSwapGridLayoutState extends State<ModSwapGridLayout> {
         Expanded(
           child: CardOverlay(
             paddingValue: 5,
-            rightPaddingValue: scrollbarsAlwaysVisible.watch(context) ? 0 : null,
+            rightPaddingValue: scrollbarsAlwaysVisible.value ? 0 : null,
             child: ScrollbarTheme(
               data: ScrollbarThemeData(
-                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
+                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
               ),
               child: SuperListView.builder(
                 physics: const SuperRangeMaintainingScrollPhysics(),
-                padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
                 controller: widget.scrollController,
                 itemCount: displayingItemData.length,
                 itemBuilder: (context, index) {
                   return ListTileTheme(
-                    data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                    data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                     child: ListTile(
                       minTileHeight: 90,
                       title: Row(
@@ -174,10 +174,10 @@ class _ModSwapGridLayoutState extends State<ModSwapGridLayout> {
                           ),
                         ],
                       ),
-                      subtitle: widget.selectedItemData.watch(context) == displayingItemData[index]
+                      subtitle: widget.selectedItemData.value == displayingItemData[index]
                           ? Column(spacing: 5, crossAxisAlignment: CrossAxisAlignment.start, children: displayingItemData[index].getModSwapDetails(widget.submod).map((e) => Text(e)).toList())
                           : null,
-                      selected: widget.selectedItemData.watch(context) == displayingItemData[index],
+                      selected: widget.selectedItemData.value == displayingItemData[index],
                       enabled: widget.emoteSwapQueue.indexWhere((e) => e.$1 == displayingItemData[index]) == -1,
                       onTap: () {
                         widget.selectedItemData.value = displayingItemData[index];

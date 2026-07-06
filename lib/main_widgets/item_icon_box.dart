@@ -29,72 +29,70 @@ class _ItemIconBoxState extends State<ItemIconBox> {
         alignment: AlignmentDirectional.topEnd,
         children: [
           Card(
-              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(0))),
-              color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-              margin: EdgeInsets.zero,
-              elevation: 5,
-              child: Stack(
-                alignment: AlignmentDirectional.bottomCenter,
-                fit: StackFit.expand,
-                children: [
-                  widget.item.icons.isNotEmpty
-                      ? FlutterCarousel(
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5),
+              borderRadius: const BorderRadius.all(Radius.circular(0)),
+            ),
+            color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
+            margin: EdgeInsets.zero,
+            elevation: 5,
+            child: Stack(
+              alignment: AlignmentDirectional.bottomCenter,
+              fit: StackFit.expand,
+              children: [
+                widget.item.icons.isNotEmpty
+                    ? SignalBuilder(
+                        builder: (context) => FlutterCarousel(
                           options: FlutterCarouselOptions(
-                              autoPlay: widget.item.icons.length > 1 && itemIconSlides.watch(context) ? true : false,
-                              autoPlayInterval: const Duration(seconds: 2),
-                              disableCenter: true,
-                              viewportFraction: 1.0,
-                              height: double.infinity,
-                              floatingIndicator: true,
-                              enableInfiniteScroll: widget.item.icons.length > 1 && itemIconSlides.watch(context) ? true : false,
-                              indicatorMargin: 2,
-                              slideIndicator: CircularWaveSlideIndicator(
-                                  slideIndicatorOptions: SlideIndicatorOptions(
-                                      itemSpacing: 10,
-                                      indicatorRadius: 4,
-                                      currentIndicatorColor: Theme.of(context).colorScheme.primary,
-                                      indicatorBackgroundColor: Theme.of(context).hintColor.withAlpha(200)))),
-                          items: widget.item.icons
-                              .where((e) => File(e).existsSync())
-                              .map((e) => Image.file(
-                                    File(e),
-                                    filterQuality: FilterQuality.high,
-                                    fit: BoxFit.cover,
-                                  ))
-                              .toList(),
-                        )
-                      : Image.asset(
-                          'assets/img/placeholdersquare.png',
-                          filterQuality: FilterQuality.medium,
-                          fit: BoxFit.cover,
-                        ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Visibility(
-                        visible: widget.showSubCategory && !aqmInjectCategoryDirs.contains(widget.item.category) && widget.item.subCategory!.isNotEmpty,
-                        child: Container(
-                          color: Theme.of(context).scaffoldBackgroundColor.withAlpha(200),
-                          height: 25,
-                          width: double.infinity,
-                          child: Padding(
-                            padding: const EdgeInsets.all(2),
-                            child: AutoSizeText(
-                              widget.item.category == defaultCategoryDirs[14]
-                                  ? appText.motionTypeName(widget.item.subCategory!)
-                                  : widget.item.category == defaultCategoryDirs[17]
-                                      ? appText.weaponTypeName(widget.item.subCategory!.split('* ').last)
-                                      : widget.item.subCategory!,
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.labelLarge,
+                            autoPlay: widget.item.icons.length > 1 && itemIconSlides.value ? true : false,
+                            autoPlayInterval: const Duration(seconds: 2),
+                            disableCenter: true,
+                            viewportFraction: 1.0,
+                            height: double.infinity,
+                            floatingIndicator: true,
+                            enableInfiniteScroll: widget.item.icons.length > 1 && itemIconSlides.value ? true : false,
+                            indicatorMargin: 2,
+                            slideIndicator: CircularWaveSlideIndicator(
+                              slideIndicatorOptions: SlideIndicatorOptions(
+                                itemSpacing: 10,
+                                indicatorRadius: 4,
+                                currentIndicatorColor: Theme.of(context).colorScheme.primary,
+                                indicatorBackgroundColor: Theme.of(context).hintColor.withAlpha(200),
+                              ),
                             ),
+                          ),
+                          items: widget.item.icons.where((e) => File(e).existsSync()).map((e) => Image.file(File(e), filterQuality: FilterQuality.high, fit: BoxFit.cover)).toList(),
+                        ),
+                      )
+                    : Image.asset('assets/img/placeholdersquare.png', filterQuality: FilterQuality.medium, fit: BoxFit.cover),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Visibility(
+                      visible: widget.showSubCategory && !aqmInjectCategoryDirs.contains(widget.item.category) && widget.item.subCategory!.isNotEmpty,
+                      child: Container(
+                        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(200),
+                        height: 25,
+                        width: double.infinity,
+                        child: Padding(
+                          padding: const EdgeInsets.all(2),
+                          child: AutoSizeText(
+                            widget.item.category == defaultCategoryDirs[14]
+                                ? appText.motionTypeName(widget.item.subCategory!)
+                                : widget.item.category == defaultCategoryDirs[17]
+                                ? appText.weaponTypeName(widget.item.subCategory!.split('* ').last)
+                                : widget.item.subCategory!,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.labelLarge,
                           ),
                         ),
                       ),
-                    ],
-                  )
-                ],
-              )),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
           Row(
             spacing: 0.5,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,7 +109,7 @@ class _ItemIconBoxState extends State<ItemIconBox> {
                   ),
                 ),
             ],
-          )
+          ),
         ],
       ),
     );

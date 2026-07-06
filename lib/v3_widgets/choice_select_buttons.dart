@@ -10,7 +10,7 @@ import 'package:pso2_mod_manager/v3_widgets/tooltip.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:path/path.dart' as p;
 
-class MultiChoiceSelectButton extends StatefulWidget {
+class MultiChoiceSelectButton extends SignalStatefulWidget {
   const MultiChoiceSelectButton({
     super.key,
     required this.width,
@@ -50,7 +50,7 @@ class _MultiChoiceSelectButtonState extends State<MultiChoiceSelectButton> {
         message: widget.selectedItems.contains('All') ? '' : widget.selectedItemsLabel.join('\n'),
         child: OutlinedButton(
           style: ButtonStyle(
-            backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+            backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
             side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
             padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 10)),
           ),
@@ -71,11 +71,11 @@ class _MultiChoiceSelectButtonState extends State<MultiChoiceSelectButton> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 4.5),
                 child: AutoSizeText(
-                  widget.selectedItems.watch(context).length == widget.availableItemList.length || widget.selectedItems.value.contains('All')
+                  widget.selectedItems.value.length == widget.availableItemList.length || widget.selectedItems.value.contains('All')
                       ? appText.all
-                      : widget.selectedItems.watch(context).length == 1
+                      : widget.selectedItems.value.length == 1
                       ? widget.selectedItemsLabel.first
-                      : widget.selectedItems.watch(context).isEmpty
+                      : widget.selectedItems.value.isEmpty
                       ? appText.select
                       : '${widget.selectedItemsLabel.first} +${widget.selectedItemsLabel.length - 1}',
                   overflow: TextOverflow.ellipsis,
@@ -113,7 +113,7 @@ Future<void> _multiChoiceSelectPopup(
               side: BorderSide(color: Theme.of(context).colorScheme.outline),
               borderRadius: const BorderRadius.all(Radius.circular(5)),
             ),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.value),
             insetPadding: const EdgeInsets.all(5),
             titlePadding: const EdgeInsets.only(top: 5),
             title: Column(
@@ -190,7 +190,7 @@ Future<void> _multiChoiceSelectPopup(
   );
 }
 
-class SingleChoiceSelectButton extends StatefulWidget {
+class SingleChoiceSelectButton extends SignalStatefulWidget {
   const SingleChoiceSelectButton({
     super.key,
     required this.width,
@@ -228,7 +228,7 @@ class _SingleChoiceSelectButtonState extends State<SingleChoiceSelectButton> {
       height: widget.height,
       child: OutlinedButton(
         style: ButtonStyle(
-          backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+          backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
           side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
           padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 10)),
         ),
@@ -285,7 +285,7 @@ Future<void> _singleChoiceSelectPopup(
               side: BorderSide(color: Theme.of(context).colorScheme.outline),
               borderRadius: const BorderRadius.all(Radius.circular(5)),
             ),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.value),
             insetPadding: const EdgeInsets.all(5),
             titlePadding: const EdgeInsets.only(top: 5),
             title: Column(

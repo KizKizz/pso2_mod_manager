@@ -25,116 +25,115 @@ class DragDropBoxLayout extends StatefulWidget {
 class _DragDropBoxLayoutState extends State<DragDropBoxLayout> {
   @override
   Widget build(BuildContext context) {
-    return DropTarget(
-      enable: curModAddDragDropStatus.watch(context) != ModAddDragDropState.unpackingFiles,
-      onDragDone: (detail) async {
-        for (var file in detail.files) {
-          if (p.extension(file.path) == '' || widget.dragDropFileTypes.contains(p.extension(file.path).replaceFirst('.', '')) || await FileSystemEntity.isDirectory(file.path)) {
-            if (!modAddDragDropPaths.contains(file.path)) {
-              modAddDragDropPaths.add(file.path);
-              if (curModAddDragDropStatus.value != ModAddDragDropState.unpackingFiles) curModAddDragDropStatus.value = ModAddDragDropState.fileInList;
+    return SignalBuilder(
+      builder: (context) => DropTarget(
+        enable: curModAddDragDropStatus.value != ModAddDragDropState.unpackingFiles,
+        onDragDone: (detail) async {
+          for (var file in detail.files) {
+            if (p.extension(file.path) == '' || widget.dragDropFileTypes.contains(p.extension(file.path).replaceFirst('.', '')) || await FileSystemEntity.isDirectory(file.path)) {
+              if (!modAddDragDropPaths.contains(file.path)) {
+                modAddDragDropPaths.add(file.path);
+                if (curModAddDragDropStatus.value != ModAddDragDropState.unpackingFiles) curModAddDragDropStatus.value = ModAddDragDropState.fileInList;
+              } else {
+                errorNotification(appText.dText(appText.fileAlreadyOnTheList, file.name));
+              }
             } else {
-              errorNotification(appText.dText(appText.fileAlreadyOnTheList, file.name));
+              errorNotification(appText.dText(appText.fileIsNotSupported, file.name));
             }
-          } else {
-            errorNotification(appText.dText(appText.fileIsNotSupported, file.name));
           }
-        }
-        setState(() {});
-      },
-      child: CardOverlay(
-        paddingValue: 5,
-        child: Column(
-          children: [
-            Visibility(
-              visible: modAddDragDropPaths.isNotEmpty,
-              child: Expanded(
-                child: ScrollbarTheme(
-                  data: ScrollbarThemeData(
-                    trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-                    thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-                  ),
-                  child: SuperListView.separated(
-                    physics: const SuperRangeMaintainingScrollPhysics(),
-                    padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
-                    shrinkWrap: true,
-                    itemCount: modAddDragDropPaths.length,
-                    itemBuilder: (context, index) {
-                      return ListTileTheme(
-                        data: const ListTileThemeData(minTileHeight: 40, minVerticalPadding: 0),
-                        child: ListTile(
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5),
-                            borderRadius: const BorderRadius.all(Radius.circular(5)),
+          setState(() {});
+        },
+        child: CardOverlay(
+          paddingValue: 5,
+          child: Column(
+            children: [
+              Visibility(
+                visible: modAddDragDropPaths.isNotEmpty,
+                child: Expanded(
+                  child: ScrollbarTheme(
+                    data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value)),
+                    child: SuperListView.separated(
+                      physics: const SuperRangeMaintainingScrollPhysics(),
+                      padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
+                      shrinkWrap: true,
+                      itemCount: modAddDragDropPaths.length,
+                      itemBuilder: (context, index) {
+                        return ListTileTheme(
+                          data: const ListTileThemeData(minTileHeight: 40, minVerticalPadding: 0),
+                          child: ListTile(
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5),
+                              borderRadius: const BorderRadius.all(Radius.circular(5)),
+                            ),
+                            tileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
+                            title: Text(p.basename(modAddDragDropPaths[index]), style: Theme.of(context).textTheme.titleSmall),
+                            subtitle: Text(p.dirname(modAddDragDropPaths[index]), overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.bodySmall),
+                            trailing: IconButton(
+                              onPressed: () => setState(() {
+                                modAddDragDropPaths.removeAt(index);
+                              }),
+                              color: Colors.redAccent,
+                              icon: const Icon(Icons.remove_circle_outline),
+                            ),
+                            contentPadding: const EdgeInsets.all(5),
+                            dense: true,
                           ),
-                          tileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-                          title: Text(p.basename(modAddDragDropPaths[index]), style: Theme.of(context).textTheme.titleSmall),
-                          subtitle: Text(p.dirname(modAddDragDropPaths[index]), overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.bodySmall),
-                          trailing: IconButton(
-                            onPressed: () => setState(() {
-                              modAddDragDropPaths.removeAt(index);
-                            }),
-                            color: Colors.redAccent,
-                            icon: const Icon(Icons.remove_circle_outline),
-                          ),
-                          contentPadding: const EdgeInsets.all(5),
-                          dense: true,
-                        ),
-                      );
-                    },
-                    separatorBuilder: (BuildContext context, int index) => SizedBox(height: 2),
-                  ),
-                ),
-              ),
-            ),
-            Visibility(
-              visible: modAddDragDropPaths.isEmpty,
-              child: Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(appText.dragdropBoxMessage, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
-                    Text(appText.dragdropBoxMessage2, textAlign: TextAlign.center),
-                  ],
-                ),
-              ),
-            ),
-            Visibility(visible: modAddDragDropPaths.isNotEmpty, child: Divider(height: 10, indent: 15, endIndent: 15)),
-            Visibility(
-              visible: modAddDragDropPaths.isNotEmpty,
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    shape: WidgetStatePropertyAll(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                        side: BorderSide(width: 1, color: Theme.of(context).colorScheme.primary),
-                      ),
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) => SizedBox(height: 2),
                     ),
                   ),
-                  onPressed: modAddDragDropPaths.isNotEmpty
-                      ? () {
-                          modAddDragDropPaths.clear();
-                          setState(() {});
-                          if (curModAddDragDropStatus.value != ModAddDragDropState.unpackingFiles) curModAddDragDropStatus.value = ModAddDragDropState.waitingForFiles;
-                        }
-                      : null,
-                  child: Stack(
-                    alignment: AlignmentGeometry.center,
+                ),
+              ),
+              Visibility(
+                visible: modAddDragDropPaths.isEmpty,
+                child: Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(appText.clear),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [Text(modAddDragDropPaths.length.toString(), style: Theme.of(context).textTheme.bodySmall)],
-                      ),
+                      Text(appText.dragdropBoxMessage, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
+                      Text(appText.dragdropBoxMessage2, textAlign: TextAlign.center),
                     ],
                   ),
                 ),
               ),
-            ),
-          ],
+              Visibility(visible: modAddDragDropPaths.isNotEmpty, child: Divider(height: 10, indent: 15, endIndent: 15)),
+              Visibility(
+                visible: modAddDragDropPaths.isNotEmpty,
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      shape: WidgetStatePropertyAll(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          side: BorderSide(width: 1, color: Theme.of(context).colorScheme.primary),
+                        ),
+                      ),
+                    ),
+                    onPressed: modAddDragDropPaths.isNotEmpty
+                        ? () {
+                            modAddDragDropPaths.clear();
+                            setState(() {});
+                            if (curModAddDragDropStatus.value != ModAddDragDropState.unpackingFiles) curModAddDragDropStatus.value = ModAddDragDropState.waitingForFiles;
+                          }
+                        : null,
+                    child: Stack(
+                      alignment: AlignmentGeometry.center,
+                      children: [
+                        Text(appText.clear),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [Text(modAddDragDropPaths.length.toString(), style: Theme.of(context).textTheme.bodySmall)],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

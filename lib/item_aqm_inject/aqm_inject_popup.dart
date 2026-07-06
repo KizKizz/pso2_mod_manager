@@ -75,10 +75,12 @@ Future<bool> aqmInjectPopup(
                             constraints: const BoxConstraints(minWidth: 350),
                             child: CardOverlay(
                               paddingValue: 15,
-                              child: Text(
-                                modAqmInjectingStatus.watch(context),
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.bodyMedium,
+                              child: SignalBuilder(
+                                builder: (context) => Text(
+                                  modAqmInjectingStatus.value,
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
                               ),
                             ))
                       ],

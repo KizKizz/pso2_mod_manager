@@ -27,193 +27,213 @@ Future<void> modSwapAllPopup(context, Item item, Mod mod) async {
   ItemCrossSwap itemCrossSwap = ItemCrossSwap.none;
 
   await showDialog(
-      barrierDismissible: false,
-      barrierColor: Colors.transparent,
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(builder: (dialogContext, setState) {
-          displayingItems = pItemData
-              .where((e) => showNoNameItems.watch(context) || (!showNoNameItems.watch(context) && e.getName().isNotEmpty))
-              .where((e) => mod.category == defaultCategoryDirs[1]
-                  ? e.subCategory == 'Basewear'
-                  : mod.category == defaultCategoryDirs[16]
+    barrierDismissible: false,
+    barrierColor: Colors.transparent,
+    context: context,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (dialogContext, setState) => SignalBuilder(
+          builder: (context) {
+            displayingItems = pItemData
+                .where((e) => showNoNameItems.value || (!showNoNameItems.value && e.getName().isNotEmpty))
+                .where(
+                  (e) => mod.category == defaultCategoryDirs[1]
+                      ? e.subCategory == 'Basewear'
+                      : mod.category == defaultCategoryDirs[16]
                       ? e.subCategory == 'Setwear'
                       : mod.category == defaultCategoryDirs[14]
-                          ? e.category == mod.category && (e.subCategory == selectedModSwapAllMotionType.watch(context) || selectedModSwapAllMotionType.watch(context) == appText.all)
-                          : e.category == mod.category)
-              .where((e) => selectedModSwapAllTypeCategory.watch(context) == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedModSwapAllTypeCategory.watch(context).toLowerCase())
-              .toList();
-          displayingItems.sort((a, b) => a.getName().compareTo(b.getName()));
+                      ? e.category == mod.category && (e.subCategory == selectedModSwapAllMotionType.value || selectedModSwapAllMotionType.value == appText.all)
+                      : e.category == mod.category,
+                )
+                .where((e) => selectedModSwapAllTypeCategory.value == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedModSwapAllTypeCategory.value.toLowerCase())
+                .toList();
+            displayingItems.sort((a, b) => a.getName().compareTo(b.getName()));
 
-          // Extra item data
-          if (extraCategory.isNotEmpty && extraCategory == mod.category) {
-            rDisplayingItemsExtra = pItemData
-                .where((e) => showNoNameItems.watch(context) || (!showNoNameItems.watch(context) && e.getName().isNotEmpty))
-                .where((e) => extraCategory == defaultCategoryDirs[7]
-                    ? (e.category == defaultCategoryDirs[14] && e.subCategory == 'Standby Motion')
-                    : extraCategory == defaultCategoryDirs[1]
+            // Extra item data
+            if (extraCategory.isNotEmpty && extraCategory == mod.category) {
+              rDisplayingItemsExtra = pItemData
+                  .where((e) => showNoNameItems.value || (!showNoNameItems.value && e.getName().isNotEmpty))
+                  .where(
+                    (e) => extraCategory == defaultCategoryDirs[7]
+                        ? (e.category == defaultCategoryDirs[14] && e.subCategory == 'Standby Motion')
+                        : extraCategory == defaultCategoryDirs[1]
                         ? e.subCategory == 'Setwear'
                         : extraCategory == defaultCategoryDirs[16]
-                            ? e.subCategory == 'Basewear'
-                            : extraCategory == defaultCategoryDirs[2]
-                                ? e.category == defaultCategoryDirs[11]
-                                : extraCategory == defaultCategoryDirs[11]
-                                    ? e.category == defaultCategoryDirs[2]
-                                    : true)
-                .where(
-                    (e) => selectedModSwapAllTypeCategory.watch(context) == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedModSwapAllTypeCategory.watch(context).toLowerCase())
-                .toList();
-            rDisplayingItemsExtra.sort((a, b) => a.getName().compareTo(b.getName()));
-          } else {
-            extraCategory = '';
-            rDisplayingItemsExtra = [];
-          }
+                        ? e.subCategory == 'Basewear'
+                        : extraCategory == defaultCategoryDirs[2]
+                        ? e.category == defaultCategoryDirs[11]
+                        : extraCategory == defaultCategoryDirs[11]
+                        ? e.category == defaultCategoryDirs[2]
+                        : true,
+                  )
+                  .where((e) => selectedModSwapAllTypeCategory.value == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedModSwapAllTypeCategory.value.toLowerCase())
+                  .toList();
+              rDisplayingItemsExtra.sort((a, b) => a.getName().compareTo(b.getName()));
+            } else {
+              extraCategory = '';
+              rDisplayingItemsExtra = [];
+            }
 
-          // Data from mod
-          // lDisplayingItems = pItemData.where((e) => e.category == mod.category && submod.getModFileNames().indexWhere((f) => e.getIceDetailsWithoutKeys().contains(f)) != -1).toList();
+            // Data from mod
+            // lDisplayingItems = pItemData.where((e) => e.category == mod.category && submod.getModFileNames().indexWhere((f) => e.getIceDetailsWithoutKeys().contains(f)) != -1).toList();
 
-          return AlertDialog(
-            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
-            insetPadding: EdgeInsets.zero,
-            contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
-            content: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Column(
-                spacing: 5,
-                children: [
-                  Row(
-                    spacing: 5,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
+            return AlertDialog(
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.value),
+              insetPadding: EdgeInsets.zero,
+              contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
+              content: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: Column(
+                  spacing: 5,
+                  children: [
+                    Row(
+                      spacing: 5,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
                           child: SizedBox(
-                        height: 30,
-                        child: OutlinedButton(
-                            style: ButtonStyle(
-                                backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context))),
-                                side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
-                            onPressed: () {
-                              showNoNameItems.watch(context) ? showNoNameItems.value = false : showNoNameItems.value = true;
-                            },
-                            child: Text(showNoNameItems.watch(context) ? appText.hideNoNameItems : appText.showNoNameItems)),
-                      )),
-                      Visibility(
+                            height: 30,
+                            child: OutlinedButton(
+                              style: ButtonStyle(
+                                backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.value)),
+                                side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
+                              ),
+                              onPressed: () {
+                                showNoNameItems.value ? showNoNameItems.value = false : showNoNameItems.value = true;
+                              },
+                              child: Text(showNoNameItems.value ? appText.hideNoNameItems : appText.showNoNameItems),
+                            ),
+                          ),
+                        ),
+                        Visibility(
                           visible: mod.category == defaultCategoryDirs[14],
                           child: Expanded(
                             child: SingleChoiceSelectButton(
-                                width: double.infinity,
-                                height: 30,
-                                label: appText.motions,
-                                selectPopupLabel: appText.motions,
-                                availableItemList: defaultMotionTypes,
-                                availableItemLabels: defaultMotionTypes.map((e) => appText.motionTypeName(e)).toList(),
-                                selectedItemsLabel: defaultMotionTypes.map((e) => appText.motionTypeName(e)).toList(),
-                                selectedItem: selectedModSwapAllMotionType,
-                                extraWidgets: [],
-                                savePref: () {
-                                  rScrollController.jumpTo(0);
-                                }),
-                          )),
-                      Expanded(
+                              width: double.infinity,
+                              height: 30,
+                              label: appText.motions,
+                              selectPopupLabel: appText.motions,
+                              availableItemList: defaultMotionTypes,
+                              availableItemLabels: defaultMotionTypes.map((e) => appText.motionTypeName(e)).toList(),
+                              selectedItemsLabel: defaultMotionTypes.map((e) => appText.motionTypeName(e)).toList(),
+                              selectedItem: selectedModSwapAllMotionType,
+                              extraWidgets: [],
+                              savePref: () {
+                                rScrollController.jumpTo(0);
+                              },
+                            ),
+                          ),
+                        ),
+                        Expanded(
                           child: Padding(
-                        padding: const EdgeInsets.only(top: 1),
-                        child: SingleChoiceSelectButton(
-                            width: double.infinity,
-                            height: 30,
-                            label: appText.types,
-                            selectPopupLabel: appText.types,
-                            availableItemList: itemTypes,
-                            availableItemLabels: itemTypes.map((e) => appText.itemTypeName(e)).toList(),
-                            selectedItemsLabel: itemTypes.map((e) => appText.itemTypeName(e)).toList(),
-                            selectedItem: selectedModSwapAllTypeCategory,
-                            extraWidgets: [],
-                            savePref: () {
-                              rScrollController.jumpTo(0);
-                            }),
-                      )),
-                    ],
-                  ),
-                  Expanded(
+                            padding: const EdgeInsets.only(top: 1),
+                            child: SingleChoiceSelectButton(
+                              width: double.infinity,
+                              height: 30,
+                              label: appText.types,
+                              selectPopupLabel: appText.types,
+                              availableItemList: itemTypes,
+                              availableItemLabels: itemTypes.map((e) => appText.itemTypeName(e)).toList(),
+                              selectedItemsLabel: itemTypes.map((e) => appText.itemTypeName(e)).toList(),
+                              selectedItem: selectedModSwapAllTypeCategory,
+                              extraWidgets: [],
+                              savePref: () {
+                                rScrollController.jumpTo(0);
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Expanded(
                       child: ItemSwapGridLayout(
-                    itemDataList: extraCategory == defaultCategoryDirs[1] ||
-                            extraCategory == defaultCategoryDirs[2] ||
-                            extraCategory == defaultCategoryDirs[7] ||
-                            extraCategory == defaultCategoryDirs[11] ||
-                            extraCategory == defaultCategoryDirs[16]
-                        ? rDisplayingItemsExtra
-                        : displayingItems,
-                    scrollController: rScrollController,
-                    selectedItemData: rSelectedItemData,
-                    emoteSwapQueue: const [],
-                  )),
-                ],
+                        itemDataList:
+                            extraCategory == defaultCategoryDirs[1] ||
+                                extraCategory == defaultCategoryDirs[2] ||
+                                extraCategory == defaultCategoryDirs[7] ||
+                                extraCategory == defaultCategoryDirs[11] ||
+                                extraCategory == defaultCategoryDirs[16]
+                            ? rDisplayingItemsExtra
+                            : displayingItems,
+                        scrollController: rScrollController,
+                        selectedItemData: rSelectedItemData,
+                        emoteSwapQueue: const [],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            actionsPadding: const EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),
-            actions: [
-              const HoriDivider(),
-              Row(
-                spacing: 5,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  OverflowBar(
-                    spacing: 5,
-                    overflowSpacing: 5,
-                    children: [
-                      ElevatedButton(
+              actionsPadding: const EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),
+              actions: [
+                const HoriDivider(),
+                Row(
+                  spacing: 5,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    OverflowBar(
+                      spacing: 5,
+                      overflowSpacing: 5,
+                      children: [
+                        ElevatedButton(
                           style: ButtonStyle(
-                              side: WidgetStatePropertyAll(
-                                  BorderSide(color: replaceLQTexturesWithHQ ? Theme.of(context).colorScheme.primary : Colors.transparent, width: replaceLQTexturesWithHQ ? 2 : 0))),
+                            side: WidgetStatePropertyAll(
+                              BorderSide(color: replaceLQTexturesWithHQ ? Theme.of(context).colorScheme.primary : Colors.transparent, width: replaceLQTexturesWithHQ ? 2 : 0),
+                            ),
+                          ),
                           onPressed: () {
                             setState(() {
                               replaceLQTexturesWithHQ ? replaceLQTexturesWithHQ = false : replaceLQTexturesWithHQ = true;
                             });
                           },
-                          child: Text(appText.replaceLQTexturesWithHQ)),
-                      Visibility(
-                          visible: mod.category == defaultCategoryDirs[1] ||
+                          child: Text(appText.replaceLQTexturesWithHQ),
+                        ),
+                        Visibility(
+                          visible:
+                              mod.category == defaultCategoryDirs[1] ||
                               mod.category == defaultCategoryDirs[2] ||
                               mod.category == defaultCategoryDirs[7] ||
                               mod.category == defaultCategoryDirs[11] ||
                               mod.category == defaultCategoryDirs[16],
                           child: ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  extraCategory.isEmpty ? extraCategory = mod.category : extraCategory = '';
-                                  // mod.category == defaultCategoryDirs[11] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
-                                  // extraCategory == defaultCategoryDirs[2]
-                                  //     ? itemCrossSwap = ItemCrossSwap.bodyPaintToInnerwear
-                                  //     : extraCategory == defaultCategoryDirs[11]
-                                  //         ? itemCrossSwap = ItemCrossSwap.innerwearToBodyPaint
-                                  //         : extraCategory == defaultCategoryDirs[7]
-                                  //             ? itemCrossSwap = ItemCrossSwap.emoteToIdleMotion
-                                  //             : extraCategory == defaultCategoryDirs[14]
-                                  //                 ? itemCrossSwap = ItemCrossSwap.idleMotionToEmote
-                                  //                 : itemCrossSwap = ItemCrossSwap.none;
-                                  rScrollController.jumpTo(0);
-                                });
-                              },
-                              child: mod.category == defaultCategoryDirs[1]
-                                  ? Text(extraCategory == defaultCategoryDirs[1] ? appText.swapToBasewears : appText.swapToSetwears)
-                                  : mod.category == defaultCategoryDirs[2]
-                                      ? Text(extraCategory == defaultCategoryDirs[2] ? appText.swapToBodyPaints : appText.swapToInnerwears)
-                                      : mod.category == defaultCategoryDirs[7]
-                                          ? Text(extraCategory == defaultCategoryDirs[7] ? appText.swapToEmotes : appText.swapToIdleMotions)
-                                          : mod.category == defaultCategoryDirs[11]
-                                              ? Text(extraCategory == defaultCategoryDirs[11] ? appText.swapToInnerwears : appText.swapToBodyPaints)
-                                              : mod.category == defaultCategoryDirs[16]
-                                                  ? Text(extraCategory == defaultCategoryDirs[16] ? appText.swapToSetwears : appText.swapToBasewears)
-                                                  : null)),
-                    ],
-                  ),
-                  OverflowBar(
-                    spacing: 5,
-                    overflowSpacing: 5,
-                    children: [
-                      OutlinedButton(
-                          onPressed: rSelectedItemData.watch(context) != null
+                            onPressed: () {
+                              setState(() {
+                                extraCategory.isEmpty ? extraCategory = mod.category : extraCategory = '';
+                                // mod.category == defaultCategoryDirs[11] ? emoteToIdleMotion = true : emoteToIdleMotion = false;
+                                // extraCategory == defaultCategoryDirs[2]
+                                //     ? itemCrossSwap = ItemCrossSwap.bodyPaintToInnerwear
+                                //     : extraCategory == defaultCategoryDirs[11]
+                                //         ? itemCrossSwap = ItemCrossSwap.innerwearToBodyPaint
+                                //         : extraCategory == defaultCategoryDirs[7]
+                                //             ? itemCrossSwap = ItemCrossSwap.emoteToIdleMotion
+                                //             : extraCategory == defaultCategoryDirs[14]
+                                //                 ? itemCrossSwap = ItemCrossSwap.idleMotionToEmote
+                                //                 : itemCrossSwap = ItemCrossSwap.none;
+                                rScrollController.jumpTo(0);
+                              });
+                            },
+                            child: mod.category == defaultCategoryDirs[1]
+                                ? Text(extraCategory == defaultCategoryDirs[1] ? appText.swapToBasewears : appText.swapToSetwears)
+                                : mod.category == defaultCategoryDirs[2]
+                                ? Text(extraCategory == defaultCategoryDirs[2] ? appText.swapToBodyPaints : appText.swapToInnerwears)
+                                : mod.category == defaultCategoryDirs[7]
+                                ? Text(extraCategory == defaultCategoryDirs[7] ? appText.swapToEmotes : appText.swapToIdleMotions)
+                                : mod.category == defaultCategoryDirs[11]
+                                ? Text(extraCategory == defaultCategoryDirs[11] ? appText.swapToInnerwears : appText.swapToBodyPaints)
+                                : mod.category == defaultCategoryDirs[16]
+                                ? Text(extraCategory == defaultCategoryDirs[16] ? appText.swapToSetwears : appText.swapToBasewears)
+                                : null,
+                          ),
+                        ),
+                      ],
+                    ),
+                    OverflowBar(
+                      spacing: 5,
+                      overflowSpacing: 5,
+                      children: [
+                        OutlinedButton(
+                          onPressed: rSelectedItemData.value != null
                               ? () async {
                                   itemSwapWorkingStatus.value = '';
                                   for (var submod in mod.submods) {
@@ -231,14 +251,21 @@ Future<void> modSwapAllPopup(context, Item item, Mod mod) async {
                                       lSelectedItemData.value!.category == defaultCategoryDirs[2] && rSelectedItemData.value!.category == defaultCategoryDirs[11]
                                           ? itemCrossSwap = ItemCrossSwap.bodyPaintToInnerwear
                                           : lSelectedItemData.value!.category == defaultCategoryDirs[11] && rSelectedItemData.value!.category == defaultCategoryDirs[2]
-                                              ? itemCrossSwap = ItemCrossSwap.innerwearToBodyPaint
-                                              : lSelectedItemData.value!.category == defaultCategoryDirs[7] && rSelectedItemData.value!.category == defaultCategoryDirs[14]
-                                                  ? itemCrossSwap = ItemCrossSwap.emoteToIdleMotion
-                                                  : lSelectedItemData.value!.category == defaultCategoryDirs[14] && rSelectedItemData.value!.category == defaultCategoryDirs[7]
-                                                      ? itemCrossSwap = ItemCrossSwap.idleMotionToEmote
-                                                      : itemCrossSwap = ItemCrossSwap.none;
+                                          ? itemCrossSwap = ItemCrossSwap.innerwearToBodyPaint
+                                          : lSelectedItemData.value!.category == defaultCategoryDirs[7] && rSelectedItemData.value!.category == defaultCategoryDirs[14]
+                                          ? itemCrossSwap = ItemCrossSwap.emoteToIdleMotion
+                                          : lSelectedItemData.value!.category == defaultCategoryDirs[14] && rSelectedItemData.value!.category == defaultCategoryDirs[7]
+                                          ? itemCrossSwap = ItemCrossSwap.idleMotionToEmote
+                                          : itemCrossSwap = ItemCrossSwap.none;
                                       await modSwapAllWorkingPopup(
-                                          MaterialAppService.navigatorKey.currentContext, false, lSelectedItemData.value!, rSelectedItemData.value!, mod, submod, itemCrossSwap);
+                                        MaterialAppService.navigatorKey.currentContext,
+                                        false,
+                                        lSelectedItemData.value!,
+                                        rSelectedItemData.value!,
+                                        mod,
+                                        submod,
+                                        itemCrossSwap,
+                                      );
                                       await Future.delayed(const Duration(milliseconds: 100));
                                     } else {
                                       errorNotification(appText.noMatchingFilesBetweenItemsToSwap);
@@ -246,18 +273,23 @@ Future<void> modSwapAllPopup(context, Item item, Mod mod) async {
                                   }
                                 }
                               : null,
-                          child: Text(appText.swapAll)),
-                      OutlinedButton(
+                          child: Text(appText.swapAll),
+                        ),
+                        OutlinedButton(
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text(appText.returns))
-                    ],
-                  )
-                ],
-              )
-            ],
-          );
-        });
-      });
+                          child: Text(appText.returns),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
+        ),
+      );
+    },
+  );
 }

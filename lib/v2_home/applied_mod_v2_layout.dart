@@ -16,7 +16,7 @@ import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-class AppliedModV2Layout extends StatefulWidget {
+class AppliedModV2Layout extends SignalStatefulWidget {
   const AppliedModV2Layout({super.key, required this.item, required this.searchString, required this.expandAll, required this.scrollController});
 
   final Item item;
@@ -33,7 +33,7 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
 
   @override
   Widget build(BuildContext context) {
-    // if (!modViewExpandState.watch(context)) {
+    // if (!modViewExpandState.value) {
     //   expanded = false;
     // }
     // prep data
@@ -134,8 +134,8 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                   child: Card(
                       shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
                       color: !status.isPinned
-                          ? Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))
-                          : Theme.of(context).colorScheme.secondaryContainer.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                          ? Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)
+                          : Theme.of(context).colorScheme.secondaryContainer.withAlpha(uiBackgroundColorAlpha.value),
                       margin: EdgeInsets.zero,
                       elevation: 5,
                       child: Padding(
@@ -212,7 +212,7 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                                               child: SizedBox(
                                                 height: 25,
                                                 child: OutlinedButton(
-                                                    onPressed: !saveRestoreAppliedModsActive.watch(context)
+                                                    onPressed: !saveRestoreAppliedModsActive.value
                                                         ? () async {
                                                             int modIndex = widget.item.mods.indexWhere((e) => e.applyStatus);
                                                             if (modIndex != -1) {
@@ -224,7 +224,7 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                                                             }
                                                           }
                                                         : null,
-                                                    child: Text(appText.restore)),
+                                                    child: Text(appText.remove)),
                                               ),
                                             ),
                                           )
@@ -247,7 +247,7 @@ class _AppliedModV2LayoutState extends State<AppliedModV2Layout> {
                                         child: IconButton.outlined(
                                             visualDensity: VisualDensity.adaptivePlatformDensity,
                                             style: ButtonStyle(
-                                                // backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                                                // backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                                                 side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5))),
                                             onPressed: () async {
                                               launchUrlString(widget.item.location);

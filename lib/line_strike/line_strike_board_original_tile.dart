@@ -68,7 +68,7 @@ class _LineStrikeBoardOriginalTileState extends State<LineStrikeBoardOriginalTil
                               // ignore: use_build_context_synchronously
                               result ? restoreSuccessNotification(widget.board.iceDdsName) : restoreFailedNotification(widget.board.iceDdsName);
                             },
-                            child: Text(appText.restore)),
+                            child: Text(appText.remove)),
                         
                       ]),
                     ),

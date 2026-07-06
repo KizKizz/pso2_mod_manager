@@ -75,32 +75,34 @@ class _AppliedModGridLayoutState extends State<AppliedModGridLayout> {
             saveMasterModListToJson();
             setState(() {});
           },
-          child: Card(
-            shape: RoundedRectangleBorder(
-              side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5),
-              borderRadius: const BorderRadius.all(Radius.circular(5)),
-            ),
-            color: !status.isPinned
-                ? Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))
-                : Theme.of(context).colorScheme.secondaryContainer.withAlpha(uiBackgroundColorAlpha.watch(context)),
-            margin: EdgeInsets.zero,
-            elevation: 5,
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                spacing: 5,
-                children: [
-                  Text(widget.category.categoryName, style: Theme.of(context).textTheme.titleMedium),
-                  Row(
-                    spacing: 5,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      HeaderInfoBox(info: appText.dText(applyingSubmodCount > 1 ? appText.numMods : appText.numMod, applyingSubmodCount.toString()), borderHighlight: false),
-                      Icon(widget.category.visible ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down),
-                    ],
-                  ),
-                ],
+          child: SignalBuilder(
+            builder: (context) => Card(
+              shape: RoundedRectangleBorder(
+                side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5),
+                borderRadius: const BorderRadius.all(Radius.circular(5)),
+              ),
+              color: !status.isPinned
+                  ? Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)
+                  : Theme.of(context).colorScheme.secondaryContainer.withAlpha(uiBackgroundColorAlpha.value),
+              margin: EdgeInsets.zero,
+              elevation: 5,
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  spacing: 5,
+                  children: [
+                    Text(widget.category.categoryName, style: Theme.of(context).textTheme.titleMedium),
+                    Row(
+                      spacing: 5,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        HeaderInfoBox(info: appText.dText(applyingSubmodCount > 1 ? appText.numMods : appText.numMod, applyingSubmodCount.toString()), borderHighlight: false),
+                        Icon(widget.category.visible ? Icons.keyboard_double_arrow_up : Icons.keyboard_double_arrow_down),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -184,13 +186,15 @@ class _ModCardLayoutState extends State<ModCardLayout> {
             spacing: 5,
             children: [
               Expanded(
-                child: OutlinedButton(
-                  onPressed: !saveRestoreAppliedModsActive.watch(context)
-                      ? () async {
-                          await modToGameData(context, false, widget.item, widget.mod, widget.submod);
-                        }
-                      : null,
-                  child: Text(appText.restore),
+                child: SignalBuilder(
+                  builder: (context) => OutlinedButton(
+                    onPressed: !saveRestoreAppliedModsActive.value
+                        ? () async {
+                            await modToGameData(context, false, widget.item, widget.mod, widget.submod);
+                          }
+                        : null,
+                    child: Text(appText.remove),
+                  ),
                 ),
               ),
               // Quick swap Menu

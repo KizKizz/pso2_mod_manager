@@ -7,6 +7,7 @@ import 'package:pso2_mod_manager/mod_apply/save_restore_function.dart';
 import 'package:pso2_mod_manager/mod_apply/save_restore_popup.dart';
 import 'package:pso2_mod_manager/settings/other_settings.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
+import 'package:pso2_mod_manager/system_loads/app_mod_load_page.dart';
 import 'package:pso2_mod_manager/v2_home/homepage_v2.dart';
 import 'package:pso2_mod_manager/v3_widgets/jp_game_start_btn.dart';
 import 'package:pso2_mod_manager/mod_checksum/checksum_indicator.dart';
@@ -18,7 +19,7 @@ import 'package:signals/signals_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:window_manager/window_manager.dart';
 
-class AppTitleBar extends StatefulWidget {
+class AppTitleBar extends SignalStatefulWidget {
   const AppTitleBar({super.key});
 
   @override
@@ -29,7 +30,7 @@ class _AppTitleBarState extends State<AppTitleBar> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (settingChangeStatus.watch(context) != settingChangeStatus.peek()) {
+    if (settingChangeStatus.value != settingChangeStatus.peek()) {
       setState(() {});
     }
     return AppBar(
@@ -65,13 +66,13 @@ class _AppTitleBarState extends State<AppTitleBar> {
               ),
             ),
             Visibility(
-              visible: appLoadingFinished.watch(context),
+              visible: appLoadingFinished.value,
               child: Row(
                 spacing: 2.5,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Visibility(
-                    visible: pso2RegionVersion.watch(context) == PSO2RegionVersion.jp,
+                    visible: pso2RegionVersion.value == PSO2RegionVersion.jp,
                     child: const Padding(padding: EdgeInsets.only(right: 2.5), child: JpGameStartBtn()),
                   ),
 
@@ -91,7 +92,7 @@ class _AppTitleBarState extends State<AppTitleBar> {
 
                   // Show/Hide Previews
                   // Visibility(
-                  //     // visible: appLoadingFinished.watch(context),
+                  //     // visible: appLoadingFinished.value,
                   //     visible: false,
                   //     child: SizedBox(
                   //       height: 20,
@@ -106,40 +107,40 @@ class _AppTitleBarState extends State<AppTitleBar> {
                   //             Icons.preview,
                   //             size: 18,
                   //           ),
-                  //           label: Text(showPreviewBox.watch(context) ? appText.hidePreview : appText.showPreview)),
+                  //           label: Text(showPreviewBox.value ? appText.hidePreview : appText.showPreview)),
                   //     )),
-                  SizedBox(
-                    height: 20,
-                    child: ModManTooltip(
+                  ModManTooltip(
                       message: appText.refresh,
-                      child: OutlinedButton(
-                        style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
-                        onPressed: () async {
-                          selectedItemV2.value = null;
-                          pageIndex = 6;
-                          curPage.value = appPages[pageIndex];
-                        },
-                        child: const Icon(Icons.refresh, size: 18),
+                      child: SizedBox(
+                        height: 20,
+                        child: OutlinedButton(
+                          style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+                          onPressed: () async {
+                            selectedItemV2.value = null;
+                            pageIndex = 6;
+                            curPage.value = AppModLoadPage(isModReload: true);
+                          },
+                          child: const Icon(Icons.refresh, size: 18),
+                        ),
                       ),
                     ),
-                  ),
 
                   SizedBox(
                     height: 20,
-                    child: ModManTooltip(
-                      message: saveRestoreAppliedModsActive.watch(context)
-                          ? '${appText.reApplyAllSavedMods}\n${appText.quickSaveRestoreModsInfo}'
-                          : '${appText.saveAndRestoreAllAppliedMods}\n${appText.quickSaveRestoreModsInfo}',
+                    // child: ModManTooltip(
+                    //   message: saveRestoreAppliedModsActive.value
+                    //       ? '${appText.reApplyAllSavedMods}\n${appText.quickSaveRestoreModsInfo}'
+                    //       : '${appText.saveAndRestoreAllAppliedMods}\n${appText.quickSaveRestoreModsInfo}',
                       child: OutlinedButton(
                         style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
                         onPressed: () async {
                           await saveRestorePopup(context, saveRestoreAppliedModsActive.value ? false : true);
                           saveRestoreAppliedModsCheck();
                         },
-                        child: Icon(saveRestoreAppliedModsActive.watch(context) ? Icons.save_alt : Icons.save, size: 18),
+                        child: Icon(saveRestoreAppliedModsActive.value ? Icons.save_alt : Icons.save, size: 18),
                       ),
                     ),
-                  ),
+                  // ),
 
                   SizedBox(
                     height: 20,
@@ -178,7 +179,7 @@ class _AppTitleBarState extends State<AppTitleBar> {
       titleSpacing: 5,
       actions: [
         WindowCaptionButton.minimize(brightness: appThemeMode == AppThemeMode.dark ? Brightness.dark : Brightness.light, onPressed: () => windowManager.minimize()),
-        if (!windowMaximizedState.watch(context))
+        if (!windowMaximizedState.value)
           WindowCaptionButton.maximize(
             brightness: appThemeMode == AppThemeMode.dark ? Brightness.dark : Brightness.light,
             onPressed: () async {
@@ -189,7 +190,7 @@ class _AppTitleBarState extends State<AppTitleBar> {
               setState(() {});
             },
           ),
-        if (windowMaximizedState.watch(context))
+        if (windowMaximizedState.value)
           WindowCaptionButton.unmaximize(
             brightness: appThemeMode == AppThemeMode.dark ? Brightness.dark : Brightness.light,
             onPressed: () async {

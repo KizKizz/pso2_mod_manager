@@ -32,7 +32,9 @@ class _AppAqmItemsCheckPageState extends State<AppAqmItemsCheckPage> {
     if (masterUnappliedAQMItemList.isEmpty) {
       saveMasterModListToJson();
       pageIndex++;
-      curPage.value = appPages[pageIndex];
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        curPage.value = appPages[pageIndex];
+      });
       return const SizedBox();
     } else {
       return SizedBox(
@@ -41,95 +43,80 @@ class _AppAqmItemsCheckPageState extends State<AppAqmItemsCheckPage> {
         child: Padding(
           padding: const EdgeInsets.all(5),
           child: CardOverlay(
-              paddingValue: 10,
-              child: Column(
-                spacing: 10,
-                children: [
-                  Center(
-                    child: Text(
-                      appText.restoredAQMInjectedItems,
-                      style: Theme.of(context).textTheme.headlineMedium,
+            paddingValue: 10,
+            child: Column(
+              spacing: 10,
+              children: [
+                Center(child: Text(appText.restoredAQMInjectedItems, style: Theme.of(context).textTheme.headlineMedium)),
+                const Divider(height: 0, thickness: 1.5, indent: 10, endIndent: 10),
+                Text(appText.restoredAQMInjectedItemInfo),
+                Expanded(child: ResponsiveGridList(minItemWidth: 320, children: unappliedItemsGet(masterUnappliedAQMItemList))),
+                const Divider(height: 0, thickness: 1.5, indent: 10, endIndent: 10),
+                OverflowBar(
+                  spacing: 5,
+                  overflowSpacing: 5,
+                  alignment: MainAxisAlignment.end,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () async {
+                        for (var item in masterUnappliedAQMItemList) {
+                          bool aqmResult = false;
+                          bool boundingResult = false;
+                          if (item.isApplied && item.isAqmReplaced!) {
+                            aqmResult = await aqmInjectPopup(context, item.injectedAQMFilePath!, item.hqIcePath, item.lqIcePath, item.getName(), false, false, false, false, false);
+                          }
+                          if (item.isApplied && item.isBoundingRemoved!) {
+                            boundingResult = await itemCustomAqmBounding(context, item.hqIcePath, item.lqIcePath, item.getName());
+                          }
+                          if (aqmResult || boundingResult) {
+                            item.injectedHqIceMd5 = await File(pso2binDirPath + p.separator + item.hqIcePath.replaceAll('/', p.separator)).getMd5Hash();
+                            item.injectedLqIceMd5 = await File(pso2binDirPath + p.separator + item.lqIcePath.replaceAll('/', p.separator)).getMd5Hash();
+                            if (replaceItemIconOnApplied && !useLocalBackupOnly) {
+                              item.isIconReplaced = await markedAqmItemIconApply(item.iconIcePath);
+                            }
+                            item.isAqmReplaced = aqmResult;
+                            item.isBoundingRemoved = boundingResult;
+                            item.isApplied = true;
+                          }
+                        }
+                        saveMasterAqmInjectListToJson();
+                        masterUnappliedAQMItemList.clear();
+                        pageIndex++;
+                        curPage.value = appPages[pageIndex];
+                      },
+                      child: Text(appText.reApplyAll),
                     ),
-                  ),
-                  const Divider(
-                    height: 0,
-                    thickness: 1.5,
-                    indent: 10,
-                    endIndent: 10,
-                  ),
-                  Text(appText.restoredAQMInjectedItemInfo),
-                  Expanded(
-                      child: ResponsiveGridList(
-                    minItemWidth: 320,
-                    children: unappliedItemsGet(masterUnappliedAQMItemList),
-                  )),
-                  const Divider(
-                    height: 0,
-                    thickness: 1.5,
-                    indent: 10,
-                    endIndent: 10,
-                  ),
-                  OverflowBar(
-                    spacing: 5,
-                    overflowSpacing: 5,
-                    alignment: MainAxisAlignment.end,
-                    children: [
-                      OutlinedButton(
-                          onPressed: () async {
-                            for (var item in masterUnappliedAQMItemList) {
-                              bool aqmResult = false;
-                              bool boundingResult = false;
-                              if (item.isApplied && item.isAqmReplaced!) {
-                                aqmResult = await aqmInjectPopup(context, item.injectedAQMFilePath!, item.hqIcePath, item.lqIcePath, item.getName(), false, false, false, false, false);
-                              }
-                              if (item.isApplied && item.isBoundingRemoved!) {
-                                boundingResult = await itemCustomAqmBounding(context, item.hqIcePath, item.lqIcePath, item.getName());
-                              }
-                              if (aqmResult || boundingResult) {
-                                item.injectedHqIceMd5 = await File(pso2binDirPath + p.separator + item.hqIcePath.replaceAll('/', p.separator)).getMd5Hash();
-                                item.injectedLqIceMd5 = await File(pso2binDirPath + p.separator + item.lqIcePath.replaceAll('/', p.separator)).getMd5Hash();
-                                if (replaceItemIconOnApplied && !useLocalBackupOnly) {
-                                  item.isIconReplaced = await markedAqmItemIconApply(item.iconIcePath);
-                                }
-                                item.isAqmReplaced = aqmResult;
-                                item.isBoundingRemoved = boundingResult;
-                                item.isApplied = true;
-                              }
+                    OutlinedButton(
+                      onPressed: () async {
+                        for (var item in masterUnappliedAQMItemList) {
+                          bool result = await aqmInjectPopup(context, item.injectedAQMFilePath!, item.hqIcePath, item.lqIcePath, item.getName(), false, false, true, item.isAqmReplaced!, false);
+                          if (result) {
+                            if (item.isIconReplaced) {
+                              await markedAqmItemIconRestore(pso2binDirPath + p.separator + item.iconIcePath);
                             }
-                            saveMasterAqmInjectListToJson();
-                            masterUnappliedAQMItemList.clear();
-                            pageIndex++;
-                            curPage.value = appPages[pageIndex];
-                          },
-                          child: Text(appText.reApplyAll)),
-                      OutlinedButton(
-                          onPressed: () async {
-                            for (var item in masterUnappliedAQMItemList) {
-                              bool result = await aqmInjectPopup(context, item.injectedAQMFilePath!, item.hqIcePath, item.lqIcePath, item.getName(), false, false, true, item.isAqmReplaced!, false);
-                              if (result) {
-                                if (item.isIconReplaced) {
-                                  await markedAqmItemIconRestore(pso2binDirPath + p.separator + item.iconIcePath);
-                                }
-                                masterAqmInjectedItemList.remove(item);
-                              }
-                            }
-                            saveMasterAqmInjectListToJson();
-                            masterUnappliedAQMItemList.clear();
-                            pageIndex++;
-                            curPage.value = appPages[pageIndex];
-                          },
-                          child: Text(appText.removeAll)),
-                      OutlinedButton(
-                          onPressed: () {
-                            masterUnappliedAQMItemList.clear();
-                            pageIndex++;
-                            curPage.value = appPages[pageIndex];
-                          },
-                          child: Text(appText.skip)),
-                    ],
-                  )
-                ],
-              )),
+                            masterAqmInjectedItemList.remove(item);
+                          }
+                        }
+                        saveMasterAqmInjectListToJson();
+                        masterUnappliedAQMItemList.clear();
+                        pageIndex++;
+                        curPage.value = appPages[pageIndex];
+                      },
+                      child: Text(appText.removeAll),
+                    ),
+                    OutlinedButton(
+                      onPressed: () {
+                        masterUnappliedAQMItemList.clear();
+                        pageIndex++;
+                        curPage.value = appPages[pageIndex];
+                      },
+                      child: Text(appText.skip),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       );
     }
@@ -151,19 +138,25 @@ class _AppAqmItemsCheckPageState extends State<AppAqmItemsCheckPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    item.getName(),
-                    style: const TextStyle(fontWeight: FontWeight.w500),
-                  ),
+                  Text(item.getName(), style: const TextStyle(fontWeight: FontWeight.w500)),
                   Row(
                     spacing: 5,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Visibility(visible: item.isAqmReplaced!, child: InfoBox(info: appText.aqmInjected, borderHighlight: false)),
-                      Visibility(visible: item.isBoundingRemoved!, child: InfoBox(info: appText.boundingRemoved, borderHighlight: false))
+                      Visibility(
+                        visible: item.isAqmReplaced!,
+                        child: InfoBox(info: appText.aqmInjected, borderHighlight: false),
+                      ),
+                      Visibility(
+                        visible: item.isBoundingRemoved!,
+                        child: InfoBox(info: appText.boundingRemoved, borderHighlight: false),
+                      ),
                     ],
                   ),
-                  Visibility(visible: item.isAqmReplaced!, child: Text(appText.dText(appText.injectedAQMFile, p.basename(item.injectedAQMFilePath!)), style: Theme.of(context).textTheme.labelMedium))
+                  Visibility(
+                    visible: item.isAqmReplaced!,
+                    child: Text(appText.dText(appText.injectedAQMFile, p.basename(item.injectedAQMFilePath!)), style: Theme.of(context).textTheme.labelMedium),
+                  ),
                 ],
               ),
             ],

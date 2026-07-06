@@ -18,7 +18,7 @@ import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:path/path.dart' as p;
 
-class AqmInjectedGridLayout extends StatefulWidget {
+class AqmInjectedGridLayout extends SignalStatefulWidget {
   const AqmInjectedGridLayout({super.key, required this.injectedItemList, required this.scrollController, required this.selectedAqmInjectedItem});
 
   final List<AqmInjectedItem> injectedItemList;
@@ -35,7 +35,7 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (modAqmInjectingRefresh.watch(context) != modAqmInjectingRefresh.peek()) setState(() {});
+    if (modAqmInjectingRefresh.value != modAqmInjectingRefresh.peek()) setState(() {});
 
     List<AqmInjectedItem> displayingAqmInjectedItem = [];
     if (injectedItemSearchTextController.value.text.isEmpty) {
@@ -64,7 +64,7 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                 itemHeight: 90,
                 searchInputDecoration: SearchInputDecoration(
                   filled: true,
-                  fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                  fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
                   isDense: true,
                   contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                   cursorHeight: 15,
@@ -143,20 +143,17 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
         Expanded(
           child: CardOverlay(
             paddingValue: 5,
-            rightPaddingValue: scrollbarsAlwaysVisible.watch(context) ? 0 : null,
+            rightPaddingValue: scrollbarsAlwaysVisible.value ? 0 : null,
             child: ScrollbarTheme(
-              data: ScrollbarThemeData(
-                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-              ),
+              data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value)),
               child: SuperListView.builder(
                 physics: const SuperRangeMaintainingScrollPhysics(),
-                padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
                 controller: widget.scrollController,
                 itemCount: displayingAqmInjectedItem.length,
                 itemBuilder: (context, index) {
                   return ListTileTheme(
-                    data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                    data: ListTileThemeData(selectedTileColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                     child: ListTile(
                       minTileHeight: 90,
                       title: Row(
@@ -191,7 +188,7 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                           ),
                         ],
                       ),
-                      subtitle: widget.selectedAqmInjectedItem.watch(context) == displayingAqmInjectedItem[index]
+                      subtitle: widget.selectedAqmInjectedItem.value == displayingAqmInjectedItem[index]
                           ? Column(
                               spacing: 5,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -302,7 +299,7 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                                           }
                                           saveMasterAqmInjectListToJson();
                                         },
-                                        child: Text(appText.restoreAll),
+                                        child: Text(appText.removeAll),
                                       ),
                                     ),
                                   ],
@@ -310,9 +307,10 @@ class _AqmInjectedGridLayoutState extends State<AqmInjectedGridLayout> {
                               ],
                             )
                           : null,
-                      selected: widget.selectedAqmInjectedItem.watch(context) == displayingAqmInjectedItem[index],
+                      selected: widget.selectedAqmInjectedItem.value == displayingAqmInjectedItem[index],
                       onTap: () {
                         widget.selectedAqmInjectedItem.value = displayingAqmInjectedItem[index];
+                        setState(() {});
                       },
                     ),
                   );

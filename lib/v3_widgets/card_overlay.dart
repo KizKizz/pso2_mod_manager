@@ -30,19 +30,21 @@ class _CardOverlayState extends State<CardOverlay> {
     return AnimatedOpacity(
       opacity: fadeInOpacity,
       duration: const Duration(milliseconds: 100),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5),
-          borderRadius: const BorderRadius.all(Radius.circular(5)),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
-        margin: EdgeInsets.zero,
-        elevation: 5,
-        child: Padding(
-          padding: widget.rightPaddingValue == null
-              ? EdgeInsets.all(widget.paddingValue)
-              : EdgeInsets.only(left: widget.paddingValue, right: widget.rightPaddingValue!, top: widget.paddingValue, bottom: widget.paddingValue),
-          child: widget.child,
+      child: SignalBuilder(
+        builder: (context) => Card(
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5),
+            borderRadius: const BorderRadius.all(Radius.circular(5)),
+          ),
+          color: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
+          margin: EdgeInsets.zero,
+          elevation: 5,
+          child: Padding(
+            padding: widget.rightPaddingValue == null
+                ? EdgeInsets.all(widget.paddingValue)
+                : EdgeInsets.only(left: widget.paddingValue, right: widget.rightPaddingValue!, top: widget.paddingValue, bottom: widget.paddingValue),
+            child: widget.child,
+          ),
         ),
       ),
     );

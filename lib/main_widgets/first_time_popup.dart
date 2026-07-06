@@ -5,7 +5,6 @@ import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/material_app_service.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:signals/signals_flutter.dart';
 
 Future<void> firstTimePopup(context) async {
   return await showDialog(
@@ -15,7 +14,7 @@ Future<void> firstTimePopup(context) async {
         return StatefulBuilder(builder: (dialogContext, setState) {
           return AlertDialog(
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: const BorderRadius.all(Radius.circular(5))),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.value),
             insetPadding: const EdgeInsets.all(5),
             contentPadding: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
             content: Text(appText.firstTimeInfo, style: Theme.of(context).textTheme.titleSmall),

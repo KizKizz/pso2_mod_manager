@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:signals/signals_flutter.dart';
 
-class AnimatedHorizontalToggleLayout extends StatefulWidget {
+class AnimatedHorizontalToggleLayout extends SignalStatefulWidget {
   const AnimatedHorizontalToggleLayout({super.key, required this.taps, required this.initialIndex, required this.width, required this.onChange});
 
   final List<String> taps;
@@ -24,7 +24,7 @@ class _AnimatedHorizontalToggleLayoutState extends State<AnimatedHorizontalToggl
         height: 36,
         duration: const Duration(milliseconds: 100),
         initialIndex: widget.initialIndex,
-        background: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+        background: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
         activeColor: Theme.of(context).colorScheme.primaryContainer,
         activeTextStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Theme.of(context).textTheme.labelLarge!.color),
         inActiveTextStyle: TextStyle(fontSize: 16, color: Theme.of(context).textTheme.labelLarge!.color),

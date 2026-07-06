@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
@@ -24,9 +25,13 @@ import 'package:windows_single_instance/windows_single_instance.dart';
 
 Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
-  await WindowsSingleInstance.ensureSingleInstance(args, "PSO2NGS Mod Manager", onSecondWindow: (args) {
-    debugPrint(args.toString());
-  });
+  await WindowsSingleInstance.ensureSingleInstance(
+    args,
+    "PSO2NGS Mod Manager",
+    onSecondWindow: (args) {
+      debugPrint(args.toString());
+    },
+  );
   await windowManager.ensureInitialized();
   MediaKit.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
@@ -39,11 +44,12 @@ Future<void> main(List<String> args) async {
   pso2RegionVersion.value = await pso2RegionCheck();
 
   WindowOptions windowOptions = WindowOptions(
-      size: Size(prefs.getDouble('windowWidth') ?? 1280, prefs.getDouble('windowHeight') ?? 720),
-      center: false,
-      skipTaskbar: false,
-      titleBarStyle: TitleBarStyle.hidden,
-      windowButtonVisibility: false);
+    size: Size(prefs.getDouble('windowWidth') ?? 1280, prefs.getDouble('windowHeight') ?? 720),
+    center: false,
+    skipTaskbar: false,
+    titleBarStyle: TitleBarStyle.hidden,
+    windowButtonVisibility: false,
+  );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     if (prefs.getDouble('windowXPosition') != null && prefs.getDouble('windowYPosition') != null) {
       await windowManager.setPosition(Offset(prefs.getDouble('windowXPosition') ?? 0, prefs.getDouble('windowYPosition') ?? 0));
@@ -55,7 +61,7 @@ Future<void> main(List<String> args) async {
     if (windowMaximizedState.value) windowManager.maximize();
   });
 
-  runApp(const MyApp());
+  runApp(Platform.isWindows ? ExcludeSemantics(child: const MyApp()) : const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -65,19 +71,22 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<ThemeMode>(
-        valueListenable: MyApp.themeNotifier,
-        builder: (_, ThemeMode currentMode, _) {
-          return MaterialApp(
-            navigatorKey: MaterialAppService.navigatorKey,
-            debugShowCheckedModeBanner: false,
-            theme: lightModeSeedColor == lightColorScheme.primary ? ThemeData.from(colorScheme: lightColorScheme) : ThemeData.from(colorScheme: ColorScheme.fromSeed(seedColor: lightModeSeedColor)),
-            darkTheme: darkModeSeedColor == darkColorScheme.primary
-                ? ThemeData.from(colorScheme: darkColorScheme)
-                : ThemeData.from(colorScheme: ColorScheme.fromSeed(seedColor: darkModeSeedColor, brightness: Brightness.dark)),
-            themeMode: currentMode,
-            home: const MyHomePage(),
-          );
-        });
+      valueListenable: MyApp.themeNotifier,
+      builder: (_, ThemeMode currentMode, _) {
+        return MaterialApp(
+          navigatorKey: MaterialAppService.navigatorKey,
+          debugShowCheckedModeBanner: false,
+          theme: lightModeSeedColor == lightColorScheme.primary ? ThemeData.from(colorScheme: lightColorScheme) : ThemeData.from(colorScheme: ColorScheme.fromSeed(seedColor: lightModeSeedColor)),
+          darkTheme: darkModeSeedColor == darkColorScheme.primary
+              ? ThemeData.from(colorScheme: darkColorScheme)
+              : ThemeData.from(
+                  colorScheme: ColorScheme.fromSeed(seedColor: darkModeSeedColor, brightness: Brightness.dark),
+                ),
+          themeMode: currentMode,
+          home: const MyHomePage(),
+        );
+      },
+    );
   }
 }
 
@@ -114,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
   @override
   Future<void> onWindowBlur() async {
-    if (appLoadingFinished.watch(context) && hideUIWhenAppUnfocused) {
+    if (appLoadingFinished.value && hideUIWhenAppUnfocused) {
       await Future.delayed(Duration(seconds: hideUIInitDelaySeconds));
       if (!await windowManager.isFocused()) {
         showMessageOnInactiveOverlay.value = false;
@@ -125,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
   @override
   Future<void> onWindowFocus() async {
-    if (appLoadingFinished.watch(context) && hideUIWhenAppUnfocused) {
+    if (appLoadingFinished.value && hideUIWhenAppUnfocused) {
       if (await windowManager.isFocused()) {
         showMessageOnInactiveOverlay.value = true;
       } else {
@@ -151,23 +160,21 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (settingChangeStatus.watch(context) != settingChangeStatus.peek()) {
-      setState(
-        () {},
-      );
+    if (settingChangeStatus.value != settingChangeStatus.peek()) {
+      setState(() {});
     }
 
     return Scaffold(
-        appBar: const PreferredSize(preferredSize: Size(double.maxFinite, 25), child: AppTitleBar()),
-        body: Stack(
-          children: [
-            Visibility(
-                visible: backgroundImageFiles.watch(context).isNotEmpty && !hideAppBackgroundSlides.watch(context),
-                child: const BackgroundSlideshow(
-                  isMini: false,
-                )),
-            curPage.watch(context)
-          ],
-        ));
+      appBar: const PreferredSize(preferredSize: Size(double.maxFinite, 25), child: AppTitleBar()),
+      body: Stack(
+        children: [
+          SignalBuilder(
+            builder: (context) => Visibility(visible: backgroundImageFiles.value.isNotEmpty && !hideAppBackgroundSlides.value, child: const BackgroundSlideshow(isMini: false)),
+          ),
+
+          SignalBuilder(builder: (context) => curPage.value),
+        ],
+      ),
+    );
   }
 }

@@ -5,7 +5,6 @@ import 'package:pso2_mod_manager/app_paths/main_paths.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_add/adding_mod_class.dart';
 import 'package:pso2_mod_manager/v3_home/mod_add.dart';
-import 'package:signals/signals_flutter.dart';
 
 Future<void> modAddPopup(context, List<String> pathsToAdd) async {
   if (Directory(modAddTempDirPath).existsSync()) Directory(modAddTempDirPath).deleteSync(recursive: true);
@@ -20,7 +19,7 @@ Future<void> modAddPopup(context, List<String> pathsToAdd) async {
         return StatefulBuilder(builder: (dialogContext, setState) {
           return AlertDialog(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.value),
             insetPadding: EdgeInsets.zero,
             contentPadding: const EdgeInsets.all(5),
             content: SizedBox(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height, child: const ModAdd(isPopup: true)),

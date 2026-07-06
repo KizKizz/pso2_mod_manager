@@ -14,22 +14,25 @@ import 'package:super_sliver_list/super_sliver_list.dart';
 
 Future<void> modFileListPopup(context, Item item, Mod mod, SubMod submod) async {
   return await showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(builder: (dialogContext, setState) {
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (dialogContext, setState) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: const BorderRadius.all(Radius.circular(5))),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: Theme.of(context).colorScheme.outline),
+              borderRadius: const BorderRadius.all(Radius.circular(5)),
+            ),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.value),
             insetPadding: const EdgeInsets.all(5),
             titlePadding: const EdgeInsets.only(top: 5),
-            title: Column(children: [
-              Text(
-                submod.modName,
-                style: TextStyle(color: Theme.of(context).colorScheme.primary),
-              ),
-              const HoriDivider()
-            ]),
+            title: Column(
+              children: [
+                Text(submod.modName, style: TextStyle(color: Theme.of(context).colorScheme.primary)),
+                const HoriDivider(),
+              ],
+            ),
             contentPadding: const EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 10),
             content: SizedBox(
               width: 450,
@@ -44,37 +47,37 @@ Future<void> modFileListPopup(context, Item item, Mod mod, SubMod submod) async 
                     child: CardOverlay(
                       paddingValue: 5,
                       child: SuperListView.builder(
-                          shrinkWrap: true,
-                          itemCount: submod.modFiles.length,
-                          itemBuilder: (context, index) => ListTile(
-                                contentPadding: EdgeInsets.zero,
-                                title: Text(submod.modFiles[index].modFileName),
-                                trailing: OutlinedButton(
-                                    onPressed: !saveRestoreAppliedModsActive.watch(context)
-                                        ? () async {
-                                            if (!submod.modFiles[index].applyStatus) {
-                                              await modApplySequence(context, true, item, mod, submod, [submod.modFiles[index]]);
-                                              submod.modFiles[index].applyStatus
-                                                  ? applySuccessNotification(submod.modFiles[index].modFileName)
-                                                  : applyFailedNotification(submod.modFiles[index].modFileName);
-                                            } else {
-                                              await modUnapplySequence(context, false, item, mod, submod, [submod.modFiles[index]]);
-                                              !submod.modFiles[index].applyStatus
-                                                  ? restoreSuccessNotification(submod.modFiles[index].modFileName)
-                                                  : restoreFailedNotification(submod.modFiles[index].modFileName);
-                                            }
-                                            modPopupStatus.value = submod.modFiles[index].applyStatus
-                                                ? '${submod.modName} > ${submod.submodName} > ${submod.modFiles[index].modFileName} applied'
-                                                : '${submod.modName} > ${submod.submodName} > ${submod.modFiles[index].modFileName} restored';
-                                            setState(
-                                              () {},
-                                            );
-                                          }
-                                        : null,
-                                    child: Text(submod.modFiles[index].applyStatus ? appText.restore : appText.apply)),
-                              )),
+                        shrinkWrap: true,
+                        itemCount: submod.modFiles.length,
+                        itemBuilder: (context, index) => ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(submod.modFiles[index].modFileName),
+                          trailing: SignalBuilder(
+                            builder: (context) => OutlinedButton(
+                              onPressed: !saveRestoreAppliedModsActive.value
+                                  ? () async {
+                                      if (!submod.modFiles[index].applyStatus) {
+                                        await modApplySequence(context, true, item, mod, submod, [submod.modFiles[index]]);
+                                        submod.modFiles[index].applyStatus ? applySuccessNotification(submod.modFiles[index].modFileName) : applyFailedNotification(submod.modFiles[index].modFileName);
+                                      } else {
+                                        await modUnapplySequence(context, false, item, mod, submod, [submod.modFiles[index]]);
+                                        !submod.modFiles[index].applyStatus
+                                            ? restoreSuccessNotification(submod.modFiles[index].modFileName)
+                                            : restoreFailedNotification(submod.modFiles[index].modFileName);
+                                      }
+                                      modPopupStatus.value = submod.modFiles[index].applyStatus
+                                          ? '${submod.modName} > ${submod.submodName} > ${submod.modFiles[index].modFileName} applied'
+                                          : '${submod.modName} > ${submod.submodName} > ${submod.modFiles[index].modFileName} restored';
+                                      setState(() {});
+                                    }
+                                  : null,
+                              child: Text(submod.modFiles[index].applyStatus ? appText.remove : appText.apply),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -86,14 +89,17 @@ Future<void> modFileListPopup(context, Item item, Mod mod, SubMod submod) async 
                 overflowSpacing: 5,
                 children: [
                   OutlinedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(appText.returns))
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(appText.returns),
+                  ),
                 ],
-              )
+              ),
             ],
           );
-        });
-      });
+        },
+      );
+    },
+  );
 }

@@ -11,7 +11,7 @@ Signal<ModAddProcessedState> curModAddProcessedStatus = Signal<ModAddProcessedSt
 Signal<bool> modAddDropBoxShow = Signal(true);
 List<AddingMod> modAddingList = [];
 
-class ModAdd extends StatefulWidget {
+class ModAdd extends SignalStatefulWidget {
   const ModAdd({super.key, required this.isPopup});
 
   final bool isPopup;
@@ -35,41 +35,51 @@ class _ModAddState extends State<ModAdd> {
 
   @override
   Widget build(BuildContext context) {
-    if (curModAddDragDropStatus.value == ModAddDragDropState.fileInList) modAddDropBoxShow.value = true;
-    
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (curModAddDragDropStatus.value == ModAddDragDropState.fileInList) modAddDropBoxShow.value = true;
+    });
+
     return Row(
       spacing: 5,
       mainAxisSize: MainAxisSize.min,
       children: [
         Expanded(
-          flex: modAddDropBoxShow.watch(context) ? 1 : 0,
+          flex: modAddDropBoxShow.value ? 1 : 0,
           child: Column(
             spacing: 5,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Row(spacing: modAddDropBoxShow.watch(context) ? 1 : 0, children: [
-                  Visibility(visible: modAddDropBoxShow.watch(context), child: Expanded(child: DragDropBoxLayout(dragDropFileTypes: dragDropSupportedExts))),
-                  SizedBox(
+                child: Row(
+                  spacing: modAddDropBoxShow.value ? 1 : 0,
+                  children: [
+                    Visibility(
+                      visible: modAddDropBoxShow.value,
+                      child: Expanded(child: DragDropBoxLayout(dragDropFileTypes: dragDropSupportedExts)),
+                    ),
+                    SizedBox(
                       width: 15,
                       height: double.infinity,
                       child: CardOverlay(
                         paddingValue: 0,
                         child: IconButton(
-                            padding: EdgeInsets.zero,
-                            alignment: Alignment.centerLeft,
-                            visualDensity: VisualDensity.compact,
-                            onPressed: () {
-                              modAddDropBoxShow.value ? modAddDropBoxShow.value = false : modAddDropBoxShow.value = true;
-                            },
-                            icon: Icon(
-                              modAddDropBoxShow.watch(context) ? Icons.arrow_back_ios_new_rounded : Icons.arrow_forward_ios_rounded,
-                              size: 16,
-                            )),
-                      )),
-                ]),
+                          padding: EdgeInsets.zero,
+                          alignment: Alignment.centerLeft,
+                          visualDensity: VisualDensity.compact,
+                          onPressed: () {
+                            modAddDropBoxShow.value ? modAddDropBoxShow.value = false : modAddDropBoxShow.value = true;
+                          },
+                          icon: Icon(modAddDropBoxShow.value ? Icons.arrow_back_ios_new_rounded : Icons.arrow_forward_ios_rounded, size: 16),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              Visibility(visible: modAddDropBoxShow.watch(context), child: ModAddDragDropButtons(dragDropFileTypes: dragDropSupportedExts)),
+              Visibility(
+                visible: modAddDropBoxShow.value,
+                child: ModAddDragDropButtons(dragDropFileTypes: dragDropSupportedExts),
+              ),
             ],
           ),
         ),
@@ -82,7 +92,7 @@ class _ModAddState extends State<ModAdd> {
               ModAddProcessedButtons(showReturnButton: widget.isPopup),
             ],
           ),
-        )
+        ),
       ],
     );
   }

@@ -13,7 +13,7 @@ import 'package:signals/signals_flutter.dart';
 Signal<List<String>> selectedDisplayModSets = Signal(['All']);
 Signal<String> modSetRefreshSignal = Signal('');
 
-class MainModSetGrid extends StatefulWidget {
+class MainModSetGrid extends SignalStatefulWidget {
   const MainModSetGrid({super.key});
 
   @override
@@ -36,17 +36,15 @@ class _MainModSetGridState extends State<MainModSetGrid> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (selectedDisplaySortModSet.watch(context) != selectedDisplaySortModSet.peek() ||
-        modSetRefreshSignal.watch(context) != modSetRefreshSignal.peek() ||
-        mainGridStatus.watch(context) != mainGridStatus.peek()) {
+    if (selectedDisplaySortModSet.value != selectedDisplaySortModSet.peek() || modSetRefreshSignal.value != modSetRefreshSignal.peek() || mainGridStatus.value != mainGridStatus.peek()) {
       setState(() {});
     }
 
     List<ModSet> displayingModSets = [];
-    if (selectedDisplayModSets.watch(context).contains('All')) {
+    if (selectedDisplayModSets.value.contains('All')) {
       displayingModSets = masterModSetList;
     } else {
-      displayingModSets = masterModSetList.where((e) => selectedDisplayModSets.watch(context).contains(e.setName)).toList();
+      displayingModSets = masterModSetList.where((e) => selectedDisplayModSets.value.contains(e.setName)).toList();
     }
 
     // Sort
@@ -104,7 +102,7 @@ class _MainModSetGridState extends State<MainModSetGrid> {
                   height: 30,
                   child: OutlinedButton(
                     style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                       side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                     ),
                     onPressed: () async {
@@ -160,7 +158,7 @@ class _MainModSetGridState extends State<MainModSetGrid> {
                 child: IconButton.outlined(
                   visualDensity: VisualDensity.adaptivePlatformDensity,
                   style: ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                    backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                     side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                   ),
                   onPressed: () async {
@@ -183,16 +181,13 @@ class _MainModSetGridState extends State<MainModSetGrid> {
           ),
           Expanded(
             child: ScrollbarTheme(
-              data: ScrollbarThemeData(
-                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-              ),
+              data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value)),
               child: CustomScrollView(
                 controller: controller,
                 slivers: displayingModSets
                     .map(
                       (e) => SliverPadding(
-                        padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                        padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
                         sliver: ModSetGridLayout(modSet: e, scrollController: controller),
                       ),
                     )

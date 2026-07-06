@@ -9,7 +9,6 @@ import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v2_home/homepage_v2.dart';
 import 'package:pso2_mod_manager/v3_widgets/card_overlay.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
-import 'package:signals/signals_flutter.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:path/path.dart' as p;
 
@@ -17,22 +16,25 @@ Future<void> modConfigsRestorePopup(context, String latestBackupDate, List<File>
   File selectedFile = configBackups.first;
 
   return await showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(builder: (dialogContext, setState) {
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (dialogContext, setState) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: const BorderRadius.all(Radius.circular(5))),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: Theme.of(context).colorScheme.outline),
+              borderRadius: const BorderRadius.all(Radius.circular(5)),
+            ),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.value),
             insetPadding: const EdgeInsets.all(5),
             titlePadding: const EdgeInsets.only(top: 5),
-            title: Column(children: [
-              Text(
-                appText.modConfigsRestore,
-                style: TextStyle(color: Theme.of(context).colorScheme.primary),
-              ),
-              const HoriDivider()
-            ]),
+            title: Column(
+              children: [
+                Text(appText.modConfigsRestore, style: TextStyle(color: Theme.of(context).colorScheme.primary)),
+                const HoriDivider(),
+              ],
+            ),
             contentPadding: const EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 10),
             content: SizedBox(
               width: 450,
@@ -47,22 +49,19 @@ Future<void> modConfigsRestorePopup(context, String latestBackupDate, List<File>
                     child: CardOverlay(
                       paddingValue: 5,
                       child: SuperListView.builder(
-                          shrinkWrap: true,
-                          itemCount: configBackups.length,
-                          itemBuilder: (context, index) => RadioGroup(
-                              groupValue: selectedFile,
-                              onChanged: (value) {
-                                selectedFile = configBackups[index];
-                                setState(
-                                  () {},
-                                );
-                              },
-                              child: RadioListTile(
-                                value: configBackups[index],
-                                title: Text(p.basenameWithoutExtension(configBackups[index].path)),
-                              ))),
+                        shrinkWrap: true,
+                        itemCount: configBackups.length,
+                        itemBuilder: (context, index) => RadioGroup(
+                          groupValue: selectedFile,
+                          onChanged: (value) {
+                            selectedFile = configBackups[index];
+                            setState(() {});
+                          },
+                          child: RadioListTile(value: configBackups[index], title: Text(p.basenameWithoutExtension(configBackups[index].path))),
+                        ),
+                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -74,23 +73,27 @@ Future<void> modConfigsRestorePopup(context, String latestBackupDate, List<File>
                 overflowSpacing: 5,
                 children: [
                   OutlinedButton(
-                      onPressed: () async {
-                        Navigator.of(context).pop();
-                        await extractFileToDisk(selectedFile.path, mainDataDirPath);
-                        selectedItemV2.value = null;
-                        pageIndex = 6;
-                        curPage.value = appPages[pageIndex];
-                      },
-                      child: Text(appText.restore)),
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      await extractFileToDisk(selectedFile.path, mainDataDirPath);
+                      selectedItemV2.value = null;
+                      pageIndex = 6;
+                      curPage.value = appPages[pageIndex];
+                    },
+                    child: Text(appText.restore),
+                  ),
                   OutlinedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(appText.returns))
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(appText.returns),
+                  ),
                 ],
-              )
+              ),
             ],
           );
-        });
-      });
+        },
+      );
+    },
+  );
 }

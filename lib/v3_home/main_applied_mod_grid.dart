@@ -22,7 +22,7 @@ import 'package:searchfield/searchfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals/signals_flutter.dart';
 
-class MainAppliedModGrid extends StatefulWidget {
+class MainAppliedModGrid extends SignalStatefulWidget {
   const MainAppliedModGrid({super.key});
 
   @override
@@ -45,7 +45,7 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
   @override
   Widget build(BuildContext context) {
     // Refresh
-    if (modApplyStatus.watch(context) != modApplyStatus.peek() || mainGridStatus.watch(context) != mainGridStatus.peek()) {
+    if (modApplyStatus.value != modApplyStatus.peek() || mainGridStatus.value != mainGridStatus.peek()) {
       setState(() {});
     }
     int numOfAppliedMods = 0;
@@ -139,7 +139,7 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                         itemHeight: 90,
                         searchInputDecoration: SearchInputDecoration(
                           filled: true,
-                          fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context)),
+                          fillColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value),
                           isDense: true,
                           contentPadding: const EdgeInsets.only(left: 20, right: 5, bottom: 15),
                           cursorHeight: 15,
@@ -265,11 +265,11 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                   height: 30,
                   child: OutlinedButton(
                     style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                       side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                     ),
-                    onPressed: numOfAppliedMods > 0 && !saveRestoreAppliedModsActive.watch(context) ? () {} : null,
-                    onLongPress: numOfAppliedMods > 0 && !saveRestoreAppliedModsActive.watch(context)
+                    onPressed: numOfAppliedMods > 0 && !saveRestoreAppliedModsActive.value ? () {} : null,
+                    onLongPress: numOfAppliedMods > 0 && !saveRestoreAppliedModsActive.value
                         ? () async {
                             List<Item> appliedItems = await appliedModsFetch();
                             for (var item in appliedItems) {
@@ -283,7 +283,8 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                           }
                         : null,
                     child: AutoSizeText(
-                      appText.dText(numOfAppliedMods > 1 ? appText.holdToRestoreNumAppliedMods : appText.holdToRestoreNumAppliedMod, numOfAppliedMods.toString()),
+                      // appText.dText(numOfAppliedMods > 1 ? appText.holdToRestoreNumAppliedMods : appText.holdToRestoreNumAppliedMod, numOfAppliedMods.toString()),
+                      appText.holdToRemoveAllMods,
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -334,7 +335,7 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                   child: IconButton.outlined(
                     visualDensity: VisualDensity.adaptivePlatformDensity,
                     style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                       side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                     ),
                     onPressed: () async {
@@ -365,7 +366,7 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                   child: IconButton.outlined(
                     visualDensity: VisualDensity.adaptivePlatformDensity,
                     style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                       side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                     ),
                     onPressed: () => modExportSequence(context, ExportType.applied, null, null, null, null),
@@ -379,7 +380,7 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
                 child: IconButton.outlined(
                   visualDensity: VisualDensity.adaptivePlatformDensity,
                   style: ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.watch(context))),
+                    backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor.withAlpha(uiBackgroundColorAlpha.value)),
                     side: WidgetStatePropertyAll(BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5)),
                   ),
                   onPressed: () async {
@@ -403,15 +404,15 @@ class _MainAppliedModGridState extends State<MainAppliedModGrid> {
           Expanded(
             child: ScrollbarTheme(
               data: ScrollbarThemeData(
-                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
+                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
+                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value),
               ),
               child: CustomScrollView(
                 controller: controller,
                 slivers: displayingCategories
                     .map(
                       (e) => SliverPadding(
-                        padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+                        padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
                         sliver: AppliedModGridLayout(category: e, searchString: searchTextController.value.text, scrollController: controller),
                       ),
                     )

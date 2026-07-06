@@ -21,7 +21,7 @@ import 'package:io/io.dart' as io;
 
 Signal<String> modAddProcessingStatus = Signal<String>('');
 
-class ModAddGrid extends StatefulWidget {
+class ModAddGrid extends SignalStatefulWidget {
   const ModAddGrid({super.key});
 
   @override
@@ -31,19 +31,19 @@ class ModAddGrid extends StatefulWidget {
 class _ModAddGridState extends State<ModAddGrid> {
   @override
   Widget build(BuildContext context) {
-    if (curModAddProcessedStatus.value == ModAddProcessedState.waiting) modAddDropBoxShow.value = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (curModAddProcessedStatus.value == ModAddProcessedState.waiting) modAddDropBoxShow.value = true;
+    });
+
     return Stack(
       alignment: AlignmentDirectional.center,
       children: [
         Visibility(
-          visible: curModAddProcessedStatus.watch(context) != ModAddProcessedState.waiting && curModAddProcessedStatus.watch(context) != ModAddProcessedState.addingToMasterList,
+          visible: curModAddProcessedStatus.value != ModAddProcessedState.waiting && curModAddProcessedStatus.value != ModAddProcessedState.addingToMasterList,
           child: Padding(
-            padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.watch(context) ? 15 : 0),
+            padding: EdgeInsets.only(right: scrollbarsAlwaysVisible.value ? 15 : 0),
             child: ScrollbarTheme(
-              data: ScrollbarThemeData(
-                trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-                thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.watch(context)),
-              ),
+              data: ScrollbarThemeData(trackVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value), thumbVisibility: WidgetStatePropertyAll(scrollbarsAlwaysVisible.value)),
               child: ResponsiveGridList(
                 minItemWidth: 375,
                 verticalGridMargin: 0,
@@ -187,9 +187,9 @@ class _ModAddGridState extends State<ModAddGrid> {
         ),
         Visibility(
           visible:
-              curModAddProcessedStatus.watch(context) == ModAddProcessedState.waiting ||
-              curModAddProcessedStatus.watch(context) == ModAddProcessedState.loadingData ||
-              curModAddProcessedStatus.watch(context) == ModAddProcessedState.addingToMasterList,
+              curModAddProcessedStatus.value == ModAddProcessedState.waiting ||
+              curModAddProcessedStatus.value == ModAddProcessedState.loadingData ||
+              curModAddProcessedStatus.value == ModAddProcessedState.addingToMasterList,
           child: Center(
             child: Column(
               spacing: 10,
@@ -205,15 +205,13 @@ class _ModAddGridState extends State<ModAddGrid> {
                       mainAxisSize: MainAxisSize.min,
                       spacing: 10,
                       children: [
-                        if (curModAddProcessedStatus.watch(context) == ModAddProcessedState.waiting) LoadingAnimationWidget.staggeredDotsWave(color: Theme.of(context).colorScheme.primary, size: 100),
-                        if (curModAddProcessedStatus.watch(context) == ModAddProcessedState.loadingData)
-                          LoadingAnimationWidget.progressiveDots(color: Theme.of(context).colorScheme.primary, size: 100),
-                        if (curModAddProcessedStatus.watch(context) == ModAddProcessedState.addingToMasterList)
-                          LoadingAnimationWidget.waveDots(color: Theme.of(context).colorScheme.primary, size: 100),
+                        if (curModAddProcessedStatus.value == ModAddProcessedState.waiting) LoadingAnimationWidget.staggeredDotsWave(color: Theme.of(context).colorScheme.primary, size: 100),
+                        if (curModAddProcessedStatus.value == ModAddProcessedState.loadingData) LoadingAnimationWidget.progressiveDots(color: Theme.of(context).colorScheme.primary, size: 100),
+                        if (curModAddProcessedStatus.value == ModAddProcessedState.addingToMasterList) LoadingAnimationWidget.waveDots(color: Theme.of(context).colorScheme.primary, size: 100),
                         Text(
-                          curModAddProcessedStatus.watch(context) == ModAddProcessedState.waiting
+                          curModAddProcessedStatus.value == ModAddProcessedState.waiting
                               ? appText.waitingForItems
-                              : curModAddProcessedStatus.watch(context) == ModAddProcessedState.addingToMasterList
+                              : curModAddProcessedStatus.value == ModAddProcessedState.addingToMasterList
                               ? appText.addingMods
                               : appText.processingItems,
                           style: Theme.of(context).textTheme.bodyLarge,
@@ -224,9 +222,9 @@ class _ModAddGridState extends State<ModAddGrid> {
                 ),
                 Visibility(
                   visible:
-                      modAddProcessingStatus.watch(context).isNotEmpty &&
-                      (curModAddProcessedStatus.watch(context) == ModAddProcessedState.loadingData || curModAddProcessedStatus.watch(context) == ModAddProcessedState.addingToMasterList),
-                  child: CardOverlay(paddingValue: 15, child: Text(modAddProcessingStatus.watch(context), textAlign: TextAlign.center)),
+                      modAddProcessingStatus.value.isNotEmpty &&
+                      (curModAddProcessedStatus.value == ModAddProcessedState.loadingData || curModAddProcessedStatus.value == ModAddProcessedState.addingToMasterList),
+                  child: CardOverlay(paddingValue: 15, child: Text(modAddProcessingStatus.value, textAlign: TextAlign.center)),
                 ),
               ],
             ),

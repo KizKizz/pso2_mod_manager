@@ -12,7 +12,6 @@ import 'package:pso2_mod_manager/v3_widgets/generic_item_icon_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/horizintal_divider.dart';
 import 'package:pso2_mod_manager/v3_widgets/info_box.dart';
 import 'package:pso2_mod_manager/v3_widgets/submod_preview_box.dart';
-import 'package:signals/signals_flutter.dart';
 
 Future<(bool, List<ModFile>)> duplicateAppliedModPopup(context, Item dupItem, Mod dupMod, SubMod dupSubmod, Item applyingItem, SubMod applyingSubmod, List<ModFile> applyingModFiles) async {
   return await showDialog(
@@ -24,7 +23,7 @@ Future<(bool, List<ModFile>)> duplicateAppliedModPopup(context, Item dupItem, Mo
           conflictingIceFileNames.retainWhere((e) => dupSubmod.getModFileNames().contains(e));
 
           return AlertDialog(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.value),
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
             insetPadding: const EdgeInsets.all(5),
             titlePadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
@@ -185,7 +184,7 @@ Future<bool> duplicateAqmInjectedFilesPopup(context, AqmInjectedItem aqmInjected
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (dialogContext, setState) {
           return AlertDialog(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.watch(context)),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.value),
             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5), borderRadius: const BorderRadius.all(Radius.circular(5))),
             insetPadding: const EdgeInsets.all(5),
             titlePadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),

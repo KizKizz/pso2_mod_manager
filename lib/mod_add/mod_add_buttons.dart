@@ -17,7 +17,7 @@ import 'package:pso2_mod_manager/v3_home/mod_add.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:path/path.dart' as p;
 
-class ModAddDragDropButtons extends StatefulWidget {
+class ModAddDragDropButtons extends SignalStatefulWidget {
   const ModAddDragDropButtons({super.key, required this.dragDropFileTypes});
 
   final List<String> dragDropFileTypes;
@@ -40,7 +40,7 @@ class _ModAddDragDropButtonsState extends State<ModAddDragDropButtons> {
               onPressed: () async {
                 List<XFile> selectedFiles = [];
                 if (useAltFilePicker) {
-                  FilePickerResult? result = await FilePicker.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['7z', 'zip', 'rar', 'pmm']);
+                  FilePickerResult? result = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['7z', 'zip', 'rar', 'pmm']);
                   if (result != null) selectedFiles = result.xFiles;
                 } else {
                   XTypeGroup archiveTypeGroup = XTypeGroup(label: appText.archives, extensions: widget.dragDropFileTypes);
@@ -107,7 +107,7 @@ class _ModAddDragDropButtonsState extends State<ModAddDragDropButtons> {
                     ),
                   ),
                 ),
-                onPressed: curModAddDragDropStatus.watch(context) == ModAddDragDropState.fileInList && curModAddDragDropStatus.watch(context) != ModAddDragDropState.unpackingFiles
+                onPressed: curModAddDragDropStatus.value == ModAddDragDropState.fileInList && curModAddDragDropStatus.value != ModAddDragDropState.unpackingFiles
                     ? () async {
                         curModAddDragDropStatus.value = ModAddDragDropState.unpackingFiles;
                         curModAddProcessedStatus.value = ModAddProcessedState.loadingData;
@@ -165,7 +165,7 @@ class _ModAddDragDropButtonsState extends State<ModAddDragDropButtons> {
   }
 }
 
-class ModAddProcessedButtons extends StatefulWidget {
+class ModAddProcessedButtons extends SignalStatefulWidget {
   const ModAddProcessedButtons({super.key, required this.showReturnButton});
 
   final bool showReturnButton;
@@ -183,7 +183,7 @@ class _ModAddProcessedButtonsState extends State<ModAddProcessedButtons> {
       children: [
         Expanded(
           child: ElevatedButton.icon(
-            onPressed: curModAddProcessedStatus.watch(context) == ModAddProcessedState.dataInList
+            onPressed: curModAddProcessedStatus.value == ModAddProcessedState.dataInList
                 ? () async {
                     if (Directory(modAddTempDirPath).existsSync()) {
                       await Directory(modAddTempDirPath).delete(recursive: true);
@@ -198,7 +198,7 @@ class _ModAddProcessedButtonsState extends State<ModAddProcessedButtons> {
         ),
         Expanded(
           child: ElevatedButton.icon(
-            onPressed: curModAddProcessedStatus.watch(context) == ModAddProcessedState.dataInList
+            onPressed: curModAddProcessedStatus.value == ModAddProcessedState.dataInList
                 ? () async {
                     modSetsToAdd = await modAddToSetPopup(context, modSetsToAdd);
                     setState(() {});
@@ -220,7 +220,7 @@ class _ModAddProcessedButtonsState extends State<ModAddProcessedButtons> {
                 ),
               ),
             ),
-            onPressed: curModAddProcessedStatus.watch(context) == ModAddProcessedState.dataInList
+            onPressed: curModAddProcessedStatus.value == ModAddProcessedState.dataInList
                 ? () async {
                     curModAddProcessedStatus.value = ModAddProcessedState.addingToMasterList;
                     Future.delayed(const Duration(milliseconds: 100));
