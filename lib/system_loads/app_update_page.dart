@@ -94,141 +94,143 @@ class _AppUpdatePageState extends State<AppUpdatePage> {
               return Center(
                 child: CardOverlay(
                   paddingValue: 15,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(appText.newAppVersionFound, style: Theme.of(context).textTheme.headlineSmall),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5),
-                        child: Text('v$remoteVersion', style: Theme.of(context).textTheme.titleSmall),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20, bottom: 5),
-                        child: Text('${appText.patchNotes}:', style: Theme.of(context).textTheme.titleMedium),
-                      ),
-                      SingleChildScrollView(child: Text(remotePatchNotes)),
-
-                      Visibility(
-                        visible: downloadStatus.value.isEmpty,
-                        child: Column(
-                          children: [
-                            const SizedBox(width: 150, child: Divider(height: 30, thickness: 2)),
-                            Wrap(
-                              spacing: 10,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    await appUpdateDownload();
-                                  },
-                                  child: Text(appText.update),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    final prefs = await SharedPreferences.getInstance();
-                                    appVersionUpdateSkip = remoteVersion;
-                                    prefs.setString('appVersionUpdateSkip', appVersionUpdateSkip);
-                                  },
-                                  child: Text(appText.skip),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    pageIndex++;
-                                    curPage.value = appPages[pageIndex];
-                                  },
-                                  child: Text(appText.later),
-                                ),
-                              ],
-                            ),
-                          ],
+                  child: SignalBuilder(
+                    builder: (context) => Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(appText.newAppVersionFound, style: Theme.of(context).textTheme.headlineSmall),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5),
+                          child: Text('v$remoteVersion', style: Theme.of(context).textTheme.titleSmall),
                         ),
-                      ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20, bottom: 5),
+                          child: Text('${appText.patchNotes}:', style: Theme.of(context).textTheme.titleMedium),
+                        ),
+                        SingleChildScrollView(child: Text(remotePatchNotes)),
 
-                      // Downloading Panel
-                      Visibility(
-                        visible: downloadStatus.value.isNotEmpty,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 15),
+                        Visibility(
+                          visible: downloadStatus.value.isEmpty,
                           child: Column(
                             children: [
-                              SizedBox(width: 250, child: LinearProgressIndicator(value: downloadProgress.value)),
-                              Text(downloadStatus.value),
                               const SizedBox(width: 150, child: Divider(height: 30, thickness: 2)),
-                              Row(
-                                spacing: 5,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
+                              Wrap(
+                                spacing: 10,
                                 children: [
-                                  Visibility(
-                                    visible:
-                                        downloadStatus.value != appText.updaterNotFound &&
-                                        downloadStatus.value != appText.unableToExtractUpdateData &&
-                                        downloadStatus.value != appText.unableToUpdate,
-                                    child: ElevatedButton(
-                                      onPressed: downloadStatus.value == appText.extractCompletedReadyToPatch
-                                          ? () {
-                                              if (downloadStatus.value == appText.extractCompletedReadyToPatch) {
-                                                Process.run(updater!.path, ['PSO2NGSModManager', remoteVersion, Directory.current.path]);
-                                              }
-                                            }
-                                          : null,
-                                      child: Text(appText.patch),
-                                    ),
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      await appUpdateDownload();
+                                    },
+                                    child: Text(appText.update),
                                   ),
-                                  Visibility(
-                                    visible:
-                                        downloadStatus.value == appText.updaterNotFound ||
-                                        downloadStatus.value == appText.unableToExtractUpdateData ||
-                                        downloadStatus.value == appText.unableToUpdate,
-                                    child: ElevatedButton(
-                                      onPressed: () async {
-                                        await appUpdateDownload();
-                                      },
-                                      child: Text(appText.tryAgain),
-                                    ),
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      final prefs = await SharedPreferences.getInstance();
+                                      appVersionUpdateSkip = remoteVersion;
+                                      prefs.setString('appVersionUpdateSkip', appVersionUpdateSkip);
+                                    },
+                                    child: Text(appText.skip),
                                   ),
-                                  Visibility(
-                                    visible:
-                                        downloadStatus.value == appText.updaterNotFound ||
-                                        downloadStatus.value == appText.unableToExtractUpdateData ||
-                                        downloadStatus.value == appText.unableToUpdate,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        pageIndex++;
-                                        curPage.value = appPages[pageIndex];
-                                      },
-                                      child: Text(appText.tryAgainLater),
-                                    ),
-                                  ),
-                                  Visibility(
-                                    visible:
-                                        downloadStatus.value == appText.updaterNotFound ||
-                                        downloadStatus.value == appText.unableToExtractUpdateData ||
-                                        downloadStatus.value == appText.unableToUpdate,
-                                    child: ElevatedButton(
-                                      onPressed: () async {
-                                        await launchUrlString('https://github.com/KizKizz/pso2_mod_manager/releases');
-                                      },
-                                      child: Text(appText.manualDownload),
-                                    ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      pageIndex++;
+                                      curPage.value = appPages[pageIndex];
+                                    },
+                                    child: Text(appText.later),
                                   ),
                                 ],
                               ),
-                              // ElevatedButton(
-                              //     onPressed: patchLauncher != null && downloadStatus.value == appText.extractCompletedReadyToPatch
-                              //         ? () {
-                              //             // if (patchLauncher != null && patchLauncher!.existsSync()) {
-                              //             //   Process.run('"${patchLauncher!.path}"', []);
-                              //             // } else {
-                              //             //   curPage.value = const DataUpdatePage();
-                              //             // }
-                              //           }
-                              //         : null,
-                              //     child: Text(patchLauncher != null && downloadStatus.value == appText.extractCompletedReadyToPatch ? appText.patch : appText.tryAgainLater)),
                             ],
                           ),
                         ),
-                      ),
-                    ],
+
+                        // Downloading Panel
+                        Visibility(
+                          visible: downloadStatus.value.isNotEmpty,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 15),
+                            child: Column(
+                              children: [
+                                SizedBox(width: 250, child: LinearProgressIndicator(value: downloadProgress.value)),
+                                Text(downloadStatus.value),
+                                const SizedBox(width: 150, child: Divider(height: 30, thickness: 2)),
+                                Row(
+                                  spacing: 5,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Visibility(
+                                      visible:
+                                          downloadStatus.value != appText.updaterNotFound &&
+                                          downloadStatus.value != appText.unableToExtractUpdateData &&
+                                          downloadStatus.value != appText.unableToUpdate,
+                                      child: ElevatedButton(
+                                        onPressed: downloadStatus.value == appText.extractCompletedReadyToPatch
+                                            ? () {
+                                                if (downloadStatus.value == appText.extractCompletedReadyToPatch) {
+                                                  Process.run(updater!.path, ['PSO2NGSModManager', remoteVersion, Directory.current.path]);
+                                                }
+                                              }
+                                            : null,
+                                        child: Text(appText.patch),
+                                      ),
+                                    ),
+                                    Visibility(
+                                      visible:
+                                          downloadStatus.value == appText.updaterNotFound ||
+                                          downloadStatus.value == appText.unableToExtractUpdateData ||
+                                          downloadStatus.value == appText.unableToUpdate,
+                                      child: ElevatedButton(
+                                        onPressed: () async {
+                                          await appUpdateDownload();
+                                        },
+                                        child: Text(appText.tryAgain),
+                                      ),
+                                    ),
+                                    Visibility(
+                                      visible:
+                                          downloadStatus.value == appText.updaterNotFound ||
+                                          downloadStatus.value == appText.unableToExtractUpdateData ||
+                                          downloadStatus.value == appText.unableToUpdate,
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          pageIndex++;
+                                          curPage.value = appPages[pageIndex];
+                                        },
+                                        child: Text(appText.tryAgainLater),
+                                      ),
+                                    ),
+                                    Visibility(
+                                      visible:
+                                          downloadStatus.value == appText.updaterNotFound ||
+                                          downloadStatus.value == appText.unableToExtractUpdateData ||
+                                          downloadStatus.value == appText.unableToUpdate,
+                                      child: ElevatedButton(
+                                        onPressed: () async {
+                                          await launchUrlString('https://github.com/KizKizz/pso2_mod_manager/releases');
+                                        },
+                                        child: Text(appText.manualDownload),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                // ElevatedButton(
+                                //     onPressed: patchLauncher != null && downloadStatus.value == appText.extractCompletedReadyToPatch
+                                //         ? () {
+                                //             // if (patchLauncher != null && patchLauncher!.existsSync()) {
+                                //             //   Process.run('"${patchLauncher!.path}"', []);
+                                //             // } else {
+                                //             //   curPage.value = const DataUpdatePage();
+                                //             // }
+                                //           }
+                                //         : null,
+                                //     child: Text(patchLauncher != null && downloadStatus.value == appText.extractCompletedReadyToPatch ? appText.patch : appText.tryAgainLater)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );

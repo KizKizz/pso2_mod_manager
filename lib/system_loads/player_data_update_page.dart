@@ -110,97 +110,107 @@ class _DataUpdatePageState extends State<DataUpdatePage> {
               return Center(
                 child: CardOverlay(
                   paddingValue: 15,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(appText.newItemDataVersionFound, style: Theme.of(context).textTheme.headlineSmall),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5),
-                        child: Text('v$remoteVersion', style: Theme.of(context).textTheme.titleSmall),
-                      ),
-                      Text(desc),
-                      Visibility(
-                        visible: downloadStatus.value.isEmpty || downloadStatus.value == TaskStatus.failed.name || downloadStatus.value == TaskStatus.canceled.name,
-                        child: Column(
-                          children: [
-                            const SizedBox(width: 150, child: Divider(height: 30, thickness: 2)),
-                            Wrap(
-                              spacing: 10,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    task = DownloadTask(
-                                      url: 'https://raw.githubusercontent.com/KizKizz/pso2ngs_file_downloader/main/json/playerItemData.json',
-                                      filename: 'playerItemData.json',
-                                      baseDirectory: BaseDirectory.root,
-                                      directory: '${Directory.current.path}${p.separator}itemData',
-                                      updates: Updates.statusAndProgress,
-                                      retries: 2,
-                                      allowPause: true,
-                                    );
-                                    final result = await FileDownloader().download(
-                                      task,
-                                      onProgress: (progress) => downloadProgress.value = progress,
-                                      onStatus: (status) => downloadStatus.value = status.name,
-                                    );
-
-                                    if (result.status == TaskStatus.complete) {
-                                      const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-                                      Map<String, dynamic> jsonData = {'version': remoteVersion};
-                                      itemDataLocalVersionFile.writeAsStringSync(encoder.convert(jsonData));
-                                    }
-                                  },
-                                  child: Text(downloadStatus.value == TaskStatus.failed.name ? appText.tryAgain : appText.update),
-                                ),
-                                ElevatedButton(onPressed: () {}, child: Text(appText.later)),
-                              ],
-                            ),
-                          ],
+                  child: SignalBuilder(
+                    builder: (context) => Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(appText.newItemDataVersionFound, style: Theme.of(context).textTheme.headlineSmall),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5),
+                          child: Text('v$remoteVersion', style: Theme.of(context).textTheme.titleSmall),
                         ),
-                      ),
-
-                      // Downloading Panel
-                      Visibility(
-                        visible: downloadStatus.value.isNotEmpty && downloadStatus.value != TaskStatus.failed.name && downloadStatus.value != TaskStatus.canceled.name,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 15),
+                        Text(desc),
+                        Visibility(
+                          visible: downloadStatus.value.isEmpty || downloadStatus.value == TaskStatus.failed.name || downloadStatus.value == TaskStatus.canceled.name,
                           child: Column(
                             children: [
-                              SizedBox(width: 250, child: LinearProgressIndicator(value: downloadProgress.value)),
-                              Text(downloadStatus.value),
-                              Visibility(
-                                visible: downloadStatus.value != TaskStatus.complete.name,
-                                child: const SizedBox(width: 150, child: Divider(height: 30, thickness: 2)),
-                              ),
-                              Visibility(
-                                visible: downloadStatus.value != TaskStatus.complete.name,
-                                child: Wrap(
-                                  spacing: 10,
-                                  children: [
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        if (downloadStatus.value == TaskStatus.paused.name) {
-                                          await FileDownloader().resume(task);
-                                        } else {
-                                          await FileDownloader().pause(task);
-                                        }
-                                      },
-                                      child: Text(downloadStatus.value == TaskStatus.paused.name ? appText.resume : appText.pause),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        await FileDownloader().cancelTaskWithId(task.taskId);
-                                      },
-                                      child: Text(appText.cancel),
-                                    ),
-                                  ],
-                                ),
+                              const SizedBox(width: 150, child: Divider(height: 30, thickness: 2)),
+                              Wrap(
+                                spacing: 10,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      task = DownloadTask(
+                                        url: 'https://raw.githubusercontent.com/KizKizz/pso2ngs_file_downloader/main/json/playerItemData.json',
+                                        filename: 'playerItemData.json',
+                                        baseDirectory: BaseDirectory.root,
+                                        directory: '${Directory.current.path}${p.separator}itemData',
+                                        updates: Updates.statusAndProgress,
+                                        retries: 2,
+                                        allowPause: true,
+                                      );
+                                      final result = await FileDownloader().download(
+                                        task,
+                                        onProgress: (progress) => downloadProgress.value = progress,
+                                        onStatus: (status) => downloadStatus.value = status.name,
+                                      );
+
+                                      if (result.status == TaskStatus.complete) {
+                                        const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+                                        Map<String, dynamic> jsonData = {'version': remoteVersion};
+                                        itemDataLocalVersionFile.writeAsStringSync(encoder.convert(jsonData));
+                                        pageIndex++;
+                                        curPage.value = appPages[pageIndex];
+                                      }
+                                    },
+                                    child: Text(downloadStatus.value == TaskStatus.failed.name ? appText.tryAgain : appText.update),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      pageIndex++;
+                                      curPage.value = appPages[pageIndex];
+                                    },
+                                    child: Text(appText.later),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
                         ),
-                      ),
-                    ],
+
+                        // Downloading Panel
+                        Visibility(
+                          visible: downloadStatus.value.isNotEmpty && downloadStatus.value != TaskStatus.failed.name && downloadStatus.value != TaskStatus.canceled.name,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 15),
+                            child: Column(
+                              children: [
+                                SizedBox(width: 250, child: LinearProgressIndicator(value: downloadProgress.value)),
+                                Text(downloadStatus.value),
+                                Visibility(
+                                  visible: downloadStatus.value != TaskStatus.complete.name,
+                                  child: const SizedBox(width: 150, child: Divider(height: 30, thickness: 2)),
+                                ),
+                                Visibility(
+                                  visible: downloadStatus.value != TaskStatus.complete.name,
+                                  child: Wrap(
+                                    spacing: 10,
+                                    children: [
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          if (downloadStatus.value == TaskStatus.paused.name) {
+                                            await FileDownloader().resume(task);
+                                          } else {
+                                            await FileDownloader().pause(task);
+                                          }
+                                        },
+                                        child: Text(downloadStatus.value == TaskStatus.paused.name ? appText.resume : appText.pause),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          await FileDownloader().cancelTaskWithId(task.taskId);
+                                        },
+                                        child: Text(appText.cancel),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
