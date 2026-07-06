@@ -124,7 +124,7 @@ class _CategoryItemLayoutState extends State<CategoryItemLayout> {
   }
 }
 
-class ItemCardLayout extends StatefulWidget {
+class ItemCardLayout extends SignalStatefulWidget {
   const ItemCardLayout({super.key, required this.item, required this.onSelected});
 
   final Item item;

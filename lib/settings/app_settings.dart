@@ -240,6 +240,7 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             final prefs = await SharedPreferences.getInstance();
                             targetIndex == 0 ? scrollbarsAlwaysVisible.value = true : scrollbarsAlwaysVisible.value = false;
                             prefs.setBool('scrollbarsAlwaysVisible', scrollbarsAlwaysVisible.value);
+                            settingChangeStatus.value = 'scrollbar visible ${scrollbarsAlwaysVisible.value}';
                           },
                         ),
                         // Hide empty cate

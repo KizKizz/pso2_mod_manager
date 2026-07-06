@@ -5,7 +5,7 @@ import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:signals/signals_flutter.dart';
 
-class GenericItemIconBox extends StatefulWidget {
+class GenericItemIconBox extends SignalStatefulWidget {
   const GenericItemIconBox({super.key, required this.iconImagePaths, required this.boxSize, required this.isNetwork});
 
   final List<String> iconImagePaths;
