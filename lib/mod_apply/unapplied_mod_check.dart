@@ -9,6 +9,7 @@ import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/system_loads/app_applied_mods_check_page.dart';
 
 Future<List<Item>> unappliedItemsGet() async {
+  List<Item> unappliedItemList = [];
   for (var type in masterModList) {
     if (type.getNumOfAppliedCates() > 0) {
       Iterable<Category> categories = type.categories.where((e) => e.getNumOfAppliedItems() > 0);
@@ -27,8 +28,8 @@ Future<List<Item>> unappliedItemsGet() async {
                     modFile.ogMd5s.clear();
                     modFile.ogMd5s.add(await File(path).getMd5Hash());
                     if (modFile.md5.isEmpty) modFile.md5 = await File(modFile.location).getMd5Hash();
-                    if (!masterUnappliedItemList.contains(item) && modFile.ogMd5s.first != modFile.md5) {
-                      masterUnappliedItemList.add(item);
+                    if (!unappliedItemList.contains(item) && modFile.ogMd5s.first != modFile.md5) {
+                      unappliedItemList.add(item);
                     }
                   }
                 }
@@ -40,5 +41,5 @@ Future<List<Item>> unappliedItemsGet() async {
     }
   }
 
-  return masterUnappliedItemList;
+  return unappliedItemList;
 }

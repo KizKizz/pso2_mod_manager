@@ -4,8 +4,19 @@ import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:path/path.dart' as p;
 
 class AddingMod {
-  AddingMod(this.modDir, this.modAddingState, this.submods, this.submodNames, this.submodAddingStates, this.associatedItems, this.aItemAddingStates, this.sameItemIceNames, this.previewImages,
-      this.previewVideos, this.addedDate);
+  AddingMod(
+    this.modDir,
+    this.modAddingState,
+    this.submods,
+    this.submodNames,
+    this.submodAddingStates,
+    this.associatedItems,
+    this.aItemAddingStates,
+    this.sameItemIceNames,
+    this.previewImages,
+    this.previewVideos,
+    this.addedDate,
+  );
 
   Directory modDir;
   bool modAddingState;
@@ -43,6 +54,7 @@ enum ModAddProcessedState {
 extension RenameDuplicate on String {
   String renameDuplicate() {
     String curPath = this;
+    // debugPrint(curPath);
     String curName = p.basename(curPath);
     List<String> affixes = curName.split('_');
     if (affixes.isNotEmpty && int.tryParse(affixes.last) != null) {

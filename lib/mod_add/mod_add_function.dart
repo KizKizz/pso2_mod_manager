@@ -249,8 +249,10 @@ Future<List<AddingMod>> modAddSort() async {
       String existingModDirPath = newItemDirDestPath + p.separator + p.basename(newModDir.path);
       for (var submodDir in newItemSubmodDirs) {
         String existingSubmodDirPath = existingModDirPath + p.separator + p.basename(submodDir.path);
-        while (Directory(existingSubmodDirPath).existsSync() && p.basename(submodDir.path) == p.basename(existingSubmodDirPath)) {
-          String tempSubmodDirPath = p.dirname(submodDir.path) + p.separator + p.basename(existingSubmodDirPath);
+        // while (Directory(existingSubmodDirPath).existsSync() && p.basename(submodDir.path) == p.basename(existingSubmodDirPath)) {
+        while (Directory(existingSubmodDirPath).existsSync()) {
+          String tempSubmodDirPath = existingModDirPath + p.separator + p.basename(existingSubmodDirPath);
+          // debugPrint(tempSubmodDirPath);
           if (Directory(tempSubmodDirPath).existsSync()) {
             String newSubmodDirPath = tempSubmodDirPath.renameDuplicate();
             existingSubmodDirPath = p.dirname(existingSubmodDirPath) + p.separator + p.basename(newSubmodDirPath);
@@ -366,7 +368,9 @@ Future<List<Item>> modAddToMasterList(bool addingToSet, List<ModSet> modSets) as
               if (addingToSet) {
                 for (var set in modSets) {
                   if (set.setItems.indexWhere((e) => e.location == newItem.location) == -1) set.addItem(newItem);
+                  newItem.setNames.add(set.setName);
                 }
+                newItem.isSet = true;
               }
               cateInList.items.add(newItem);
             } else {
@@ -398,12 +402,14 @@ Future<List<Item>> modAddToMasterList(bool addingToSet, List<ModSet> modSets) as
               }
               itemInList.setLatestCreationDate();
               itemInList.isNew = true;
-              addedItems.add(itemInList);
               if (addingToSet) {
                 for (var set in modSets) {
                   if (set.setItems.indexWhere((e) => e.location == itemInList.location) == -1) set.addItem(itemInList);
+                  if (!itemInList.setNames.contains(set.setName)) itemInList.setNames.add(set.setName);
                 }
+                itemInList.isSet = true;
               }
+              addedItems.add(itemInList);
             }
             break;
           } else if (cateType.groupName == defaultCategoryTypes[2]) {
@@ -415,7 +421,9 @@ Future<List<Item>> modAddToMasterList(bool addingToSet, List<ModSet> modSets) as
               if (addingToSet) {
                 for (var set in modSets) {
                   if (set.setItems.indexWhere((e) => e.location == newItem.location) == -1) set.addItem(newItem);
+                  newItem.setNames.add(set.setName);
                 }
+                newItem.isSet = true;
               }
               newCate.items.add(newItem);
             } else {
@@ -446,12 +454,14 @@ Future<List<Item>> modAddToMasterList(bool addingToSet, List<ModSet> modSets) as
                 );
               }
               itemInList.isNew = true;
-              addedItems.add(itemInList);
               if (addingToSet) {
                 for (var set in modSets) {
                   if (set.setItems.indexWhere((e) => e.location == itemInList.location) == -1) set.addItem(itemInList);
+                  if (!itemInList.setNames.contains(set.setName)) itemInList.setNames.add(set.setName);
                 }
+                itemInList.isSet = true;
               }
+              addedItems.add(itemInList);
             }
             newCate.visible = newCate.items.isNotEmpty ? true : false;
             cateType.categories.add(newCate);

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
-import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/material_app_service.dart';
 import 'package:pso2_mod_manager/mod_apply/applying_popup.dart';
 import 'package:pso2_mod_manager/mod_apply/unapplied_mod_check.dart';
@@ -67,7 +66,7 @@ class _AppAppliedModsLoadPageState extends State<AppAppliedModsLoadPage> {
         } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
           return FutureBuilderError(loadingText: appText.checkingAppliedMods, snapshotError: snapshot.error.toString(), isPopup: false, showContButton: true);
         } else {
-          masterUnappliedItemList = snapshot.data;
+          List<Item> masterUnappliedItemList = snapshot.data;
           if (masterUnappliedItemList.isEmpty) {
             saveMasterModListToJson();
             pageIndex++;
