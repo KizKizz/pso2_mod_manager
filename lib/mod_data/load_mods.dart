@@ -18,13 +18,11 @@ import 'package:pso2_mod_manager/mod_data/sub_mod_class.dart';
 import 'package:pso2_mod_manager/system_loads/app_mod_load_page.dart';
 import 'package:pso2_mod_manager/v3_functions/video_thumbnail_fetch.dart';
 
-List<Item> modSetItemsFromMasterList = [];
+
 
 Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
   List<CategoryType> structureFromJson = [];
   List<CategoryType> cateTypes = [];
-  modSetItemsFromMasterList = [];
-  masterUnappliedItemList = [];
 
   //Load list from json
   String modSettingsFromJson = await File(mainModListJsonPath).readAsString();
@@ -36,11 +34,11 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
       }
     } else {
       modLoadingStatus.value = '';
-      await Future.delayed(const Duration(microseconds: 1000));
+      await Future.delayed(const Duration(microseconds: 500));
       for (Map<String, dynamic> cateTypeData in jsonData) {
         CategoryType cateType = CategoryType.fromJson(cateTypeData);
         modLoadingStatus.value = cateType.groupName;
-        await Future.delayed(const Duration(microseconds: 1000));
+        await Future.delayed(const Duration(microseconds: 500));
         cateTypes.add(cateType);
       }
 
@@ -143,7 +141,7 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
               item.setNames = curJsonItemsList[itemIndex].setNames;
               //item.location = curJsonItemsList[itemIndex].location;
               //Populate modset items
-              if (item.isSet || item.setNames.isNotEmpty) modSetItemsFromMasterList.add(item);
+              // if (item.isSet || item.setNames.isNotEmpty) modSetItemsFromMasterList.add(item);
               final curJsonModsList = curJsonItemsList[itemIndex].mods;
               for (var mod in item.mods) {
                 int modIndex = curJsonModsList.indexWhere((element) => element.modName == mod.modName);

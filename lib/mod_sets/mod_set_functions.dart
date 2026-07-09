@@ -15,6 +15,7 @@ import 'package:pso2_mod_manager/v3_widgets/notifications.dart';
 
 Future<List<ModSet>> modSetLoader() async {
   List<ModSet> newModSets = [];
+  List<Item> modSetItemsFromMasterList = [];
   // Load list from json
   String dataFromFile = File(mainModSetListJsonPath).readAsStringSync();
   if (dataFromFile.isNotEmpty) {
@@ -26,6 +27,19 @@ Future<List<ModSet>> modSetLoader() async {
       newModSets.add(set);
       // modsetLoadingStatus.value = newModSets.last.setName;
       await Future.delayed(const Duration(microseconds: 100));
+    }
+  }
+
+  for (var set in newModSets) {
+    for (var item in set.setItems) {
+      // Master mod list
+      int tIndex = masterModList.indexWhere((e) => e.containsCategory(item.category));
+      int cIndex = masterModList[tIndex].categories.indexWhere((e) => e.categoryName == item.category);
+      int iIndex = masterModList[tIndex].categories[cIndex].items.indexWhere((e) => e.location == item.location);
+      if (tIndex != -1 && cIndex != -1 && iIndex != -1) {
+        Item mmlItem = masterModList[tIndex].categories[cIndex].items[iIndex];
+        if (mmlItem.setNames.contains(set.setName)) modSetItemsFromMasterList.add(mmlItem);
+      }
     }
   }
 
@@ -58,6 +72,7 @@ Future<List<ModSet>> modSetLoader() async {
     await Future.delayed(const Duration(microseconds: 1000));
   }
 
+  modSetItemsFromMasterList = [];
   return newModSets;
 }
 
