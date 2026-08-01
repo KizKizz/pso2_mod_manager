@@ -15,7 +15,7 @@ import 'package:pso2_mod_manager/v3_widgets/notifications.dart';
 
 Future<List<ModSet>> modSetLoader() async {
   List<ModSet> newModSets = [];
-  List<Item> modSetItemsFromMasterList = [];
+  Map<String, Item> modSetItemsFromMasterList = {};
   // Load list from json
   String dataFromFile = File(mainModSetListJsonPath).readAsStringSync();
   if (dataFromFile.isNotEmpty) {
@@ -33,19 +33,29 @@ Future<List<ModSet>> modSetLoader() async {
   for (var set in newModSets) {
     for (var item in set.setItems) {
       // Master mod list
-      int tIndex = masterModList.indexWhere((e) => e.containsCategory(item.category));
-      int cIndex = masterModList[tIndex].categories.indexWhere((e) => e.categoryName == item.category);
-      int iIndex = masterModList[tIndex].categories[cIndex].items.indexWhere((e) => e.location == item.location);
-      if (tIndex != -1 && cIndex != -1 && iIndex != -1) {
+      int tIndex = masterModList.indexWhere(
+        (e) => e.containsCategory(item.category),
+      );
+      if (tIndex == -1) continue;
+      int cIndex = masterModList[tIndex].categories.indexWhere(
+        (e) => e.categoryName == item.category,
+      );
+      if (cIndex == -1) continue;
+      int iIndex = masterModList[tIndex].categories[cIndex].items.indexWhere(
+        (e) => e.location == item.location,
+      );
+      if (iIndex != -1) {
         Item mmlItem = masterModList[tIndex].categories[cIndex].items[iIndex];
-        if (mmlItem.setNames.contains(set.setName)) modSetItemsFromMasterList.add(mmlItem);
+        if (mmlItem.setNames.contains(set.setName)) {
+          modSetItemsFromMasterList[mmlItem.location] = mmlItem;
+        }
       }
     }
   }
 
   //remove nonexistence set name
   List<String> existingSetNames = newModSets.map((e) => e.setName).toList();
-  for (var item in modSetItemsFromMasterList) {
+  for (var item in modSetItemsFromMasterList.values) {
     for (var mod in item.mods) {
       for (var submod in mod.submods) {
         for (var modFile in submod.modFiles) {
@@ -66,13 +76,22 @@ Future<List<ModSet>> modSetLoader() async {
   // Populate sets with items
   for (var set in newModSets) {
     modsetLoadingStatus.value = set.setName;
-    set.setItems = modSetItemsFromMasterList
-        .where((e) => e.setNames.contains(set.setName) && e.mods.indexWhere((m) => m.setNames.contains(set.setName)) != -1 && e.getSubmods().indexWhere((s) => s.setNames.contains(set.setName)) != -1)
+    set.setItems = modSetItemsFromMasterList.values
+        .where(
+          (e) =>
+              e.setNames.contains(set.setName) &&
+              e.mods.indexWhere((m) => m.setNames.contains(set.setName)) !=
+                  -1 &&
+              e.getSubmods().indexWhere(
+                    (s) => s.setNames.contains(set.setName),
+                  ) !=
+                  -1,
+        )
         .toList();
     await Future.delayed(const Duration(microseconds: 1000));
   }
 
-  modSetItemsFromMasterList = [];
+  modSetItemsFromMasterList = {};
   return newModSets;
 }
 
