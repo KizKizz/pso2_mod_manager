@@ -33,17 +33,11 @@ Future<List<ModSet>> modSetLoader() async {
   for (var set in newModSets) {
     for (var item in set.setItems) {
       // Master mod list
-      int tIndex = masterModList.indexWhere(
-        (e) => e.containsCategory(item.category),
-      );
+      int tIndex = masterModList.indexWhere((e) => e.containsCategory(item.category));
       if (tIndex == -1) continue;
-      int cIndex = masterModList[tIndex].categories.indexWhere(
-        (e) => e.categoryName == item.category,
-      );
+      int cIndex = masterModList[tIndex].categories.indexWhere((e) => e.categoryName == item.category);
       if (cIndex == -1) continue;
-      int iIndex = masterModList[tIndex].categories[cIndex].items.indexWhere(
-        (e) => e.location == item.location,
-      );
+      int iIndex = masterModList[tIndex].categories[cIndex].items.indexWhere((e) => e.location == item.location);
       if (iIndex != -1) {
         Item mmlItem = masterModList[tIndex].categories[cIndex].items[iIndex];
         if (mmlItem.setNames.contains(set.setName)) {
@@ -77,16 +71,7 @@ Future<List<ModSet>> modSetLoader() async {
   for (var set in newModSets) {
     modsetLoadingStatus.value = set.setName;
     set.setItems = modSetItemsFromMasterList.values
-        .where(
-          (e) =>
-              e.setNames.contains(set.setName) &&
-              e.mods.indexWhere((m) => m.setNames.contains(set.setName)) !=
-                  -1 &&
-              e.getSubmods().indexWhere(
-                    (s) => s.setNames.contains(set.setName),
-                  ) !=
-                  -1,
-        )
+        .where((e) => e.setNames.contains(set.setName) && e.mods.indexWhere((m) => m.setNames.contains(set.setName)) != -1 && e.getSubmods().indexWhere((s) => s.setNames.contains(set.setName)) != -1)
         .toList();
     await Future.delayed(const Duration(microseconds: 1000));
   }
