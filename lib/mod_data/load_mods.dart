@@ -38,7 +38,7 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
       for (Map<String, dynamic> cateTypeData in jsonData) {
         CategoryType cateType = CategoryType.fromJson(cateTypeData);
         modLoadingStatus.value = cateType.groupName;
-        await Future.delayed(const Duration(microseconds: 500));
+        await Future.delayed(const Duration(milliseconds: 500));
         cateTypes.add(cateType);
       }
 
