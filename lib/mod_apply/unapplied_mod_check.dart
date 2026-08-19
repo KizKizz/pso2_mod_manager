@@ -16,6 +16,7 @@ Future<List<Item>> unappliedItemsGet() async {
       for (var category in categories) {
         Iterable<Item> items = category.items.where((e) => e.getNumOfAppliedMods() > 0);
         for (var item in items) {
+          bool added = false;
           Iterable<Mod> mods = item.mods.where((e) => e.getNumOfAppliedSubmods() > 0);
           for (var mod in mods) {
             Iterable<SubMod> submods = mod.submods.where((e) => e.applyStatus);
@@ -26,15 +27,29 @@ Future<List<Item>> unappliedItemsGet() async {
                   await Future.delayed(const Duration(microseconds: 500));
                   for (var path in modFile.ogLocations) {
                     modFile.ogMd5s.clear();
-                    modFile.ogMd5s.add(await File(path).getMd5Hash());
+                    if (await File(path).exists()) {
+                      modFile.ogMd5s.add(await File(path).getMd5Hash());
+                    } else {
+                      unappliedItemList.add(item);
+                      added = true;
+                    }
                     if (modFile.md5.isEmpty) modFile.md5 = await File(modFile.location).getMd5Hash();
                     if (!unappliedItemList.contains(item) && modFile.ogMd5s.first != modFile.md5) {
                       unappliedItemList.add(item);
+                      added = true;
                     }
+
+                    if (added) break;
                   }
                 }
+
+                if (added) break;
               }
+
+              if (added) break;
             }
+
+            if (added) break;
           }
         }
       }

@@ -128,10 +128,7 @@ Future<void> checkGameFilesPopup(context, bool checkAll) async {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            Visibility(
-                                              visible: missingFiles.length - downloadedIndex.length > 0,
-                                              child: Text((missingFiles.length - downloadedIndex.length).toString(), style: Theme.of(context).textTheme.headlineSmall),
-                                            ),
+                                            Text((missingFiles.length - downloadedIndex.length).toString(), style: Theme.of(context).textTheme.headlineSmall),
                                             Text(appText.unmatchedMissingFiles, style: Theme.of(context).textTheme.headlineSmall),
                                           ],
                                         ),

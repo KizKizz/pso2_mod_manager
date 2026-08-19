@@ -37,6 +37,7 @@ class SubmodMoreFunctionsMenu extends StatefulWidget {
 class _SubmodMoreFunctionsMenuState extends State<SubmodMoreFunctionsMenu> {
   @override
   Widget build(BuildContext context) {
+    if (!File(selectedCustomAQMFilePath.value).existsSync()) selectedCustomAQMFilePath.value = '';
     return SignalBuilder(
       builder: (context) => PopupMenuButton(
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
@@ -121,12 +122,7 @@ class _SubmodMoreFunctionsMenuState extends State<SubmodMoreFunctionsMenu> {
             ),
             if (!widget.submod.customAQMInjected!)
               PopupMenuItem(
-                enabled:
-                    aqmInjectCategoryDirs.contains(widget.submod.category) &&
-                    !widget.submod.applyStatus &&
-                    !widget.submod.customAQMInjected! &&
-                    selectedCustomAQMFilePath.value.isNotEmpty &&
-                    File(selectedCustomAQMFilePath.value).existsSync(),
+                enabled: aqmInjectCategoryDirs.contains(widget.submod.category) && !widget.submod.applyStatus && !widget.submod.customAQMInjected!,
                 onTap: () async {
                   await modAqmSelectPopup(
                     context,

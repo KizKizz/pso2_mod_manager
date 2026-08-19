@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:pso2_mod_manager/app_colorscheme.dart';
@@ -165,6 +166,7 @@ Future<void> prefsLoad() async {
 
   // Selected custom AQM File Path
   selectedCustomAQMFilePath.value = prefs.getString('selectedCustomAQMFilePath') ?? '';
+  if (!File(selectedCustomAQMFilePath.value).existsSync()) selectedCustomAQMFilePath.value = '';
 
   // Auto inject custom aqm
   autoInjectCustomAqm = prefs.getBool('autoInjectCustomAqm') ?? false;
