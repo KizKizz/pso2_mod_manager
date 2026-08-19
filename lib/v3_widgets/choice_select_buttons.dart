@@ -64,12 +64,8 @@ class _MultiChoiceSelectButtonState extends State<MultiChoiceSelectButton> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: EdgeInsetsGeometry.only(top: 1.2),
-                child: Text(widget.label, style: TextStyle(fontSize: 16)),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4.5),
+              Center(child: Text(widget.label, style: TextStyle(fontSize: 16))),
+              Center(
                 child: AutoSizeText(
                   widget.selectedItems.value.length == widget.availableItemList.length || widget.selectedItems.value.contains('All')
                       ? appText.all
@@ -242,12 +238,8 @@ class _SingleChoiceSelectButtonState extends State<SingleChoiceSelectButton> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: EdgeInsetsGeometry.only(top: 1.2),
-              child: Text(widget.label, style: TextStyle(fontSize: 16)),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 4.5),
+            Center(child: Text(widget.label, style: TextStyle(fontSize: 16))),
+            Center(
               child: AutoSizeText(
                 FileSystemEntity.isFileSync(widget.selectedItem.value)
                     ? p.basename(widget.selectedItem.value)

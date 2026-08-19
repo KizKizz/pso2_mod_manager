@@ -36,7 +36,7 @@ Future<List<Cml>> cmlItemsLoad() async {
   // Fetch origin on launch
   if (Directory('$modCMLReplaceTempDirPath${p.separator}original').existsSync()) Directory('$modCMLReplaceTempDirPath${p.separator}original').deleteSync(recursive: true);
   File? downloadedMakerIce = await originalIceDownload('data/win32/1c5f7a7fbcdd873336048eaf6e26cd87.pat', '$modCMLReplaceTempDirPath${p.separator}original', modApplyStatus);
-  if (downloadedMakerIce!.existsSync()) {
+  if (downloadedMakerIce != null && downloadedMakerIce.existsSync()) {
     await Process.run('$zamboniExePath -outdir "$modCMLReplaceTempDirPath${p.separator}original"', [downloadedMakerIce.path]);
   }
 

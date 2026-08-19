@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
@@ -72,11 +74,13 @@ Future<void> modAqmSelectPopup(context, SubMod submod, List<String> availableIte
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       OutlinedButton(
-                        onPressed: () async {
-                          await submodAqmInject(context, submod);
-                          // ignore: use_build_context_synchronously
-                          Navigator.of(context).pop();
-                        },
+                        onPressed: selectedItem.isNotEmpty && File(selectedItem.value).existsSync()
+                            ? () async {
+                                await submodAqmInject(context, submod);
+                                // ignore: use_build_context_synchronously
+                                Navigator.of(context).pop();
+                              }
+                            : null,
                         child: Text(appText.injectAQM),
                       ),
                       OutlinedButton(onPressed: () => Navigator.of(context).pop(), child: Text(appText.returns)),
