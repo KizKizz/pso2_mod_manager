@@ -280,7 +280,7 @@ class AppText {
       functionOn = '%p%: ON',
       functionOff = '%p%: OFF',
       checkedFiles = 'Checked Files',
-      unmatchedMissingFiles = 'Unmatched - Missing Files',
+      unmatchedMissingFiles = 'Mismatched Files',
       appliedFilesOnly = 'Applied Files',
       selectAScanType = 'Select A Scan Type',
       useLocalBackupOnly = 'Use Local Backup Only',
