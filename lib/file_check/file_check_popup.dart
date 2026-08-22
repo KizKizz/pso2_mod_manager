@@ -246,14 +246,14 @@ Future<void> checkGameFilesPopup(context, bool checkAll) async {
                             } else {
                               missingFiles.insert(0, data);
                             }
-                            if (fileScanProgress == FileScanProgress.paused || fileScanProgress == FileScanProgress.idle || totalChecked == 10000) {
+                            if (fileScanProgress == FileScanProgress.paused || fileScanProgress == FileScanProgress.idle) {
                               break;
                             }
                             if (context.mounted) setState(() {});
                           }
                           if (totalChecked == filesToScan.length) {
                             fileScanProgress = FileScanProgress.idle;
-                            setState(() {});
+                            if (context.mounted) setState(() {});
                           }
                           // Download Files
                           if (missingFiles.isNotEmpty) {
