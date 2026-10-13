@@ -186,7 +186,11 @@ class _ModAddProcessedButtonsState extends State<ModAddProcessedButtons> {
             onPressed: curModAddProcessedStatus.value == ModAddProcessedState.dataInList
                 ? () async {
                     if (Directory(modAddTempDirPath).existsSync()) {
-                      await Directory(modAddTempDirPath).delete(recursive: true);
+                      if (Platform.isWindows) {
+                        await Process.run('cmd', ['/c', 'rmdir', '/S', '/Q', modAddTempDirPath]);
+                      } else {
+                        await Directory(modAddTempDirPath).delete(recursive: true);
+                      }
                     }
                     modAddingList.clear();
                     modSetsToAdd.clear();
@@ -238,7 +242,11 @@ class _ModAddProcessedButtonsState extends State<ModAddProcessedButtons> {
           OutlinedButton(
             onPressed: () async {
               if (Directory(modAddTempDirPath).existsSync()) {
-                await Directory(modAddTempDirPath).delete(recursive: true);
+                if (Platform.isWindows) {
+                  await Process.run('cmd', ['/c', 'rmdir', '/S', '/Q', modAddTempDirPath]);
+                } else {
+                  await Directory(modAddTempDirPath).delete(recursive: true);
+                }
               }
               modAddingList.clear();
               modSetsToAdd.clear();

@@ -231,6 +231,8 @@ Future<void> createMainDirs() async {
   if (backgroundImageFiles.value.isEmpty || !backgroundImageFiles.value.first.path.contains(mainModDirPath)) backgroundImageFiles.value = backgroundImageFetch();
 
   // Clear Temps
+  if (Platform.isWindows && Directory(modAddTempDirPath).existsSync()) await Process.run('cmd', ['/c', 'rmdir', '/S', '/Q', modAddTempDirPath]);
+  if (Platform.isWindows && Directory(modSwapTempDirPath).existsSync()) await Process.run('cmd', ['/c', 'rmdir', '/S', '/Q', modSwapTempDirPath]);
   if (Directory(modAddTempDirPath).existsSync()) Directory(modAddTempDirPath).deleteSync(recursive: true);
   if (Directory(modSwapTempDirPath).existsSync()) Directory(modSwapTempDirPath).deleteSync(recursive: true);
 }

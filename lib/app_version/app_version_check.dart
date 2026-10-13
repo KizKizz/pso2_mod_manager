@@ -46,14 +46,3 @@ bool newAppVersionCheck(String remoteVersion) {
     return false;
   }
 }
-
-// Future<File> patchFileLauncherGenerate(String remoteVersion) async {
-//   File patchFile = File('${Directory.current.path}${p.separator}appUpdate${p.separator}patchLauncher.bat');
-//   if (!patchFile.existsSync()) {
-//     patchFile.createSync(recursive: true);
-//   }
-//   String commands = 'chcp 65001 >nul\nstart /B "" "${'${Directory.current.path}${p.separator}appUpdate${p.separator}updater.exe'}" PSO2NGSModManager $remoteVersion "${Directory.current.path}"';
-//   await patchFile.writeAsString(commands);
-
-//   return patchFile;
-// }

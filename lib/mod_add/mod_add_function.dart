@@ -93,7 +93,11 @@ Future<List<AddingMod>> modAddSort() async {
     final innerDirs = dir.listSync();
     if (innerDirs.length == 1 && !win32DirNames.contains(p.basename(innerDirs.first.path)) && FileSystemEntity.isDirectorySync(innerDirs.first.path)) {
       await io.copyPath(innerDirs.first.path, dir.parent.path + p.separator + p.basename(innerDirs.first.path));
-      await innerDirs.first.delete(recursive: true);
+      if (Platform.isWindows) {
+        await Process.run('cmd', ['/c', 'rmdir', '/S', '/Q', innerDirs.first.path]);
+      } else {
+        await innerDirs.first.delete(recursive: true);
+      }
     }
   }
   // Check for duplicates
@@ -110,7 +114,11 @@ Future<List<AddingMod>> modAddSort() async {
       recentAddedDirPaths.add(sortedPath);
     }
   }
-  await Directory(modAddTempUnpackedDirPath).delete(recursive: true);
+  if (Platform.isWindows) {
+    await Process.run('cmd', ['/c', 'rmdir', '/S', '/Q', modAddTempUnpackedDirPath]);
+  } else {
+    await Directory(modAddTempUnpackedDirPath).delete(recursive: true);
+  }
 
   // Remove reboots
   for (var modDir in Directory(modAddTempSortedDirPath).listSync(recursive: true).whereType<Directory>().where((e) => recentAddedDirPaths.indexWhere((s) => e.path.contains(s)) != -1).toSet()) {
@@ -471,8 +479,27 @@ Future<List<Item>> modAddToMasterList(bool addingToSet, List<ModSet> modSets) as
           }
         }
         // Remove dir in sorted
-        await modAddingItem.modDir.delete(recursive: true);
+        if (Platform.isWindows) {
+          await Process.run('cmd', ['/c', 'rmdir', '/S', '/Q', modAddingItem.modDir.path]);
+        } else {
+          await modAddingItem.modDir.delete(recursive: true);
+        }
+        if (modAddingItem.modDir.parent.listSync().isEmpty) {
+          if (Platform.isWindows) {
+            await Process.run('cmd', ['/c', 'rmdir', '/S', '/Q', modAddingItem.modDir.parent.path]);
+          } else {
+            await modAddingItem.modDir.parent.delete(recursive: true);
+          }
+        }
       }
+    }
+  }
+
+  if (Directory(modAddTempSortedDirPath).listSync().isEmpty) {
+    if (Platform.isWindows) {
+      await Process.run('cmd', ['/c', 'rmdir', '/S', '/Q', modAddTempSortedDirPath]);
+    } else {
+      await Directory(modAddTempSortedDirPath).delete(recursive: true);
     }
   }
   mainGridStatus.value = '[${DateTime.now()}] ${modAddingList.map((e) => e.submodNames).join(', ')} added';
