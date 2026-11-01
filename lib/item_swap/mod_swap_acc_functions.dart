@@ -165,20 +165,20 @@ Future<Directory> modSwapAccessories(
     }
 
     //copy extra files & remove extras
-    if (renamedExtractedGroup1Files.isNotEmpty) {
-      for (var extractedFileT in extractedGroup1FilesT) {
-        if (renamedExtractedGroup1Files.where((element) => p.basename(element.path) == p.basename(extractedFileT.path)).isEmpty) {
-          extractedFileT.copySync(Uri.file('${p.dirname(renamedExtractedGroup1Files.first.path)}/${p.basename(extractedFileT.path)}').toFilePath());
-        }
-      }
-    }
-    if (renamedExtractedGroup2Files.isNotEmpty) {
-      for (var extractedFileT in extractedGroup2FilesT) {
-        if (renamedExtractedGroup2Files.where((element) => p.basename(element.path) == p.basename(extractedFileT.path)).isEmpty) {
-          extractedFileT.copySync(Uri.file('${p.dirname(renamedExtractedGroup2Files.first.path)}/${p.basename(extractedFileT.path)}').toFilePath());
-        }
-      }
-    }
+    // if (renamedExtractedGroup1Files.isNotEmpty) {
+    //   for (var extractedFileT in extractedGroup1FilesT) {
+    //     if (renamedExtractedGroup1Files.where((element) => p.basename(element.path) == p.basename(extractedFileT.path)).isEmpty) {
+    //       extractedFileT.copySync(Uri.file('${p.dirname(renamedExtractedGroup1Files.first.path)}/${p.basename(extractedFileT.path)}').toFilePath());
+    //     }
+    //   }
+    // }
+    // if (renamedExtractedGroup2Files.isNotEmpty) {
+    //   for (var extractedFileT in extractedGroup2FilesT) {
+    //     if (renamedExtractedGroup2Files.where((element) => p.basename(element.path) == p.basename(extractedFileT.path)).isEmpty) {
+    //       extractedFileT.copySync(Uri.file('${p.dirname(renamedExtractedGroup2Files.first.path)}/${p.basename(extractedFileT.path)}').toFilePath());
+    //     }
+    //   }
+    // }
 
     //rename texture in aqp
     List<String> ddsTypes = ['d.dds', 'm.dds', 'n.dds', 's.dds', 'o.dds'];
@@ -221,6 +221,7 @@ Future<Directory> modSwapAccessories(
             Uint8List ddsFBytes = Uint8List.fromList(ddsF.codeUnits);
             Uint8List ddsTBytes = Uint8List.fromList(renamedDdsNamesF[ddsIndex].codeUnits);
             int firstMatchingIndex = aqpBytesRead.indexOfElements(ddsFBytes);
+            if (firstMatchingIndex != -1 && renamedDdsNamesF.contains(ddsF)) continue;
             // if (firstMatchingIndex != -1) {
             //   if (ddsFBytes.length > ddsTBytes.length) {
             //     List<String> paddingTextList = List.filled(ddsFBytes.length - ddsTBytes.length, String.fromCharCode(aqpBytes[firstMatchingIndex + ddsFBytes.length + 1]));
@@ -286,6 +287,7 @@ Future<Directory> modSwapAccessories(
             Uint8List ddsFBytes = Uint8List.fromList(ddsF.codeUnits);
             Uint8List ddsTBytes = Uint8List.fromList(renamedDdsNamesF[ddsIndex].codeUnits);
             int firstMatchingIndex = aqpBytesRead.indexOfElements(ddsFBytes);
+            if (firstMatchingIndex != -1 && renamedDdsNamesF.contains(ddsF)) continue;
             // if (firstMatchingIndex != -1) {
             //   if (ddsFBytes.length > ddsTBytes.length) {
             //     List<String> paddingTextList = List.filled(ddsFBytes.length - ddsTBytes.length, String.fromCharCode(aqpBytes[firstMatchingIndex + ddsFBytes.length + 1]));
