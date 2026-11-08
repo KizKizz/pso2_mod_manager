@@ -12,7 +12,16 @@ import 'package:pso2_mod_manager/v3_functions/original_ice_download.dart';
 
 final validCharacters = RegExp(r'^[a-zA-Z0-9]+$');
 
-Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, SubMod fromSubmod, String rSelectedItemName, List<String> lItemAvailableIces, List<String> rItemAvailableIces, ItemCrossSwap itemCrossSwap) async {
+Future<Directory> modSwapEmotes(
+  context,
+  bool isVanillaItemSwap,
+  Mod fromMod,
+  SubMod fromSubmod,
+  String rSelectedItemName,
+  List<String> lItemAvailableIces,
+  List<String> rItemAvailableIces,
+  ItemCrossSwap itemCrossSwap,
+) async {
   List<String> iceTypes = ['human hash', 'reboot human hash', 'pso2 hash', 'fig hash', 'vfx hash'];
   String newToSelectedItemName = rSelectedItemName;
 
@@ -29,6 +38,9 @@ Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, Su
     int rItemTypeIndex = iceTypes.indexWhere((e) => curIceType.contains(e));
     if (rItemTypeIndex != -1) {
       int lItemMatchingIndex = lItemAvailableIces.indexWhere((e) => e.split(': ').first.toLowerCase().contains(iceTypes[rItemTypeIndex]));
+      if (lItemMatchingIndex == -1 && itemCrossSwap == ItemCrossSwap.emoteToIdleMotion) {
+        lItemMatchingIndex = lItemAvailableIces.indexWhere((e) => e.split(': ').first.toLowerCase() == iceTypes[2] && iceTypes[rItemTypeIndex] == iceTypes[0]);
+      }
       if (lItemMatchingIndex != -1) {
         iceSwappingList.add([p.basename(lItemAvailableIces[lItemMatchingIndex].split(': ').last), p.basename(rItem.split(': ').last)]);
       }
@@ -75,27 +87,20 @@ Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, Su
       }
       String extractedGroup1PathF = Uri.file('$tempSubmodPathF/${lItemIceName}_ext/group1').toFilePath();
       if (Directory(extractedGroup1PathF).existsSync()) {
-        extractedGroup1FilesF = Directory(extractedGroup1PathF)
-            .listSync(recursive: true)
-            .whereType<File>()
-            .where((element) => validCharacters.hasMatch(p.basenameWithoutExtension(element.path).split('_').first))
-            .toList();
+        extractedGroup1FilesF = Directory(
+          extractedGroup1PathF,
+        ).listSync(recursive: true).whereType<File>().where((element) => validCharacters.hasMatch(p.basenameWithoutExtension(element.path).split('_').first)).toList();
       }
       String extractedGroup2PathF = Uri.file('$tempSubmodPathF/${lItemIceName}_ext/group2').toFilePath();
       if (Directory(extractedGroup2PathF).existsSync()) {
-        extractedGroup2FilesF = Directory(extractedGroup2PathF)
-            .listSync(recursive: true)
-            .whereType<File>()
-            .where((element) => validCharacters.hasMatch(p.basenameWithoutExtension(element.path).split('_').first))
-            .toList();
+        extractedGroup2FilesF = Directory(
+          extractedGroup2PathF,
+        ).listSync(recursive: true).whereType<File>().where((element) => validCharacters.hasMatch(p.basenameWithoutExtension(element.path).split('_').first)).toList();
       }
     }
 
     //copy to temp toitem dir
-    final matchedrItemData = oItemData.firstWhere(
-      (e) => p.basenameWithoutExtension(e.path) == rItemIceName,
-      orElse: () => OfficialIceFile('', '', 0, ''),
-    );
+    final matchedrItemData = oItemData.firstWhere((e) => p.basenameWithoutExtension(e.path) == rItemIceName, orElse: () => OfficialIceFile('', '', 0, ''));
     String icePathFromOgDataT = matchedrItemData.path;
     if (icePathFromOgDataT.isNotEmpty) {
       //final iceFileInTempT = await File(icePathFromOgDataT).copy(Uri.file('$modSwapTempRItemDirPath/${p.basename(icePathFromOgDataT)}').toFilePath());
@@ -154,16 +159,18 @@ Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, Su
       // extra step for renaming .bti for idles to emotes
       if (itemCrossSwap == ItemCrossSwap.idleMotionToEmote) {
         File btiToRename = extractedGroup1FilesF.firstWhere(
-            (e) =>
-                p.extension(e.path) == '.bti' &&
-                p.basenameWithoutExtension(e.path).split('_')[0] == 'pl' &&
-                p.basenameWithoutExtension(e.path).split('_')[1] == 'std' &&
-                p.basenameWithoutExtension(e.path).split('_').last == 'lp',
-            orElse: () => File(''));
+          (e) =>
+              p.extension(e.path) == '.bti' &&
+              p.basenameWithoutExtension(e.path).split('_')[0] == 'pl' &&
+              p.basenameWithoutExtension(e.path).split('_')[1] == 'std' &&
+              p.basenameWithoutExtension(e.path).split('_').last == 'lp',
+          orElse: () => File(''),
+        );
         if (btiToRename.path.isNotEmpty && btiToRename.existsSync()) {
           File matchingAQMFile = extractedGroup2FilesT.firstWhere(
-              (e) => p.extension(e.path) == '.aqm' && p.basenameWithoutExtension(e.path).split('_')[0] == 'pl' && p.basenameWithoutExtension(e.path).split('_')[1] == 'hum',
-              orElse: () => File(''));
+            (e) => p.extension(e.path) == '.aqm' && p.basenameWithoutExtension(e.path).split('_')[0] == 'pl' && p.basenameWithoutExtension(e.path).split('_')[1] == 'hum',
+            orElse: () => File(''),
+          );
           if (matchingAQMFile.path.isNotEmpty && matchingAQMFile.existsSync()) {
             await btiToRename.rename(btiToRename.path.replaceFirst(p.basenameWithoutExtension(btiToRename.path), p.basenameWithoutExtension(matchingAQMFile.path)));
           }
@@ -204,19 +211,13 @@ Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, Su
     //extra step for swapping LAs to Idles
     //if (selectedMotionType.isEmpty) {
     String rebootFigHashlItemIceName = lItemAvailableIces
-        .firstWhere(
-          (element) => element.split(': ').first == 'Reboot Fig Hash Ice' || element.split(': ').first == 'Reboot Fig Hash',
-          orElse: () => '',
-        )
+        .firstWhere((element) => element.split(': ').first == 'Reboot Fig Hash Ice' || element.split(': ').first == 'Reboot Fig Hash', orElse: () => '')
         .split(': ')
         .last
         .split('\\')
         .last;
     String rebootHumanHashlItemIceName = lItemAvailableIces
-        .firstWhere(
-          (element) => element.split(': ').first == 'Reboot Human Hash Ice' || element.split(': ').first == 'Reboot Human Hash',
-          orElse: () => '',
-        )
+        .firstWhere((element) => element.split(': ').first == 'Reboot Human Hash Ice' || element.split(': ').first == 'Reboot Human Hash', orElse: () => '')
         .split(': ')
         .last
         .split('\\')
@@ -224,31 +225,29 @@ Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, Su
 
     // if bti file in reboot human
     if (Directory(Uri.file('$tempSubmodPathF/${rebootHumanHashlItemIceName}_ext/group1').toFilePath()).existsSync() &&
-        Directory(Uri.file('$tempSubmodPathF/${rebootHumanHashlItemIceName}_ext/group1').toFilePath())
-            .listSync()
-            .whereType<File>()
-            .where((element) => p.extension(element.path) == '.bti')
-            .isNotEmpty) {
+        Directory(
+          Uri.file('$tempSubmodPathF/${rebootHumanHashlItemIceName}_ext/group1').toFilePath(),
+        ).listSync().whereType<File>().where((element) => p.extension(element.path) == '.bti').isNotEmpty) {
       //bti in group 1 human hash
       String rebootHumanHashGroup1PathF = Uri.file('$tempSubmodPathF/${rebootHumanHashlItemIceName}_ext/group1').toFilePath();
       if (Directory(rebootHumanHashGroup1PathF).existsSync()) {
-        List<File> rebootHumanGroup1Bti = Directory(rebootHumanHashGroup1PathF)
-            .listSync()
-            .whereType<File>()
-            .where((element) => p.extension(element.path) == '.bti' && validCharacters.hasMatch(p.basenameWithoutExtension(element.path).split('_').first))
-            .toList();
+        List<File> rebootHumanGroup1Bti = Directory(
+          rebootHumanHashGroup1PathF,
+        ).listSync().whereType<File>().where((element) => p.extension(element.path) == '.bti' && validCharacters.hasMatch(p.basenameWithoutExtension(element.path).split('_').first)).toList();
 
         //get new name for bti from aqm
         String rebootHumanHashGroup2PathF = Uri.file('$tempSubmodPathF/${rebootHumanHashlItemIceName}_ext/group2').toFilePath();
         File rebootHumanGroup2Aqm = Directory(rebootHumanHashGroup2PathF).listSync().whereType<File>().firstWhere(
-            (element) => p.extension(element.path) == '.aqm' && (p.basenameWithoutExtension(element.path).contains('_00120_') || p.basenameWithoutExtension(element.path).contains('pl_hum')),
-            orElse: () => File(''));
+          (element) => p.extension(element.path) == '.aqm' && (p.basenameWithoutExtension(element.path).contains('_00120_') || p.basenameWithoutExtension(element.path).contains('pl_hum')),
+          orElse: () => File(''),
+        );
         if (rebootHumanGroup1Bti.isNotEmpty && rebootHumanGroup2Aqm.path.isNotEmpty) {
           for (var group1BtiFileF in rebootHumanGroup1Bti) {
             if (p.basenameWithoutExtension(group1BtiFileF.path).contains('_00110_')) {
               //rename bti in human group1
               await group1BtiFileF.rename(
-                  Uri.file('$rebootHumanHashGroup1PathF/${p.basenameWithoutExtension(rebootHumanGroup2Aqm.path).replaceFirst('_00120_', '_00110_').replaceFirst('_lp', '_st')}.bti').toFilePath());
+                Uri.file('$rebootHumanHashGroup1PathF/${p.basenameWithoutExtension(rebootHumanGroup2Aqm.path).replaceFirst('_00120_', '_00110_').replaceFirst('_lp', '_st')}.bti').toFilePath(),
+              );
             } else if (p.basenameWithoutExtension(group1BtiFileF.path).contains('_00120_')) {
               await group1BtiFileF.rename(Uri.file('$rebootHumanHashGroup1PathF/${p.basenameWithoutExtension(rebootHumanGroup2Aqm.path)}.bti').toFilePath());
             } else if (p.basenameWithoutExtension(group1BtiFileF.path).contains('pl_hum') || p.basenameWithoutExtension(group1BtiFileF.path).contains('pl_la')) {
@@ -270,8 +269,9 @@ Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, Su
           File rebootHumanGroup2Aqm = File('');
           if (Directory(rebootHumanHashGroup2PathF).existsSync()) {
             Directory(rebootHumanHashGroup2PathF).listSync().whereType<File>().firstWhere(
-                (element) => p.extension(element.path) == '.aqm' && (p.basenameWithoutExtension(element.path).contains('_00120_') || (p.basenameWithoutExtension(element.path).contains('pl_hum'))),
-                orElse: () => File(''));
+              (element) => p.extension(element.path) == '.aqm' && (p.basenameWithoutExtension(element.path).contains('_00120_') || (p.basenameWithoutExtension(element.path).contains('pl_hum'))),
+              orElse: () => File(''),
+            );
           }
 
           //copy bti from fig to human
@@ -281,7 +281,8 @@ Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, Su
               if (p.basenameWithoutExtension(rebootFigGroup1BtiFileF.path).contains('_00110_')) {
                 //rename bti in human group1
                 await rebootFigGroup1BtiFileF.rename(
-                    Uri.file('$rebootFigHashGroup1PathF/${p.basenameWithoutExtension(rebootHumanGroup2Aqm.path).replaceFirst('_00120_', '_00110_').replaceFirst('_lp', '_st')}.bti').toFilePath());
+                  Uri.file('$rebootFigHashGroup1PathF/${p.basenameWithoutExtension(rebootHumanGroup2Aqm.path).replaceFirst('_00120_', '_00110_').replaceFirst('_lp', '_st')}.bti').toFilePath(),
+                );
               } else if (p.basenameWithoutExtension(rebootFigGroup1BtiFileF.path).contains('_00120_')) {
                 await rebootFigGroup1BtiFileF.rename(Uri.file('$rebootFigHashGroup1PathF/${p.basenameWithoutExtension(rebootHumanGroup2Aqm.path)}.bti').toFilePath());
               } else if (p.basenameWithoutExtension(rebootFigGroup1BtiFileF.path).contains('pl_hum') || p.basenameWithoutExtension(rebootFigGroup1BtiFileF.path).contains('pl_la')) {
@@ -296,20 +297,8 @@ Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, Su
     //}
 
     // copy files in .fig hash
-    String figHashLItemIceName = lItemAvailableIces
-        .firstWhere(
-          (element) => element.split(': ').first == '.fig Hash',
-          orElse: () => '',
-        )
-        .split(': ')
-        .last;
-    String figHashRItemIceName = rItemAvailableIces
-        .firstWhere(
-          (element) => element.split(': ').first == '.fig Hash',
-          orElse: () => '',
-        )
-        .split(': ')
-        .last;
+    String figHashLItemIceName = lItemAvailableIces.firstWhere((element) => element.split(': ').first == '.fig Hash', orElse: () => '').split(': ').last;
+    String figHashRItemIceName = rItemAvailableIces.firstWhere((element) => element.split(': ').first == '.fig Hash', orElse: () => '').split(': ').last;
     Directory lItemFigHashExtractedDir = Directory(Uri.file('$tempSubmodPathF/${figHashLItemIceName}_ext/group2').toFilePath());
     Directory rItemFigHashExtractedDir = Directory(Uri.file('$tempSubmodPathT/${figHashRItemIceName}_ext/group2').toFilePath());
     if (lItemFigHashExtractedDir.existsSync() && rItemFigHashExtractedDir.existsSync()) {
@@ -324,9 +313,9 @@ Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, Su
     if (fromSubmod.modName == fromSubmod.submodName) {
       packDirPath = Uri.file('$modSwapTempOutputDirPath/$newToSelectedItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath();
     } else {
-      packDirPath =
-          Uri.file('$modSwapTempOutputDirPath/$newToSelectedItemName/${fromSubmod.modName}/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}')
-              .toFilePath();
+      packDirPath = Uri.file(
+        '$modSwapTempOutputDirPath/$newToSelectedItemName/${fromSubmod.modName}/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}',
+      ).toFilePath();
     }
     Directory(packDirPath).createSync(recursive: true);
     if (Platform.isLinux) {
@@ -340,21 +329,17 @@ Future<Directory> modSwapEmotes(context, bool isVanillaItemSwap, Mod fromMod, Su
     //mod previews
     //image
     for (var imagePath in fromMod.previewImages) {
-      if (Directory(Uri.file('$modSwapTempOutputDirPath/$newToSelectedItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath())
-          .listSync()
-          .whereType<File>()
-          .where((element) => p.basename(element.path) == p.basename(imagePath))
-          .isEmpty) {
+      if (Directory(
+        Uri.file('$modSwapTempOutputDirPath/$newToSelectedItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath(),
+      ).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(imagePath)).isEmpty) {
         File(imagePath).copySync(Uri.file('$modSwapTempOutputDirPath/$newToSelectedItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}/${p.basename(imagePath)}').toFilePath());
       }
     }
     //video
     for (var videoPath in fromMod.previewVideos) {
-      if (Directory(Uri.file('$modSwapTempOutputDirPath/$newToSelectedItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath())
-          .listSync()
-          .whereType<File>()
-          .where((element) => p.basename(element.path) == p.basename(videoPath))
-          .isEmpty) {
+      if (Directory(
+        Uri.file('$modSwapTempOutputDirPath/$newToSelectedItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath(),
+      ).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(videoPath)).isEmpty) {
         File(videoPath).copySync(Uri.file('$modSwapTempOutputDirPath/$newToSelectedItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}/${p.basename(videoPath)}').toFilePath());
       }
     }
