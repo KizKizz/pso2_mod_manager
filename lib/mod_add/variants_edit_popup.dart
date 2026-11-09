@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_paths/main_paths.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/mod_add/adding_mod_class.dart';
 import 'package:pso2_mod_manager/mod_add/item_data_class.dart';
 import 'package:pso2_mod_manager/mod_add/mod_add_function.dart';
@@ -136,13 +137,13 @@ Future<AddingMod?> variantsEditPopup(context, AddingMod addingMod, int curIndex)
                                         imageFilePaths: addingMod.submods[i]
                                             .listSync(recursive: addingMod.submods[i] != addingMod.modDir)
                                             .whereType<File>()
-                                            .where((e) => p.extension(e.path) == '.png' || p.extension(e.path) == '.jpg')
+                                            .where((e) => previewImageExt.contains(p.extension(e.path)))
                                             .map((e) => e.path)
                                             .toList(),
                                         videoFilePaths: addingMod.submods[i]
                                             .listSync(recursive: addingMod.submods[i] != addingMod.modDir)
                                             .whereType<File>()
-                                            .where((e) => p.extension(e.path) == '.mp4' || p.extension(e.path) == '.webm')
+                                            .where((e) => previewVideoExt.contains(p.extension(e.path)))
                                             .map((e) => e.path)
                                             .toList(),
                                         isNew: false,

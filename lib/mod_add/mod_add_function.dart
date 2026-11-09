@@ -173,8 +173,8 @@ Future<List<AddingMod>> modAddSort() async {
         associatedItems.add(unknownItem);
       }
     }
-    previewImages.addAll(modDirFiles.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png'));
-    previewVideos.addAll(modDirFiles.where((e) => p.extension(e.path) == '.webm' || p.extension(e.path) == '.mp4'));
+    previewImages.addAll(modDirFiles.where((e) => previewImageExt.contains(p.extension(e.path))));
+    previewVideos.addAll(modDirFiles.where((e) => previewVideoExt.contains(p.extension(e.path))));
     if (previewVideos.isNotEmpty) {
       for (var element in previewVideos) {
         if (!await File('${p.withoutExtension(element.path)}.jpg').exists()) {
@@ -196,8 +196,8 @@ Future<List<AddingMod>> modAddSort() async {
           associatedItems.add(unknownItem);
         }
 
-        final subDirPreviewImages = files.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png');
-        final subDirPreviewVideos = files.where((e) => p.extension(e.path) == '.webm' || p.extension(e.path) == '.mp4');
+        final subDirPreviewImages = files.where((e) => previewImageExt.contains(p.extension(e.path)));
+        final subDirPreviewVideos = files.where((e) => previewVideoExt.contains(p.extension(e.path)));
         if (subDirPreviewVideos.isEmpty && subDirPreviewVideos.isEmpty) {
           for (var file in previewImages) {
             await file.copy(file.path.replaceFirst(file.parent.path, subdir.path));
@@ -563,8 +563,8 @@ Future<AddingMod> modAddRenameRefresh(Directory modDir, AddingMod currentAddingM
   if (modDirFiles.isNotEmpty && modDirFiles.indexWhere((e) => p.extension(e.path) == '') != -1) {
     submods.add(modDir);
     submodNames.add(p.basename(modDir.path));
-    previewImages.addAll(modDirFiles.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png'));
-    previewVideos.addAll(modDirFiles.where((e) => p.extension(e.path) == '.webm' || p.extension(e.path) == '.mp4'));
+    previewImages.addAll(modDirFiles.where((e) => previewImageExt.contains(p.extension(e.path))));
+    previewVideos.addAll(modDirFiles.where((e) => previewVideoExt.contains(p.extension(e.path))));
   }
   // sub dirs
   for (var subdir in modDir.listSync(recursive: true).whereType<Directory>().where((e) => e.listSync().whereType<File>().isNotEmpty).toSet()) {
@@ -572,8 +572,8 @@ Future<AddingMod> modAddRenameRefresh(Directory modDir, AddingMod currentAddingM
     if (files.isNotEmpty && files.indexWhere((e) => p.extension(e.path) == '') != -1) {
       submods.add(subdir);
       submodNames.add(subdir.path.replaceFirst(modDir.path + p.separator, '').trim().replaceAll(p.separator, ' > '));
-      previewImages.addAll(files.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png'));
-      previewVideos.addAll(files.where((e) => p.extension(e.path) == '.webm' || p.extension(e.path) == '.mp4'));
+      previewImages.addAll(files.where((e) => previewImageExt.contains(p.extension(e.path))));
+      previewVideos.addAll(files.where((e) => previewVideoExt.contains(p.extension(e.path))));
     }
   }
 
@@ -677,7 +677,7 @@ Future<List<Mod>> newModsFetcher(String itemPath, String cateName, List<Director
     }
     //Get preview images;
     List<String> modPreviewImages = [];
-    final imagesInModDir = Directory(itemPath).listSync(recursive: false).whereType<File>().where(((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png'));
+    final imagesInModDir = Directory(itemPath).listSync(recursive: false).whereType<File>().where(((element) => previewImageExt.contains(p.extension(element.path))));
     for (var element in imagesInModDir) {
       bool isIconImage = false;
       for (var part in p.basenameWithoutExtension(itemPath).split(' ')) {
@@ -692,7 +692,7 @@ Future<List<Mod>> newModsFetcher(String itemPath, String cateName, List<Director
     }
     //Get preview videos;
     List<String> modPreviewVideos = [];
-    final videosInModDir = Directory(itemPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4');
+    final videosInModDir = Directory(itemPath).listSync(recursive: false).whereType<File>().where((element) => previewVideoExt.contains(p.extension(element.path)));
     for (var element in videosInModDir) {
       modPreviewVideos.add(Uri.file(element.path).toFilePath());
     }
@@ -754,13 +754,13 @@ Future<List<Mod>> newModsFetcher(String itemPath, String cateName, List<Director
     List<String> modPreviewVideos = [];
 
     if (dir.existsSync()) {
-      final imagesInModDir = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png');
+      final imagesInModDir = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => previewImageExt.contains(p.extension(element.path)));
       for (var element in imagesInModDir) {
         modPreviewImages.add(Uri.file(element.path).toFilePath());
       }
       //Get preview videos;
 
-      final videosInModDir = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4');
+      final videosInModDir = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => previewVideoExt.contains(p.extension(element.path)));
       for (var element in videosInModDir) {
         modPreviewVideos.add(Uri.file(element.path).toFilePath());
       }
@@ -837,13 +837,13 @@ Future<List<SubMod>> newSubModFetcher(String modPath, String cateName, String it
 
     //Get preview images;
     List<String> modPreviewImages = [];
-    final imagesInModDir = Directory(modPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png');
+    final imagesInModDir = Directory(modPath).listSync(recursive: false).whereType<File>().where((element) => previewImageExt.contains(p.extension(element.path)));
     for (var element in imagesInModDir) {
       modPreviewImages.add(Uri.file(element.path).toFilePath());
     }
     //Get preview videos;
     List<String> modPreviewVideos = [];
-    final videosInModDir = Directory(modPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4');
+    final videosInModDir = Directory(modPath).listSync(recursive: false).whereType<File>().where((element) => previewVideoExt.contains(p.extension(element.path)));
     for (var element in videosInModDir) {
       modPreviewVideos.add(Uri.file(element.path).toFilePath());
       // if (!await File('${p.withoutExtension(element.path)}.jpg').exists()) {
@@ -902,13 +902,13 @@ Future<List<SubMod>> newSubModFetcher(String modPath, String cateName, String it
   for (var dir in foldersInModDir) {
     //Get preview images;
     List<String> modPreviewImages = [];
-    final imagesInModDir = Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png');
+    final imagesInModDir = Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => previewImageExt.contains(p.extension(element.path)));
     for (var element in imagesInModDir) {
       modPreviewImages.add(Uri.file(element.path).toFilePath());
     }
     //Get preview videos;
     List<String> modPreviewVideos = [];
-    final videosInModDir = Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4');
+    final videosInModDir = Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => previewVideoExt.contains(p.extension(element.path)));
     for (var element in videosInModDir) {
       modPreviewVideos.add(Uri.file(element.path).toFilePath());
     }
