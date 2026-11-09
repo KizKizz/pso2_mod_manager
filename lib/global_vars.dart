@@ -35,7 +35,7 @@ List<String> defaultCategoryDirs = [
   'Motions', //14
   'Outerwears', //15
   'Setwears', //16
-  'Weapons' //17
+  'Weapons', //17
 ];
 List<String> applyHQFilesCategoryDirs = [
   'Accessories', //0
@@ -100,7 +100,7 @@ List<String> markIconCategoryDirs = [
   'Mags', //12
   'Outerwears', //15
   'Setwears', //16
-  'Weapons' //17
+  'Weapons', //17
 ];
 final defaultWeaponTypes = [
   'Swords',
@@ -120,7 +120,7 @@ final defaultWeaponTypes = [
   'Talises',
   'Wands',
   'Jet Boots',
-  'Harmonizers'
+  'Harmonizers',
 ];
 
 final lineStrikeItemTypes = [LineStrikeItemType.cards.value, LineStrikeItemType.boards.value, LineStrikeItemType.sleeves.value];
@@ -131,6 +131,8 @@ final submodSortingSelections = ['Favorites', 'Has Previews', 'Name (Alphabetica
 final win32DirNames = ['win32', 'win32reboot', 'win32_na', 'win32reboot_na'];
 String charToReplace = '[\\/:*?"<>|]';
 String charToReplaceWithoutSeparators = '[:*?"<>|]';
+final previewImageExt = ['.png', '.jpg', '.gif'];
+final previewVideoExt = ['.mp4', '.webm'];
 
 String appTitle = 'PSO2NGS Mod Manager';
 String curAppVersion = '';

@@ -159,21 +159,21 @@ Future<void> submodRename(context, Mod mod, SubMod submod) async {
 Future<void> addPreviews(Mod mod, SubMod submod) async {
   List<XFile> files = [];
   if (useAltFilePicker) {
-    FilePickerResult? result = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['jpg', 'png', 'webm', 'mp4']);
+    FilePickerResult? result = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: previewImageExt + previewVideoExt);
     if (result != null) files = result.xFiles;
   } else {
-    const XTypeGroup imageTypeGroup = XTypeGroup(label: 'Images', extensions: <String>['jpg', 'png']);
-    const XTypeGroup videoTypeGroup = XTypeGroup(label: 'Videos', extensions: <String>['webm', 'mp4']);
+    XTypeGroup imageTypeGroup = XTypeGroup(label: 'Images', extensions:  previewImageExt);
+    XTypeGroup videoTypeGroup = XTypeGroup(label: 'Videos', extensions: previewVideoExt);
     files = await openFiles(acceptedTypeGroups: <XTypeGroup>[imageTypeGroup, videoTypeGroup]);
   }
 
   for (var file in files) {
-    if (p.extension(file.path) == '.jpg' || p.extension(file.path) == '.png') {
+    if (previewImageExt.contains(p.extension(file.path))) {
       final copiedFile = await File(file.path).copy(submod.location + p.separator + p.basename(file.path));
       submod.previewImages.add(copiedFile.path);
       mod.previewImages.add(copiedFile.path);
     }
-    if (p.extension(file.path) == '.webm' || p.extension(file.path) == '.mp4') {
+    if (previewVideoExt.contains(p.extension(file.path))) {
       final copiedFile = await File(file.path).copy(submod.location + p.separator + p.basename(file.path));
       submod.previewVideos.add(copiedFile.path);
       mod.previewVideos.add(copiedFile.path);
