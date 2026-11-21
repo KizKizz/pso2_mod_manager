@@ -184,3 +184,4 @@ Signal<String> selectedWeaponType = Signal<String>('All');
 Signal<String> selectedLineStrikeType = Signal<String>(LineStrikeItemType.cards.value);
 TextEditingController modViewListV2SearchTextController = TextEditingController();
 TextEditingController submodViewPopupSearchTextController = TextEditingController();
+bool modListReload = false;

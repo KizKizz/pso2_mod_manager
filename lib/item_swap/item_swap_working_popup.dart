@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/app_title_bar.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_acc_functions.dart';
 import 'package:pso2_mod_manager/item_swap/mod_swap_emote_functions.dart';
@@ -36,11 +37,12 @@ Future<void> itemSwapWorkingPopup(context, bool isVanillaSwap, ItemData lItemDat
           builder: (context) {
             return AlertDialog(
               shape: RoundedRectangleBorder(
-                side: BorderSide(color: Theme.of(context).colorScheme.outline),
-                borderRadius: const BorderRadius.all(Radius.circular(5)),
+                borderRadius: const BorderRadius.all(Radius.circular(0)),
               ),
               backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.value),
-              insetPadding: const EdgeInsets.all(5),
+              insetPadding: const EdgeInsets.all(0),
+              titlePadding: EdgeInsets.zero,
+              title: const SizedBox(height: 25, child: AppTitleBar()),
               contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               content: Column(
                 spacing: 5,

@@ -64,6 +64,7 @@ class _AppModLoadPageState extends State<AppModLoadPage> {
           masterModList = snapshot.data;
           saveMasterModListToJson();
           profanityRemove();
+          modListReload = false;
           pageIndex++;
           WidgetsBinding.instance.addPostFrameCallback((_) {
             curPage.value = appPages[pageIndex];

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/system_loads/app_applied_mods_check_page.dart';
 import 'package:pso2_mod_manager/system_loads/app_aqm_item_load_page.dart';
 import 'package:pso2_mod_manager/system_loads/app_aqm_items_check_page.dart';
@@ -32,7 +33,7 @@ final List<Widget> appPages = [
   const OfficialDataFetchPage(),
   const PlayerDataLoadPage(),
   const AppPathPage(),
-  const AppModLoadPage(),
+  AppModLoadPage(isModReload: modListReload),
   const AppModSetLoadPage(),
   const AppAppliedModsLoadPage(),
   const AppAqmItemLoadPage(),

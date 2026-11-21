@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/app_title_bar.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/main_widgets/popup_item_info.dart';
 import 'package:pso2_mod_manager/main_widgets/popup_list_tile.dart';
@@ -79,6 +80,8 @@ Future<void> submodViewPopup(context, Item item, Mod mod) async {
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
               backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.value),
               insetPadding: EdgeInsets.zero,
+              titlePadding: EdgeInsets.zero,
+              title: const SizedBox(height: 25, child: AppTitleBar()),
               contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               content: SizedBox(
                 width: MediaQuery.of(context).size.width,

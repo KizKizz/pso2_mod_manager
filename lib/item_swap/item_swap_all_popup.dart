@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/app_localization/app_text.dart';
+import 'package:pso2_mod_manager/app_title_bar.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_all_grid_layout.dart';
 import 'package:pso2_mod_manager/item_swap/item_swap_working_popup.dart';
@@ -54,9 +55,7 @@ Future<void> itemSwapAllPopup(context, Item item) async {
                         ? e.category == item.category && (e.subCategory == selectedModSwapAllMotionType.value || selectedModSwapAllMotionType.value == appText.all)
                         : e.category == item.category,
                   )
-                  .where(
-                    (e) => selectedModSwapAllTypeCategory.value == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedModSwapAllTypeCategory.value.toLowerCase(),
-                  )
+                  .where((e) => selectedModSwapAllTypeCategory.value == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedModSwapAllTypeCategory.value.toLowerCase())
                   .toList();
               displayingItems.sort((a, b) => a.getName().compareTo(b.getName()));
 
@@ -77,10 +76,7 @@ Future<void> itemSwapAllPopup(context, Item item) async {
                           ? e.category == defaultCategoryDirs[2]
                           : true,
                     )
-                    .where(
-                      (e) =>
-                          selectedModSwapAllTypeCategory.value == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedModSwapAllTypeCategory.value.toLowerCase(),
-                    )
+                    .where((e) => selectedModSwapAllTypeCategory.value == appText.both || e.itemType.toLowerCase().split(' | ').first == selectedModSwapAllTypeCategory.value.toLowerCase())
                     .toList();
                 rDisplayingItemsExtra.sort((a, b) => a.getName().compareTo(b.getName()));
               } else {
@@ -104,6 +100,8 @@ Future<void> itemSwapAllPopup(context, Item item) async {
                 shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor.withAlpha(uiDialogBackgroundColorAlpha.value),
                 insetPadding: EdgeInsets.zero,
+                titlePadding: EdgeInsets.zero,
+                title: const SizedBox(height: 25, child: AppTitleBar()),
                 contentPadding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
                 content: SizedBox(
                   width: MediaQuery.of(context).size.width,

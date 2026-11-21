@@ -104,6 +104,8 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             pso2binDirPath = modManCurActiveProfile == 1 ? prefs.getString('pso2binDirPath') ?? '' : prefs.getString('pso2binDirPath_profile2') ?? '';
                             reloadButtonVisible = true;
                             setState(() {});
+                            // await Future.delayed(Duration(milliseconds: 500));
+                            // selectedItemV2.value = null;
                           },
                         ),
                         Visibility(
@@ -115,6 +117,7 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                                 reloadButtonVisible = false;
                                 // pso2RegionVersion.value = await pso2RegionCheck();
                                 pageIndex = 6;
+                                modListReload = true;
                                 curPage.value = appPages[pageIndex];
                               },
                               child: Text(appText.reload),
