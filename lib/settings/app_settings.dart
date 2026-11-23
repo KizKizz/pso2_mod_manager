@@ -7,6 +7,7 @@ import 'package:pso2_mod_manager/app_localization/app_text.dart';
 import 'package:pso2_mod_manager/app_localization/item_locale.dart';
 import 'package:pso2_mod_manager/app_pages_index.dart';
 import 'package:pso2_mod_manager/global_vars.dart';
+import 'package:pso2_mod_manager/settings/profile_reload_popup.dart';
 import 'package:pso2_mod_manager/settings/repath_confirm_popup.dart';
 import 'package:pso2_mod_manager/shared_prefs.dart';
 import 'package:pso2_mod_manager/v3_home/homepage.dart';
@@ -31,6 +32,7 @@ class AppSettingsLayout extends SignalStatefulWidget {
 class _AppSettingsLayoutState extends State<AppSettingsLayout> {
   late List<AppLocale> appLocales;
   bool reloadButtonVisible = false;
+  int currentSelectedProfile = modManCurActiveProfile;
 
   @override
   void initState() {
@@ -102,25 +104,31 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             targetIndex == 0 ? modManCurActiveProfile = 1 : modManCurActiveProfile = 2;
                             prefs.setInt('modManCurActiveProfile', modManCurActiveProfile);
                             pso2binDirPath = modManCurActiveProfile == 1 ? prefs.getString('pso2binDirPath') ?? '' : prefs.getString('pso2binDirPath_profile2') ?? '';
-                            reloadButtonVisible = true;
+                            if (currentSelectedProfile != modManCurActiveProfile) {
+                              currentSelectedProfile = modManCurActiveProfile;
+                              // ignore: use_build_context_synchronously
+                              await profileReloadPopup(context);
+                            }
+                            // reloadButtonVisible = true;
                             setState(() {});
                           },
                         ),
-                        Visibility(
-                          visible: reloadButtonVisible,
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: OutlinedButton(
-                              onPressed: () async {
-                                reloadButtonVisible = false;
-                                // pso2RegionVersion.value = await pso2RegionCheck();
-                                pageIndex = 6;
-                                curPage.value = appPages[pageIndex];
-                              },
-                              child: Text(appText.reload),
-                            ),
-                          ),
-                        ),
+                        // Visibility(
+                        //   visible: reloadButtonVisible,
+                        //   child: SizedBox(
+                        //     width: double.infinity,
+                        //     child: OutlinedButton(
+                        //       onPressed: () async {
+                        //         reloadButtonVisible = false;
+                        //         // pso2RegionVersion.value = await pso2RegionCheck();
+                        //         pageIndex = 6;
+                        //         modListReload = true;
+                        //         curPage.value = appPages[pageIndex];
+                        //       },
+                        //       child: Text(appText.reload),
+                        //     ),
+                        //   ),
+                        // ),
                         // Language
                         SettingsHeader(icon: Icons.language, text: appText.uiLanguage),
                         AnimatedHorizontalToggleLayout(
@@ -219,17 +227,7 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             prefs.setBool('itemIconSlides', itemIconSlides.value);
                           },
                         ),
-                        // Item Icons Refresh
-                        SettingsHeader(icon: Icons.replay_circle_filled_sharp, text: appText.refreshItemIcon),
-                        SizedBox(
-                          width: double.infinity,
-                          child: OutlinedButton(
-                            onPressed: () async {
-                              await itemIconsRefreshPopup();
-                            },
-                            child: Text(appText.refresh),
-                          ),
-                        ),
+
                         // Scrollbars always visible
                         SettingsHeader(icon: Icons.swipe_up_sharp, text: appText.scrollbarsAlwaysVisible),
                         AnimatedHorizontalToggleLayout(
@@ -241,6 +239,18 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             targetIndex == 0 ? scrollbarsAlwaysVisible.value = true : scrollbarsAlwaysVisible.value = false;
                             prefs.setBool('scrollbarsAlwaysVisible', scrollbarsAlwaysVisible.value);
                             settingChangeStatus.value = 'scrollbar visible ${scrollbarsAlwaysVisible.value}';
+                          },
+                        ),
+                        // Use alt file picker
+                        SettingsHeader(icon: Icons.file_open, text: appText.useAlternateFilePicker),
+                        AnimatedHorizontalToggleLayout(
+                          taps: [appText.on, appText.off],
+                          initialIndex: useAltFilePicker ? 0 : 1,
+                          width: buttonWidth,
+                          onChange: (currentIndex, targetIndex) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            targetIndex == 0 ? useAltFilePicker = true : useAltFilePicker = false;
+                            prefs.setBool('useAltFilePicker', useAltFilePicker);
                           },
                         ),
                         // Hide empty cate
@@ -293,17 +303,16 @@ class _AppSettingsLayoutState extends State<AppSettingsLayout> {
                             InfoBox(info: appText.dText(appText.intervalNumSecond, hideUIInitDelaySeconds.toString()), borderHighlight: false),
                           ],
                         ),
-                        // Use alt file picker
-                        SettingsHeader(icon: Icons.file_open, text: appText.useAlternateFilePicker),
-                        AnimatedHorizontalToggleLayout(
-                          taps: [appText.on, appText.off],
-                          initialIndex: useAltFilePicker ? 0 : 1,
-                          width: buttonWidth,
-                          onChange: (currentIndex, targetIndex) async {
-                            final prefs = await SharedPreferences.getInstance();
-                            targetIndex == 0 ? useAltFilePicker = true : useAltFilePicker = false;
-                            prefs.setBool('useAltFilePicker', useAltFilePicker);
-                          },
+                        // Item Icons Refresh
+                        SettingsHeader(icon: Icons.replay_circle_filled_sharp, text: appText.refreshItemIcon),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton(
+                            onPressed: () async {
+                              await itemIconsRefreshPopup();
+                            },
+                            child: Text(appText.refresh),
+                          ),
                         ),
                         // Main paths reselect
                         SettingsHeader(icon: Icons.folder, text: appText.mainPaths),
