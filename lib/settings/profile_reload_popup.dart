@@ -15,18 +15,16 @@ Future<void> profileReloadPopup(context) async {
             shape: RoundedRectangleBorder(borderRadius: const BorderRadius.all(Radius.circular(0))),
             backgroundColor: Colors.transparent,
             insetPadding: const EdgeInsets.all(0),
-            content: Expanded(
-              child: Center(
-                child: OutlinedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Future.delayed(Duration(milliseconds: 500));
-                    pageIndex = 6;
-                    modListReload = true;
-                    curPage.value = appPages[pageIndex];
-                  },
-                  child: Text(appText.reload, style: Theme.of(context).textTheme.titleMedium),
-                ),
+            content: Center(
+              child: OutlinedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Future.delayed(Duration(milliseconds: 500));
+                  pageIndex = 6;
+                  modListReload = true;
+                  curPage.value = appPages[pageIndex];
+                },
+                child: Text(appText.reload, style: Theme.of(context).textTheme.titleMedium),
               ),
             ),
           );
